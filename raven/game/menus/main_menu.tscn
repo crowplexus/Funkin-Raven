@@ -3,12 +3,12 @@
 [ext_resource type="Script" path="res://raven/game/menus/main_menu.gd" id="1_mokt2"]
 [ext_resource type="Texture2D" uid="uid://bli7f3ci8mlxa" path="res://assets/images/menus/menuBG.png" id="2_3e4k3"]
 [ext_resource type="Texture2D" uid="uid://bth4tolk5b84k" path="res://assets/images/menus/menuDesat.png" id="3_awav8"]
-[ext_resource type="SpriteFrames" uid="uid://bkuiknk4golyw" path="res://assets/images/menus/main_menu/play.res" id="4_fjbnc"]
+[ext_resource type="SpriteFrames" uid="uid://ci77orl43crd6" path="res://assets/images/menus/main_menu/play.res" id="4_fjbnc"]
 [ext_resource type="SpriteFrames" uid="uid://w180sq1lbj1p" path="res://assets/images/menus/main_menu/freeplay.res" id="4_qwuvt"]
 [ext_resource type="SpriteFrames" uid="uid://bob1sdn453x3b" path="res://assets/images/menus/main_menu/story.res" id="4_s1seb"]
 [ext_resource type="SpriteFrames" uid="uid://btpvkofwmc0xv" path="res://assets/images/menus/main_menu/donate.res" id="5_li2ux"]
 [ext_resource type="SpriteFrames" uid="uid://h01osq7vid6y" path="res://assets/images/menus/main_menu/options.res" id="6_yx8xw"]
-[ext_resource type="SpriteFrames" uid="uid://c2x4me3t1cet7" path="res://assets/images/menus/main_menu/kickstarter.res" id="7_8c5tk"]
+[ext_resource type="SpriteFrames" uid="uid://chnei4ocs7aq3" path="res://assets/images/menus/main_menu/kickstarter.res" id="7_8c5tk"]
 
 [node name="main_menu" type="Node2D"]
 script = ExtResource("1_mokt2")

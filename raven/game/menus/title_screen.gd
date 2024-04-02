@@ -17,19 +17,30 @@ var intro_blobs: Array[PackedStringArray] = []
 var intro_display: PackedStringArray = ["my nuts", "itch"]
 
 func reload_intro_text():
-	if not ResourceLoader.exists("res://assets/data/introText.csv"): return
-	var text: String = FileAccess.open("res://assets/data/introText.csv", FileAccess.READ).get_as_text()
-	var split_text: PackedStringArray = text.dedent().split("\n")
+	var path: String = "res://assets/data/introText.csv"
+	if not ResourceLoader.exists(path): return
 	
+	var intro_file: = FileAccess.open(path, FileAccess.READ)
+	if intro_file == null: return
+	
+	var text: String = intro_file.get_as_text()
+	var split_text: PackedStringArray = text.dedent().split("\n")
 	intro_blobs.clear()
+	
 	for i: int in split_text.size():
-		if i == 0 or split_text[i].is_empty(): continue
+		if i == 0 or split_text[i].is_empty():
+			continue
+		
 		# cropping the text so we can properly translate
 		var erase_index: int = clampi(split_text[i].find(","), 0, split_text[i].length())
 		var eng_txt: String = split_text[i].erase(erase_index, split_text[i].length())
 		var text_array: PackedStringArray = tr(eng_txt).split("--")
+		
 		if not text_array.is_empty() and text_array.size() > 1:
 			intro_blobs.append(text_array)
+	
+	if not intro_blobs.is_empty():
+		intro_display = intro_blobs[intro_blobs.find(intro_blobs.pick_random())]
 
 func _ready():
 	await RenderingServer.frame_post_draw
@@ -39,8 +50,6 @@ func _ready():
 	Conductor.bpm = 102.0
 	
 	reload_intro_text()
-	# this makes me dizzy.
-	intro_display = intro_blobs[intro_blobs.find(intro_blobs.pick_random())]
 	
 	if not SoundBoard.bg_tracks.playing:
 		SoundBoard.play_track(load("res://assets/audio/bgm/freakyMenu.ogg"), true, 0.01)
