@@ -1,0 +1,105 @@
+TAG,en,pt,es
+
+        SETUP SCREEN
+
+setup_language,What language do you speak?,Que idioma você fala?,¿Qué idioma hablas?
+setup_flashing_lights,Do you wish to disable\nflashing effects,Deseja desativar\nos Efeitos Piscantes?,¿Desea desactivar\nlos efectos flash?
+setup_scroll,Any specific scroll direction?,Alguma direção\nespecifica para as notas?,¿Alguna dirección\nespecífica para las notas?
+
+setup_end1,Right. and with that,Certo. e com isso,Bueno. con eso
+setup_end2,I hope you enjoy the game,Espero que goste do jogo,Espero que disfrutes del juego
+setup_end3,as much and i did\nworking on it,Tanto quanto eu ao\ntrabalhar nele,Tanto como yo \ntrabajando en él.
+
+setup_answer_yes,Yes,Sim,Sí
+setup_answer_no,No,Não,No
+
+setup_answer_up,Up,Cima,Arriba
+setup_answer_down,Down,Baixo,Abajo
+setup_answer_split_ud,"Split (UD)","Dividido (CB)","Dividido (AB)"
+setup_answer_split_du,"Split (DU)","Dividido (BC)","Dividido (BA)"
+
+        TITLESCREEN
+
+title_present,Present,Apresenta,Presenta
+title_brazil,Made in Brazil,Feito no Brasil,Hecho en Brasil
+title_godot,Powered by Godot,Feito em Godot,Hecho en Godot
+
+        FREEPLAY
+
+freeplay_top,TOP SCORE,MELHOR PONTUAÇÃO,MEJOR PUNTAJE
+freeplay_ctrl,CTRL TO SHOW MORE,CTRL PARA MOSTRAR MAIS,CTRL PARA MOSTRAR MÁS
+
+info_score,Score,Pontos,Puntos
+info_misses,Misses,Erros,Fallos
+info_accuracy,Accuracy,Precisão,Precisión
+info_evaluation,Evaluation,Avaliação,Evaluación
+
+        DIFFICULTIES
+
+easy,Easy,Fácil,Fácil
+normal,Normal,Normal,Normal
+hard,Hard,Difícil,Dificil
+
+        GAMEPLAY
+
+game_autoplay_text,AUTOPLAY,AUTOMÁTICO,AUTOMÁTICO
+invalid_evaluation,INVALID,INVÁLIDO,INVÁLIDO
+
+        PAUSE MENU
+
+pause_resumebutton,Resume Song,Continuar Música,Resumir Canción
+pause_restartbutton,Restart Song,Reiniciar Música,Reiniciar Canción
+pause_changedifficulty,Change Difficulty, Mudar Dificuldade, Cambiar Dificultad
+pause_changeoptions,Change Options,Mudar Opções,Cambiar Ajustes
+pause_exitbutton,Exit to Menu,Sair para o Menu,Salir al Menú
+
+pause_songinfo,Song: %s,Música: %s,Canción: %s
+pause_diffinfo,Difficulty: %s,Dificuldade: %s,Dificultad: %s
+pause_timeinfo,Time: %s / %s,Tempo: %s / %s,Tempo: %s / %s
+pause_practice,Practice Mode: %s,Modo Prática: %s,Modo Práctica: %s
+pause_deaths,Blueballed: %s,Broxadas: %s,Huevos Hinchados: %s
+pause_autoplay,Autoplay Mode: %s,Modo Automático: %s,Modo Automático: %s
+
+        OPTIONS (CATEGORIES)
+
+options_gameplay,Gameplay,Jogabilidade,Jugabilidad
+options_modifiers,Modifiers,Modificadores,Modificadores
+options_misc,Miscellaneous,Diversos,Misceláneos
+options_visuals,Visuals,Visuais,Visuales
+
+options_tip,"Press ENTER to select an option, ENTER again or ESCAPE to deelect it.","Pressione ENTER para selecionar uma opção, ENTER novamente ou ESCAPE para desmarcá-la.","Pulse ENTER para seleccionar una opción, ENTER de nuevo o ESCAPE para deseleccionarla.",
+
+        OPTIONS (NAMES AND DESCRIPTIONS)
+
+scroll_type,Scroll Type,Direção das Notas,Dirección de Notas.
+scroll_speed_mode,Scroll Speed Mode,Tipo de Velocidade de Notas,
+scroll_speed,Scroll Speed,Velocidade das Notas,Velocidad de las Notas
+
+autoplay,Autoplay Mode,Modo Automático,Modo Automático
+practice,Practice Mode,Modo Prática,Modo Práctica
+
+framerate_mode,Framerate Mode,Modo de TDQ,Modo de FDQ
+framerate,Framerate,Taxa de Quadros,Frecuencia de Cuadros
+splashes,Note Splashes,Note Splashes,Note Splahses
+hide_stage,Hide Stage,Esconder Fundo,Ocultar Fondo
+hide_chars,Hide Characters,Esconder Personagens,Ocultar Personajes
+
+language,Language,Idioma,Idioma
+skip_transitions,Skip Transitions,Pular Transições,Omitir Transiciones
+flashing_lights,Flashing Lights,Luzes Piscantes,Luces Parpadeantes
+camera_zooms,Camera Zooms,Zooms de Câmera,Zooms de Cámara
+hud_bumping,HUD Bumping,Batidas no IDU,HUD Bumping
+
+value_on,ON,SIM,SÍ
+value_off,OFF,NÃO,NO
+
+value_up,Up,Cima,Arriba
+value_down,Down,Baixo,Abajo
+value_split,Split,Dividido,Dividido
+
+value_none,None,Nenhum,Ninguno
+value_constant,Constant,Constante,Constante
+value_multiplicative,Multiplicative,Multiplicativo,Multiplicativo
+
+value_capped,Capped,Travado,Cerrado,
+value_unlimited,Unlimited,Sem Limite,Sin límite

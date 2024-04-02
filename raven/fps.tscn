@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=3 uid="uid://d3f5fidsshsbp"]
+
+[ext_resource type="Script" path="res://raven/fps.gd" id="1_mjslp"]
+[ext_resource type="FontFile" uid="uid://dt4vu05oaeads" path="res://assets/fonts/JetBrainsMono-Bold.ttf" id="2_0dejr"]
+[ext_resource type="Theme" uid="uid://c3rk5qxbp1l3d" path="res://assets/data/themes/raven_ui.tres" id="2_rvd7u"]
+[ext_resource type="StyleBox" uid="uid://dnnwbdxtnpc5a" path="res://assets/data/themes/volume_tray/volume_tray_fg.tres" id="4_e4pab"]
+
+[node name="fps" type="CanvasLayer"]
+process_mode = 3
+layer = 120
+script = ExtResource("1_mjslp")
+
+[node name="text_control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 5.0
+offset_right = 273.0
+offset_bottom = 59.0
+mouse_filter = 2
+
+[node name="fps_count" type="RichTextLabel" parent="text_control"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 4.0
+offset_right = 273.0
+offset_bottom = 49.0
+mouse_filter = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/normal_font = ExtResource("2_0dejr")
+theme_override_font_sizes/normal_font_size = 14
+bbcode_enabled = true
+text = "FRAMERATE AND MEMORY GO HERE :3
+RAVEN VERSION"
+
+[node name="volume_tray" type="ProgressBar" parent="."]
+offset_left = 5.0
+offset_top = 46.0
+offset_right = 273.0
+offset_bottom = 67.0
+mouse_filter = 2
+theme = ExtResource("2_rvd7u")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("2_0dejr")
+theme_override_font_sizes/font_size = 12
+theme_override_styles/fill = ExtResource("4_e4pab")
+value = 50.0

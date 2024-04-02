@@ -1,0 +1,98 @@
+[gd_scene load_steps=8 format=3 uid="uid://bc5ce5823tvkf"]
+
+[ext_resource type="Script" path="res://raven/game/menus/story_menu.gd" id="1_qmswm"]
+[ext_resource type="FontFile" uid="uid://gqsa7jwllqki" path="res://assets/fonts/vcr.ttf" id="2_0y7ad"]
+[ext_resource type="Texture2D" uid="uid://c30w2vcq5aykd" path="res://assets/images/menus/story/weeks/week1.png" id="2_cyy3x"]
+[ext_resource type="Texture2D" uid="uid://f1oyyj43cvic" path="res://assets/images/menus/story/difficulties/normal.png" id="4_auknt"]
+[ext_resource type="SpriteFrames" uid="uid://bclnegqyeif0o" path="res://assets/images/menus/story/story_arrows.res" id="5_u4v2v"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y7wev"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_wrpd6"]
+font = ExtResource("2_0y7ad")
+font_size = 32
+font_color = Color(1, 1, 1, 0.701961)
+
+[node name="story_mode" type="Node2D"]
+script = ExtResource("1_qmswm")
+
+[node name="ui" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="black" type="ColorRect" parent="ui"]
+material = SubResource("ShaderMaterial_y7wev")
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 1)
+
+[node name="week_labels" type="Control" parent="ui"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="yellow" type="ColorRect" parent="ui"]
+layout_mode = 0
+offset_top = 39.0
+offset_right = 1280.0
+offset_bottom = 442.0
+color = Color(0.976471, 0.811765, 0.317647, 1)
+
+[node name="labels" type="Control" parent="ui"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="level_label" type="Label" parent="ui/labels"]
+layout_mode = 0
+offset_left = 5.0
+offset_right = 1275.0
+offset_bottom = 39.0
+text = "WOW, TEXT, SO ORIGINAL, SO UNIQUE..."
+label_settings = SubResource("LabelSettings_wrpd6")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="tracklist" type="Label" parent="ui/labels"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 501.0
+offset_right = 355.0
+offset_bottom = 658.0
+theme_override_colors/font_color = Color(0.898039, 0.341176, 0.466667, 1)
+theme_override_constants/line_spacing = 0
+theme_override_fonts/font = ExtResource("2_0y7ad")
+theme_override_font_sizes/font_size = 32
+text = "- TRACKS -
+
+BRICKS AND LIFTS
+FRESH (B-SIDE)
+I DON'T KNOW MAN."
+horizontal_alignment = 1
+
+[node name="template_week" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(640, 524)
+texture = ExtResource("2_cyy3x")
+
+[node name="difficulty" type="Sprite2D" parent="."]
+position = Vector2(1109, 534)
+texture = ExtResource("4_auknt")
+
+[node name="arrow1" type="AnimatedSprite2D" parent="difficulty"]
+position = Vector2(-102, -6)
+sprite_frames = ExtResource("5_u4v2v")
+animation = &"arrow left"
+
+[node name="arrow2" type="AnimatedSprite2D" parent="difficulty"]
+position = Vector2(107, -4)
+sprite_frames = ExtResource("5_u4v2v")
+animation = &"arrow right"

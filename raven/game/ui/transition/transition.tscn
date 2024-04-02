@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://bavxtpmk224f5"]
+
+[ext_resource type="Script" path="res://raven/game/ui/transition/transition.gd" id="1_0tdh6"]
+[ext_resource type="Shader" path="res://assets/shaders/circle.gdshader" id="2_mkvhk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2tfj3"]
+shader = ExtResource("2_mkvhk")
+shader_parameter/circle_size = 1.05
+shader_parameter/screen_width = 1280.0
+shader_parameter/screen_height = 720.0
+
+[node name="transition" type="CanvasLayer"]
+process_mode = 3
+layer = 110
+script = ExtResource("1_0tdh6")
+
+[node name="rect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_2tfj3")
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)

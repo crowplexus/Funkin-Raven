@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=3 uid="uid://dj0sea66fncpn"]
+
+[ext_resource type="Script" path="res://raven/game/ui/freeplay_player.gd" id="1_jqkus"]
+[ext_resource type="FontFile" uid="uid://dt4vu05oaeads" path="res://assets/fonts/JetBrainsMono-Bold.ttf" id="2_ilm3t"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e74ak"]
+bg_color = Color(0.0941176, 0.0941176, 0.0941176, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 1
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fk1f6"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v5gdh"]
+bg_color = Color(1, 1, 1, 1)
+
+[node name="freeplay_player" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_jqkus")
+
+[node name="panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 164.0
+offset_bottom = 26.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_e74ak")
+
+[node name="progress_bar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 4.0
+offset_right = 159.0
+offset_bottom = 8.0
+theme_override_styles/background = SubResource("StyleBoxFlat_fk1f6")
+theme_override_styles/fill = SubResource("StyleBoxFlat_v5gdh")
+value = 50.0
+show_percentage = false
+
+[node name="position" type="Label" parent="progress_bar"]
+layout_mode = 0
+offset_top = 4.0
+offset_right = 60.0
+offset_bottom = 17.0
+theme_override_fonts/font = ExtResource("2_ilm3t")
+theme_override_font_sizes/font_size = 14
+text = "50:00"
+
+[node name="end" type="Label" parent="progress_bar"]
+layout_mode = 0
+offset_left = 94.0
+offset_top = 4.0
+offset_right = 154.0
+offset_bottom = 24.0
+theme_override_fonts/font = ExtResource("2_ilm3t")
+theme_override_font_sizes/font_size = 14
+text = "1:00:00"
+horizontal_alignment = 2

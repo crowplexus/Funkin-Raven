@@ -1,0 +1,411 @@
+[gd_scene load_steps=14 format=3 uid="uid://426demb4doru"]
+
+[ext_resource type="Theme" uid="uid://c3rk5qxbp1l3d" path="res://assets/data/themes/raven_ui.tres" id="1_xpdys"]
+[ext_resource type="Script" path="res://raven/game/ui/options/options_window.gd" id="2_xk084"]
+[ext_resource type="Texture2D" uid="uid://cbc71xsj05wym" path="res://assets/images/menus/menuDark.png" id="3_co1k1"]
+[ext_resource type="Script" path="res://raven/game/ui/alphabet.gd" id="4_clbcw"]
+[ext_resource type="PackedScene" uid="uid://b4ftuspltsfca" path="res://raven/game/ui/options/options_bar.tscn" id="5_ec8cf"]
+[ext_resource type="FontFile" uid="uid://blgtnxif1eksg" path="res://assets/fonts/funkin.ttf" id="5_xha8w"]
+[ext_resource type="Script" path="res://raven/game/ui/options/individual/keybinds_option.gd" id="7_f62vx"]
+[ext_resource type="Script" path="res://raven/game/ui/options/individual/judgement_option.gd" id="8_88cba"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_y00ei"]
+font = ExtResource("5_xha8w")
+font_size = 48
+outline_size = 16
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5no3m"]
+bg_color = Color(0, 0, 0, 0.54902)
+
+[sub_resource type="LabelSettings" id="LabelSettings_5hlc2"]
+font = ExtResource("5_xha8w")
+font_size = 32
+font_color = Color(0.572549, 0.572549, 0.572549, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ixlx4"]
+font = ExtResource("5_xha8w")
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_r7oje"]
+font = ExtResource("5_xha8w")
+font_size = 32
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[node name="options_window" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+theme = ExtResource("1_xpdys")
+script = ExtResource("2_xk084")
+
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(640, 360)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("3_co1k1")
+
+[node name="label" type="Label" parent="."]
+layout_mode = 0
+offset_top = 54.0
+offset_right = 1280.0
+offset_bottom = 103.0
+text = "<                                                 >"
+label_settings = SubResource("LabelSettings_y00ei")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="alphabet" type="Control" parent="label"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 320.0
+offset_top = -10.0
+offset_right = 320.0
+offset_bottom = -10.0
+pivot_offset = Vector2(2.08165e-12, 2.08165e-12)
+script = ExtResource("4_clbcw")
+text = "GAMEPLAY"
+alignment = 1
+
+[node name="panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 144.0
+offset_right = 1152.0
+offset_bottom = 480.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_5no3m")
+
+[node name="selecty_boy" type="ColorRect" parent="panel"]
+layout_mode = 0
+offset_top = 25.0
+offset_right = 1024.0
+offset_bottom = 70.0
+color = Color(0.415686, 1, 0, 1)
+
+[node name="container" type="Control" parent="panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="options_gameplay" type="VBoxContainer" parent="panel/container"]
+clip_children = 2
+clip_contents = true
+layout_mode = 1
+offset_right = 1020.0
+offset_bottom = 340.0
+theme_override_constants/separation = 0
+
+[node name="notes_sep" type="Label" parent="panel/container/options_gameplay"]
+layout_mode = 2
+text = "Notes"
+label_settings = SubResource("LabelSettings_5hlc2")
+horizontal_alignment = 1
+
+[node name="keybinds" parent="panel/container/options_gameplay" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+script = ExtResource("7_f62vx")
+setting = "Keybinds"
+variable = ""
+variable_type = 4
+value_format = ""
+description = "Change your Note Keybinds"
+choice_names = Array[String]([])
+increment_rules = Array[String]([])
+
+[node name="scroll_type" parent="panel/container/options_gameplay" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Scroll Type"
+description = "Defines the Direction of which the Notes scroll to."
+choice_names = Array[String](["Up", "Down", "Split (Up, Down)", "Split (Down, Up)"])
+
+[node name="scroll_speed_mode" parent="panel/container/options_gameplay" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Scroll Speed Mode"
+variable = "speed_mode"
+description = "Mode of which is used with Custom Note Speed.
+None = Controlled by chart.
+Constant = Controlled by you.
+Multiplicative = Chart scroll speed multiplied by your number"
+choice_names = Array[String](["None", "Constant", "Multiplicative"])
+
+[node name="scroll_speed" parent="panel/container/options_gameplay" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Scroll Speed"
+variable = "scroll_speed"
+variable_type = 2
+description = "Speed at which the notes move, function of said value is dictated by Scroll Speed Mode.
+"
+increment_rules = Array[float]([0.01, 5.0])
+
+[node name="input_sep" type="Label" parent="panel/container/options_gameplay"]
+layout_mode = 2
+text = "Input
+"
+label_settings = SubResource("LabelSettings_5hlc2")
+horizontal_alignment = 1
+
+[node name="ghost_tapping" parent="panel/container/options_gameplay" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Ghost Tapping"
+variable = "ghost_tapping"
+variable_type = 0
+description = "If tapping while no notes are present should give misses or not."
+
+[node name="options_modifiers" type="VBoxContainer" parent="panel/container"]
+visible = false
+clip_children = 2
+clip_contents = true
+layout_mode = 1
+offset_right = 1020.0
+offset_bottom = 340.0
+theme_override_constants/separation = 0
+
+[node name="judgements_sep" type="Label" parent="panel/container/options_modifiers"]
+layout_mode = 2
+text = "Judgements"
+label_settings = SubResource("LabelSettings_5hlc2")
+horizontal_alignment = 1
+
+[node name="judgement_difficulty" parent="panel/container/options_modifiers" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+script = ExtResource("8_88cba")
+setting = "Judgement Difficulty"
+variable = "judgement_difficulty"
+description = "Sets the difficulty of the timing for your judgements."
+choice_names = Array[String](["Etterna (Judge 4)", "Etterna (Judge 5)", "NotITG ", "Funkin'", "Freestyle Standard"])
+restart_on_gameplay = true
+
+[node name="player_mods_sep" type="Label" parent="panel/container/options_modifiers"]
+layout_mode = 2
+text = "Player"
+label_settings = SubResource("LabelSettings_5hlc2")
+horizontal_alignment = 1
+
+[node name="autoplay" parent="panel/container/options_modifiers" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Autoplay Mode"
+variable = "autoplay"
+variable_type = 0
+description = "Enables autoplay mode during gameplay
+which make the game play itself, diregarding player input
+will invalidate your score."
+
+[node name="practice" parent="panel/container/options_modifiers" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Practice Mode"
+variable = "practice"
+variable_type = 0
+description = "Enables practice mode during gameplay
+which disables dying and missing
+will invalidate your score."
+restart_on_gameplay = true
+
+[node name="miss_limiter" parent="panel/container/options_modifiers" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Miss Limit"
+variable = "miss_limiter"
+variable_type = 1
+description = "Implements a secondary health system with a miss limit
+Defined by the set number, when you reach the limit, you die."
+restart_on_gameplay = true
+
+[node name="enemy_play" parent="panel/container/options_modifiers" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Play as Enemy"
+variable = "enemy_play"
+variable_type = 0
+description = "Enablles enemy play, which allows you to olay as your enemy.
+
+Requires restart if you are already playing."
+restart_on_gameplay = true
+
+[node name="options_visuals" type="VBoxContainer" parent="panel/container"]
+visible = false
+clip_children = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="display_sep" type="Label" parent="panel/container/options_visuals"]
+layout_mode = 2
+text = "Display"
+label_settings = SubResource("LabelSettings_5hlc2")
+horizontal_alignment = 1
+
+[node name="framerate_mode" parent="panel/container/options_visuals" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Framerate Mode"
+variable = "framerate_mode"
+description = "Mode used to define how the Engine Framerate behaves.
+
+Capped uses your FPS Cap (defined below).
+VSync uses your Monitor's Refresh Rate.
+Unlimited disables the FPS Cap altogether."
+choice_names = Array[String](["Capped", "VSync", "Unlimited"])
+increment_rules = Array[String]([])
+
+[node name="framerate" parent="panel/container/options_visuals" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Framerate"
+variable = "framerate"
+variable_type = 1
+description = "Defines the Framerate Cap the game should runs at."
+choice_names = Array[String]([])
+
+[node name="gameplay_sep" type="Label" parent="panel/container/options_visuals"]
+layout_mode = 2
+text = "Gameplay"
+label_settings = SubResource("LabelSettings_5hlc2")
+horizontal_alignment = 1
+
+[node name="icon_bump_style" parent="panel/container/options_visuals" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Icon Bump Style"
+variable = "icon_bump_style"
+description = "Defines how the icons should bump forward on beats."
+choice_names = Array[String](["Default", "Arrow Funk", "Base-like"])
+
+[node name="splashes" parent="panel/container/options_visuals" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Note Splashes"
+variable = "splashes"
+variable_type = 0
+description = "If when hitting \"Sick!\" Notes, the firework effect should appear."
+
+[node name="judgement_placement" parent="panel/container/options_visuals" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Judgement Placement"
+variable = "judgement_placement"
+description = "Where should the judgements and combo be placed?"
+choice_names = Array[String](["World", "HUD"])
+
+[node name="hide_stage" parent="panel/container/options_visuals" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Hide Stage"
+variable = "hide_stage"
+variable_type = 0
+description = "Hides the stage background from the main gameplay."
+
+[node name="hide_chars" parent="panel/container/options_visuals" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Hide Characters"
+variable = "hide_characters"
+variable_type = 0
+description = "Hides characters from the main gameplay."
+
+[node name="options_misc" type="VBoxContainer" parent="panel/container"]
+visible = false
+clip_children = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="accessibility_sep" type="Label" parent="panel/container/options_misc"]
+layout_mode = 2
+text = "Accessibility"
+label_settings = SubResource("LabelSettings_5hlc2")
+horizontal_alignment = 1
+
+[node name="language" parent="panel/container/options_misc" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Language"
+variable = "language"
+description = "Defines your language, used throuought the game's menus and interface.
+"
+choice_names = Array[String](["English (US)", "Português (Brasil)", "Español (España)"])
+increment_rules = Array[String]([])
+
+[node name="skip_transitions" parent="panel/container/options_misc" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Skip Transitions"
+variable = "skip_transitions"
+variable_type = 0
+description = "If transitions should be skipped during playthrough."
+choice_names = Array[String]([])
+increment_rules = Array[String]([])
+
+[node name="flashing_lights" parent="panel/container/options_misc" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Flashing Lights"
+variable = "flashing_lights"
+variable_type = 0
+description = "If during navigation and gameplay, flashing lights should be allowed."
+choice_names = Array[String]([])
+increment_rules = Array[String]([])
+
+[node name="gameplay_sep" type="Label" parent="panel/container/options_misc"]
+layout_mode = 2
+text = "Gameplay"
+label_settings = SubResource("LabelSettings_5hlc2")
+horizontal_alignment = 1
+
+[node name="camera_zooms" parent="panel/container/options_misc" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Camera Zooms"
+variable = "camera_zooms"
+variable_type = 0
+description = "If during gameplay, the camera should bump forward and back."
+choice_names = Array[String]([])
+increment_rules = Array[String]([])
+
+[node name="hud_bumping" parent="panel/container/options_misc" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "HUD Bumping"
+variable = "hud_bumping"
+variable_type = 0
+description = "If during gameplay, the HUD should bump forward and back."
+choice_names = Array[String]([])
+increment_rules = Array[String]([])
+
+[node name="show_eval_screen" parent="panel/container/options_misc" instance=ExtResource("5_ec8cf")]
+layout_mode = 2
+setting = "Evaluation Screen"
+variable = "show_eval_screen"
+variable_type = 0
+description = "After a song ends, an evaluation screen will pop up
+Displaying your performance during gameplay."
+choice_names = Array[String]([])
+increment_rules = Array[String]([])
+
+[node name="panel2" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 528.0
+offset_right = 1152.0
+offset_bottom = 672.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_5no3m")
+
+[node name="label" type="Label" parent="panel2"]
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 0
+offset_right = 1024.0
+offset_bottom = 144.0
+text = "This option is very magical in the sense that it doesn't exist, it's like... ethereal... yknow!?"
+label_settings = SubResource("LabelSettings_ixlx4")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="tip" type="Label" parent="."]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 680.0
+offset_right = 1152.0
+offset_bottom = 712.0
+text = "Press ENTER to select an option, ENTER again or ESCAPE to deelect it."
+label_settings = SubResource("LabelSettings_r7oje")
+horizontal_alignment = 1
+vertical_alignment = 1

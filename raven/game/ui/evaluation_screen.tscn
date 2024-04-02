@@ -1,0 +1,80 @@
+[gd_scene load_steps=4 format=3 uid="uid://w2fj2lrf570r"]
+
+[ext_resource type="Script" path="res://raven/game/ui/evaluation_screen.gd" id="1_xodp6"]
+[ext_resource type="FontFile" uid="uid://gqsa7jwllqki" path="res://assets/fonts/vcr.ttf" id="2_ub1ef"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_jccdi"]
+font = ExtResource("2_ub1ef")
+font_size = 42
+
+[node name="evaluation_screen" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_xodp6")
+
+[node name="panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="header" type="Label" parent="panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 16.0
+offset_bottom = 73.0
+grow_horizontal = 2
+text = "- SONG CLEARED -
+{song} | {diff}"
+label_settings = SubResource("LabelSettings_jccdi")
+horizontal_alignment = 1
+
+[node name="judgement_stuff" type="Label" parent="panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 366.0
+offset_top = 172.0
+offset_right = -614.0
+offset_bottom = 499.0
+grow_horizontal = 2
+text = "Epic:0
+Sick:0
+Good:0
+Bad:0
+Shit:0
+
+Misses:0
+Ghost Taps:0"
+label_settings = SubResource("LabelSettings_jccdi")
+horizontal_alignment = 3
+
+[node name="note_stuff" type="Label" parent="panel/judgement_stuff"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 298.0
+offset_right = 448.0
+offset_bottom = 157.0
+grow_horizontal = 2
+text = "Score:XXXXXXX
+Combo:Min/Max
+Average:N/Ams
+Evaluation:INVALID"
+label_settings = SubResource("LabelSettings_jccdi")
+horizontal_alignment = 3
+
+[node name="footer" type="Label" parent="panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 215.5
+offset_top = 558.0
+offset_right = -214.5
+offset_bottom = 635.0
+grow_horizontal = 2
+text = "Happy April Fools!
+Press ENTER to go Back to the Menu
+"
+label_settings = SubResource("LabelSettings_jccdi")
+horizontal_alignment = 1

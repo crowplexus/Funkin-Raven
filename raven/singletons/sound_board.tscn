@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://0726mhh5n3pf"]
+
+[ext_resource type="Script" path="res://raven/singletons/sound_board.gd" id="1_un6rq"]
+
+[node name="sound_board" type="Node"]
+process_mode = 3
+script = ExtResource("1_un6rq")
+
+[node name="sound_board" type="AudioStreamPlayer" parent="."]
+
+[node name="sound_player" type="AudioStreamPlayer" parent="."]

@@ -1,0 +1,220 @@
+[gd_scene load_steps=26 format=3 uid="uid://camhfn4ol6l41"]
+
+[ext_resource type="Script" path="res://raven/game/menus/credits_menu.gd" id="1_gaqjg"]
+[ext_resource type="Script" path="res://raven/resources/contributor_info.gd" id="2_hp36k"]
+[ext_resource type="Texture2D" uid="uid://cbc71xsj05wym" path="res://assets/images/menus/menuDark.png" id="3_a51bp"]
+[ext_resource type="Shader" path="res://assets/shaders/perlin_noise.gdshader" id="4_4iln1"]
+[ext_resource type="FontFile" uid="uid://gqsa7jwllqki" path="res://assets/fonts/vcr.ttf" id="4_pgjda"]
+[ext_resource type="Texture2D" uid="uid://d2r8i35wgi2gp" path="res://assets/images/placeholder/the_way_craftcorn_poses_in_this_image_is_so_badass.webp" id="4_yxn4s"]
+
+[sub_resource type="Resource" id="Resource_7btvn"]
+script = ExtResource("2_hp36k")
+username = &"ninjamuffin99"
+description = "Programmer for Friday Night Funkin'"
+redirect_url = "https://ninjamuffin99.newgrounds.com/"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Resource" id="Resource_tsqha"]
+script = ExtResource("2_hp36k")
+username = &"phantomarcade"
+description = "Artist and Animator for Friday Night Funkin'"
+redirect_url = "https://phantomarcade.newgrounds.com/"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Resource" id="Resource_1257m"]
+script = ExtResource("2_hp36k")
+username = &"kawaisprite"
+description = "Composer for Friday Night Funkin'"
+redirect_url = "https://kawaisprite.newgrounds.com/"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Resource" id="Resource_2krvs"]
+script = ExtResource("2_hp36k")
+username = &"evilsk8r"
+description = "Artist and Animator for Friday Night Funkin'"
+redirect_url = "https://evilsk8r.newgrounds.com/"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Resource" id="Resource_l7c4r"]
+script = ExtResource("2_hp36k")
+username = &"EliteMasterEric"
+description = "Programmer for Friday Night Funkin'"
+redirect_url = "https://elitemastereric.newgrounds.com/"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Resource" id="Resource_ilhai"]
+script = ExtResource("2_hp36k")
+username = &"PrincessMtH"
+description = "Contributor for Friday Night Funkin'"
+redirect_url = "https://twitter.com/emmnyaa"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Resource" id="Resource_gcgup"]
+script = ExtResource("2_hp36k")
+username = &"crowplexus"
+description = "Lead Programmer
+Head of the project"
+redirect_url = "https://twitter.com/crowplexus"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Resource" id="Resource_hl8s0"]
+script = ExtResource("2_hp36k")
+username = &"lufekaji"
+description = "Custom Art Assets
+Credits Menu Characters"
+redirect_url = "https://twitter.com/lufekaji"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Resource" id="Resource_8ifck"]
+script = ExtResource("2_hp36k")
+username = &"MaybeMaru"
+description = "Custom Art Assets
+BF and GF on Titlescreen"
+redirect_url = "https://twitter.com/maybemaru_"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Resource" id="Resource_6jyce"]
+script = ExtResource("2_hp36k")
+username = &"burgerballs9"
+description = "Assistant Programmer
+Made the Options Menu Code
+Made some Shadors :]"
+redirect_url = "https://twitter.com/burgerballs9"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Resource" id="Resource_rt3at"]
+script = ExtResource("2_hp36k")
+username = &"SrtHero278"
+description = "Assistant Programmer
+Made the Chart Editor (entirely)
+Did Sustain Code for Notes"
+redirect_url = "https://twitter.com/SrtPro278"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Resource" id="Resource_un50t"]
+script = ExtResource("2_hp36k")
+username = &"Raltyro"
+description = "Assistant Programmer
+Miscellaneous Fixes"
+redirect_url = "https://twitter.com/raltyro"
+port_hframes = 1
+port_vframes = 1
+
+[sub_resource type="Gradient" id="Gradient_wsotb"]
+colors = PackedColorArray(0.333333, 0.498039, 0.929412, 0.560784, 1, 0.545098, 0.545098, 0.611765)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5egph"]
+gradient = SubResource("Gradient_wsotb")
+fill_from = Vector2(0, 1)
+fill_to = Vector2(0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c4ocr"]
+shader = ExtResource("4_4iln1")
+
+[sub_resource type="Gradient" id="Gradient_e6hpk"]
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4l2dp"]
+gradient = SubResource("Gradient_e6hpk")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v58y6"]
+bg_color = Color(0, 0, 0, 0.588235)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 1
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ouedr"]
+bg_color = Color(0, 0, 0, 0.588235)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 20
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 20
+corner_detail = 1
+anti_aliasing = false
+
+[node name="credits_menu" type="Node2D"]
+script = ExtResource("1_gaqjg")
+categories = {
+"Funkin' Crew": Array[ExtResource("2_hp36k")]([SubResource("Resource_7btvn"), SubResource("Resource_tsqha"), SubResource("Resource_1257m"), SubResource("Resource_2krvs"), SubResource("Resource_l7c4r"), SubResource("Resource_ilhai")]),
+"Funkin' Raven": Array[ExtResource("2_hp36k")]([SubResource("Resource_gcgup"), SubResource("Resource_hl8s0"), SubResource("Resource_8ifck"), SubResource("Resource_6jyce"), SubResource("Resource_rt3at"), SubResource("Resource_un50t")])
+}
+
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(640, 360)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("3_a51bp")
+
+[node name="gradient" type="Sprite2D" parent="bg"]
+modulate = Color(1, 1, 1, 0.384314)
+position = Vector2(1.72729, 0.363602)
+scale = Vector2(20.1449, 11.4091)
+texture = SubResource("GradientTexture2D_5egph")
+
+[node name="bar" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.490196)
+material = SubResource("ShaderMaterial_c4ocr")
+position = Vector2(368.992, 359.54)
+scale = Vector2(2.26452, 727.141)
+skew = 0.1309
+texture = SubResource("GradientTexture1D_4l2dp")
+
+[node name="texts" type="Control" parent="bar"]
+top_level = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 116.247
+offset_top = -0.583338
+offset_right = 700.247
+offset_bottom = 697.417
+
+[node name="portrait" type="Sprite2D" parent="."]
+position = Vector2(980, 358)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_yxn4s")
+
+[node name="descriptor" type="Label" parent="."]
+offset_left = 662.0
+offset_top = 592.0
+offset_right = 1222.0
+offset_bottom = 692.0
+theme_override_fonts/font = ExtResource("4_pgjda")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_v58y6")
+text = "Did this and that."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="category" type="Label" parent="."]
+offset_left = 920.0
+offset_right = 1270.0
+offset_bottom = 64.0
+theme_override_fonts/font = ExtResource("4_pgjda")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_ouedr")
+text = "< Category Name >"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 2

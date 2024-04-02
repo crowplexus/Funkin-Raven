@@ -1,0 +1,107 @@
+[gd_scene load_steps=9 format=3 uid="uid://ds62jxrq4wlma"]
+
+[ext_resource type="PackedScene" uid="uid://d4bync11wbfgt" path="res://raven/game/notefields/4K.tscn" id="1_m11xm"]
+[ext_resource type="Script" path="res://raven/game/playfield.gd" id="1_mauig"]
+[ext_resource type="Texture2D" uid="uid://mjkgb8vn2te6" path="res://assets/images/chars/icons/face.png" id="3_rk5ia"]
+[ext_resource type="FontFile" uid="uid://gqsa7jwllqki" path="res://assets/fonts/vcr.ttf" id="3_xu40u"]
+[ext_resource type="Script" path="res://raven/game/ui/icons/arrow_funk.gd" id="5_84s83"]
+[ext_resource type="PackedScene" uid="uid://c7p47hqmhvpmy" path="res://raven/game/ui/combo_group.tscn" id="5_bjmtb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_osypu"]
+bg_color = Color(1, 0, 0, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 1
+corner_radius_bottom_left = 1
+corner_detail = 1
+expand_margin_left = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bcbpc"]
+bg_color = Color(0.333333, 1, 0, 1)
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_right = 1
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 1
+corner_detail = 1
+expand_margin_right = 5.0
+
+[node name="playfield" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_mauig")
+
+[node name="combo_group" parent="." instance=ExtResource("5_bjmtb")]
+layout_mode = 1
+
+[node name="notefields" type="Control" parent="."]
+anchors_preset = 0
+
+[node name="player1" parent="notefields" instance=ExtResource("1_m11xm")]
+position = Vector2(815, 10)
+is_cpu = false
+
+[node name="player2" parent="notefields" instance=ExtResource("1_m11xm")]
+position = Vector2(122, 10)
+
+[node name="health_bar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 360.0
+offset_top = 60.0
+offset_right = 920.0
+offset_bottom = 80.0
+theme_override_styles/background = SubResource("StyleBoxFlat_osypu")
+theme_override_styles/fill = SubResource("StyleBoxFlat_bcbpc")
+value = 50.0
+fill_mode = 1
+show_percentage = false
+
+[node name="player1" type="Sprite2D" parent="health_bar"]
+position = Vector2(300, 0)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("3_rk5ia")
+offset = Vector2(15, 0)
+flip_h = true
+hframes = 2
+script = ExtResource("5_84s83")
+
+[node name="player2" type="Sprite2D" parent="health_bar"]
+position = Vector2(300, 0)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("3_rk5ia")
+offset = Vector2(-60, 0)
+hframes = 2
+script = ExtResource("5_84s83")
+
+[node name="score_text" type="Label" parent="."]
+layout_mode = 0
+offset_left = 335.0
+offset_top = 101.0
+offset_right = 945.0
+offset_bottom = 119.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("3_xu40u")
+theme_override_font_sizes/font_size = 18
+text = "< Misses: ... | Score: ... | Accuracy: ...% [N/A] >"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="autoplay_text" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 335.0
+offset_top = 677.0
+offset_right = 945.0
+offset_bottom = 706.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("3_xu40u")
+theme_override_font_sizes/font_size = 32
+text = "AUTOPLAY"
+horizontal_alignment = 1

@@ -1,0 +1,27 @@
+name: Bug Report
+description: Report bugs present in the game here.
+labels:
+  - bug
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Describe your bug here"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Add some steps to reproduce the bug (if any)"
+    validations:
+      required: false
+
+  - type: textarea
+    id: user-modded
+    attributes:
+      label: "Did you modify anything? if so, decribe what you've modified."
+      placeholder: "E.g: \"Yes, I've added new scenes for characters and added new variables in settings.gd""
+    validations:
+      required: true

@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://ct8mqb582ux6q"]
+
+[ext_resource type="PackedScene" uid="uid://ds62jxrq4wlma" path="res://raven/game/playfield.tscn" id="1_65hmh"]
+[ext_resource type="Script" path="res://raven/game/gameplay.gd" id="1_cg1lf"]
+
+[node name="gameplay" type="Node2D"]
+script = ExtResource("1_cg1lf")
+
+[node name="camera_2d" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+rotation_smoothing_enabled = true
+
+[node name="ui_layer" type="CanvasLayer" parent="."]
+
+[node name="playfield" parent="ui_layer" instance=ExtResource("1_65hmh")]

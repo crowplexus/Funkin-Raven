@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="SongDatabase" load_steps=8 format=3 uid="uid://dqshlnxnayjnc"]
+
+[ext_resource type="Script" path="res://raven/resources/song_database.gd" id="1_8u4yt"]
+[ext_resource type="Texture2D" uid="uid://c76q38hvdnvl3" path="res://assets/images/chars/icons/dad.png" id="3_qurrt"]
+[ext_resource type="Script" path="res://raven/resources/play/freeplay_song.gd" id="4_g7537"]
+[ext_resource type="Script" path="res://raven/resources/play/song_pack.gd" id="5_h5ap8"]
+[ext_resource type="Texture2D" uid="uid://c30w2vcq5aykd" path="res://assets/images/menus/story/weeks/week1.png" id="7_8klhb"]
+
+[sub_resource type="Resource" id="Resource_cjmbu"]
+script = ExtResource("4_g7537")
+name = "Dadbattle"
+folder = "dadbattle"
+icon = ExtResource("3_qurrt")
+color = Color(0.591667, 0.5, 1, 1)
+difficulties = Array[String](["easy", "normal", "hard"])
+
+[sub_resource type="Resource" id="Resource_uqsqa"]
+script = ExtResource("5_h5ap8")
+songs = Array[ExtResource("4_g7537")]([SubResource("Resource_cjmbu")])
+chars = Array[String](["", "gf", "bf"])
+difficulties = Array[String](["easy", "normal", "hard"])
+tagline = "VS. Daddy Dearest"
+image = ExtResource("7_8klhb")
+locked = false
+
+[resource]
+script = ExtResource("1_8u4yt")
+song_packs = Array[ExtResource("5_h5ap8")]([SubResource("Resource_uqsqa")])
+freeplay_songs = Array[ExtResource("4_g7537")]([])
+show_packs_in_freeplay = true
+show_user_songs_in_freeplay = true

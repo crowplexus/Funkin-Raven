@@ -1,0 +1,95 @@
+[gd_scene load_steps=4 format=3 uid="uid://cjkbd2yjl3hjc"]
+
+[ext_resource type="FontFile" uid="uid://dt4vu05oaeads" path="res://assets/fonts/JetBrainsMono-Bold.ttf" id="1_21k3o"]
+[ext_resource type="Script" path="res://raven/game/toolbox/charterui.gd" id="1_70qy8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w5mvt"]
+bg_color = Color(0.388235, 0.207843, 0.309804, 0.65098)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="charterui" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_70qy8")
+
+[node name="menu_bar" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_right = 218.0
+offset_bottom = 40.0
+theme_override_constants/separation = 16
+
+[node name="file" type="MenuButton" parent="menu_bar"]
+layout_mode = 2
+text = "File"
+item_count = 5
+popup/item_0/text = "test1"
+popup/item_0/id = 0
+popup/item_1/text = "test2"
+popup/item_1/id = 1
+popup/item_2/text = "separator"
+popup/item_2/id = 2
+popup/item_2/separator = true
+popup/item_3/text = "test3"
+popup/item_3/id = 3
+popup/item_4/text = "test4"
+popup/item_4/id = 4
+
+[node name="edit" type="MenuButton" parent="menu_bar"]
+layout_mode = 2
+text = "Edit"
+
+[node name="play" type="MenuButton" parent="menu_bar"]
+layout_mode = 2
+text = "Play"
+
+[node name="help" type="MenuButton" parent="menu_bar"]
+layout_mode = 2
+text = "Help"
+
+[node name="help_stuff" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="help_screen" type="Label" parent="help_stuff"]
+visible = false
+layout_mode = 0
+offset_top = 145.0
+offset_right = 1280.0
+offset_bottom = 575.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("1_21k3o")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_w5mvt")
+text = "- [ RAVEN CHART EDITOR KEYBIND CHEAT SHEET ] -
+
+Press Space to Play/Pause the Music
+
+Hold CONTROL and Click on a Note to Select it
+Press Number Keys 1 through 4 to Place Notes on the Enemy Board
+Press Number Keys 5 through 8 to Place Notes on the Player Board
+
+Press Left/Right to Change the current Snapping value
+Press Z/X to Increase/Decrease Board Zoom
+Press F1 to Close this Prompt"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="help_label" type="Label" parent="help_stuff"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 686.0
+offset_right = 212.0
+offset_bottom = 713.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("1_21k3o")
+theme_override_font_sizes/font_size = 20
+text = "Press F1 for Help"
+uppercase = true

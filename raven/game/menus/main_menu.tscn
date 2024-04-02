@@ -1,0 +1,73 @@
+[gd_scene load_steps=10 format=3 uid="uid://cmg0y4v8slgw2"]
+
+[ext_resource type="Script" path="res://raven/game/menus/main_menu.gd" id="1_mokt2"]
+[ext_resource type="Texture2D" uid="uid://bli7f3ci8mlxa" path="res://assets/images/menus/menuBG.png" id="2_3e4k3"]
+[ext_resource type="Texture2D" uid="uid://bth4tolk5b84k" path="res://assets/images/menus/menuDesat.png" id="3_awav8"]
+[ext_resource type="SpriteFrames" uid="uid://bkuiknk4golyw" path="res://assets/images/menus/main_menu/play.res" id="4_fjbnc"]
+[ext_resource type="SpriteFrames" uid="uid://w180sq1lbj1p" path="res://assets/images/menus/main_menu/freeplay.res" id="4_qwuvt"]
+[ext_resource type="SpriteFrames" uid="uid://bob1sdn453x3b" path="res://assets/images/menus/main_menu/story.res" id="4_s1seb"]
+[ext_resource type="SpriteFrames" uid="uid://btpvkofwmc0xv" path="res://assets/images/menus/main_menu/donate.res" id="5_li2ux"]
+[ext_resource type="SpriteFrames" uid="uid://h01osq7vid6y" path="res://assets/images/menus/main_menu/options.res" id="6_yx8xw"]
+[ext_resource type="SpriteFrames" uid="uid://c2x4me3t1cet7" path="res://assets/images/menus/main_menu/kickstarter.res" id="7_8c5tk"]
+
+[node name="main_menu" type="Node2D"]
+script = ExtResource("1_mokt2")
+
+[node name="camera_2d" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+position_smoothing_enabled = true
+position_smoothing_speed = 3.0
+
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(640, 360)
+scale = Vector2(1.25, 1.25)
+texture = ExtResource("2_3e4k3")
+
+[node name="magenta" type="Sprite2D" parent="bg"]
+modulate = Color(0.992157, 0.443137, 0.607843, 0)
+texture = ExtResource("3_awav8")
+
+[node name="buttons" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 640.0
+offset_top = 180.0
+offset_right = 640.0
+offset_bottom = 180.0
+
+[node name="play" type="AnimatedSprite2D" parent="buttons"]
+position = Vector2(0, 64)
+sprite_frames = ExtResource("4_fjbnc")
+animation = &"basic"
+
+[node name="anti_flicker" type="Node" parent="buttons/play"]
+
+[node name="story" type="AnimatedSprite2D" parent="buttons/play/anti_flicker"]
+visible = false
+position = Vector2(370, 388)
+sprite_frames = ExtResource("4_s1seb")
+animation = &"basic"
+
+[node name="freeplay" type="AnimatedSprite2D" parent="buttons/play/anti_flicker"]
+visible = false
+position = Vector2(1016, 380)
+sprite_frames = ExtResource("4_qwuvt")
+animation = &"basic"
+
+[node name="donate" type="AnimatedSprite2D" parent="buttons"]
+position = Vector2(1, 208)
+sprite_frames = ExtResource("5_li2ux")
+animation = &"basic"
+
+[node name="anti_flicker" type="Node" parent="buttons/donate"]
+
+[node name="kickstarter" type="AnimatedSprite2D" parent="buttons/donate/anti_flicker"]
+visible = false
+position = Vector2(640, 393)
+sprite_frames = ExtResource("7_8c5tk")
+animation = &"basic"
+
+[node name="options" type="AnimatedSprite2D" parent="buttons"]
+position = Vector2(0, 344)
+sprite_frames = ExtResource("6_yx8xw")
+animation = &"basic"
