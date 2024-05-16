@@ -1,0 +1,7 @@
+# OS Files
+*.DS_Store
+*.desktop.ini
+# Godot 4+ specific ignores
+.godot/
+# Raven specific ignores
+out/

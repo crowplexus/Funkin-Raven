@@ -1,0 +1,5 @@
+[gd_resource type="StyleBoxFlat" format=3 uid="uid://dnnwbdxtnpc5a"]
+
+[resource]
+bg_color = Color(0, 0, 0, 0.490196)
+anti_aliasing = false

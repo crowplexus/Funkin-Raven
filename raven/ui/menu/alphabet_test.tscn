@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://ek7eluu5rgf0"]
+
+[ext_resource type="Script" path="res://raven/ui/menu/alphabet.gd" id="1_ivl2w"]
+
+[node name="alphabet_test" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_ivl2w")
+text = "aá
+
+eé
+
+ií
+
+oó
+
+uú"

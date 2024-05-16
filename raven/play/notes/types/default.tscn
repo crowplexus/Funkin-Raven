@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://ckwycf7ibbsbk"]
+
+[ext_resource type="Script" path="res://raven/play/notes/types/default.gd" id="1_x1tay"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_3gu0p"]
+load_path = "res://.godot/imported/icon.svg-20fca020ac30cefe6ecddd3973bc00b6.ctex"
+
+[node name="note" type="Node2D"]
+script = ExtResource("1_x1tay")
+
+[node name="arrow" type="Sprite2D" parent="."]
+texture = SubResource("CompressedTexture2D_3gu0p")

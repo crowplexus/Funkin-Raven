@@ -1,0 +1,19 @@
+name: Bug Report
+description: Report bugs present in the game here, keep in mind, you should test if said bugs exist in the BASE GAME and not a modded build.
+labels:
+  - bug
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Describe your bug here"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Add some steps to reproduce the bug (if any)"
+    validations:
+      required: false

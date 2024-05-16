@@ -1,0 +1,101 @@
+[gd_scene load_steps=7 format=3 uid="uid://cjbhwhf7ri7gr"]
+
+[ext_resource type="Script" path="res://raven/menu/freeplay.gd" id="1_du1fg"]
+[ext_resource type="Texture2D" uid="uid://bth4tolk5b84k" path="res://assets/menus/backgrounds/menuDesat.png" id="2_iptog"]
+[ext_resource type="Texture2D" uid="uid://c1j37aaglrh56" path="res://assets/placeholder/loading.png" id="4_l8275"]
+[ext_resource type="FontFile" uid="uid://gqsa7jwllqki" path="res://assets/fonts/vcr.ttf" id="6_ok3kd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l5cfn"]
+bg_color = Color(0, 0, 0, 0.352941)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.705882)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_detail = 1
+expand_margin_left = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 3.0
+anti_aliasing = false
+anti_aliasing_size = 0.01
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0emut"]
+resource_local_to_scene = true
+bg_color = Color(0, 0, 0, 0.352941)
+border_width_left = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0.705882)
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+corner_detail = 1
+expand_margin_left = 10.0
+expand_margin_right = 5.0
+anti_aliasing = false
+anti_aliasing_size = 0.01
+
+[node name="freeplay" type="Node2D"]
+script = ExtResource("1_du1fg")
+
+[node name="bg" type="Sprite2D" parent="."]
+modulate = Color(0.376471, 0.376471, 0.376471, 1)
+position = Vector2(642, 360)
+texture = ExtResource("2_iptog")
+
+[node name="score_text" type="Label" parent="."]
+offset_left = 967.0
+offset_top = 17.0
+offset_right = 1267.0
+offset_bottom = 80.0
+rotation = -0.000174984
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("6_ok3kd")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_l5cfn")
+text = "PERSONAL BEST: 0
+[CTRL to Show More]"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="diff_text" type="Label" parent="score_text"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.001
+offset_top = 3.0
+offset_right = 149.999
+offset_bottom = 53.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("6_ok3kd")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_0emut")
+text = "\"Song name\"
+< ??? >"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+uppercase = true
+
+[node name="song_group" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="icon_group" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="loading" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(638, 362)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("4_l8275")

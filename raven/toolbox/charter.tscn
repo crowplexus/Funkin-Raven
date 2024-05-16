@@ -1,0 +1,174 @@
+[gd_scene load_steps=14 format=3 uid="uid://croxu4i820j22"]
+
+[ext_resource type="Script" path="res://raven/toolbox/charter.gd" id="1_g7o86"]
+[ext_resource type="FontFile" uid="uid://gqsa7jwllqki" path="res://assets/fonts/vcr.ttf" id="2_ds14m"]
+[ext_resource type="Texture2D" uid="uid://cbc71xsj05wym" path="res://assets/menus/backgrounds/menuDark.png" id="2_o35as"]
+[ext_resource type="Shader" path="res://assets/shaders/charter_shader.gdshader" id="3_ajbgt"]
+[ext_resource type="PackedScene" uid="uid://d4bync11wbfgt" path="res://raven/play/notes/fields/4K.tscn" id="3_qddcn"]
+[ext_resource type="Script" path="res://raven/toolbox/charter_board.gd" id="4_vhnfm"]
+[ext_resource type="Script" path="res://raven/toolbox/charter_play.gd" id="5_0rswr"]
+[ext_resource type="Texture2D" uid="uid://bd0s6hg33e3t1" path="res://assets/ui/eventStrums.png" id="8_d3kq7"]
+[ext_resource type="PackedScene" uid="uid://cjkbd2yjl3hjc" path="res://raven/toolbox/charter_ui.tscn" id="8_ey0ur"]
+[ext_resource type="Script" path="res://raven/toolbox/charter_events.gd" id="8_y41pf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ufs0k"]
+shader = ExtResource("3_ajbgt")
+shader_parameter/capY = 102.0
+shader_parameter/spacing = 160.0
+shader_parameter/offset = null
+shader_parameter/lineThickness = 4.0
+shader_parameter/curLine = 0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kyihr"]
+bg_color = Color(0, 0, 0, 0.427451)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 5.0
+expand_margin_right = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t70l8"]
+bg_color = Color(1, 1, 1, 0.5)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 0.8)
+
+[node name="charter" type="Node2D"]
+process_mode = 3
+z_index = 5
+script = ExtResource("1_g7o86")
+
+[node name="chartbg" type="Sprite2D" parent="."]
+modulate = Color(0.65098, 0.760784, 1, 1)
+position = Vector2(640, 380)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("2_o35as")
+
+[node name="board" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_ufs0k")
+clip_contents = true
+offset_left = 354.0
+offset_right = 926.0
+offset_bottom = 720.0
+color = Color(0.27451, 0.403922, 0.501961, 0.752941)
+script = ExtResource("4_vhnfm")
+
+[node name="lanes" type="Node2D" parent="board"]
+script = ExtResource("5_0rswr")
+
+[node name="player" parent="board/lanes" instance=ExtResource("3_qddcn")]
+position = Vector2(328, 102)
+scale = Vector2(0.6, 0.6)
+debug = true
+
+[node name="opponent" parent="board/lanes" instance=ExtResource("3_qddcn")]
+position = Vector2(40, 102)
+scale = Vector2(0.6, 0.6)
+debug = true
+
+[node name="separator" type="ColorRect" parent="board"]
+layout_mode = 0
+offset_left = 283.0
+offset_right = 286.0
+offset_bottom = 720.0
+pivot_offset = Vector2(1.5, 0)
+color = Color(1, 1, 1, 0.709804)
+
+[node name="separator_glow" type="ColorRect" parent="board/separator"]
+layout_mode = 0
+offset_left = -2.0
+offset_right = 5.0
+offset_bottom = 720.0
+color = Color(1, 1, 1, 0.603922)
+
+[node name="ms_label" type="Label" parent="board"]
+layout_mode = 0
+offset_left = 572.0
+offset_top = 66.0
+offset_right = 724.0
+offset_bottom = 136.0
+theme_override_fonts/font = ExtResource("2_ds14m")
+theme_override_font_sizes/font_size = 24
+text = "69.69 ms (laugh) -srt
+so funny -crow"
+vertical_alignment = 1
+
+[node name="board2" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_ufs0k")
+offset_left = 255.0
+offset_right = 335.0
+offset_bottom = 720.0
+color = Color(0.576471, 0.65098, 0.709804, 0.752941)
+script = ExtResource("8_y41pf")
+
+[node name="strum" type="Sprite2D" parent="board2"]
+position = Vector2(40, 102)
+texture = ExtResource("8_d3kq7")
+hframes = 4
+
+[node name="name_label" type="Label" parent="board2"]
+layout_mode = 0
+offset_left = -225.0
+offset_top = 67.0
+offset_right = -1.0
+offset_bottom = 137.0
+theme_override_fonts/font = ExtResource("2_ds14m")
+theme_override_font_sizes/font_size = 15
+text = "Event Name
+Values: [Values Here]
+Time: [Time Here]"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="text" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="info" type="Label" parent="text"]
+layout_mode = 0
+offset_left = 980.0
+offset_top = 556.0
+offset_right = 1246.0
+offset_bottom = 616.0
+theme_override_fonts/font = ExtResource("2_ds14m")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_kyihr")
+text = "My Cool Song
+By: SomeGuy"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="conductor" type="Label" parent="text"]
+layout_mode = 0
+offset_left = 974.0
+offset_top = 619.0
+offset_right = 1251.0
+offset_bottom = 713.0
+theme_override_fonts/font = ExtResource("2_ds14m")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_kyihr")
+text = "Time:00:00 | Snap:16
+Step:0 | Beat:0
+Bar:0 | BPM:100"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="selection" type="Node2D" parent="."]
+position = Vector2(-99, 0)
+
+[node name="panel" type="Panel" parent="selection"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_t70l8")
+
+[node name="user_interface" parent="." instance=ExtResource("8_ey0ur")]

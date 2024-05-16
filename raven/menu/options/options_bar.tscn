@@ -1,0 +1,56 @@
+[gd_scene load_steps=9 format=3 uid="uid://b4ftuspltsfca"]
+
+[ext_resource type="Script" path="res://raven/menu/options/options_bar.gd" id="1_a1674"]
+[ext_resource type="Shader" uid="uid://bydeuaqrvtqfw" path="res://raven/menu/options/options_bar.tres" id="1_lofim"]
+[ext_resource type="FontFile" uid="uid://bkehbhruol15g" path="res://assets/fonts/funkin.ttf" id="2_t2arx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3afy0"]
+shader = ExtResource("1_lofim")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rp5bw"]
+bg_color = Color(0, 0, 0, 0.501961)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_chvr6"]
+content_margin_left = 8.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_5m270"]
+font = ExtResource("2_t2arx")
+font_size = 32
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_apg0s"]
+content_margin_right = 8.0
+
+[node name="options_bar" type="Panel"]
+material = SubResource("ShaderMaterial_3afy0")
+custom_minimum_size = Vector2(0, 45)
+offset_right = 1024.0
+offset_bottom = 45.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_rp5bw")
+script = ExtResource("1_a1674")
+choice_names = Array[String](["Up", "Down", "Split"])
+increment_rules = Array[float]([1.0, 5.0])
+
+[node name="name_label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_chvr6")
+text = "My Option"
+label_settings = SubResource("LabelSettings_5m270")
+vertical_alignment = 1
+
+[node name="option_status" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_apg0s")
+text = "< Up >"
+label_settings = SubResource("LabelSettings_5m270")
+horizontal_alignment = 2
+vertical_alignment = 1

@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://ngoujg3y1rk5"]
+
+[ext_resource type="Script" path="res://raven/menu/title_screen.gd" id="1_y41dt"]
+[ext_resource type="SpriteFrames" uid="uid://2g28p64a0d0" path="res://assets/menus/title/logo.res" id="2_ismjc"]
+[ext_resource type="Texture2D" uid="uid://0tcbark40yse" path="res://assets/placeholder/placeholder.png" id="2_m01jt"]
+[ext_resource type="Texture2D" uid="uid://4324cun0641n" path="res://assets/menus/title/icon.svg" id="3_4xjqo"]
+[ext_resource type="SpriteFrames" uid="uid://lrrfkoa5tbdt" path="res://assets/menus/title/enter.res" id="3_fcrdi"]
+[ext_resource type="Texture2D" uid="uid://cyp7ka7t4c00m" path="res://assets/menus/title/brazil.png" id="4_bpswk"]
+
+[node name="title_screen" type="Node2D"]
+script = ExtResource("1_y41dt")
+
+[node name="text_group" type="Node2D" parent="."]
+
+[node name="sprites" type="Node2D" parent="."]
+visible = false
+
+[node name="logo" type="AnimatedSprite2D" parent="sprites"]
+position = Vector2(331, 277)
+sprite_frames = ExtResource("2_ismjc")
+animation = &"logo bumpin"
+
+[node name="bf_gf" type="Sprite2D" parent="sprites"]
+position = Vector2(978, 288)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("2_m01jt")
+
+[node name="enter" type="AnimatedSprite2D" parent="sprites"]
+position = Vector2(640, 625)
+sprite_frames = ExtResource("3_fcrdi")
+animation = &"ENTER IDLE"
+
+[node name="godot_spr" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(480, 530)
+scale = Vector2(2, 2)
+texture = ExtResource("3_4xjqo")
+
+[node name="brazil" type="Sprite2D" parent="godot_spr"]
+position = Vector2(190, 1.5)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_bpswk")
+
+[node name="flash" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+offset_left = -64.0
+offset_top = -32.0
+offset_right = 1216.0
+offset_bottom = 688.0
+scale = Vector2(1.1, 1.1)
+metadata/_edit_lock_ = true

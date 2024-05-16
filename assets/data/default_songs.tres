@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="SongDatabase" load_steps=12 format=3 uid="uid://dqshlnxnayjnc"]
+
+[ext_resource type="Script" path="res://raven/resources/menu/song_database.gd" id="1_8u4yt"]
+[ext_resource type="Texture2D" uid="uid://ckd0avoc0uwd1" path="res://assets/chars/icons/gf.png" id="1_oebgi"]
+[ext_resource type="Script" path="res://raven/resources/menu/freeplay_song.gd" id="2_2wqtl"]
+[ext_resource type="Texture2D" uid="uid://c76q38hvdnvl3" path="res://assets/chars/icons/dad.png" id="3_qurrt"]
+[ext_resource type="Texture2D" uid="uid://8dp0b6wssbdi" path="res://assets/menus/story/labels/tutorial.png" id="4_icc8i"]
+[ext_resource type="Script" path="res://raven/resources/menu/song_pack.gd" id="5_h5ap8"]
+[ext_resource type="Texture2D" uid="uid://c30w2vcq5aykd" path="res://assets/menus/story/labels/week1.png" id="7_8klhb"]
+
+[sub_resource type="Resource" id="Resource_pchtw"]
+script = ExtResource("2_2wqtl")
+name = "Tutorial"
+folder = "tutorial"
+icon = ExtResource("1_oebgi")
+color = Color(0.572549, 0.443137, 0.992157, 1)
+difficulties = Array[String](["easy", "normal", "hard"])
+
+[sub_resource type="Resource" id="Resource_ij7ak"]
+script = ExtResource("5_h5ap8")
+songs = Array[ExtResource("2_2wqtl")]([SubResource("Resource_pchtw")])
+chars = Array[String](["", "gf", "bf"])
+difficulties = Array[String](["easy", "normal", "hard"])
+tagline = "How to Funk"
+image = ExtResource("4_icc8i")
+locked = false
+
+[sub_resource type="Resource" id="Resource_740og"]
+script = ExtResource("2_2wqtl")
+name = "Daddy's Girl"
+folder = "daddys-girl"
+icon = ExtResource("3_qurrt")
+color = Color(0.572549, 0.443137, 0.992157, 1)
+difficulties = Array[String](["easy", "normal", "hard"])
+
+[sub_resource type="Resource" id="Resource_uqsqa"]
+script = ExtResource("5_h5ap8")
+songs = Array[ExtResource("2_2wqtl")]([SubResource("Resource_740og")])
+chars = Array[String](["", "gf", "bf"])
+difficulties = Array[String](["easy", "normal", "hard"])
+tagline = "VS. Daddy Dearest"
+image = ExtResource("7_8klhb")
+locked = false
+
+[resource]
+script = ExtResource("1_8u4yt")
+song_packs = Array[ExtResource("5_h5ap8")]([SubResource("Resource_ij7ak"), SubResource("Resource_uqsqa")])
+freeplay_songs = Array[ExtResource("2_2wqtl")]([])
+show_packs_in_freeplay = true
+show_user_songs_in_freeplay = true

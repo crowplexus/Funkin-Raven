@@ -1,0 +1,75 @@
+[gd_scene load_steps=7 format=3 uid="uid://da3a1esmy0b7y"]
+
+[ext_resource type="Script" path="res://raven/menu/options/individual/keybinds_window.gd" id="1_gdwoi"]
+[ext_resource type="PackedScene" uid="uid://d4bync11wbfgt" path="res://raven/play/notes/fields/4K.tscn" id="2_s1jk3"]
+[ext_resource type="StyleBox" uid="uid://jqw8pbmirji" path="res://assets/data/themes/health_bar/left.tres" id="3_sghay"]
+[ext_resource type="StyleBox" uid="uid://i0xhgjf8poqg" path="res://assets/data/themes/health_bar/right.tres" id="4_hp1ok"]
+[ext_resource type="FontFile" uid="uid://gqsa7jwllqki" path="res://assets/fonts/vcr.ttf" id="5_duca2"]
+[ext_resource type="FontFile" uid="uid://bkehbhruol15g" path="res://assets/fonts/funkin.ttf" id="6_aovmq"]
+
+[node name="keybinds_window" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_gdwoi")
+
+[node name="field" parent="." instance=ExtResource("2_s1jk3")]
+position = Vector2(466, 602)
+debug = true
+
+[node name="keybinds" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="offset" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="bar" type="ProgressBar" parent="offset"]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 421.0
+offset_right = 760.0
+offset_bottom = 456.0
+theme_override_styles/background = ExtResource("3_sghay")
+theme_override_styles/fill = ExtResource("4_hp1ok")
+min_value = -1000.0
+max_value = 1000.0
+show_percentage = false
+
+[node name="label" type="Label" parent="offset/bar"]
+layout_mode = 0
+offset_left = -5.0
+offset_right = 241.0
+offset_bottom = 35.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("5_duca2")
+theme_override_font_sizes/font_size = 20
+text = "0.00ms"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="instructions" type="Label" parent="."]
+layout_mode = 0
+offset_top = 148.0
+offset_right = 1280.0
+offset_bottom = 295.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("6_aovmq")
+theme_override_font_sizes/font_size = 36
+text = "- Keybinds -
+Up/Down - Change Player
+Left/Right - Change Note
+"
+horizontal_alignment = 1
+vertical_alignment = 1

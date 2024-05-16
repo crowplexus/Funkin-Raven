@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bhecckurhof6p"
+
+[deps]
+
+files=["res://assets/data/locale/es-ES.es.translation"]
+
+source_file="res://assets/data/locale/es-ES.csv"
+dest_files=["res://assets/data/locale/es-ES.es.translation"]
+
+[params]
+
+compress=true
+delimiter=0

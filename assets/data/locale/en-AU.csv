@@ -1,0 +1,234 @@
+TAG,en
+
+        SETUP SCREEN
+
+setup_language,What language do you speak?
+setup_flashing_lights,Do you wish to disable\nflashing effects
+setup_scroll,Any specific scroll direction?
+
+setup_answer_yes,Yes
+setup_answer_no,No
+
+setup_answer_up,Up
+setup_answer_down,Down
+setup_answer_split_ud,"Split (UD)"
+setup_answer_split_du,"Split (DU)"
+
+        TITLESCREEN
+
+title_present,Present
+title_brazil,Made in Brazil
+title_godot,Made by Godot
+
+        FREEPLAY
+
+freeplay_top,TOP SCORE
+freeplay_ctrl,CTRL TO SHOW MORE
+
+        GAME INFO
+
+info_score,Score
+info_misses,Misses
+info_combo,Combo
+info_hits,Hits
+info_breaks,Combo Breaks
+info_clear_flag,Clear Flag
+info_accuracy,Accuracy
+info_grade,Grade
+
+info_ghost_taps,Ghost Taps
+info_total_misses,Total Misses
+
+eval_song_cleared,SONG CLEARED
+eval_leave,Press ENTER to go Back to the Menu
+eval_cheated,Score won't be saved due to cheat prevention
+
+        JUDGEMENTS AND FLAGS
+
+judgement_epic,Epic
+judgement_sick,Sick
+judgement_good,Good
+judgement_bad,Bad
+judgement_shit,Shit
+
+flag_epic_fc,EFC
+flag_sick_fc,SFC
+flag_good_fc,GFC
+flag_full_combo,FC
+
+flag_epic_sd,SDE
+flag_sick_sd,SDS
+flag_good_sd,SDG
+flag_combo_break_sd,SDCB
+
+flag_white,WF
+flag_black,BF
+flag_miss,MF
+
+flag_noplay,Noplay
+flag_clear,Clear
+
+        DIFFICULTIES
+
+easy,Easy
+normal,Normal
+hard,Hard
+
+        GAMEPLAY
+
+game_autoplay_text,AUTOPLAY
+
+        PAUSE MENU
+
+pause_resumebutton,Resume Song
+pause_restartbutton,Restart Song
+pause_changedifficulty,Change Difficulty
+pause_changeoptions,Change Options
+pause_exitbutton,Exit to Menu
+
+pause_songinfo,Song: %s
+pause_diffinfo,Difficulty: %s
+pause_timeinfo,Time: %s / %s
+pause_practice,Practice Mode: %s
+pause_deaths,Blueballed: %s
+pause_autoplay,Autoplay Mode: %s
+
+        OPTIONS (CATEGORIES)
+
+options_gameplay,Gameplay
+options_modifiers,Modifiers
+options_misc,Miscellaneous
+options_visuals,Visuals
+
+options_tip,"Press ENTER to select an option, ENTER again or ESCAPE to deelect it."
+
+        OPTIONS (SEPARATORS)
+
+notes_and_input_sep,Notes and Input
+statistics_sep,Scoring
+game_modes_sep,Game Modes
+
+display_sep,Display
+gameplay_sep,Gameplay
+accessibility_sep,Accessibility
+
+        OPTIONS (NAMES)
+
+setting_keybinds_and_offset,Keybinds and Offset
+setting_scroll_type,Scroll Type
+setting_scroll_speed_mode,Scroll Speed Mode
+setting_scroll_speed,Scroll Speed
+
+setting_judgement_preset,Judgement Preset
+setting_use_epics,Use Epics
+setting_accuracy_calculator,Accuracy Calculator
+setting_enable_combo_multiplier,Combo Multiplier
+setting_combo_mult_weight,Combo Multiplier Weight
+setting_autoplay_mode,Autoplay Mode
+setting_practice_mode,Practice Mode
+setting_miss_limiter,Miss LimitJ
+setting_enemy_play,Play as Enemy
+
+setting_framerate_mode,Framerate Mode
+setting_framerate,Framerate
+
+setting_note_skin,Note Skin
+setting_icon_bump_style,Icon Bump Style
+setting_health_bar_color_style,Health Bar Color Mode
+setting_note_splash_a,Note Splash Opacity
+
+setting_judgement_counter,Judgement Counter
+setting_judgement_placement,Judgement Placement
+setting_accuracy_display,Accuracy Display
+setting_hide_stage,Hide Stage
+setting_hide_chars,Hide Characters
+
+setting_language,Language
+setting_skip_transitions,Skip Transitions
+setting_flashing_lights,Flashing Lights
+setting_camera_zooms,Camera Zooms
+setting_hud_bumping,HUD Bumping
+setting_show_eval_screen,Evaluation Screen
+
+        OPTIONS (DESCRIPTIONS)
+
+desc_keybinds_and_offset,Self-explanatory.
+desc_scroll_type,Defines the direction of which the notes scroll to
+desc_scroll_speed_mode,Defines the notes scroll speed type.
+desc_scroll_speed,"Defines the notes scroll speed, dictated by the option above"
+desc_ghost_tapping,Prevents damage if you try to hit notes while you can't.
+
+desc_judgement_preset,Define a preset for timings, for your judgements.
+desc_epic_timing,Define the amount of time you have for hitting a Epic
+desc_sick_timing,Define the amount of time you have for hitting a Sick
+desc_good_timing,Define the amount of time you have for hitting a Good
+desc_bad_timing,Define the amount of time you have for hitting a Bad
+desc_shit_timing,Define the amount of time you have for hitting a Shit
+
+desc_use_epics,"A 5th rating, makes the game harder, go wild!"
+desc_accuracy_calculator,Choose the calculation mode of your accuracy.
+desc_enable_combo_multiplier,"Enables a combo multiplier, which multiplies your score gain."
+desc_combo_mult_weight,"Define the combo multiplier's requirement, where it begins to act up when your combo matches the set number."
+desc_autoplay_mode,"Enables autoplay mode during gameplay, which makes the game play itself, will invalidate your score."
+desc_practice_mode,"Enables practice mode, which disables dying and missing, will invalidate your score."
+desc_miss_limiter,"Implements a miss limit, when you reach the limit, you die."
+desc_will_restart,Will restart if you're already playing.
+desc_enemy_play,"Enables enemy play, need further explanation?"
+
+desc_framerate_mode,How should we limit your framerate
+desc_framerate,Guess this explains itself.
+
+desc_note_skin,Choose the Note Skin you like.
+desc_icon_bump_style,Defines how the icons should bump forward on beats
+desc_health_bar_color_style,How should the healthbar be colored?
+desc_note_splashes,Pops a firework effect whenever you get judgements that allow for it
+desc_note_splash_a,Defines the opacity of the Note Splashes.
+desc_judgement_counter,Places a judgement counter somewhere on-screen.
+desc_judgement_placement,Where should the judgements and combo be placed?
+desc_accuracy_display,How should the accuracy be displayed in the score text?
+desc_hide_stage,Hides the stage (normally behind characters) in-game.
+desc_hide_chars,Hides the characters in-game.
+
+desc_language,Defines the language in-game.
+desc_skip_transitions,Skips transitions during playthrough.
+desc_flashing_lights,"Enables flashing effects in-game, disable this if you're photosensitive."
+
+desc_camera_zooms,Makes the camera zoom back and forth.
+desc_hud_bumping,Makes the HUD bump back and forth.
+desc_show_eval_screen,Will show how you performend after gameplay.
+
+        OPTIONS (VALUES)
+
+value_on,ON
+value_off,OFF
+
+value_up,Up
+value_down,Down
+"value_split_(up,_down)","Split (Up, Down)"
+"value_split_(down,_up)","Split (Down, Up)"
+
+value_none,None
+value_constant,Constant
+value_multiplicative,Multiplicative
+
+value_judgement-based,Judgement-based
+value_timing-based_(wife_3),Timing-based (Wife3)
+
+value_capped,Capped
+value_unlimited,Unlimited
+
+value_default,Default
+value_base-like,Base-like
+value_common_(start_high),Common (Starts from Highest)
+value_itg-style_(low_to_high),ITG-Style (Lowest to Highest)
+
+value_by_character,By Character
+value_red_and_lime,Red and Lime
+value_red_and_player,Red and Player
+value_enemy_and_lime,Enemy and Lime
+
+value_left,Left
+value_right,Right
+
+value_in_stage,In Stage
+value_in_hud,In HUD

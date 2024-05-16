@@ -1,0 +1,57 @@
+[gd_scene load_steps=7 format=3 uid="uid://baxkwjn7lcfpw"]
+
+[ext_resource type="Script" path="res://raven/play/stages/stage.gd" id="1_l6mgc"]
+[ext_resource type="Texture2D" uid="uid://c1ekhnpgw20ul" path="res://assets/stages/level1/stageback.png" id="2_nfdv1"]
+[ext_resource type="Script" path="res://addons/parallax_node/parallax_node.gd" id="2_tnx60"]
+[ext_resource type="Texture2D" uid="uid://bngtqp1y6u23h" path="res://assets/stages/level1/stagecurtains.png" id="3_51too"]
+[ext_resource type="Texture2D" uid="uid://u1o5me02glnq" path="res://assets/stages/level1/stagefront.png" id="4_ouqfw"]
+[ext_resource type="Texture2D" uid="uid://cs8dlg54vc7sb" path="res://assets/stages/level1/stage_light.png" id="5_501lb"]
+
+[node name="stagelevel_1" type="Node2D"]
+position = Vector2(640, 0)
+script = ExtResource("1_l6mgc")
+camera_zoom = Vector2(0.9, 0.9)
+
+[node name="stageback" type="Sprite2D" parent="."]
+position = Vector2(-600, -200)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("2_nfdv1")
+
+[node name="1" type="Node2D" parent="."]
+position = Vector2(112, 32)
+script = ExtResource("2_tnx60")
+parallax_factor = Vector2(0.9, 0.9)
+ignore_camera_changes = false
+
+[node name="stagefront" type="Sprite2D" parent="1"]
+position = Vector2(-633, 600)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("4_ouqfw")
+
+[node name="2" type="Node2D" parent="."]
+position = Vector2(110, 120)
+script = ExtResource("2_tnx60")
+parallax_factor = Vector2(1.2, 1.2)
+
+[node name="light1" type="Sprite2D" parent="2"]
+position = Vector2(-1330, -590)
+texture = ExtResource("5_501lb")
+
+[node name="light2" type="Sprite2D" parent="2"]
+position = Vector2(-10, -580)
+texture = ExtResource("5_501lb")
+flip_h = true
+
+[node name="stagecurtains" type="Sprite2D" parent="2"]
+position = Vector2(-660, -300)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("3_51too")
+
+[node name="player1" type="Marker2D" parent="."]
+position = Vector2(-341, 236)
+
+[node name="player2" type="Marker2D" parent="."]
+position = Vector2(-909, 252)
+
+[node name="player3" type="Marker2D" parent="."]
+position = Vector2(-605, 204)

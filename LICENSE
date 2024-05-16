@@ -1,0 +1,64 @@
+[ CROWPLEXUS'S GAME LICENSE ]
+
+| COPYRIGHT INFORMATION |
+  PROJECT: Funkin' Raven
+  COPYRIGHT DATE: 2024
+  COPYRIGHT OWNER: crowplexus
+  REVISION: 1.06
+  REVISION NOTICES:
+      - (1.0)
+          "Initial revision."
+      - (1.05)
+          "Added a descriptive text block expressing *which* references
+          to the project name can't be removed, added the "REVISION NOTICES" field."
+      - (1.06)
+          "Fixed typos and punctuation, updated "1.05" revision notice, let people modify the README.md file."
+
+| PROJECT INFORMATION |
+  MAINTAINER: crowplexus
+
+| IMPORTANT NOTICE |
+
+THIS SOFTWARE IS LICENSED UNDER A CUSTOM LICENSE.
+
+THIS PROJECT IS NOT AFFILIATED WITH ITS ORIGINAL OWNERS
+AND WAS MADE AS A SMALL PASSION PROJECT.
+
+"FRIDAY NIGHT FUNKIN'" IS A SOFTWARE DISTRIBUTED BY THE FUNKIN' CREW INC.
+THE FRIDAY NIGHT FUNKIN' BRAND AND ASSETS USED IN THIS PROJECT ARE OWNED BY THE FUNKIN' CREW INC.
+
+
+This license may or may not change certain permissions depending on the revision number,
+that being said however, we may lay down said permission rules.
+
+
+| What you *can* do:
+  - Use the provided project source code as you wish.
+
+  - Use the assets of the project as long as they are still being used WITHIN the project.
+    - As explained down below, you cannot take assets and use somewhere else without permission,
+      *BUT* you *CAN* use the assets if you're running a fork,
+      or a modified version of this very project.
+
+
+| What you *can not* do:
+  - Change this license's "COPYRIGHT INFORMATION" block, or any fields within said block
+    - If you wish, you may add new blocks and fields expressing who this fork or mod belongs to.
+      As shown in the "PROJECT INFORMATION" block, which can be entirely removed if your fork or mod remains closed source.
+
+      But you may *NEVER* modify the listed fields OR the rest of the license.
+
+  - Remove any references to the project name that are present in the software.
+    - This means, don't remove the name of the project from anywhere within the software
+        Whether that be a Graphical Text Field showing the project's name,
+        An image, like a logo, or a character related to the project,
+        Or simply, whatever may be written in this source code's README.md file.
+
+        If you wish to modify the README.md file in any way, don't delete its contents, instead
+        add your own at the top of the file.
+
+  - Take out custom assets from this project and...
+    - Use in yours without proper permission.
+      - "Proper permission" meaning, ask the owner FOR permission.
+
+    - CLAIM it as yours without the owner's consent.

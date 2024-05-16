@@ -1,0 +1,234 @@
+TAG,es
+
+        SETUP SCREEN
+
+setup_language,¿Qué idioma hablas?
+setup_flashing_lights,¿Desea desactivar\nlos efectos flash?
+setup_scroll,¿Alguna dirección\nespecífica para las notas?
+
+setup_answer_yes,Sí
+setup_answer_no,No
+
+setup_answer_up,Arriba
+setup_answer_down,Abajo
+setup_answer_split_ud,"Dividido (AB)"
+setup_answer_split_du,"Dividido (BA)"
+
+        TITLESCREEN
+
+title_present,Presenta
+title_brazil,Hecho en Brasil
+title_godot,Hecho en Godot
+
+        FREEPLAY
+
+freeplay_top,MEJOR PUNTAJE
+freeplay_ctrl,CTRL PARA MOSTRAR MÁS
+
+        GAME INFO
+
+info_score,Puntos
+info_misses,Fallos
+info_combo,Combo
+info_hits,Aciertos
+info_breaks,Combos Perdidos
+info_clear_flag,Medalla
+info_accuracy,Precisión
+info_grade,Clasificación
+
+info_ghost_taps,Fallos al Pulsar
+info_total_misses,Fallos en Total
+
+eval_song_cleared,CANCIÓN TERMINADA
+eval_leave,enu,Pulse ENTER para volver al menú
+eval_cheated,Las puntuaciones no se salvarán porque hayas hecho trampas.
+
+        JUDGEMENTS AND FLAGS
+
+judgement_epic,Epic
+judgement_sick,Sick
+judgement_good,Good
+judgement_bad,Bad
+judgement_shit,Shit
+
+flag_epic_fc,EFC
+flag_sick_fc,SFC
+flag_good_fc,GFC
+flag_full_combo,FC
+
+flag_epic_sd,SDE
+flag_sick_sd,SDS
+flag_good_sd,SDG
+flag_combo_break_sd,SDCB
+
+flag_white,WF
+flag_black,BF
+flag_miss,MF
+
+flag_noplay,Noplay
+flag_clear,Clear
+
+        DIFFICULTIES
+
+easy,Fácil
+normal,Normal
+hard,Dificil
+
+        GAMEPLAY
+
+game_autoplay_text,AUTOMÁTICO
+
+        PAUSE MENU
+
+pause_resumebutton,Resumir Canción
+pause_restartbutton,Reiniciar Canción
+pause_changedifficulty,Cambiar Dificultad
+pause_changeoptions,Cambiar Ajustes
+pause_exitbutton,Salir al Menú
+
+pause_songinfo,Canción: %s
+pause_diffinfo,Dificultad: %s
+pause_timeinfo,Tempo: %s / %s
+pause_practice,Modo Práctica: %s
+pause_deaths,Huevos Hinchados: %s
+pause_autoplay,Modo Automático: %s
+
+        OPTIONS (CATEGORIES)
+
+options_gameplay,Jugabilidad
+options_modifiers,Modificadores
+options_misc,Misceláneos
+options_visuals,Visuales
+
+options_tip,"Pulse ENTER para seleccionar una opción, ENTER de nuevo o ESCAPE para deseleccionarla."
+
+        OPTIONS (SEPARATORS)
+
+notes_and_input_sep,Notas y Controle
+statistics_sep,Estadísticas
+game_modes_sep,Modos de Juego
+
+display_sep,Pantalla
+gameplay_sep,En Juego
+accessibility_sep,Accesibilidad
+
+        OPTIONS (NAMES)
+
+setting_keybinds_and_offset,Teclas y Atraso
+setting_scroll_type,Dirección de Notas
+setting_scroll_speed_mode,Tipo de Veloc. de las Notas
+setting_scroll_speed,Velocidad de las Notas
+
+setting_judgement_preset,Nivel de Clasificación
+setting_use_epics,Activar Epics
+setting_accuracy_calculator,Calculadora de Precisión
+setting_enable_combo_multiplier,Multiplicador de Combo
+setting_combo_mult_weight,Peso del Mult. Combo
+setting_autoplay_mode,Modo Automático
+setting_practice_mode,Modo Práctica
+setting_miss_limiter,Limite de Fallos
+setting_enemy_play,Jugar como Enemigo
+
+setting_framerate_mode,Modo de FDQ
+setting_framerate,Frecuencia de Cuadros
+
+setting_note_skin,Estilo de Notas
+setting_icon_bump_style,Danza de Iconos
+setting_health_bar_color_style,Colores de Health Bar
+setting_note_splash_a,Opacidad del Note Splash
+
+setting_judgement_counter,Contador de Clasificaciones
+setting_judgement_placement,Puesto de Clasificación
+setting_accuracy_display,Modo de Vis. de Precisión
+setting_hide_stage,Ocultar Fondo
+setting_hide_chars,Ocultar Personajes
+
+setting_language,Idioma
+setting_skip_transitions,Omitir Transiciones
+setting_flashing_lights,Luces Parpadeantes
+setting_camera_zooms,Zooms de Cámara
+setting_hud_bumping,HUD Bumping
+setting_show_eval_screen,Pantalla de Evaluación
+
+        OPTIONS (DESCRIPTIONS)
+
+desc_keybinds_and_offset,Se explica por sí solo.
+desc_scroll_type,Define la dirección que siguen las notas.
+desc_scroll_speed_mode,Define el tipo de velocidad de las notas.
+desc_scroll_speed,"Define la velocidad de las notas, dictada por la opción anterior."
+desc_ghost_tapping,Evita que recibas daño si intentas acertar notas cuando no puedes.
+
+desc_judgement_preset,Elige un preajuste para los tiempos de acierto, para sus clasificaciones.
+desc_epic_timing,Define el tiempo de que dispones para alcanzar un Epic
+desc_sick_timing,Define el tiempo de que dispones para alcanzar un Sick
+desc_good_timing,Define el tiempo de que dispones para alcanzar un Good
+desc_bad_timing,Define el tiempo de que dispones para alcanzar un Bad
+desc_shit_timing,Define el tiempo de que dispones para alcanzar un Shit
+
+desc_use_epics,Una quinta clasificación, hace el juego más difícil.
+desc_accuracy_calculator,Elija el modo de cálculo de su precisión.
+desc_enable_combo_multiplier,"Activa un multiplicador de combo, que multiplica tu gano de puntuación."
+desc_combo_mult_weight,"Define el requisito del mult. de combo, donde comienza a actuar cuando tu combo coincide con el número establecido."
+desc_autoplay_mode,"Activar el modo automático, que hace que el juego juegue solo, invalidará tu puntuación."
+desc_practice_mode,"Ativa o Modo Prática, que evita que você broxe, irá invalidar sua pontuação.","Activar el Modo Práctica, que impide que te maten, invalidará tu puntuación."
+desc_miss_limiter,"Impone un límite a los errores, cuando lo alcanzas, mueres."
+desc_will_restart,Se reiniciará si ya estás en el juego.
+desc_enemy_play,"Te permite jugar como el enemigo."
+
+desc_framerate_mode,¿Cómo debemos limitar su frecuencia de cuadros?
+desc_framerate,Creo que eso se explica por sí solo.
+
+desc_note_skin,Elige el Estilo de Notas que te guste.
+desc_icon_bump_style,Define cómo deben "bailar" los iconos durante los compases de la música.
+desc_health_bar_color_style,¿De qué colores debe ser la barra de vida?
+desc_note_splashes,Produce un efecto de fuegos artificiales en clasificaciones permitidas.
+desc_note_splash_a,Establece la opacidad de los Note Splashes.
+desc_judgement_counter,Coloca un contador de clasificaciones en algún lugar de la pantalla.
+desc_judgement_placement,¿Dónde se colocarán las clasificaciones y combo?
+desc_accuracy_display,Cómo debe mostrarse su Precisión en el texto de Puntuación?
+desc_hide_stage,Oculta el fondo (normalmente detrás de los personajes) en juego.
+desc_hide_chars,Oculta los personajes en juego.
+
+desc_language,Establece el idioma del juego.
+desc_skip_transitions,Omite las transiciones durante el juego.
+desc_flashing_lights,"Activa efectos parpadeantes durante el juego, desactívalo si eres fotosensible."
+
+desc_camera_zooms,MakHace que la cámara salte en la pantalla.
+desc_hud_bumping,Hace que el HUD salte en la pantalla.
+desc_show_eval_screen,Te mostrará cómo quedaste después de un partido.
+
+        OPTIONS (VALUES)
+
+value_on,SÍ
+value_off,NO
+
+value_up,Arriba
+value_down,Abajo
+"value_split_(up,_down)","Dividido (Arriba, Abajo)"
+"value_split_(down,_up)","Dividido (Abajo, Arriba)"
+
+value_none,Ninguno
+value_constant,Constante
+value_multiplicative,Multiplicativo
+
+value_judgement-based,Según la clasificación
+value_timing-based_(wife_3),Por Hit Time (Wife3)
+
+value_capped,Fijo
+value_unlimited,Sin límite
+
+value_default,Norma
+value_base-like,Clásico
+value_common_(start_high),Común (Empieza en Mayor)
+value_itg-style_(low_to_high),Estilo ITG (de menor a mayor)
+
+value_by_character,Por Personaje
+value_red_and_lime,Rojo y Limón
+value_red_and_player,Rojo y Color de J1
+value_enemy_and_lime,Color de J2 y Limón
+
+value_left,Izquierda
+value_right,Derecha
+
+value_in_stage,En el Fondo
+value_in_hud,En el HUD

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="UISkin" load_steps=13 format=3 uid="uid://d3agjttcetblo"]
+
+[ext_resource type="Texture2D" uid="uid://bhk7y6avhu68r" path="res://assets/ui/normal/combo.png" id="1_a3r3o"]
+[ext_resource type="Texture2D" uid="uid://dqian25k4b2cn" path="res://assets/ui/normal/numbers.png" id="1_cjdbm"]
+[ext_resource type="AudioStream" uid="uid://d05lck72fvlha" path="res://assets/audio/sfx/game/intro/3.ogg" id="2_e315x"]
+[ext_resource type="Texture2D" uid="uid://curbs70madytp" path="res://assets/ui/normal/prepare.png" id="2_ir5wm"]
+[ext_resource type="Texture2D" uid="uid://oyppupw78ido" path="res://assets/ui/normal/ready.png" id="3_dogdd"]
+[ext_resource type="AudioStream" uid="uid://cmlp86un54dyy" path="res://assets/audio/sfx/game/intro/2.ogg" id="3_jhfgr"]
+[ext_resource type="AudioStream" uid="uid://6ehpoq3ah22r" path="res://assets/audio/sfx/game/intro/1.ogg" id="4_4k0h5"]
+[ext_resource type="Texture2D" uid="uid://bewbh171wbd7y" path="res://assets/ui/normal/set.png" id="4_vf2lj"]
+[ext_resource type="AudioStream" uid="uid://bj87d1qw6ri3e" path="res://assets/audio/sfx/game/intro/go.ogg" id="5_jaiby"]
+[ext_resource type="Texture2D" uid="uid://ya6biqwdswon" path="res://assets/ui/normal/go.png" id="5_peueb"]
+[ext_resource type="Texture2D" uid="uid://bah2303mfh6te" path="res://assets/ui/normal/judgements.png" id="6_nclkr"]
+[ext_resource type="Script" path="res://raven/resources/play/ui_skin.gd" id="7_erojl"]
+
+[resource]
+resource_name = "normal"
+script = ExtResource("7_erojl")
+judgements = ExtResource("6_nclkr")
+numbers = ExtResource("1_cjdbm")
+combo = ExtResource("1_a3r3o")
+countdown_sprites = Array[Texture2D]([ExtResource("2_ir5wm"), ExtResource("3_dogdd"), ExtResource("4_vf2lj"), ExtResource("5_peueb")])
+countdown_sfx = Array[AudioStream]([ExtResource("2_e315x"), ExtResource("3_jhfgr"), ExtResource("4_4k0h5"), ExtResource("5_jaiby")])
+judgement_scale = Vector2(0.7, 0.7)
+numbers_scale = Vector2(0.6, 0.6)
+combo_scale = Vector2(0.6, 0.6)
+countdown_scale = Vector2(1, 1)
+judgement_filter = 2
+countdown_filter = 2
+numbers_filter = 2
+combo_filter = 2

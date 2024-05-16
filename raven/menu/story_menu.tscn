@@ -1,0 +1,109 @@
+[gd_scene load_steps=9 format=3 uid="uid://bc5ce5823tvkf"]
+
+[ext_resource type="Script" path="res://raven/menu/story_menu.gd" id="1_qmswm"]
+[ext_resource type="FontFile" uid="uid://gqsa7jwllqki" path="res://assets/fonts/vcr.ttf" id="2_0y7ad"]
+[ext_resource type="Texture2D" uid="uid://c30w2vcq5aykd" path="res://assets/menus/story/labels/week1.png" id="2_cyy3x"]
+[ext_resource type="Texture2D" uid="uid://0tcbark40yse" path="res://assets/placeholder/placeholder.png" id="3_4no2w"]
+[ext_resource type="Texture2D" uid="uid://f1oyyj43cvic" path="res://assets/menus/story/difficulties/normal.png" id="4_auknt"]
+[ext_resource type="SpriteFrames" uid="uid://cnbdy5ksy6w8b" path="res://assets/menus/story/arrows.xml" id="5_og7cr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y7wev"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_wrpd6"]
+font = ExtResource("2_0y7ad")
+font_size = 32
+font_color = Color(1, 1, 1, 0.701961)
+
+[node name="story_mode" type="Node2D"]
+script = ExtResource("1_qmswm")
+
+[node name="ui" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="black" type="ColorRect" parent="ui"]
+material = SubResource("ShaderMaterial_y7wev")
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 1)
+
+[node name="level_labels" type="Control" parent="ui"]
+clip_contents = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = 480.0
+offset_top = 440.0
+offset_right = 1002.0
+offset_bottom = 720.0
+
+[node name="yellow" type="ColorRect" parent="ui"]
+layout_mode = 0
+offset_top = 50.0
+offset_right = 1280.0
+offset_bottom = 440.0
+color = Color(0.976471, 0.811765, 0.317647, 1)
+
+[node name="labels" type="Control" parent="ui"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="level_label" type="Label" parent="ui/labels"]
+layout_mode = 0
+offset_left = 5.0
+offset_right = 1275.0
+offset_bottom = 50.0
+text = "WOW, TEXT, SO ORIGINAL, SO UNIQUE..."
+label_settings = SubResource("LabelSettings_wrpd6")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="tracklist" type="Label" parent="ui/labels"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 501.0
+offset_right = 355.0
+offset_bottom = 658.0
+theme_override_colors/font_color = Color(0.898039, 0.341176, 0.466667, 1)
+theme_override_constants/line_spacing = 0
+theme_override_fonts/font = ExtResource("2_0y7ad")
+theme_override_font_sizes/font_size = 32
+text = "- TRACKS -
+
+BRICKS AND LIFTS
+FRESH (B-SIDE)
+I DON'T KNOW MAN."
+horizontal_alignment = 1
+
+[node name="template_level" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(640, 524)
+texture = ExtResource("2_cyy3x")
+
+[node name="difficulty" type="Sprite2D" parent="."]
+position = Vector2(1085, 510)
+texture = ExtResource("4_auknt")
+
+[node name="arrow1" type="AnimatedSprite2D" parent="difficulty"]
+show_behind_parent = true
+position = Vector2(-190, -6)
+sprite_frames = ExtResource("5_og7cr")
+animation = &"leftIdle"
+
+[node name="arrow2" type="AnimatedSprite2D" parent="difficulty"]
+show_behind_parent = true
+position = Vector2(187, -4)
+sprite_frames = ExtResource("5_og7cr")
+animation = &"rightIdle"
+
+[node name="placeholder" type="Sprite2D" parent="."]
+position = Vector2(990, 136)
+scale = Vector2(0.8, 0.27602)
+texture = ExtResource("3_4no2w")

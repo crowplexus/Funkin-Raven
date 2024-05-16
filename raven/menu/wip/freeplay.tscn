@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://bgbiitiugabxw"]
+
+[ext_resource type="Script" path="res://raven/menu/wip/freeplay.gd" id="1_171j0"]
+[ext_resource type="Resource" uid="uid://dqshlnxnayjnc" path="res://assets/data/default_songs.tres" id="2_0mipr"]
+[ext_resource type="Texture2D" uid="uid://bth4tolk5b84k" path="res://assets/menus/backgrounds/menuDesat.png" id="2_8eitj"]
+
+[node name="freeplay" type="Node2D"]
+script = ExtResource("1_171j0")
+data_to_use = ExtResource("2_0mipr")
+
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(640, 360)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("2_8eitj")
+
+[node name="ui" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="songs" type="Control" parent="ui"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="icons" type="Control" parent="ui"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

@@ -1,0 +1,124 @@
+[gd_scene load_steps=11 format=3 uid="uid://ds62jxrq4wlma"]
+
+[ext_resource type="Script" path="res://raven/play/play_field.gd" id="1_0g8hy"]
+[ext_resource type="PackedScene" uid="uid://clgjas3micqc1" path="res://raven/play/notes/note_spawner.tscn" id="2_2f0qr"]
+[ext_resource type="PackedScene" uid="uid://d4bync11wbfgt" path="res://raven/play/notes/fields/4K.tscn" id="3_6l5l2"]
+[ext_resource type="PackedScene" uid="uid://c7p47hqmhvpmy" path="res://raven/ui/play/combo_group.tscn" id="3_6qbvh"]
+[ext_resource type="StyleBox" uid="uid://jqw8pbmirji" path="res://assets/data/themes/health_bar/left.tres" id="4_k6rbp"]
+[ext_resource type="StyleBox" uid="uid://i0xhgjf8poqg" path="res://assets/data/themes/health_bar/right.tres" id="5_47hj3"]
+[ext_resource type="Script" path="res://raven/ui/play/health_bar.gd" id="6_cnyna"]
+[ext_resource type="Texture2D" uid="uid://mjkgb8vn2te6" path="res://assets/chars/icons/face.png" id="7_pchnk"]
+[ext_resource type="Script" path="res://raven/ui/play/icons/arrow_funk.gd" id="8_nk80c"]
+[ext_resource type="FontFile" uid="uid://gqsa7jwllqki" path="res://assets/fonts/vcr.ttf" id="10_7ppk6"]
+
+[node name="playfield" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_0g8hy")
+
+[node name="note_spawner" parent="." instance=ExtResource("2_2f0qr")]
+
+[node name="notefields" type="Control" parent="."]
+anchors_preset = 0
+
+[node name="player1" parent="notefields" instance=ExtResource("3_6l5l2")]
+position = Vector2(800, 10)
+is_cpu = false
+
+[node name="player2" parent="notefields" instance=ExtResource("3_6l5l2")]
+position = Vector2(120, 10)
+
+[node name="health_bar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_left = 340.0
+offset_top = 60.0
+offset_right = 941.0
+offset_bottom = 80.0
+theme_override_styles/background = ExtResource("4_k6rbp")
+theme_override_styles/fill = ExtResource("5_47hj3")
+value = 50.0
+fill_mode = 1
+show_percentage = false
+script = ExtResource("6_cnyna")
+
+[node name="player1" type="Sprite2D" parent="health_bar"]
+position = Vector2(300, 0)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("7_pchnk")
+offset = Vector2(50, 0)
+flip_h = true
+hframes = 2
+script = ExtResource("8_nk80c")
+
+[node name="player2" type="Sprite2D" parent="health_bar"]
+position = Vector2(300, 1)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("7_pchnk")
+offset = Vector2(-50, 0)
+hframes = 2
+script = ExtResource("8_nk80c")
+
+[node name="score_text" type="Label" parent="."]
+layout_mode = 0
+offset_top = 685.0
+offset_right = 1280.0
+offset_bottom = 720.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("10_7ppk6")
+theme_override_font_sizes/font_size = 18
+text = "to answer that, we need to talk about parallel universes"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="time_text" type="Label" parent="."]
+layout_mode = 0
+offset_left = 308.0
+offset_top = 5.0
+offset_right = 972.0
+offset_bottom = 44.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("10_7ppk6")
+theme_override_font_sizes/font_size = 20
+text = "~ Song Name ~
+0:00 / ?:??"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="judgement_counter" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 280.0
+offset_right = 1275.0
+offset_bottom = 453.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/line_separation = 1
+theme_override_constants/outline_size = 8
+theme_override_fonts/normal_font = ExtResource("10_7ppk6")
+theme_override_font_sizes/normal_font_size = 20
+bbcode_enabled = true
+text = "Alvins: 0
+Simons: 0
+Theodores: 0
+Spongebobs: 0
+KFC Orders: 0
+
+Skill Issues: 0"
+
+[node name="autoplay_text" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 335.0
+offset_top = 397.0
+offset_right = 945.0
+offset_bottom = 426.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("10_7ppk6")
+theme_override_font_sizes/font_size = 32
+text = "AUTOPLAY"
+horizontal_alignment = 1
+
+[node name="combo_group" parent="." instance=ExtResource("3_6qbvh")]
+layout_mode = 1
