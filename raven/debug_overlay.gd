@@ -7,6 +7,7 @@ extends CanvasLayer
 
 var tray_twn: Tween
 var game_volume_muted: bool = false
+var show_debug_keys: bool = false
 var pram: int = 0
 
 func _ready() -> void:
@@ -42,34 +43,48 @@ func _unhandled_key_input(e: InputEvent) -> void:
 		show_tray()
 
 	if e.pressed: match e.keycode:
-		KEY_F1: texts.visible = not texts.visible
+		KEY_F1:
+			if texts.visible:
+				show_debug_keys = not show_debug_keys
+				update_stats()
+			if not show_debug_keys:
+				texts.visible = not texts.visible
 		KEY_F3:
 			OS.shell_show_in_file_manager(ProjectSettings.globalize_path("user://"))
 		KEY_F5:
-			SoundBoard.stop_tracks()
-			SoundBoard.stop_sounds()
-			if PlayField.play_manager != null:
-				PlayField.play_manager.reset()
-			await RenderingServer.frame_post_draw
-			get_tree().paused = false
-			Tools.refresh_scene(true)
+			if OS.is_debug_build():
+				SoundBoard.stop_tracks()
+				SoundBoard.stop_sounds()
+				if PlayField.play_manager != null:
+					PlayField.play_manager.reset()
+				await RenderingServer.frame_post_draw
+				get_tree().paused = false
+				Tools.refresh_scene(true)
 
 func update_stats() -> void:
+	if not texts.visible:
+		return
+
 	var fps: float = Engine.get_frames_per_second()
-	var fps_text: String = "%s FPS" %  fps
+	var counter_text: String = "Funkin' Raven [color=GRAY]v%s[/color]" % ProjectSettings.get_setting("application/config/version")
 	var a_bad: bool = Settings.framerate_mode != 1 and fps <= Engine.max_fps * 0.5
+
+	counter_text += "\n%s FPS" %  fps
 
 	if OS.is_debug_build():
 		var ram: = OS.get_static_memory_usage()
 		if ram > pram: pram = ram
-		fps_text += " | " + "%s / [color=GRAY]%s[/color]" % [
+		counter_text += " | " + "%s / [color=GRAY]%s[/color]" % [
 			String.humanize_size( int(ram)), String.humanize_size( int(pram) )]
 		a_bad = a_bad or ram <= (ram * 0.5)
 
-	fps_text += "\nF1 to Hide the FPS Counter\nF3 to Open User Folder\nF5 to Reset Scene"
-	fps_text += "\n[color=PINK]Funkin' Raven[/color] v%s" % ProjectSettings.get_setting("application/config/version")
+	if show_debug_keys:
+		counter_text += "\nF1 to Hide Keybinds, again for the FPS Counter"
+		counter_text += "\nF3 to Open User Folder"
+		if OS.is_debug_build():
+			counter_text += "\nF5 to Reset Scene"
 	fps_count.modulate = Color.RED if a_bad else Color.WHITE
-	fps_count.text = fps_text
+	fps_count.text = counter_text
 
 func show_tray() -> void:
 	master_vol.show()

@@ -27,7 +27,7 @@ mouse_filter = 2
 layout_mode = 0
 offset_left = 3.0
 offset_top = 4.0
-offset_right = 273.0
+offset_right = 407.0
 offset_bottom = 143.0
 mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -35,8 +35,10 @@ theme_override_constants/outline_size = 6
 theme_override_fonts/normal_font = ExtResource("2_0dejr")
 theme_override_font_sizes/normal_font_size = 14
 bbcode_enabled = true
-text = "FRAMERATE AND MEMORY GO HERE :3
-RAVEN VERSION"
+text = "Game Version
+Framerate Info
+-- DEBUG BUILD --
+RAM Info"
 autowrap_mode = 1
 
 [node name="volume_tray" type="ProgressBar" parent="."]
