@@ -237,7 +237,7 @@ func process_gameplay(delta: float) -> void:
 		else:
 			Conductor.time = music.get_playback_position() + AudioServer.get_time_since_last_mix()
 
-	if Conductor.time >= 0.0:
+	if Conductor.time >= 0.0 and OS.is_debug_build():
 		if Input.is_key_label_pressed(KEY_4):
 			stats.valid_score = false
 			Conductor.active = false
