@@ -50,7 +50,11 @@ Made as a base framework for other mods.
     - its a modding engine but you gotta know what you're doing
         - documentation will come later :D
 
-[maybemaru](https://twitter.com/maybemaru_) and [lufekaji](https://twitter.com/lufekaji)
+[maybemaru](https://twitter.com/maybemaru_)
+
+[lufekaji](https://twitter.com/lufekaji)
+
+and [suokarts3](https://twitter.com/suokarts3)
 
 - Made some of the engine's Custom Assets.
 
