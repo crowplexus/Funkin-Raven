@@ -26,10 +26,7 @@ Made as a base framework for other mods.
 > "Upon release, I wanna go back and simplify the backend"
 > "Help would be greatly appreciated as I'm not good with simplifying stuff lol"
 > @crowplexus
->
-> If you have any questions as to how certain stuff works, don't hesitate
-> To ask on our server https://discord.gg/vaB85VHVTW
-
+> 
 ---
 
 <h2 align="left">🧩 Features</h2>
