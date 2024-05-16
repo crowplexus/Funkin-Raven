@@ -13,7 +13,7 @@ config_version=5
 config/name="Friday Night Funkin' (Raven)"
 config/description="Fangame based off of the game Friday Night Funkin'
 intended to be a somewhat accurate recreation with sits own uniqueness and charm."
-config/version="1.0.0 BETA"
+config/version="1.0.0 ALPHA"
 run/main_scene="res://raven/menu/setup.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 boot_splash/bg_color=Color(0, 0, 0, 1)
