@@ -8,6 +8,12 @@ Powered by the [Godot Game Engine](https://godotengine.org)
 
 Made as a base framework for other mods.
 
+---
+
+THIS PROJECT IS IN A HEAVILY WORK IN PROGRESS STATE, AS SUCH, OLD APIS WILL BREAK AND COMPATIBILITY WITH OLSER VERSIONS WILL BE ALMOST NONEXISTANT, YOU HAVE BEEN WARNED!
+
+---
+
 > [!Important]
 > When modding the game, please keep in mind that you're going to need to
 > have some level of knowledge when it comes to using Godot
