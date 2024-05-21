@@ -20,7 +20,7 @@ func _ready() -> void:
 
 func display_hold_cover(is_fully_held: bool = false) -> void:
 	var cover: Sprite2D = hold_cover.duplicate()
-	cover.texture = load("res://assets/noteskins/fnf/hold_jugements_TEMPORARY.png")
+	cover.texture = load("res://assets/noteskins/fnf/hold_judgments_temp.png")
 	cover.hframes = 1
 	cover.vframes = 2
 	cover.frame = 0 if is_fully_held else 1

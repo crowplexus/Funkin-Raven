@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c4bbietmopj22"
-path="res://.godot/imported/hold_jugements_TEMPORARY.png-768192857c65b46c4aeba7b6a86f071d.ctex"
+path="res://.godot/imported/hold_judgments_temp.png-af16a7393b8f4da964109eeb56afc171.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/noteskins/fnf/hold_jugements_TEMPORARY.png"
-dest_files=["res://.godot/imported/hold_jugements_TEMPORARY.png-768192857c65b46c4aeba7b6a86f071d.ctex"]
+source_file="res://assets/noteskins/fnf/hold_judgments_temp.png"
+dest_files=["res://.godot/imported/hold_judgments_temp.png-af16a7393b8f4da964109eeb56afc171.ctex"]
 
 [params]
 
