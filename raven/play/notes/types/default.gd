@@ -1,7 +1,7 @@
 extends Note
 
 func assign_arrow() -> void:
-	if receptor != null and receptor.skin.propagate_call("assign_arrow", [self]) == 0:
+	if is_instance_valid(receptor) and receptor.skin.propagate_call("assign_arrow", [self]) == 0:
 		return
 
 	arrow = $"arrow"
@@ -18,7 +18,7 @@ func _ready() -> void:
 		queue_free()
 		return
 
-	do_follow = receptor != null
+	do_follow = is_instance_valid(receptor)
 	position = Vector2(INF, -INF)
 
 	if is_sustain or data.debug:
@@ -29,7 +29,7 @@ func make_sustain() -> void:
 	if not sustain_data.has("hold_texture") or not sustain_data.has("tail_texture"):
 		return
 
-	if receptor != null and receptor.skin.propagate_call("make_sustain", [self]) == 0:
+	if is_instance_valid(receptor) and receptor.skin.propagate_call("make_sustain", [self]) == 0:
 		return
 
 	clip_rect = Control.new()
@@ -70,5 +70,5 @@ func pop_splash() -> void:
 	if splash == null:
 		return
 
-	if receptor != null and receptor.skin.propagate_call("pop_splash", [self]) == 0:
+	if is_instance_valid(receptor) and receptor.skin.propagate_call("pop_splash", [self]) == 0:
 		return

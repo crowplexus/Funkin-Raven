@@ -79,7 +79,7 @@ func _ready() -> void:
 	Conductor.on_step.connect(on_step)
 
 	note_spawner.note_list = PlayField.chart.notes.duplicate()
-	note_spawner.vinculated_fields.append_array(fields.get_children())
+	note_spawner.linked_fields.append_array(fields.get_children())
 	note_spawner.enable_operate()
 
 	if Settings.autoplay or Settings.practice: stats.valid_score = false
@@ -382,7 +382,7 @@ func player_hit_behaviour(note: Note) -> void:
 		update_score_counter.call()
 		update_judgement_counter.call()
 
-	if note != null and not note.is_sustain and not note.prevent_disposal:
+	if is_instance_valid(note) and not note.is_sustain and not note.prevent_disposal:
 		note.queue_free()
 
 func player_miss_behaviour(note: Note, _dir: int) -> void:
@@ -394,9 +394,9 @@ func player_miss_behaviour(note: Note, _dir: int) -> void:
 
 	if not Settings.practice:
 		_score_mult_result = 0
-		if note != null: stats.misses += 1
+		if is_instance_valid(note): stats.misses += 1
 		if stats.combo >= 1: stats.breaks += 1
-		if note != null: stats.combo = 0
+		if is_instance_valid(note): stats.combo = 0
 		stats.score -= 25
 		health -= 2 + floori(_miss_health_inc)
 		_miss_health_inc += 0.15

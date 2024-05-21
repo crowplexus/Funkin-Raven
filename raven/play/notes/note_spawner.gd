@@ -5,7 +5,7 @@ const NOTE_TYPES: Dictionary = {
 }
 
 var note_list: Array[Chart.NoteData] = []
-var vinculated_fields: Array[NoteField] = []
+var linked_fields: Array[NoteField] = []
 var current_note: Chart.NoteData:
 	get: return note_list[note_index]
 var note_index: int = 0
@@ -25,7 +25,7 @@ func invoke_notes() -> void:
 		return
 
 	while note_index < note_list.size():
-		var notefield: = vinculated_fields[current_note.lane] as NoteField
+		var notefield: = linked_fields[current_note.lane] as NoteField
 		var receptor: = notefield.receptors.get_child(current_note.column) as Receptor
 
 		if notefield == null or receptor == null:

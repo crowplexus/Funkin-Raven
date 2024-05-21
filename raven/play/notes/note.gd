@@ -102,6 +102,8 @@ func _process(delta: float) -> void:
 
 		update_sustain_len(data.s_len)
 		if data.s_len < 0.0:
+			if is_instance_valid(receptor) and not receptor.parent.is_cpu:
+				receptor.display_hold_cover(true)
 			queue_free()
 			return
 

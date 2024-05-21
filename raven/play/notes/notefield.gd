@@ -13,7 +13,7 @@ var hit_behaviour: Callable = func(note: Note) -> void:
 		note.queue_free()
 
 var miss_behaviour: Callable = func(note: Note, _dir: int) -> void:
-	if note != null:
+	if is_instance_valid(note):
 		note.missed = true
 		note.on_miss()
 
@@ -70,6 +70,7 @@ func _handle_hold_behaviour(note: Note, _delta: float = 1.0) -> void:
 					note.position.y = note.receptor.position.y
 					note.arrow.visible = true
 					note.update_sustain_len(note.og_len)
+					note.receptor.display_hold_cover(false)
 					miss_behaviour.call(note, note.data.column)
 
 func _unhandled_key_input(e: InputEvent) -> void:

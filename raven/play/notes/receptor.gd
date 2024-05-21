@@ -9,6 +9,7 @@ enum ActionType {
 
 var reset_timer: float = 0.0
 var reset_callback: Callable = become_static
+var scroll_dir: int = 0
 var skin: NoteSkin
 
 var speed: float = -1.0:
@@ -43,13 +44,19 @@ func reset_scroll(scroll: int = -1, tween: bool = false, tween_duration: float =
 	var pos: int = 870
 
 	match scroll:
-		0: pos = 150 # Up
-		1: pos = 870 # Down
+		0:
+			pos = 150 # Up
+			scroll_dir = 1
+		1:
+			pos = 870 # Down
+			scroll_dir = -1
 		2: # Split (UD)
 			var down: bool = get_index() >= 2
+			scroll_dir = 1 if not down else -1
 			pos = 870 if down else 150
 		3: # Split (DU)
 			var down: bool = get_index() <  2
+			scroll_dir = 1 if not down else -1
 			pos = 870 if down else 150
 
 	if not tween: position.y = pos
@@ -71,6 +78,10 @@ func become_static(force: bool = true) -> void:
 	if skin.propagate_call("become_static", [force]) == 0:
 		return
 	do_action(ActionType.STATIC, force)
+
+func display_hold_cover(is_fully_held: bool = false) -> void:
+	if skin != null and skin.propagate_call("display_hold_cover", [is_fully_held]) == 0:
+		return
 
 func do_action(action: int, force: bool = false) -> void:
 	if skin != null and skin.propagate_call("do_action", [action, force]) == 0:

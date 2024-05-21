@@ -21,7 +21,7 @@ func _ready() -> void:
 	rect_tween.tween_property(rect, "color", Color(0, 0, 0, 0.8), 0.3) \
 	.set_delay(0.1)
 
-	if camera != null:
+	if is_instance_valid(camera):
 		camera_tween = create_tween().bind_node(camera)
 		camera_tween.tween_property(camera, "zoom", Vector2.ONE, 1.0) \
 		.set_delay(0.05)
@@ -41,7 +41,7 @@ func _ready() -> void:
 	)
 
 	await get_tree().create_timer(0.5).timeout
-	if camera != null:
+	if is_instance_valid(camera):
 		camera.position_smoothing_speed = 0.8
 		camera.process_mode = Node.PROCESS_MODE_ALWAYS
 		camera.position = character.position + character.camera_offset
@@ -56,7 +56,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 		PlayField.play_manager.reset()
 
 	if e.is_action("ui_accept"):
-		if camera != null:
+		if is_instance_valid(camera):
 			if camera_tween != null: camera_tween.kill()
 			camera_tween = create_tween().set_trans(Tween.TRANS_SINE).bind_node(camera)
 			camera_tween.tween_property(camera, "zoom", Vector2(1.05, 1.05), 0.35) \

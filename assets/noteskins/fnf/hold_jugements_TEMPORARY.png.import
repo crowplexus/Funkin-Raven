@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://yaukncdodats"
-path="res://.godot/imported/notes.png-a5db0cd4ab72e7372ece8fed29aab181.ctex"
+uid="uid://c4bbietmopj22"
+path="res://.godot/imported/hold_jugements_TEMPORARY.png-768192857c65b46c4aeba7b6a86f071d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/noteskins/fnf-pixel/notes.png"
-dest_files=["res://.godot/imported/notes.png-a5db0cd4ab72e7372ece8fed29aab181.ctex"]
+source_file="res://assets/noteskins/fnf/hold_jugements_TEMPORARY.png"
+dest_files=["res://.godot/imported/hold_jugements_TEMPORARY.png-768192857c65b46c4aeba7b6a86f071d.ctex"]
 
 [params]
 
