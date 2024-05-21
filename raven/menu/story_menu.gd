@@ -22,7 +22,7 @@ func _ready() -> void:
 	can_open_options = true
 	if not SoundBoard.bg_tracks.playing:
 		SoundBoard.play_track(load("res://assets/audio/bgm/freakyMenu.ogg"))
-	FPS.texts.position.y = $ui/yellow.position.y
+	FPS.perf_text.position.y = $ui/yellow.position.y
 
 	levels = song_data.song_packs
 	generate_level_list()
@@ -156,7 +156,7 @@ func update_tracklist() -> void:
 	tracklist_label.text = text
 
 func _exit_tree() -> void:
-	FPS.texts.position.y = 0
+	FPS.perf_text.position.y = 0
 
 func tween_or_do(item: CanvasItem, property: String, value: Variant, duration: float, tween: Tween) -> void:
 	if Settings.skip_transitions:

@@ -1,7 +1,6 @@
 extends CanvasLayer
 
-@onready var texts: Control = $"text_control"
-@onready var fps_count: RichTextLabel = $"text_control/fps_count"
+@onready var perf_text: RichTextLabel = $"performance_text"
 @onready var master_vol: ProgressBar = $"volume_tray"
 @onready var preloader: ResourcePreloader = $"preloader"
 
@@ -43,14 +42,14 @@ func _unhandled_key_input(e: InputEvent) -> void:
 		show_tray()
 
 	if e.pressed: match e.keycode:
-		KEY_F1:
-			if texts.visible:
+		KEY_F2:
+			OS.shell_show_in_file_manager(ProjectSettings.globalize_path("user://"))
+		KEY_F3:
+			if perf_text.visible:
 				show_debug_keys = not show_debug_keys
 				update_stats()
 			if not show_debug_keys:
-				texts.visible = not texts.visible
-		KEY_F3:
-			OS.shell_show_in_file_manager(ProjectSettings.globalize_path("user://"))
+				perf_text.visible = not perf_text.visible
 		KEY_F5:
 			if OS.is_debug_build():
 				SoundBoard.stop_tracks()
@@ -62,29 +61,30 @@ func _unhandled_key_input(e: InputEvent) -> void:
 				Tools.refresh_scene(true)
 
 func update_stats() -> void:
-	if not texts.visible:
+	if not perf_text.visible:
 		return
 
-	var fps: float = Engine.get_frames_per_second()
-	var counter_text: String = "Funkin' Raven [color=GRAY]v%s[/color]" % ProjectSettings.get_setting("application/config/version")
-	var a_bad: bool = Settings.framerate_mode != 1 and fps <= Engine.max_fps * 0.5
-
-	counter_text += "\n%s FPS" %  fps
+	perf_text.text = "[font_size=18]%s[/font_size] FPS" % Engine.get_frames_per_second()
 
 	if OS.is_debug_build():
 		var ram: = OS.get_static_memory_usage()
 		if ram > pram: pram = ram
-		counter_text += " | " + "%s / [color=GRAY]%s[/color]" % [
-			String.humanize_size( int(ram)), String.humanize_size( int(pram) )]
-		a_bad = a_bad or ram <= (ram * 0.5)
+		var a_bad: bool = ram <= ram * 0.5
+		var color_name: StringName = "GRAY"
+		if a_bad: color_name = "RED"
+		perf_text.text += "\n%s RAM\n[color=%s]%s[/color] PEAK" % [
+			String.humanize_size(int(ram)), color_name,
+			String.humanize_size(int(pram))]
 
 	if show_debug_keys:
-		counter_text += "\nF1 to Hide Keybinds, again for the FPS Counter"
-		counter_text += "\nF3 to Open User Folder"
+		perf_text.text += "\n\nF2 to Open User Folder"
+		perf_text.text += "\nF3 to Hide Keybinds, again for this entire text"
 		if OS.is_debug_build():
-			counter_text += "\nF5 to Reset Scene"
-	fps_count.modulate = Color.RED if a_bad else Color.WHITE
-	fps_count.text = counter_text
+			perf_text.text += "\nF5 to Reset Scene"
+		perf_text.text += "\n"
+
+	perf_text.text += "\n[font_size=12]Funkin' Raven [color=PINK]v%s[/color][/font_size]" % [
+		ProjectSettings.get_setting("application/config/version")]
 
 func show_tray() -> void:
 	master_vol.show()

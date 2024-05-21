@@ -15,30 +15,23 @@ script = ExtResource("1_mjslp")
 [node name="preloader" type="ResourcePreloader" parent="."]
 resources = [PackedStringArray("volume_appear", "volume_change"), [ExtResource("2_a7dem"), ExtResource("3_vcf0t")]]
 
-[node name="text_control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 5.0
-offset_right = 273.0
-offset_bottom = 59.0
-mouse_filter = 2
-
-[node name="fps_count" type="RichTextLabel" parent="text_control"]
-layout_mode = 0
-offset_left = 3.0
+[node name="performance_text" type="RichTextLabel" parent="."]
+offset_left = 8.0
 offset_top = 4.0
-offset_right = 407.0
-offset_bottom = 143.0
+offset_right = 263.0
+offset_bottom = 597.0
 mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/line_separation = -4
 theme_override_constants/outline_size = 6
 theme_override_fonts/normal_font = ExtResource("2_0dejr")
 theme_override_font_sizes/normal_font_size = 14
 bbcode_enabled = true
-text = "Game Version
-Framerate Info
--- DEBUG BUILD --
-RAM Info"
+text = "[font_size=14]Funkin' Raven [color=PINK]v1.0.0[/color][/font_size]
+[font_size=18]N/A[/font_size] FPS
+N/A RAM
+[color=GRAY]N/A PEAK[/color]
+"
 autowrap_mode = 1
 
 [node name="volume_tray" type="ProgressBar" parent="."]
