@@ -12,17 +12,18 @@ func _ready() -> void:
 	receptor.position = Vector2.ZERO
 	if receptor.get_index() != 0:
 		receptor.position.x += 10 + (160 * receptor.get_index())
+	receptor.animation_finished.connect(func():
+		if receptor.animation.ends_with("confirm"):
+			receptor.become_ghost(true)
+	)
 
 	hold_cover = Sprite2D.new()
-	hold_cover.texture = load("res://assets/ui/normal/judgements.png")
+	hold_cover.texture = load("res://assets/noteskins/fnf/hold_judgments_temp.png")
 	hold_cover.hframes = 1
-	hold_cover.vframes = 5
+	hold_cover.vframes = 2
 
 func display_hold_cover(is_fully_held: bool = false) -> void:
 	var cover: Sprite2D = hold_cover.duplicate()
-	cover.texture = load("res://assets/noteskins/fnf/hold_judgments_temp.png")
-	cover.hframes = 1
-	cover.vframes = 2
 	cover.frame = 0 if is_fully_held else 1
 	cover.scale = Vector2(1.5, 1.5)
 	receptor.add_child(cover)
@@ -30,8 +31,9 @@ func display_hold_cover(is_fully_held: bool = false) -> void:
 	var twn: Tween = Conductor.get_tree().create_tween().bind_node(cover)
 	twn.set_parallel(true)
 
-	twn.tween_property(cover, "scale", Vector2(2.0, 2.0	), 0.1)
-	twn.tween_property(cover, "position:y", cover.position.y + 150 * receptor.scroll_dir, 0.1) \
+	twn.tween_property(cover, "scale", Vector2(2.0, 2.0	), 0.2) \
+	.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_ELASTIC)
+	twn.tween_property(cover, "position:y", cover.position.y + 150 * receptor.scroll_dir, 0.15) \
 	.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_BOUNCE)
 	twn.tween_property(cover, "modulate:a", 0.0, 0.5) \
 	.set_ease(Tween.EASE_OUT).set_delay(0.1)
@@ -76,9 +78,9 @@ func do_action(action: int, force: bool = false) -> int:
 
 	match action:
 		Receptor.ActionType.GHOST:
-			action_anim = direction_str + " press"
+			action_anim = "%s press"	% direction_str
 		Receptor.ActionType.GLOW:
-			action_anim = direction_str + " confirm"
+			action_anim = "%s confirm"	% direction_str
 
 	if force or _last_action != action:
 		receptor.frame = 0
