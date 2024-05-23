@@ -13,7 +13,7 @@ var cool_shader: ShaderMaterial = ShaderMaterial.new()
 func _ready() -> void:
 	colour_mode = SkinColour.CUSTOM
 	cool_shader.shader = load("res://assets/shaders/colormask_red.gdshader")
-	receptor.sprite_frames = load("res://assets/noteskins/raven/notes.xml")
+	receptor.sprite_frames = load("res://assets/noteskins/raven/notes.res")
 
 	receptor.rotation_degrees = angles[receptor.get_index()]
 	receptor.frame = 0
@@ -27,7 +27,7 @@ func _ready() -> void:
 
 
 func assign_arrow(note: Note) -> int:
-	var frames: = load("res://assets/noteskins/raven/notes.xml") as SpriteFrames
+	var frames: = load("res://assets/noteskins/raven/notes.res") as SpriteFrames
 	note.get_node("arrow").texture = frames.get_frame_texture("note", 0)
 	note.arrow = note.get_node("arrow")
 	note.sustain_data = {
