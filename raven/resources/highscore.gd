@@ -16,11 +16,11 @@ static var timings: Array[float] = []
 static func _reset_judgements() -> void:
 	var sick_accuracy: float = 95.0 if Settings.use_epics else 100.0
 	Highscore.judgements = [
-		{"name": "epic", "accuracy": 100.0,			"color": Color.ORANGE,			"splash": true},
-		{"name": "sick", "accuracy": sick_accuracy, "color": Color.CYAN,			"splash": true},
-		{"name": "good", "accuracy": 85.0,			"color": Color.LIME,			"splash": false},
-		{"name": "bad",  "accuracy": 50.0,			"color": Color.CRIMSON,			"splash": false},
-		{"name": "shit", "accuracy":  0.0,			"color": Color.WEB_GRAY,		"splash": false},
+		{"name": "epic", "accuracy": 100.0,			"color": Color("ff89c9"),			"splash": true},
+		{"name": "sick", "accuracy": sick_accuracy, "color": Color("626592"),			"splash": true},
+		{"name": "good", "accuracy": 85.0,			"color": Color("77d0c1"),			"splash": false},
+		{"name": "bad",  "accuracy": 50.0,			"color": Color("f7433f"),			"splash": false},
+		{"name": "shit", "accuracy":  0.0,			"color": Color("e5af32"),			"splash": false},
 	]
 
 	if Settings.timings.size() < Highscore.judgements.size():
