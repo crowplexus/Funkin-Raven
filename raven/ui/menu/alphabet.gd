@@ -1,14 +1,28 @@
 @tool class_name Alphabet extends Control
 
-enum LetterType { NORMAL, BOLD }
-
-@export_category("Alphabet")
-
 const X_PER_SPACE: float = 40
 const Y_PER_ROW: float = 80
 
-@export var texture: SpriteFrames = preload("res://assets/fonts/bitmap/alphabet.xml")
-@export var type: LetterType = LetterType.BOLD
+@export_category("Text")
+
+@export var texture: SpriteFrames = preload("res://assets/fonts/bitmap/alphabet.res")
+@export var outline_size: int = 2
+@export var outline_colour: Color = Color.BLACK:
+	set(v):
+		outline_colour = v
+		if outline_size == 0: return
+		for line: Control in get_children():
+			for glyph: CanvasItem in line.get_children():
+				if glyph.name.begins_with("outline_"):
+					glyph.modulate = v
+
+@export_enum("Don't:0", "Uppercase:1", "Lowercase:2")
+var force_casing: int = 0:
+	set(v):
+		force_casing = v
+		var new_txt: String = get_forced_casing(text)
+		for i: Node in get_children(): i.queue_free()
+		if not text.is_empty(): _generate_txt(new_txt)
 
 @export_multiline var text: String:
 	set(v):
@@ -73,14 +87,30 @@ func _generate_txt(new_text: String) -> void:
 			letter_pos.x += X_PER_SPACE
 			continue
 
-		var letter: AlphabetGlyph = AlphabetGlyph.new(texture, _char, type)
+		if force_casing != 0:
+			_char = get_forced_casing(_char, force_casing)
+
+		var letter: AlphabetGlyph = AlphabetGlyph.new(texture, _char)
 		letter.position = letter_pos * scale
 		letter.offset.y -= (line.size.y - 60.0) * 0.5
 		letter.row = rows
 		if letter.visible:
 			line.size += letter.texture_size
 			letter_pos.x += letter.texture_size.x
+		#letter.offset.y += line.size.y - letter.texture_size.y
 		line.add_child(letter)
+		letter.name = "letter_%s_%s" % [_char, letter.get_index()]
+
+		if outline_size > 0:
+			var outline: AlphabetGlyph = letter.copy()
+			outline.name = "outline_%s_%s" % [_char, letter.get_index()]
+			outline.modulate = outline_colour
+			#outline.scale *= 1 + outline_size * 2 / outline.texture.size.x
+			outline.scale *= 0.5 * outline_size
+			outline.position.y -= 5
+			outline.position.x -= 3
+			outline.z_index = letter.z_index -1
+			line.add_child(outline)
 	add_child(line)
 
 	end_position = letter_pos
@@ -94,3 +124,11 @@ func update_alignment(x: int = -1) -> void:
 			1: i.position.x += ((size.x - i.size.x) * 0.5)
 			2: i.position.x += (size.x - i.size.x)
 		i.position.x *= i.scale.x * scale.x
+
+func get_forced_casing(text: String, casing_id: int = 0) -> String:
+	var forced: String = text
+	match casing_id:
+		1: forced = text.to_upper()
+		2: forced = text.to_lower()
+	print_debug("getting casing, ", forced)
+	return forced

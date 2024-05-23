@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://c30w2vcq5aykd" path="res://assets/menus/story/labels/week1.png" id="2_cyy3x"]
 [ext_resource type="Texture2D" uid="uid://0tcbark40yse" path="res://assets/placeholder/placeholder.png" id="3_4no2w"]
 [ext_resource type="Texture2D" uid="uid://f1oyyj43cvic" path="res://assets/menus/story/difficulties/normal.png" id="4_auknt"]
-[ext_resource type="SpriteFrames" uid="uid://cnbdy5ksy6w8b" path="res://assets/menus/story/arrows.xml" id="5_og7cr"]
+[ext_resource type="SpriteFrames" path="res://assets/menus/story/arrows.res" id="5_og7cr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_y7wev"]
 

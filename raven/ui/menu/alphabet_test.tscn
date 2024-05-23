@@ -6,12 +6,5 @@
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_ivl2w")
-text = "aá
-
-eé
-
-ií
-
-oó
-
-uú"
+outline_colour = Color(1, 1, 0, 1)
+text = "test"

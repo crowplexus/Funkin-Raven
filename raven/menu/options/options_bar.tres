@@ -1,14 +1,8 @@
-[gd_resource type="VisualShader" load_steps=11 format=3 uid="uid://bydeuaqrvtqfw"]
-
-[ext_resource type="Script" path="res://addons/shaderV/tools/sinTime.gd" id="1_2t8qo"]
-[ext_resource type="Script" path="res://addons/shaderV/tools/TimeScaled.gd" id="1_qcnes"]
-[ext_resource type="Script" path="res://addons/shaderV/uv/rotate.gd" id="2_sfcti"]
-[ext_resource type="Script" path="res://addons/shaderV/rgba/noise/perlin2d.gd" id="3_oo1wx"]
+[gd_resource type="VisualShader" load_steps=7 format=3 uid="uid://bydeuaqrvtqfw"]
 
 [sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_th3nb"]
 default_input_values = [0, 0.1]
 initialized = true
-script = ExtResource("1_qcnes")
 
 [sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_jebcs"]
 output_port_for_preview = 0
@@ -17,17 +11,14 @@ input_name = "screen_uv"
 [sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_eoffl"]
 default_input_values = [0, 0.25, 1, 2.0]
 initialized = true
-script = ExtResource("1_2t8qo")
 
 [sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_y7idr"]
 default_input_values = [1, 0.0, 2, Vector3(0.5, 0.5, 0)]
 initialized = true
-script = ExtResource("2_sfcti")
 
 [sub_resource type="VisualShaderNodeCustom" id="VisualShaderNodeCustom_ajcb6"]
 default_input_values = [1, Vector3(0, 0, 0), 2, 5.0, 3, Vector3(0, 0, 0)]
 initialized = true
-script = ExtResource("3_oo1wx")
 
 [sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_rt0n5"]
 
@@ -37,61 +28,6 @@ render_mode blend_mix;
 
 
 
-// RotateUV
-#include \"res://addons/shaderV/uv/rotate.gdshaderinc\"
-// PerlinNoise2D
-#include \"res://addons/shaderV/rgba/noise/perlin2d.gdshaderinc\"
-
-void fragment() {
-// Input:3
-	vec2 n_out3p0 = SCREEN_UV;
-
-
-	float n_out6p0;
-// SinTIME:6
-	float n_in6p0 = 0.25000;
-	float n_in6p1 = 2.00000;
-	{
-		n_out6p0 = n_in6p1 * sin(n_in6p0 * TIME);
-	}
-
-
-	vec3 n_out7p0;
-// RotateUV:7
-	vec3 n_in7p2 = vec3(0.50000, 0.50000, 0.00000);
-	{
-		n_out7p0 = _rotateUV(vec3(n_out3p0, 0.0), n_in7p2.xy, n_out6p0);
-	}
-
-
-	float n_out10p0;
-// ScaledTIME:10
-	float n_in10p0 = 0.10000;
-	{
-		n_out10p0 = n_in10p0 * TIME;
-	}
-
-
-// VectorCompose:9
-	float n_in9p1 = 0.00000;
-	float n_in9p2 = 0.00000;
-	vec3 n_out9p0 = vec3(n_out10p0, n_in9p1, n_in9p2);
-
-
-	float n_out8p0;
-// PerlinNoise2D:8
-	float n_in8p2 = 5.00000;
-	vec3 n_in8p3 = vec3(0.00000, 0.00000, 0.00000);
-	{
-		n_out8p0 = _perlin2dNoiseFunc((n_out7p0.xy+n_out9p0.xy)*n_in8p2, n_in8p3.xy);
-	}
-
-
-// Output:0
-	COLOR.a = n_out8p0;
-
-
-}
 "
 mode = 1
 flags/light_only = false
@@ -108,4 +44,3 @@ nodes/fragment/9/node = SubResource("VisualShaderNodeVectorCompose_rt0n5")
 nodes/fragment/9/position = Vector2(140, 380)
 nodes/fragment/10/node = SubResource("VisualShaderNodeCustom_th3nb")
 nodes/fragment/10/position = Vector2(-80, 360)
-nodes/fragment/connections = PackedInt32Array(6, 0, 7, 1, 7, 0, 8, 0, 9, 0, 8, 1, 10, 0, 9, 0, 3, 0, 7, 0, 8, 0, 0, 1)

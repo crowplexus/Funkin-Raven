@@ -7,12 +7,12 @@ var colors: PackedColorArray = [
 	Color("#12FA05"),
 	Color("#F9393F"),
 ]
-var color_shader: ShaderMaterial = ShaderMaterial.new()
+var cool_shader: ShaderMaterial = ShaderMaterial.new()
 
-# setup the fnf noteskin
+
 func _ready() -> void:
-	color_mode = SkinColor.CUSTOM
-	color_shader.shader = load("res://assets/shaders/colormask_red.gdshader")
+	colour_mode = SkinColour.CUSTOM
+	cool_shader.shader = load("res://assets/shaders/colormask_red.gdshader")
 	receptor.sprite_frames = load("res://assets/noteskins/raven/notes.xml")
 
 	receptor.rotation_degrees = angles[receptor.get_index()]
@@ -24,6 +24,7 @@ func _ready() -> void:
 		receptor.position.x += (160 * receptor.get_index())
 	else:
 		receptor.position.y += 5
+
 
 func assign_arrow(note: Note) -> int:
 	var frames: = load("res://assets/noteskins/raven/notes.xml") as SpriteFrames
@@ -38,11 +39,12 @@ func assign_arrow(note: Note) -> int:
 	note.splash = AnimatedSprite2D.new()
 	note.splash.sprite_frames = load("res://assets/noteskins/raven/splashes.res")
 
-	note.material = color_shader
+	note.material = cool_shader
 	note.material.set_shader_parameter("new_color", colors[receptor.get_index()])
 	note.arrow.use_parent_material = true
 
 	return 0 # stop original func
+
 
 func pop_splash(note: Note) -> int:
 	if note.splash == null:
@@ -59,9 +61,11 @@ func pop_splash(note: Note) -> int:
 	firework.animation_finished.connect(firework.queue_free)
 	return 0
 
+
 func enemy_hit(note: Note) -> void:
 	note.receptor.glow_up(note.arrow.visible or note.receptor.frame_progress > 0.05)
 	note.receptor.reset_timer = 0.1 + note.data.s_len
+
 
 func do_action(action: int, _force: bool = false) -> int:
 	match action:

@@ -6,7 +6,7 @@ var hold_cover: Sprite2D
 
 # setup the fnf noteskin
 func _ready() -> void:
-	receptor.sprite_frames = load("res://assets/noteskins/fnf/notes.xml")
+	receptor.sprite_frames = load("res://assets/noteskins/fnf/notes.res")
 	receptor.become_static(true)
 	# correct offset
 	receptor.position = Vector2.ZERO
@@ -41,7 +41,7 @@ func display_hold_cover(is_fully_held: bool = false) -> void:
 	twn.finished.connect(cover.queue_free)
 
 func assign_arrow(note: Note) -> int:
-	var frames: = load("res://assets/noteskins/fnf/notes.xml") as SpriteFrames
+	var frames: = load("res://assets/noteskins/fnf/notes.res") as SpriteFrames
 	var color: StringName = Chart.NoteData.color_to_str(note.data.column)
 	note.get_node("arrow").texture = frames.get_frame_texture(color, 0)
 	note.arrow = note.get_node("arrow")
@@ -50,7 +50,7 @@ func assign_arrow(note: Note) -> int:
 		"tail_texture": frames.get_frame_texture(color + " hold end", 0),
 	}
 	note.splash = AnimatedSprite2D.new()
-	note.splash.sprite_frames = load("res://assets/noteskins/fnf/splashes.xml")
+	note.splash.sprite_frames = load("res://assets/noteskins/fnf/splashes.res")
 	return 0 # stop original func
 
 func pop_splash(note: Note) -> int:

@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://b27gacu6p3akf"]
 
-[ext_resource type="SpriteFrames" uid="uid://caacy7kvh6ti" path="res://assets/chars/week1/DADDY_DEAREST.xml" id="1_p0ts4"]
+[ext_resource type="SpriteFrames" path="res://assets/chars/week1/DADDY_DEAREST.res" id="1_p0ts4"]
 [ext_resource type="Script" path="res://raven/play/actors/character.gd" id="2_vr6n5"]
 [ext_resource type="Texture2D" uid="uid://c76q38hvdnvl3" path="res://assets/chars/icons/dad.png" id="3_pfcs2"]
 

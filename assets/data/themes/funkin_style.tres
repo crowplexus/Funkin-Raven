@@ -1,6 +1,6 @@
 [gd_resource type="Theme" load_steps=11 format=3 uid="uid://bh3fs6l4n44y4"]
 
-[ext_resource type="FontFile" uid="uid://blgtnxif1eksg" path="res://assets/fonts/funkin.ttf" id="1_nu4mv"]
+[ext_resource type="FontFile" uid="uid://bkehbhruol15g" path="res://assets/fonts/funkin.ttf" id="1_nu4mv"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6pmec"]
 

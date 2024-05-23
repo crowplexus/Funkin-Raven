@@ -1,12 +1,11 @@
 class_name AlphabetGlyph extends AnimatedSprite2D
 
-const LETTERS: String = "qwertyuiopasdfghjklçzxcvbnm"
-const SYMBOLS: String = "(){}[]\"!@#$%'*+-=_.,:;<>?^&\\/|~"
-const NUMBERS: String = "1234567890"
+const LETTERS: String = "qwertyuiopasdfghjklçzxcvbnmáàâãéèêíìîóòôúùûçñ"
+const SYMBOLS: String = "1234567890(){}[]\"!@#$%'*+-=_.,:;<>?^&\\/|~"
 
 var letter: StringName = ""
 var _raw_letter: StringName = ""
-var type: Alphabet.LetterType = Alphabet.LetterType.BOLD
+var _raw_texture: SpriteFrames
 var row: int = 0
 
 var texture_size: Vector2:
@@ -17,16 +16,17 @@ var texture_size: Vector2:
 			ret = Vector2(frame_tex.get_width(), frame_tex.get_height())
 		return ret
 
-func _init(new_tex: SpriteFrames, let: StringName, ctype: Alphabet.LetterType) -> void:
+func _init(new_tex: SpriteFrames, let: StringName) -> void:
 	let = let.dedent()
 	if let.is_empty():
 		return
 
-	self.centered = false
 	var actual_letter: StringName = _format_animation(let)
+
+	self.centered = false
 	self.letter = actual_letter
+	self._raw_texture = new_tex
 	self._raw_letter = let
-	self.type = ctype
 
 	if new_tex != null:
 		var frame_tex: Texture2D = new_tex.get_frame_texture(actual_letter, 0)
@@ -38,36 +38,43 @@ func _ready() -> void:
 	offset = _get_anim_offset(_raw_letter)
 	play(self.letter)
 
+func copy() -> AlphabetGlyph:
+	var copy: AlphabetGlyph = AlphabetGlyph.new(_raw_texture, _raw_letter)
+	copy.position = self.position
+	copy.offset = self.offset
+	copy.row = self.row
+	return copy
+
 func _format_animation(let: String) -> String:
 	let = let.dedent()
-	var suffix: String = "normal"
-	if type == Alphabet.LetterType.BOLD:
-		suffix = "bold"
 	match let:
-		"'": let = "apostrophe " + suffix
-		".", "•": let = "period " + suffix
-		"?": let = "question " + suffix
-		"¿": let = "iquestion "  + suffix
-		"{": let = "( " + suffix
-		"}": let = ") " + suffix
-		"[": let = "[ normal"
-		"]": let = "] normal"
+		"'": let = "apostrophe normal"
+		".", "•": let = "period normal"
+		"!": let = "exclamation normal"
+		"¡": let = "iexclamation normal"
+		"?": let = "question normal"
+		"¿": let = "iquestion normal"
 		"/": let = "forward slash normal"
 		"\\": let = "back slash normal"
 		",": let = "comma normal"
+		"'": let = "comma normal"
+		'"': let = "quote normal"
+		"{": let = "( normal"
+		"}": let = ") normal"
+		"[": let = "[ normal"
+		"]": let = "] normal"
 		"@": let = "@ normal"
+		"&": let = "amp normal"
 		"_": let = "- normal"
 		"#": let = "# normal"
 		"'": let = "' normal"
 		"%": let = "% normal"
 		_:
 			if let == null or let == "" or let == "\n": return ""
-			var is_letter: bool = LETTERS.find(let.to_lower()) != -1
-			var casing :String = " "+Alphabet.LetterType.keys()[type].to_lower()
-			if type != Alphabet.LetterType.BOLD:
-				if is_letter:
-					if let.to_lower() != let: casing = " uppercase"
-					else: " lowercase"
+			var casing: String = " normal"
+			if LETTERS.find(let.to_lower()) != -1:
+				if let.to_lower() != let: casing = " uppercase"
+				else: casing = " lowercase"
 			let = let.to_lower() + casing
 
 	return let

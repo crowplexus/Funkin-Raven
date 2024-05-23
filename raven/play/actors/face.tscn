@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://d3u5kqi3tot20"]
 
-[ext_resource type="SpriteFrames" uid="uid://bf5133sql857b" path="res://assets/chars/custom/Face_Assets.xml" id="1_j72u3"]
+[ext_resource type="SpriteFrames" path="res://assets/chars/custom/Face_Assets.res" id="1_j72u3"]
 [ext_resource type="Script" path="res://raven/play/actors/face.gd" id="2_i4iap"]
 
 [sub_resource type="Animation" id="Animation_3w263"]
