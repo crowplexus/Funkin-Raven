@@ -12,10 +12,12 @@ func _ready() -> void:
 	receptor.position = Vector2.ZERO
 	if receptor.get_index() != 0:
 		receptor.position.x += 10 + (160 * receptor.get_index())
-	receptor.animation_finished.connect(func():
-		if receptor.animation.ends_with("confirm"):
-			receptor.become_ghost(true)
-	)
+
+	if not receptor.parent.is_cpu:
+		receptor.animation_finished.connect(func():
+			if receptor.animation.ends_with("confirm"):
+				receptor.become_ghost(true)
+		)
 
 	hold_cover = Sprite2D.new()
 	hold_cover.texture = load("res://assets/noteskins/fnf/hold_judgments_temp.png")
