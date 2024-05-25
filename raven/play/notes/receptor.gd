@@ -58,6 +58,8 @@ func reset_scroll(scroll: int = -1, tween: bool = false, tween_duration: float =
 			var down: bool = get_index() <  2
 			scroll_dir = 1 if not down else -1
 			pos = 870 if down else 150
+		4: # Middle
+			pos = 450
 
 	if not tween: position.y = pos
 	else:

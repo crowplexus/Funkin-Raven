@@ -52,7 +52,10 @@ var is_sustain: bool:
 
 var down: bool:
 	get:
-		var v: bool = false
+		var v: bool = down
+		if data.has("force_scroll") and data.force_scroll >= 0 and data.force_scroll < 4:
+			return data.force_scroll
+	
 		if not data.debug:
 			match Settings.scroll:
 				1: v = true
@@ -82,6 +85,9 @@ func pop_splash() -> void: pass
 func _ready() -> void:
 	if data.debug == true:
 		set_process(false)
+	if (Settings.scroll == 4 and not data.has("override_middle")
+			or (data.has("override_middle") and data.override_middle != true)):
+		data["force_scroll"] = 1 if Conductor.bar % 2 == 0 else 0
 
 func _process(delta: float) -> void:
 	if data.debug == true: return # just in case

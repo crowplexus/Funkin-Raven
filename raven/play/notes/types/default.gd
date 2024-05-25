@@ -9,8 +9,7 @@ func assign_arrow() -> void:
 	arrow.modulate.v = 1.5 # make it clear that its a tap note.
 
 func _ready() -> void:
-	if data.debug == true:
-		set_process(false)
+	super()
 	assign_arrow()
 
 	if arrow == null:

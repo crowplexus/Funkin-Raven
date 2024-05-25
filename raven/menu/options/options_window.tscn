@@ -122,7 +122,7 @@ increment_rules = Array[String]([])
 layout_mode = 2
 setting = "Scroll Type"
 description = "Defines the Direction of which the Notes scroll to."
-choice_names = Array[String](["Up", "Down", "Split (Up, Down)", "Split (Down, Up)"])
+choice_names = Array[String](["Up", "Down", "Split (Up, Down)", "Split (Down, Up)", "Middle"])
 
 [node name="scroll_speed_mode" parent="panel/container/options_gameplay" instance=ExtResource("5_r1arb")]
 layout_mode = 2

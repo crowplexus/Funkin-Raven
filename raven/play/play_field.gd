@@ -511,7 +511,7 @@ func reset_combo_group_position() -> void:
 		1: # HUD
 			combo_group.position.x = 640
 			match Settings.scroll:
-				1,3: combo_group.position.y = (viewport.y - 520)
+				1,3,4: combo_group.position.y = (viewport.y - 520)
 				0,2: combo_group.position.y = (viewport.y - 180)
 			if combo_group.get_parent() != self:
 				combo_group.reparent(self)
