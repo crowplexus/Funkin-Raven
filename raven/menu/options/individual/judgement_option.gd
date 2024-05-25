@@ -20,7 +20,8 @@ func update_setting(amnt: int = 0, precache: bool = false) -> void:
 
 	val_name = str(choice_names[val])
 	reload_value_name()
-	update_every_timing()
+	if not precache:
+		update_every_timing()
 
 func update_every_timing() -> void:
 	var root: Control = $"../../../../"
