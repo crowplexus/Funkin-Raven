@@ -1,7 +1,7 @@
 class_name AlphabetGlyph extends AnimatedSprite2D
 
-const LETTERS: String = "qwertyuiopasdfghjklçzxcvbnmáàâãéèêíìîóòôúùûçñ"
-const SYMBOLS: String = "1234567890(){}[]\"!@#$%'*+-=_.,:;<>?^&\\/|~"
+const LETTERS: String = "qwertyuiopasdfghjklzxcvbnmáàâãéèêíìîïóòôúùûüçñ"
+const SYMBOLS: String = "1234567890(){}[]\"!@#$%'*+-=_.,:;<>?^&\\/|~ᵃᵒ"
 
 var letter: StringName = ""
 var _raw_letter: StringName = ""
@@ -35,7 +35,6 @@ func _init(new_tex: SpriteFrames, let: StringName) -> void:
 
 func _ready() -> void:
 	if self.letter.is_empty(): return
-	offset = _get_anim_offset(_raw_letter)
 	play(self.letter)
 
 func copy() -> AlphabetGlyph:
@@ -81,12 +80,12 @@ func _format_animation(let: String) -> String:
 
 func _get_anim_offset(let: String) -> Vector2:
 	match let.dedent().to_lower():
-		"ã", "ñ", "õ": return Vector2(0, -25)
-		"á", "é", "í", "ó", "ú": return Vector2(0, -34)
-		"â", "ê", "î", "ô", "û": return Vector2(0, -30)
+		#"ã", "ñ", "õ": return Vector2(0, -25)
+		#"á", "é", "í", "ó", "ú": return Vector2(0, -34)
+		#"â", "ê", "î", "ô", "û": return Vector2(0, -30)
+		"'": return Vector2(0, -30)
 		"-": return Vector2(0, 25)
 		"_": return Vector2(0, 50)
-		".", ",": return Vector2(0, 50)
-		"?", "¿": return Vector2(0, -10)
+		"?", "¿": return Vector2(0, 10)
 		"•": return Vector2(0, 25)
 		_: return Vector2.ZERO

@@ -6,7 +6,8 @@ enum { TITLE_TEXT, TITLE_GF, TITLE_END }
 @onready var text_group: Node2D = $text_group
 @onready var gugo: Sprite2D = $godot_spr
 
-@onready var logo_sprite: AnimatedSprite2D = $sprites/logo
+@onready var logo_sprite: Sprite2D = $sprites/logo
+@onready var logo_animator: AnimationPlayer = $sprites/logo/animation
 @onready var enter_sprite: AnimatedSprite2D = $sprites/enter
 
 # using the original state name here cuz yeah
@@ -87,8 +88,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 				title_state = TITLE_END
 				SoundBoard.play_sfx(Menu2D.CONFIRM_SOUND)
 
-				if Settings.flashing_lights:
-					enter_sprite.play("ENTER PRESSED")
+				enter_sprite.play("ENTER PRESSED" if Settings.flashing_lights else "ENTER FREEZE")
 
 				await get_tree().create_timer(0.8).timeout
 				Tools.switch_scene(load("res://raven/menu/main_menu.tscn"))
@@ -96,8 +96,8 @@ func _unhandled_key_input(e: InputEvent) -> void:
 func on_beat(beat: int) -> void:
 	match title_state:
 		TITLE_GF, TITLE_END:
-			logo_sprite.frame = 0
-			logo_sprite.play("logo bumpin")
+			logo_animator.seek(0.0)
+			logo_animator.play("bump")
 		TITLE_TEXT:
 			match beat:
 				1: create_text_blob(["crowplexus", "srtpro278", "burgerballs9", "raltyro"])
@@ -123,6 +123,9 @@ func on_beat(beat: int) -> void:
 					clear_text_blobs()
 
 func screen_flash(duration: float = 2, color: Color = Color.WHITE) -> void:
+	if Settings.skip_transitions or not Settings.flashing_lights:
+		return
+
 	$flash.modulate = color
 	$flash.modulate.a = 1.0
 	get_tree().create_tween() \

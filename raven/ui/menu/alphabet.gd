@@ -7,6 +7,8 @@ const Y_PER_ROW: float = 80
 
 @export var texture: SpriteFrames = preload("res://assets/fonts/bitmap/alphabet.res")
 @export var outline_size: int = 2
+@export var character_spacing: int = 5
+
 @export var outline_colour: Color = Color.BLACK:
 	set(v):
 		outline_colour = v
@@ -92,12 +94,12 @@ func _generate_txt(new_text: String) -> void:
 
 		var letter: AlphabetGlyph = AlphabetGlyph.new(texture, _char)
 		letter.position = letter_pos * scale
-		letter.offset.y -= (line.size.y - 60.0) * 0.5
 		letter.row = rows
 		if letter.visible:
 			line.size += letter.texture_size
-			letter_pos.x += letter.texture_size.x
-		#letter.offset.y += line.size.y - letter.texture_size.y
+			letter_pos.x += letter.texture_size.x + character_spacing
+		letter.offset = letter._get_anim_offset(_char)
+		letter.offset.y -= letter.texture_size.y - 50
 		line.add_child(letter)
 		letter.name = "letter_%s_%s" % [_char, letter.get_index()]
 
@@ -119,9 +121,9 @@ func _generate_txt(new_text: String) -> void:
 func update_alignment(x: int = -1) -> void:
 	if x == -1: x = alignment
 	for i: Control in get_children():
-		i.position.x = position.x
+		i.position.x = position.x - 50
 		match x:
-			1: i.position.x += ((size.x - i.size.x) * 0.5)
+			1: i.position.x += (size.x - i.size.x) * 0.5
 			2: i.position.x += (size.x - i.size.x)
 		i.position.x *= i.scale.x * scale.x
 

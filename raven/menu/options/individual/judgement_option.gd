@@ -23,7 +23,7 @@ func update_setting(amnt: int = 0, precache: bool = false) -> void:
 	update_every_timing()
 
 func update_every_timing() -> void:
-	var root = $"../../../../"
+	var root: Control = $"../../../../"
 	if not root.is_node_ready():
 		return
 
