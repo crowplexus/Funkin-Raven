@@ -58,7 +58,7 @@ func _process(_delta: float) -> void:
 		SoundBoard.bg_tracks.volume_db += 0.01
 
 func _unhandled_key_input(_e :InputEvent) -> void:
-	if _e.is_pressed() and _e.keycode == KEY_F2:
+	if _e.is_pressed() and _e.keycode == KEY_F1:
 		screenshot_mode = not screenshot_mode
 		self.visible = not screenshot_mode
 
