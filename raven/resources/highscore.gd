@@ -5,7 +5,8 @@ const TIMING_PRESETS: Array = [
 	[22.5,	45.0,	90.0,	135.0,	180.0], # Judge Four
 	[18.9,	37.8,	75.6,	113.4,	151.0], # Judge Five (Default)
 	[22.0,	43.0,	102.0,	135.0,	180.0], # Not in the Groove
-	[18.36,	33.33,	91.67,	133.33,	166.67], # Funkin
+	[18.36,	33.33,	91.67,	133.33,	166.67], # Funkin (WEEK 7)
+	[12.5,	45.0,	90.0,	135.0,	160.0], # Funkin (NEW PBOT1)
 	[18.0,	39.0,	102.0,	127.0,	164.0], # Freestyle Standard
 ]
 

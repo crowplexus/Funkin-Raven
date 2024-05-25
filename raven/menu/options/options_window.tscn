@@ -173,7 +173,7 @@ setting = "Judgement Preset"
 variable = ""
 variable_type = 4
 description = "Define a preset for timings, for your judgements."
-choice_names = Array[String](["Etterna (Judge 4)", "Etterna (Judge 5)", "NotITG ", "Funkin'", "Freestyle Standard"])
+choice_names = Array[String](["Etterna (Judge 4)", "Etterna (Judge 5)", "NotITG ", "Funkin' (WEEK 7)", "Funkin' (PBOT1)", "Freestyle Standard"])
 restart_on_gameplay = true
 
 [node name="epic_timing" parent="panel/container/options_gameplay" instance=ExtResource("5_r1arb")]

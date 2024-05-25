@@ -126,7 +126,7 @@ setting_enable_combo_multiplier,Combo Multiplier
 setting_combo_mult_weight,Combo Multiplier Weight
 setting_autoplay_mode,Autoplay Mode
 setting_practice_mode,Practice Mode
-setting_miss_limiter,Miss LimitJ
+setting_miss_limiter,Miss Limit
 setting_enemy_play,Play as Enemy
 
 setting_framerate_mode,Framerate Mode
