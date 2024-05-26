@@ -20,7 +20,7 @@ func do_action(action: int, _force: bool = false) -> int:
 		Receptor.ActionType.GHOST:
 			action_visibility = 0.5
 			action_scale = Vector2(0.8, 0.8)
-		Receptor.ActionType.GLOW:
+		Receptor.ActionType.GLOW, Receptor.ActionType.HOLD:
 			action_visibility = 1.5
 			action_scale = Vector2(1.1, 1.1)
 

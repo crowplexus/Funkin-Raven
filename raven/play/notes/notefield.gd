@@ -55,7 +55,7 @@ func _handle_hold_behaviour(note: Note, _delta: float = 1.0) -> void:
 			var pressed: bool = Input.is_action_pressed(controls[note.data.column])
 			# Default Behaviour
 			if pressed:
-				note.receptor.glow_up(note.arrow.visible or note.receptor.frame_progress > 0.05)
+				note.receptor.glow_hold(note.arrow.visible or note.receptor.frame_progress > 0.05)
 				if Conductor.step % 1 == 0:
 					if note.modulate.a != 1.0:
 						note.modulate.a = 1.0

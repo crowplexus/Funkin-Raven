@@ -2,8 +2,9 @@
 class_name Receptor extends AnimatedSprite2D
 enum ActionType {
 	STATIC	= 0,
-	GHOST		= 1,
-	GLOW		= 2,
+	GHOST	= 1,
+	GLOW	= 2,
+	HOLD	= 3,
 }
 @onready var parent: NoteField = $"../../"
 
@@ -44,42 +45,40 @@ func reset_scroll(scroll: int = -1, tween: bool = false, tween_duration: float =
 	var pos: int = 870
 
 	match scroll:
-		0:
-			pos = 150 # Up
+		0: # Up
+			pos = 150
 			scroll_dir = 1
-		1:
-			pos = 870 # Down
+		1: # Down
+			pos = 870
 			scroll_dir = -1
-		2: # Split (UD)
-			var down: bool = get_index() >= 2
-			scroll_dir = 1 if not down else -1
-			pos = 870 if down else 150
-		3: # Split (DU)
-			var down: bool = get_index() <  2
-			scroll_dir = 1 if not down else -1
-			pos = 870 if down else 150
-		4: # Middle
+		2: # Middle
 			pos = 450
 
-	if not tween: position.y = pos
-	else:
-		get_tree().create_tween().bind_node(self).set_trans(Tween.TRANS_CIRC) \
+	if tween:
+		create_tween().bind_node(self).set_trans(Tween.TRANS_CIRC) \
 		.tween_property(self, "position:y", pos, tween_duration)
+	else:
+		position.y = pos
 
-func glow_up(force: bool = true) -> void:
-	if skin != null and skin.propagate_call("glow_up", [force]) == 0:
+func become_static(force: bool = true) -> void:
+	if skin.propagate_call("become_static", [force]) == 0:
 		return
-	do_action(ActionType.GLOW, force)
+	do_action(ActionType.STATIC, force)
 
 func become_ghost(force: bool = true) -> void:
 	if skin != null and skin.propagate_call("become_ghost", [force]) == 0:
 		return
 	do_action(ActionType.GHOST, force)
 
-func become_static(force: bool = true) -> void:
-	if skin.propagate_call("become_static", [force]) == 0:
+func glow_up(force: bool = true) -> void:
+	if skin != null and skin.propagate_call("glow_up", [force]) == 0:
 		return
-	do_action(ActionType.STATIC, force)
+	do_action(ActionType.GLOW, force)
+
+func glow_hold(force: bool = true) -> void:
+	if skin != null and skin.propagate_call("glow_up", [force]) == 0:
+		return
+	do_action(ActionType.HOLD, force)
 
 func display_hold_cover(is_fully_held: bool = false) -> void:
 	if skin != null and skin.propagate_call("display_hold_cover", [is_fully_held]) == 0:

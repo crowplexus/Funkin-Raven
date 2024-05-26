@@ -41,25 +41,23 @@ var alignment: int = 0:
 @export_category("Menus")
 
 @export var is_menu_item: bool = false
-@export var item_offset: Vector2 = Vector2.ZERO
+@export var item_offset: Vector2 = Vector2(0, 120)
 @export var lock_axis: Vector2 = Vector2(-1, -1)
 @export var spacing: Vector2 = Vector2(30, 150)
 @export var item_id: int = 0
 
 var end_position: Vector2 = Vector2.ZERO
+var total_size: Vector2 = Vector2.ZERO
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if is_menu_item:
-		var item_pos: float = (item_id * spacing.x) + 100
-		var remap_y: float = remap(item_id, 0, 1, 0, 1.1)
-		var menu_lerp: Vector2 = Vector2(
-			Tools.exp_lerp(position.x, item_pos + item_offset.x, 9.6),
-			Tools.exp_lerp(position.y, (remap_y * spacing.y) + \
-				(Tools.SCREEN_SIZE.x * 0.28) + item_offset.y, 9.6)
-		)
-
 		var view: = get_viewport_rect()
 		var bounds: Vector2 = view.size * scale
+		var remap_y: float = remap(item_id, 0, 1, 0, 1.1)
+		var menu_lerp: Vector2 = Vector2(
+			lerpf((item_id * spacing.x) + 100 + item_offset.x, position.x, exp(-delta*10)),
+			lerpf((remap_y * spacing.y) + (bounds.y * 0.28) + item_offset.y, position.y, exp(-delta*10))
+		)
 
 		if lock_axis.x != -1: menu_lerp.x = lock_axis.x
 		if lock_axis.y != -1: menu_lerp.y = lock_axis.y
@@ -87,6 +85,7 @@ func _generate_txt(new_text: String) -> void:
 
 		if _char == " ":
 			letter_pos.x += X_PER_SPACE
+			line.size.x += X_PER_SPACE
 			continue
 
 		if force_casing != 0:
@@ -96,10 +95,13 @@ func _generate_txt(new_text: String) -> void:
 		letter.position = letter_pos * scale
 		letter.row = rows
 		if letter.visible:
-			line.size += letter.texture_size
+			letter.offset = letter._get_anim_offset(_char)
+			letter.offset.y -= letter.texture_size.y - 50
+
+			var maxs: Vector2 = letter.position + letter.texture_size
+			line.size.x += character_spacing
+			line.size += maxs - letter.position
 			letter_pos.x += letter.texture_size.x + character_spacing
-		letter.offset = letter._get_anim_offset(_char)
-		letter.offset.y -= letter.texture_size.y - 50
 		line.add_child(letter)
 		letter.name = "letter_%s_%s" % [_char, letter.get_index()]
 
@@ -108,10 +110,10 @@ func _generate_txt(new_text: String) -> void:
 			outline.name = "outline_%s_%s" % [_char, letter.get_index()]
 			outline.modulate = outline_colour
 			#outline.scale *= 1 + outline_size * 2 / outline.texture.size.x
-			outline.scale *= 0.5 * outline_size
+			outline.z_index = letter.z_index - 1
+			outline.scale *= 0.6 * outline_size
 			outline.position.y -= 5
 			outline.position.x -= 3
-			outline.z_index = letter.z_index -1
 			line.add_child(outline)
 	add_child(line)
 
@@ -121,10 +123,10 @@ func _generate_txt(new_text: String) -> void:
 func update_alignment(x: int = -1) -> void:
 	if x == -1: x = alignment
 	for i: Control in get_children():
-		i.position.x = position.x - 50
 		match x:
-			1: i.position.x += (size.x - i.size.x) * 0.5
-			2: i.position.x += (size.x - i.size.x)
+			1: i.position.x = position.x + ((size.x - i.size.x) * 0.5)
+			2: i.position.x = position.x + (size.x - i.size.x)
+			_: i.position.x = position.x
 		i.position.x *= i.scale.x * scale.x
 
 func get_forced_casing(text: String, casing_id: int = 0) -> String:
@@ -132,5 +134,5 @@ func get_forced_casing(text: String, casing_id: int = 0) -> String:
 	match casing_id:
 		1: forced = text.to_upper()
 		2: forced = text.to_lower()
-	print_debug("getting casing, ", forced)
+	#print_debug("getting casing, ", forced)
 	return forced

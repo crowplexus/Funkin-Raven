@@ -1,6 +1,7 @@
 class_name Menu2D extends Node2D
 #region Constants
 
+const DEFAULT_MENU_MUSIC: AudioStream = preload("res://assets/audio/bgm/freakyMenu.ogg")
 const CONFIRM_SOUND: AudioStream = preload("res://assets/audio/sfx/menu/confirmMenu.ogg")
 const SCROLL_SOUND: AudioStream = preload("res://assets/audio/sfx/menu/scrollMenu.ogg")
 const CANCEL_SOUND: AudioStream = preload("res://assets/audio/sfx/menu/cancelMenu.ogg")

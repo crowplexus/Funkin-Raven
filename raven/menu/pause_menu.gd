@@ -115,7 +115,7 @@ func _reload_list(items_to_use: Array[String] = []) -> void:
 		new_item.position.x = ((viewport_size.x - new_item.size.x) * 0.5) - 15
 		new_item.position.y = (viewport_size.y - new_item.size.y) * 0.5
 		new_item.position.y += (120 * i) - 180
-		new_item.modulate.v = 0.4
+		new_item.modulate.a = 0.4
 		items.add_child(new_item)
 
 	create_tween().set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD) \
@@ -134,7 +134,7 @@ func update_selection(new: int = 0) -> void:
 
 	for i: int in items.get_child_count():
 		var item: Alphabet = items.get_child(i) as Alphabet
-		visi_tween.tween_property(item, "modulate:v", 1.0 if i == selected else 0.4, 0.1)
+		visi_tween.tween_property(item, "modulate:a", 1.0 if i == selected else 0.4, 0.1)
 		item.item_id = i - selected
 
 func unpause() -> void:

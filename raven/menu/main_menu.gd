@@ -16,7 +16,7 @@ func _ready() -> void:
 
 	Transition.rect.color = Color.BLACK
 	if not SoundBoard.bg_tracks.playing:
-		SoundBoard.play_track(load("res://assets/audio/bgm/freakyMenu.ogg"))
+		SoundBoard.play_track(Menu2D.DEFAULT_MENU_MUSIC)
 
 	voptions = buttons.get_children()
 	alpha_twns.resize(voptions.size())

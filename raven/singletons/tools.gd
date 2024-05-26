@@ -19,9 +19,9 @@ func _ready() -> void:
 	PhysicsServer3D.set_active(false)
 	Highscore._reset_judgements()
 	# makes the game size mathematically the same everywhere!
-	#var scale: float = DisplayServer.screen_get_size().y / 720
-	#get_window().size = Vector2i(SCREEN_SIZE.x*scale, SCREEN_SIZE.y*scale)
-	#get_window().position -= Vector2i(get_window().size.x*0.25, get_window().size.y*0.25)
+	var scale: float = DisplayServer.screen_get_size().y / 720
+	get_window().size = Vector2i(SCREEN_SIZE.x*scale, SCREEN_SIZE.y*scale)
+	get_window().position -= Vector2i(get_window().size.x*0.25, get_window().size.y*0.25)
 
 func exp_lerp(to: float, from: float, speed: float, custom_delta: float = -1) -> float:
 	if get_tree().current_scene == null and custom_delta == -1:

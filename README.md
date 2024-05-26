@@ -17,9 +17,9 @@ THIS PROJECT IS IN A HEAVILY WORK IN PROGRESS STATE, AS SUCH, OLD APIS WILL BREA
 > [!Important]
 > When modding the game, please keep in mind that you're going to need to
 > have some level of knowledge when it comes to using Godot
-> 
+>
 > Feel free to thinker with the game to get the gist of how it works before trying to mod anything in
-> 
+>
 > **This is a recommendation anyways lol**
 >
 > also keep in mind that you need to run this under Godot 4.2 or later
@@ -32,14 +32,14 @@ THIS PROJECT IS IN A HEAVILY WORK IN PROGRESS STATE, AS SUCH, OLD APIS WILL BREA
 > "Upon release, I wanna go back and simplify the backend"
 > "Help would be greatly appreciated as I'm not good with simplifying stuff lol"
 > @crowplexus
-> 
+>
 ---
 
 <h2 align="left">🧩 Features</h2>
 
 - Automatic BPM Changing, no need to do anything extra, place the event in the chart and boom!
 - Hopefully easy to understand backend
-- Scroll Directions ( Up, Down, Split )
+- Scroll Directions
 - Translations ( English, Spanish (ñ) and Brazilian Portuguese (ç) )
 - Modcharts (extremely work in progress!!!)
 
@@ -52,9 +52,9 @@ THIS PROJECT IS IN A HEAVILY WORK IN PROGRESS STATE, AS SUCH, OLD APIS WILL BREA
 [crowplexus](https://twitter.com/crowplexus)
 
 - Lead Maintainer of the Project.
-    - made this public because people liked it on Twitter/X lol
-    - its a modding engine but you gotta know what you're doing
-        - documentation will come later :D
+	- made this public because people liked it on Twitter/X lol
+	- its a modding engine but you gotta know what you're doing
+		- documentation will come later :D
 
 [maybemaru](https://twitter.com/maybemaru_)
 

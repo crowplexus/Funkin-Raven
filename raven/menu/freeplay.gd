@@ -72,7 +72,7 @@ func _process(_delta: float) -> void:
 			(item.position.x + item.end_position.x) + 80,
 			(item.position.y + item.end_position.y + 30)
 		)
-		icon.modulate.a = item.modulate.v
+		icon.modulate.a = item.modulate.a
 
 func update_selection(new: int = 0) -> void:
 	super(new)
@@ -84,7 +84,7 @@ func update_selection(new: int = 0) -> void:
 
 	for i: int in song_group.get_child_count():
 		var let: Alphabet = song_group.get_child(i) as Alphabet
-		_visi_tween.tween_property(let, "modulate:v", 1.0 if i == selected else 0.6, 0.1)
+		_visi_tween.tween_property(let, "modulate:a", 1.0 if i == selected else 0.6, 0.1)
 		let.item_id = i - selected
 
 	if _bg_tween != null: _bg_tween.stop()

@@ -50,22 +50,18 @@ var rel_time: float:
 var is_sustain: bool:
 	get: return data != null and data.s_len > 0.0
 
-var down: bool:
-	get:
-		var v: bool = down
-		if data.has("force_scroll") and data.force_scroll >= 0 and data.force_scroll < 4:
-			return data.force_scroll
-	
-		if not data.debug:
-			match Settings.scroll:
-				1: v = true
-				2: v = data.column >= 2
-				3: v = data.column <  2
-				_: v = false
-		return v
+## Dictates your Scroll Arrangement[br]
 
 var scroll: int:
-	get: return -1 if down else 1
+	get:
+		var arrangement: int = 1
+		if data.has("force_scroll") and data["force_scroll"] is int:
+			return data["force_scroll"]
+		if not data.debug:
+			match Settings.scroll:
+				0: arrangement = 1
+				1: arrangement = -1
+		return arrangement
 
 var can_hit: bool:
 	get:
@@ -85,9 +81,12 @@ func pop_splash() -> void: pass
 func _ready() -> void:
 	if data.debug == true:
 		set_process(false)
-	if (Settings.scroll == 4 and not data.has("override_middle")
-			or (data.has("override_middle") and data.override_middle != true)):
-		data["force_scroll"] = 1 if Conductor.bar % 2 == 0 else 0
+
+	if Settings.scroll == 2:
+		if data.has("override_middle") and data.override_middle is int:
+			data["force_scroll"] = data["override_middle"]
+		else:
+			data["force_scroll"] = -1 if Conductor.step % 2 == 0 else 1
 
 func _process(delta: float) -> void:
 	if data.debug == true: return # just in case

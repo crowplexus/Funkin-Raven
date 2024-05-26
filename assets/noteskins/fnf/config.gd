@@ -70,8 +70,11 @@ func pop_splash(note: Note) -> int:
 	firework.animation_finished.connect(firework.queue_free)
 	return 0
 
+
 func enemy_hit(note: Note) -> void:
-	note.receptor.glow_up(note.arrow.visible or note.receptor.frame_progress > 0.05)
+	var force_receptor: bool = note.arrow.visible or note.receptor.frame_progress > 0.05
+	if note.is_sustain: note.receptor.glow_hold(force_receptor)
+	else: note.receptor.glow_up(force_receptor)
 	note.receptor.reset_timer = 0.1 + note.data.s_len
 
 func do_action(action: int, force: bool = false) -> int:
@@ -81,7 +84,7 @@ func do_action(action: int, force: bool = false) -> int:
 	match action:
 		Receptor.ActionType.GHOST:
 			action_anim = "%s press"	% direction_str
-		Receptor.ActionType.GLOW:
+		Receptor.ActionType.GLOW, Receptor.ActionType.HOLD:
 			action_anim = "%s confirm"	% direction_str
 
 	if force or _last_action != action:

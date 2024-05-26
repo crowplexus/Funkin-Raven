@@ -53,7 +53,7 @@ func _ready() -> void:
 	reload_intro_text()
 
 	if not SoundBoard.bg_tracks.playing:
-		SoundBoard.play_track(load("res://assets/audio/bgm/freakyMenu.ogg"), true, 0.01)
+		SoundBoard.play_track(Menu2D.DEFAULT_MENU_MUSIC, true, 0.01)
 		create_tween().bind_node(SoundBoard.bg_tracks) \
 		.tween_property(
 			SoundBoard.bg_tracks, "volume_db",

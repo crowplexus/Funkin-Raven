@@ -63,13 +63,16 @@ func pop_splash(note: Note) -> int:
 
 
 func enemy_hit(note: Note) -> void:
-	note.receptor.glow_up(note.arrow.visible or note.receptor.frame_progress > 0.05)
+	var force_receptor: bool = note.arrow.visible or note.receptor.frame_progress > 0.05
+	if note.is_sustain: note.receptor.glow_hold(force_receptor)
+	else: note.receptor.glow_up(force_receptor)
 	note.receptor.reset_timer = 0.1 + note.data.s_len
 
 
 func do_action(action: int, _force: bool = false) -> int:
 	match action:
-		Receptor.ActionType.GHOST: receptor.modulate.v = 0.5
-		Receptor.ActionType.GLOW: receptor.modulate.v = 1.5
+		Receptor.ActionType.GHOST:receptor.modulate.v = 0.5
+		Receptor.ActionType.GLOW, Receptor.ActionType.HOLD:
+			receptor.modulate.v = 1.5
 		_: receptor.modulate.v = 1.0
 	return 0

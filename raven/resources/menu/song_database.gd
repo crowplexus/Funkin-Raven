@@ -28,9 +28,10 @@ func make_song_list() -> Array[FreeplaySong]:
 ## Pack Songs, Freeplay Songs, User Folder Songs
 func make_category_list() -> Dictionary:
 	var categories: Dictionary = {}
+	categories["Base"] = []
 	if show_packs_in_freeplay:
 		for i: SongPack in song_packs:
-			categories[i.tagline] = i.songs
+			categories["Base"].append_array(i.songs)
 	categories["Uncategorized"] = freeplay_songs
 	if show_user_songs_in_freeplay:
 		categories["User Songs"] = FreeplaySong.from_user_folder()

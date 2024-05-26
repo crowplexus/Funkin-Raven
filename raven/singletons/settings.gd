@@ -14,7 +14,7 @@ var _cfg: ConfigFile
 #region Gameplay
 
 ## Defines the Direction of which the Notes scroll to.
-@export_enum("Up:0", "Down:1", "Split UD:2", "Split DU:3", "Middle:3")
+@export_enum("Up:0", "Down:1", "Middle:2")
 var scroll: int = 0
 ## Prevents damage if you try to hit notes while you can't.
 var ghost_tapping: bool = true

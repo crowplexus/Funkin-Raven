@@ -21,7 +21,7 @@ var _selected: bool = false
 func _ready() -> void:
 	can_open_options = true
 	if not SoundBoard.bg_tracks.playing:
-		SoundBoard.play_track(load("res://assets/audio/bgm/freakyMenu.ogg"))
+		SoundBoard.play_track(Menu2D.DEFAULT_MENU_MUSIC)
 	FPS.perf_text.position.y = $ui/yellow.position.y
 
 	levels = song_data.song_packs
