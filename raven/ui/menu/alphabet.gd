@@ -93,6 +93,7 @@ func _generate_txt(new_text: String) -> void:
 
 		var letter: AlphabetGlyph = AlphabetGlyph.new(texture, _char)
 		letter.position = letter_pos * scale
+		letter.use_parent_material = true
 		letter.row = rows
 		if letter.visible:
 			letter.offset = letter._get_anim_offset(_char)
