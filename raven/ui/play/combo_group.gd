@@ -8,7 +8,7 @@ var combo_tween: Tween
 
 func prepare() -> void:
 	display_judgement(0, true)
-	display_combo_sprite(true)
+	#display_combo_sprite(true)
 	display_combo(0, true)
 
 func display_judgement(judge_id: int, precache: bool = false) -> void:
@@ -60,20 +60,20 @@ func display_combo(combo: int, precache: bool = false) -> void:
 		number.show()
 
 		# ANIMATION #
-		number.scale *= 1.15
+		number.scale.y *= 0.85
 
 		if number_tweens[i] != null: number_tweens[i].kill()
 
 		number_tweens[i] = create_tween().bind_node(number)
 		number_tweens[i].set_parallel(true)
 
-		number_tweens[i].tween_property(number, "scale", skin.numbers_scale, 0.3).set_ease(Tween.EASE_IN)
+		number_tweens[i].tween_property(number, "scale", skin.numbers_scale, 0.1 * Conductor.crotchet_mult).set_ease(Tween.EASE_IN)
 		number_tweens[i].tween_property(number, "modulate:a", 0.0, 0.6) \
 		.set_ease(Tween.EASE_OUT).set_delay(0.1 * Conductor.crotchet_mult)
 		number_tweens[i].finished.connect(number.hide)
 
-	if combo % 5 == 0:
-		display_combo_sprite()
+	#if combo % 5 == 0:
+	#	display_combo_sprite()
 
 func display_combo_sprite(precache: bool = false) -> void:
 	if not has_node("combo"):

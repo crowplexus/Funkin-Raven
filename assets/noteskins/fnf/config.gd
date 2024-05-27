@@ -12,6 +12,8 @@ func _ready() -> void:
 	receptor.position = Vector2.ZERO
 	if receptor.get_index() != 0:
 		receptor.position.x += 10 + (160 * receptor.get_index())
+	else:
+		receptor.position.y -= 5
 
 	if not receptor.parent.is_cpu:
 		receptor.animation_finished.connect(func():
