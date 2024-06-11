@@ -23,6 +23,7 @@ config/icon="res://icon.svg"
 
 Globals="*res://scripts/globals.gd"
 Conductor="*res://scripts/conductor.gd"
+Preferences="*res://scripts/preferences.gd"
 
 [display]
 

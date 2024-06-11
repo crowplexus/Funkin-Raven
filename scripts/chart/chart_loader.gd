@@ -18,14 +18,29 @@ func _to_string() -> String:
 	return chart_string
 
 
-static func request(song: StringName, difficulty: StringName) -> Chart:
+static func request(song: StringName, difficulty: Dictionary = { "file": "normal", "target": "normal", "variation": "" }) -> Chart:
 	var chart: Chart = Chart.new()
 	var path_chosen: String = ""
 	chart.song_info.folder = song
+	chart.song_info.difficulty = difficulty
 
-	for i: String in ["%s-%s" % [song, difficulty], difficulty, "%s-chart" % song]:
+	# set the *real* chart difficulty
+	var real_difficulty: StringName = difficulty.file
+	if "target" in difficulty:
+		real_difficulty = difficulty.target
+	elif not difficulty.variation.is_empty():
+		real_difficulty = difficulty.variation
+
+	var file_names: PackedStringArray = [
+		difficulty.file,
+		real_difficulty,
+		"%s-%s" % [song, difficulty.file],
+		"%s-chart-%s" % [song, difficulty.file],
+		"%s-chart" % song,
+	]
+
+	for i: String in file_names:
 		var path: String = "res://assets/songs/%s/%s.json" % [song, i]
-		#print_debug(path)
 		if ResourceLoader.exists(path):
 			path_chosen = path
 			break
@@ -45,7 +60,7 @@ static func request(song: StringName, difficulty: StringName) -> Chart:
 		FileAccess.open(path_chosen, FileAccess.READ)
 		.get_as_text())
 
-	if "notes" in jsonf and difficulty in jsonf["notes"]:
+	if "notes" in jsonf and real_difficulty in jsonf["notes"]:
 		chart_version = "vanilla"
 
 	match chart_version:
@@ -58,10 +73,10 @@ static func request(song: StringName, difficulty: StringName) -> Chart:
 					.get_as_text()))
 
 			if "scrollSpeed" in jsonf:
-				chart.note_speed = float(jsonf["scrollSpeed"][difficulty])
+				chart.note_speed = float(jsonf["scrollSpeed"][real_difficulty])
 
 			# load notes
-			for note: Dictionary in jsonf["notes"][difficulty]:
+			for note: Dictionary in jsonf["notes"][real_difficulty]:
 				var swag_note: NoteData = Chart.make_note(note)
 				if "d" in note:
 					var player: int = 0
@@ -72,6 +87,8 @@ static func request(song: StringName, difficulty: StringName) -> Chart:
 				chart.notes.append(swag_note)
 
 		"legacy":
+			if not "song" in jsonf:
+				return chart
 			if "speed" in jsonf["song"]:
 				chart.note_speed = jsonf.song.speed
 			if "bpm" in jsonf["song"]:
@@ -112,7 +129,7 @@ static func request(song: StringName, difficulty: StringName) -> Chart:
 
 	Conductor.time_changes = chart.time_changes.duplicate()
 	Conductor.apply_time_change(Conductor.time_changes.front())
-	print_debug(chart)
+	#print_debug(chart)
 	return chart
 
 
@@ -125,10 +142,17 @@ func convert_vanilla_metadata(_meta: Dictionary) -> void:
 	if "songName" in _meta:
 		song_info.name = _meta["songName"]
 	if "playData" in _meta:
-		if "difficulties" in _meta["playData"]:
-			song_info.difficulties = []
-			for diff: String in _meta["playData"].difficulties:
-				song_info.difficulties.append(StringName(diff))
+		if "characters" in _meta["playData"]:
+			var chars: Dictionary = _meta["playData"].characters
+			song_info.characters = [chars.player, chars.opponent, chars.girlfriend]
+
+			if song_info.characters.has("album"):
+				song_info.characters.remove_at(song_info.characters.find("album"))
+
+		#if "difficulties" in _meta["playData"]:
+		#	song_info.difficulties = []
+		#	for diff: String in _meta["playData"].difficulties:
+		#		song_info.difficulties.append(StringName(diff))
 		if "stage" in _meta["playData"]:
 			song_info.background = _meta["playData"].stage
 		if "ratings" in _meta["playData"]:
