@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3mcxybk6adsd"]
+
+[ext_resource type="Script" path="res://scenes/gameplay/notes/normal.gd" id="1_vxqwi"]
+[ext_resource type="Texture2D" uid="uid://cy0kn25ien48d" path="res://icon.svg" id="2_se1x4"]
+
+[node name="normal" type="Node2D"]
+script = ExtResource("1_vxqwi")
+
+[node name="icon" type="Sprite2D" parent="."]
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("2_se1x4")

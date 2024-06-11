@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://dab600stg4bxl"]
+
+[ext_resource type="Script" path="res://scenes/gameplay/fields/notefield.gd" id="1_bd6jx"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_hei8h"]
+size = Vector2(50, 50)
+
+[node name="notefield" type="Node2D"]
+script = ExtResource("1_bd6jx")
+
+[node name="receptors" type="Node2D" parent="."]
+
+[node name="0" type="Sprite2D" parent="receptors"]
+texture = SubResource("PlaceholderTexture2D_hei8h")
+
+[node name="1" type="Sprite2D" parent="receptors"]
+modulate = Color(0, 1, 1, 1)
+position = Vector2(64, 0)
+texture = SubResource("PlaceholderTexture2D_hei8h")
+
+[node name="2" type="Sprite2D" parent="receptors"]
+modulate = Color(1, 0, 0.0166664, 1)
+position = Vector2(128, 0)
+texture = SubResource("PlaceholderTexture2D_hei8h")
+
+[node name="3" type="Sprite2D" parent="receptors"]
+position = Vector2(192, 0)
+texture = SubResource("PlaceholderTexture2D_hei8h")

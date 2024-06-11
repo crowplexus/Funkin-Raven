@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://bjhgsn2eb2e1h"]
+
+[ext_resource type="Script" path="res://scenes/gameplay/gameplay.gd" id="1_gfupu"]
+[ext_resource type="PackedScene" uid="uid://dab600stg4bxl" path="res://scenes/gameplay/fields/notefield.tscn" id="2_6wcp1"]
+[ext_resource type="PackedScene" uid="uid://dxm24padis8xt" path="res://scenes/backgrounds/stage.tscn" id="2_k2qad"]
+[ext_resource type="Script" path="res://scenes/gameplay/note_cluster.gd" id="5_sb58y"]
+
+[node name="gameplay" type="Node2D"]
+script = ExtResource("1_gfupu")
+
+[node name="camera" type="Camera2D" parent="."]
+anchor_mode = 0
+
+[node name="stage" parent="." instance=ExtResource("2_k2qad")]
+
+[node name="ui_layer" type="CanvasLayer" parent="."]
+
+[node name="judge" type="Label" parent="ui_layer"]
+offset_right = 1280.0
+offset_bottom = 720.0
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="status_1" type="Label" parent="ui_layer"]
+offset_top = 622.0
+offset_right = 1280.0
+offset_bottom = 648.0
+theme_override_font_sizes/font_size = 18
+text = "Score Text"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="fields" type="Control" parent="ui_layer"]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 88.0
+offset_bottom = 88.0
+scale = Vector2(1.5, 1.5)
+
+[node name="1" parent="ui_layer/fields" instance=ExtResource("2_6wcp1")]
+position = Vector2(496, 0)
+
+[node name="2" parent="ui_layer/fields" instance=ExtResource("2_6wcp1")]
+position = Vector2(96, 0)
+
+[node name="note_cluster" type="Node2D" parent="ui_layer"]
+position = Vector2(140, 96)
+script = ExtResource("5_sb58y")
