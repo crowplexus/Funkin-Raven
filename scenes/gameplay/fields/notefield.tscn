@@ -1,28 +1,32 @@
 [gd_scene load_steps=3 format=3 uid="uid://dab600stg4bxl"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/fields/notefield.gd" id="1_bd6jx"]
+[ext_resource type="Texture2D" uid="uid://cy0kn25ien48d" path="res://icon.svg" id="2_ki6np"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_hei8h"]
-size = Vector2(50, 50)
-
-[node name="notefield" type="Node2D"]
+[node name="notefield" type="Control"]
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_bd6jx")
 
-[node name="receptors" type="Node2D" parent="."]
+[node name="receptors" type="Control" parent="."]
+modulate = Color(0.4, 0.4, 0.4, 1)
+anchors_preset = 0
 
 [node name="0" type="Sprite2D" parent="receptors"]
-texture = SubResource("PlaceholderTexture2D_hei8h")
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ki6np")
 
 [node name="1" type="Sprite2D" parent="receptors"]
-modulate = Color(0, 1, 1, 1)
-position = Vector2(64, 0)
-texture = SubResource("PlaceholderTexture2D_hei8h")
+position = Vector2(72, 0)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ki6np")
 
 [node name="2" type="Sprite2D" parent="receptors"]
-modulate = Color(1, 0, 0.0166664, 1)
-position = Vector2(128, 0)
-texture = SubResource("PlaceholderTexture2D_hei8h")
+position = Vector2(144, 0)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ki6np")
 
 [node name="3" type="Sprite2D" parent="receptors"]
-position = Vector2(192, 0)
-texture = SubResource("PlaceholderTexture2D_hei8h")
+position = Vector2(216, 0)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ki6np")

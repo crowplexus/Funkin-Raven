@@ -22,7 +22,7 @@ theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="status_1" type="Label" parent="ui_layer"]
+[node name="status_label" type="Label" parent="ui_layer"]
 offset_top = 622.0
 offset_right = 1280.0
 offset_bottom = 648.0
@@ -39,10 +39,12 @@ offset_bottom = 88.0
 scale = Vector2(1.5, 1.5)
 
 [node name="1" parent="ui_layer/fields" instance=ExtResource("2_6wcp1")]
-position = Vector2(496, 0)
+offset_left = 528.0
+offset_right = 528.0
 
 [node name="2" parent="ui_layer/fields" instance=ExtResource("2_6wcp1")]
-position = Vector2(96, 0)
+offset_left = 96.0
+offset_right = 96.0
 
 [node name="note_cluster" type="Node2D" parent="ui_layer"]
 position = Vector2(140, 96)
