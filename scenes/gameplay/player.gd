@@ -4,40 +4,6 @@ class_name Player
 
 #region Scoring
 
-const MAX_SCORE: int = 500
-const JUDGMENTS: Array[Dictionary] = [
-	{
-		"name": "epic", "splash": true,
-		"accuracy": 100.0, "threshold": 22.5,
-		"color": Color("ff89c9"),
-	},
-	{
-		"name": "sick", "splash": true,
-		"accuracy": 90.0, "threshold": 45.0,
-		"color": Color("626592"),
-	},
-	{
-		"name": "good", "splash": false,
-		"accuracy": 85.0, "threshold": 90.0,
-		"color": Color("77d0c1"),
-	},
-	{
-		"name": "bad", "splash": false,
-		"accuracy": 30.0, "threshold": 135.0,
-		"color": Color("f7433f"),
-	},
-	{
-		"name": "shit", "splash": false,
-		"accuracy": 0.0, "threshold": 180.0,
-		"color": Color("e5af32"),
-	},
-	{
-		"name": "miss", "splash": false,
-		"accuracy": 0.0, "threshold": NAN,
-		"color": Color.DIM_GRAY,
-	},
-]
-
 	# scoring values #
 
 @export var score:  int = 0
@@ -75,12 +41,12 @@ func mk_stats_string() -> String:
 
 #region Player Input
 
-signal note_hit(hit_result: NoteData.HitResult)
+signal note_hit(hit_result: Note.HitResult)
 signal note_miss(column: int)
 
 @export var controls: PackedStringArray = ["note0", "note1", "note2", "note3"]
 
-var note_queue: Array[NoteData] = []
+var note_queue: Array[Note] = []
 
 func get_column_event(_event: InputEvent) -> int:
 	for i: int in controls.size():
@@ -95,9 +61,9 @@ func _unhandled_key_input(e: InputEvent) -> void:
 	if key == -1:
 		return
 
-	var input_notes: Array[NoteData] = note_queue.filter(func(queued: NoteData):
+	var input_notes: Array[Note] = note_queue.filter(func(queued: Note):
 		var is_player: bool = $"../".get_index() == queued.player
-		var hit_threshold: float = JUDGMENTS[JUDGMENTS.size() - 2].threshold * 0.001
+		var hit_threshold: float = Scoring.JUDGMENTS[Scoring.JUDGMENTS.size() - 2].threshold * 0.001
 		return (is_player and queued.column == key and
 			(queued.time - Conductor.time) < hit_threshold and
 			queued.hit_flag == 0)
@@ -109,7 +75,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 		return
 
 	if input_notes.size() > 1:
-		input_notes.sort_custom(NoteData.sort_by_time)
+		input_notes.sort_custom(Note.sort_by_time)
 	#print_debug(input_notes)
 
 	if e.is_released():
@@ -118,7 +84,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 		$"../".call_deferred("play_static", key)
 		return
 
-	var note: NoteData = input_notes[0]
+	var note: Note = input_notes[0]
 	if is_instance_valid(note.object):
 		note.object.call_deferred("hit_behaviour", note)
 		note.object.free()
@@ -127,48 +93,49 @@ func _unhandled_key_input(e: InputEvent) -> void:
 	note.hit_flag = 1 # flag the note as hit
 	send_hit_result(note)
 
-
-func send_hit_result(note: NoteData) -> void:
+## Constructs a hit result.
+func send_hit_result(note: Note) -> void:
 	var diff: float = note.time - Conductor.time
-	var judge: Dictionary = get_judgment(absf(diff *  1000.0))
+	var judge: Dictionary = Scoring.judge_note(absf(diff *  1000.0), note)
 
 	var hit_colour: Color = Color.DIM_GRAY
 	if "color" in judge: hit_colour = judge.color
+	elif "colour" in judge: hit_colour = judge.colour # british.
 
 	var cur: = get_tree().current_scene
 	cur.hit_result_label.text = (str(judge.name) +
 		"\nTiming: %sms" % snappedf(diff * 1000.0, 0.01))
 	cur.hit_result_label.modulate = hit_colour
 
-	var hit_result: = NoteData.HitResult.new()
-	hit_result.millisecond = diff * 1000.0
+	var hit_result: = Note.HitResult.new()
+	hit_result.hit_time = diff * 1000.0
 	hit_result.judgment = judge
 	hit_result.player = self
 	hit_result.data = note
 	note_hit.emit(hit_result)
 
-	score += 350
-	health += floori(3 * note.hold_length)
-	accuracy_threshold += judge.accuracy
-	total_notes_hit += 1
-	combo += 1
+	var hit_score: = Scoring.TEMPLATE_HIT_SCORE.duplicate()
+	hit_score.health = health + floori(3 * note.hold_length)
+	hit_score.accuracy = accuracy_threshold + judge.accuracy
+	hit_score.total_notes_hit = total_notes_hit + 1
+	hit_score.score = score + 350
+	hit_score.combo = combo + 1
+
+	apply_score(hit_score)
 
 	await RenderingServer.frame_post_draw
 	hit_result.unreference()
 
-
-func get_judgment(time: float) -> Dictionary:
-	var result: Dictionary = JUDGMENTS.back()
-
-	for i: int in JUDGMENTS.size():
-		var judgment: Dictionary = JUDGMENTS[i]
-		if judgment.threshold == NAN:
-			continue
-
-		if time <= judgment.threshold:
-			result = judgment
-			break
-
-	return result
-
+## wow
+func apply_score(score_struct: Dictionary) -> void:
+	if "score" in score_struct:
+		score = score_struct.score
+	if "health" in score_struct:
+		health = score_struct.health
+	if "accuracy" in score_struct:
+		accuracy_threshold = score_struct.accuracy
+	if "total_notes_hit" in score_struct:
+		total_notes_hit = score_struct.total_notes_hit
+	if "combo" in score_struct:
+		combo = score_struct.combo
 #endregion

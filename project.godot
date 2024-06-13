@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Friday Night Funkin' (Raven)"
 config/version="1.0.0"
-run/main_scene="res://scenes/title_screen.tscn"
+run/main_scene="res://scenes/menu/title_screen.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 boot_splash/show_image=false
 boot_splash/fullsize=false
@@ -21,9 +21,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Globals="*res://scripts/globals.gd"
-Preferences="*res://scripts/preferences.gd"
-Conductor="*res://scripts/conductor.gd"
+Preferences="*res://scripts/singletons/preferences.gd"
+Globals="*res://scripts/singletons/globals.gd"
+Conductor="*res://scripts/singletons/conductor.gd"
 
 [display]
 
@@ -39,7 +39,7 @@ naming/node_name_casing=2
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot_sparrow/plugin.cfg")
+enabled=PackedStringArray()
 
 [input]
 

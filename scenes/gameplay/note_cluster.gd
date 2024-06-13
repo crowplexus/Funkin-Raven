@@ -1,12 +1,12 @@
 extends Node2D
 
-signal note_incoming(note: NoteData)
+signal note_incoming(note: Note)
 
 const NOTE_KIND_OBJECTS: Dictionary = {
 	"normal": preload("res://scenes/gameplay/notes/normal.tscn"),
 }
 
-@export var note_queue: Array[NoteData] = []
+@export var note_queue: Array[Note] = []
 @export var current_note: int = 0
 
 
@@ -18,7 +18,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if not note_queue.is_empty():
 		call_deferred_thread_group("_spawn_notes")
-		for note: NoteData in note_queue:
+		for note: Note in note_queue:
 			if not is_instance_valid(note.object):
 				continue
 
@@ -45,7 +45,7 @@ func _spawn_notes() -> void:
 		spawn_delay = 0.9 / note_queue[current_note].speed
 
 	while time_rel < spawn_delay and current_note < note_queue.size() - 1:
-		var note: NoteData = note_queue[current_note]
+		var note: Note = note_queue[current_note]
 		note_incoming.emit(note)
 		if not is_instance_valid(note.object):
 			var kind: StringName = "normal"

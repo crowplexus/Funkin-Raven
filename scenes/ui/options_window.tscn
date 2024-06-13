@@ -1,0 +1,159 @@
+[gd_scene load_steps=6 format=3 uid="uid://deo3obwvipfis"]
+
+[ext_resource type="Script" path="res://scenes/ui/options_window.gd" id="1_gulft"]
+[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/font_files/vcr.ttf" id="2_mtl8v"]
+[ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/preference_bar.tscn" id="3_nu5bw"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_43sds"]
+font = ExtResource("2_mtl8v")
+font_size = 32
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o27e5"]
+bg_color = Color(0, 0, 0, 0.572549)
+
+[node name="options_window" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_gulft")
+
+[node name="page_name_label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -170.0
+offset_top = 20.0
+offset_right = 172.0
+offset_bottom = 50.0
+grow_horizontal = 2
+text = "< PAGE NAME HERE >"
+label_settings = SubResource("LabelSettings_43sds")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="pages" type="Panel" parent="."]
+clip_contents = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.1
+anchor_right = 0.5
+anchor_bottom = 0.767
+offset_left = -400.0
+offset_right = 400.0
+offset_bottom = -0.23999
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="selector_" type="ColorRect" parent="pages"]
+visible = false
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 0
+offset_top = 161.0
+offset_right = 800.0
+offset_bottom = 211.0
+color = Color(0, 1, 0.833333, 1)
+
+[node name="gameplay" type="VBoxContainer" parent="pages"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_right = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="keybinds" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Keybinds"
+description = "Self-explanatory."
+option_type = 3
+
+[node name="scroll" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Scroll Direction"
+description = "Defines which direction the notes will scroll to."
+variable = "scroll_direction"
+option_type = 2
+display_names = Array[StringName]([&"Up", &"Down"])
+
+[node name="botplay" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Botplay"
+description = "Players will control themselves if enabled"
+variable = "botplay"
+
+[node name="visuals" type="VBoxContainer" parent="pages"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_right = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="framerate" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Framerate Cap"
+description = "Define here your frames per second limit."
+variable = "framerate_cap"
+option_type = 1
+
+[node name="framerate_mode" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Framerate Mode"
+description = "Define how the engine should treat framerate."
+variable = "framerate_mode"
+option_type = 2
+display_names = Array[StringName]([&"Capped", &"Unlimited", &"VSync"])
+
+[node name="note_splashes" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Note Splashes"
+description = "Enables a firework effect when hitting judgements that allow it."
+variable = "note_splashes"
+
+[node name="selector" type="Label" parent="pages"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 161.0
+offset_bottom = 211.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("2_mtl8v")
+theme_override_font_sizes/font_size = 32
+text = ">                                      <"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="descriptor" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -117.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_o27e5")
+text = "This option will do things to your game that have never been done before, honestly you should just get ready for it, it's kinda amazing."
+label_settings = SubResource("LabelSettings_43sds")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

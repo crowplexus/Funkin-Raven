@@ -4,7 +4,7 @@ class_name Chart
 static var global: Chart
 
 
-@export var notes: Array[NoteData] = []
+@export var notes: Array[Note] = []
 @export var time_changes: Array[Dictionary] = []
 @export var song_info: SongInfo = SongInfo.new()
 @export var key_amount: int = 4
@@ -77,7 +77,7 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 
 			# load notes
 			for note: Dictionary in jsonf["notes"][real_difficulty]:
-				var swag_note: NoteData = Chart.make_note(note)
+				var swag_note: Note = Chart.make_note(note)
 				if "d" in note:
 					var player: int = 0
 					if int(note["d"]) % (chart.key_amount * 2) >= chart.key_amount:
@@ -104,11 +104,9 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 					for note: Array in bar["sectionNotes"]:
 						var note_kind: StringName = "normal"
 						if 3 in note and note[3] is String:
-							match note[3]:
-								"Hurt Note": note_kind = "mine"
-								_: note_kind = StringName(note[3])
+							note_kind = StringName(note[3])
 
-						var swag_note: NoteData = Chart.make_note({
+						var swag_note: Note = Chart.make_note({
 							"t": float(note[0]), # Time
 							"d": int(note[1]), # Column
 							"k": note_kind, # Kind
@@ -158,10 +156,13 @@ func convert_vanilla_metadata(_meta: Dictionary) -> void:
 		if "ratings" in _meta["playData"]:
 			song_info.stars = _meta["playData"].ratings
 
-static func make_note(data: Dictionary, _key_amount: int = 4) -> NoteData:
-	var swag_note: NoteData = NoteData.new()
+static func make_note(data: Dictionary, _key_amount: int = 4) -> Note:
+	var swag_note: Note = Note.new()
 	if "t" in data: swag_note.time = float(data["t"] * 0.001)
 	if "t" in data: swag_note.column = int(data["d"]) % _key_amount
-	if "k" in data: swag_note.kind = String(data["k"])
+	if "k" in data:
+		match data["k"]:
+			"Hurt Note": swag_note.kind = "mine"
+			_: swag_note.kind = StringName(data["k"])
 	if "s" in data: swag_note.hold_length = float(data["s"] * 0.001)
 	return swag_note

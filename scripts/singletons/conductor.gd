@@ -1,5 +1,9 @@
 extends Node
 
+signal step_reached(step: int)
+signal beat_reached(beat: int)
+signal bar_reached (bar : int)
+
 const TIME_CHANGE_TEMPLATE: Dictionary = {
 	"bpm": 100.0,
 	"beat_time": null,
@@ -8,6 +12,8 @@ const TIME_CHANGE_TEMPLATE: Dictionary = {
 	"signature_num": 4,
 	"signature_den": 4,
 }
+
+var active: bool = true
 
 var time: float = 0.0
 var time_changes: Array[Dictionary] = []
@@ -43,19 +49,21 @@ var _previous_istep: int = 0
 
 
 func _process(_delta: float) -> void:
-	var _song_dt: float = time - _previous_time
-	var beat_dt: float = (60 / bpm) * _song_dt
+	if not active:
+		return
+
+	var song_dt: float = time - _previous_time
+	var beat_dt: float = (60.0 / bpm) * song_dt
+
+	if istep > _previous_istep:
+		step_reached.emit(istep)
+		if istep % 4 == 0: beat_reached.emit(ibeat)
+		if ibeat % 4 == 0: bar_reached.emit(ibar)
+		_previous_istep = istep
 
 	fstep += beat_dt * steps_per_beat
 	fbeat += beat_dt # oh hi hello :D
 	fbar  += beat_dt / beats_per_bar
-
-	if floori(fstep) != _previous_istep:
-		# call stephit here
-		#if istep % 4 == 0: # call beathit here
-		#if ibeat % 4 == 0: # call barhit here
-		_previous_istep = floori(fstep)
-
 	_previous_time = time
 
 #region Utility Functions

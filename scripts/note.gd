@@ -1,13 +1,13 @@
 extends Resource
 ## Raw Note Data, used to spawn the notes,
 ## it is also used to a lesser extent in inputs.
-class_name NoteData
+class_name Note
 ## Hit Result event, created when hitting notes
 class HitResult extends RefCounted:
 	var player: Player = null
-	var judgment: Dictionary = Player.JUDGMENTS.back()
-	var millisecond: float = 0.0
-	var data: NoteData = null
+	var judgment: Dictionary = Scoring.JUDGMENTS.back()
+	var hit_time: float = 0.0
+	var data: Note = null
 
 var object: CanvasItem
 
@@ -48,8 +48,8 @@ var speed: float = 1.0
 
 #region Other Utility Functions
 
-## Sorts Data by using two NoteData objects, use with arrays.
-static func sort_by_time(first: NoteData, next: NoteData) -> int:
+## Sorts Data by using two Note objects, use with arrays.
+static func sort_by_time(first: Note, next: Note) -> int:
 	return first.time < next.time
 
 #endregion

@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://bjhgsn2eb2e1h"]
+[gd_scene load_steps=6 format=3 uid="uid://bjhgsn2eb2e1h"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/gameplay.gd" id="1_gfupu"]
 [ext_resource type="PackedScene" uid="uid://dab600stg4bxl" path="res://scenes/gameplay/fields/notefield.tscn" id="2_6wcp1"]
 [ext_resource type="PackedScene" uid="uid://dxm24padis8xt" path="res://scenes/backgrounds/stage.tscn" id="2_k2qad"]
+[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/font_files/vcr.ttf" id="3_i3403"]
 [ext_resource type="Script" path="res://scenes/gameplay/note_cluster.gd" id="5_sb58y"]
 
 [node name="gameplay" type="Node2D"]
@@ -18,14 +19,20 @@ anchor_mode = 0
 [node name="judge" type="Label" parent="ui_layer"]
 offset_right = 1280.0
 offset_bottom = 720.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("3_i3403")
 theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="status_label" type="Label" parent="ui_layer"]
-offset_top = 622.0
+offset_top = 686.0
 offset_right = 1280.0
-offset_bottom = 648.0
+offset_bottom = 712.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("3_i3403")
 theme_override_font_sizes/font_size = 18
 text = "Score Text"
 horizontal_alignment = 1
