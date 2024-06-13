@@ -25,6 +25,10 @@ Preferences="*res://scripts/singletons/preferences.gd"
 Globals="*res://scripts/singletons/globals.gd"
 Conductor="*res://scripts/singletons/conductor.gd"
 
+[debug]
+
+gdscript/warnings/integer_division=0
+
 [display]
 
 window/size/viewport_width=1280

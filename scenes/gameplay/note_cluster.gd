@@ -1,6 +1,7 @@
 extends Node2D
 
 signal note_incoming(note: Note)
+signal note_fly_over(note: Note)
 
 const NOTE_KIND_OBJECTS: Dictionary = {
 	"normal": preload("res://scenes/gameplay/notes/normal.tscn"),
@@ -35,6 +36,7 @@ func _process(_delta: float) -> void:
 
 			if is_instance_valid(note.object) and rel_time < -.15 and note.hit_flag != -1:
 				note.hit_flag = -1
+				note_fly_over.emit(note)
 				note.object.free()
 
 

@@ -5,24 +5,31 @@ class_name Player
 #region Scoring
 
 	# scoring values #
-
+## Score, 0 by default.
 @export var score:  int = 0
 #	get:
 #		# convert accuracy to score
 #		# increase by note hits
 #		# decrease by misses.
 #		return 0
+## Combo Breaks, 0 by default
 @export var breaks: int = 0
+## Note Misses, 0 by default.
 @export var misses: int = 0
+## Note Combo, 0 by default.
 @export var combo : int = 0
-
-@export var health: int = 50:
+## Your current health value, starts at max_health / 2.
+@export var health: int = 0: # this is set on the _ready() function
 	set(health_value):
 		health = clampi(health_value, 0, max_health)
+## Defines your max health value.
 @export var max_health: int = 100
+## Contains judgments that you've hit.
+@export var jhit_regis: Dictionary = {}
 
 	# accuracy values #
-
+## Accuracy, used to measure how accurate are your note hits in a percentage form[br]
+## 0.00% by default
 @export var accuracy: float = 0.0:
 	get:
 		if total_notes_hit == 0: return 0.00
@@ -34,10 +41,25 @@ class_name Player
 #endregion
 
 func mk_stats_string() -> String:
-	return "[Score]: %s / [Combo Breaks]: %s / [Accuracy]: %s" % [
+	var status: String = "[Score]: %s / [Combo Breaks]: %s / [Accuracy]: %s" % [
 		score, breaks, str(snappedf(accuracy, 0.01)) + "%"
 	]
+	# crazy frog.
+	var cf: String = ""
+	if breaks != 0 and breaks < 10:
+		if breaks == 1: cf = "MF"
+		else: cf = "SDCB"
+	else:
+		cf = Scoring.get_clear_flag(jhit_regis)
 
+	if not cf.is_empty(): status += " (%s)" % cf
+	return status
+
+
+func _ready() -> void:
+	health = max_health / 2
+	for judge: Dictionary in Scoring.JUDGMENTS:
+		jhit_regis[judge.name] = 0
 
 #region Player Input
 
@@ -106,6 +128,9 @@ func send_hit_result(note: Note) -> void:
 	cur.hit_result_label.text = (str(judge.name) +
 		"\nTiming: %sms" % snappedf(diff * 1000.0, 0.01))
 	cur.hit_result_label.modulate = hit_colour
+
+	if judge.name in jhit_regis:
+		jhit_regis[judge.name] += 1
 
 	var hit_result: = Note.HitResult.new()
 	hit_result.hit_time = diff * 1000.0

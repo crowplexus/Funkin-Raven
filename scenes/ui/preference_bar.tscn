@@ -12,7 +12,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tmrfj")
-description = null
 
 [node name="color_rect" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(0, 50)
@@ -31,6 +30,6 @@ offset_bottom = 50.0
 grow_horizontal = 2
 theme_override_fonts/font = ExtResource("2_d8es2")
 theme_override_font_sizes/font_size = 32
-text = "Unknown: <null>"
+text = "Unknown: ?"
 horizontal_alignment = 1
 vertical_alignment = 1

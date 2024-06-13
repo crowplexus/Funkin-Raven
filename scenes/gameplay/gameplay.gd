@@ -30,6 +30,7 @@ func _ready() -> void:
 	# Connect Signals
 	Conductor.beat_reached.connect(on_beat_reached)
 	note_cluster.note_incoming.connect(position_notes)
+	note_cluster.note_fly_over.connect(miss_fly_over)
 
 	await RenderingServer.frame_post_draw
 	Conductor.active = true
@@ -37,6 +38,7 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	note_cluster.note_incoming.disconnect(position_notes)
+	note_cluster.note_fly_over.disconnect(miss_fly_over)
 	Conductor.beat_reached.disconnect(on_beat_reached)
 
 
@@ -100,8 +102,8 @@ func init_players(player_count: int = 1) -> void:
 		var fake_result: = Note.HitResult.new()
 		fake_result.player = player
 		player.note_hit.emit(fake_result)
-
 		field.make_playable(player)
+		fake_result.unreference()
 
 
 func init_camera(default_zoom: Vector2 = Vector2.ONE) -> void:
@@ -113,6 +115,9 @@ func init_camera(default_zoom: Vector2 = Vector2.ONE) -> void:
 
 func init_music() -> void:
 	# SETUP MUSIC (temporary) #
+
+	if not is_instance_valid(Chart.global):
+		return
 
 	var track_path: String = "res://assets/songs/%s/" % Chart.global.song_info.folder
 	var in_variation: bool = not Chart.global.song_info.difficulty.variation.is_empty()
@@ -159,4 +164,18 @@ func position_notes(note: Note) -> void:
 			if is_instance_valid(field.player):
 				note.as_player = true
 
+## Connected to [code]note_cluster.note_fly_over[/code] to handle
+## missing notes by letting them fly above your notefield..
+func miss_fly_over(note: Note) -> void:
+	for field: NoteField in fields.get_children():
+		if note.player == field.get_index() and is_instance_valid(field.player):
+			if field.player.combo > 1:
+				field.player.combo = 0
+				field.player.breaks += 1
+			field.player.misses += 1
+			field.player.note_miss.emit(note.column)
+			var fake_result: = Note.HitResult.new()
+			fake_result.player = field.player
+			update_score_text(fake_result)
+			fake_result.unreference()
 #endregion
