@@ -81,7 +81,7 @@ func update_selection(new: int = 0) -> void:
 	# scrolling code by @srthero278 / @srtpro278
 	if page_size > 8 and active_page.size.y >= page_list.size.y:
 		_display_ypos = (
-			(page_list.size.y - active_page.size.y + 210)
+			((page_list.size.y - active_page.size.y) - page_size + 33)
 			* ((selected_pref.position.y - selected_pref.size.y + selected_pref.size.y)
 			/ page_list.size.y)
 		)
