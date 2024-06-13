@@ -4,10 +4,10 @@ extends Resource
 class_name Note
 ## Hit Result event, created when hitting notes
 class HitResult extends RefCounted:
-	var player: Player = null
-	var judgment: Dictionary = Scoring.JUDGMENTS.back()
-	var hit_time: float = 0.0
-	var data: Note = null
+	var player: Player
+	var judgment: Dictionary
+	var hit_time: float
+	var data: Note
 
 var object: CanvasItem
 

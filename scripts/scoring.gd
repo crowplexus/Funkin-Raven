@@ -16,30 +16,35 @@ const JUDGMENTS: Array[Dictionary] = [
 		"accuracy": 100.0, "threshold": 22.5,
 		"color": Color("ff89c9"),
 		"clear": { "single": "SDE", "full": "EFC" },
+		"combo_break": false,
 	},
 	{
 		"name": "sick", "splash": true,
 		"accuracy": 90.0, "threshold": 45.0,
 		"color": Color("626592"),
 		"clear": { "single": "SDS", "full": "SFC" },
+		"combo_break": false,
 	},
 	{
 		"name": "good", "splash": false,
 		"accuracy": 85.0, "threshold": 90.0,
 		"color": Color("77d0c1"),
-		"clear": { "single": "SDG", "full": "GFC" }
+		"clear": { "single": "SDG", "full": "GFC" },
+		"combo_break": false,
 	},
 	{
 		"name": "bad", "splash": false,
 		"accuracy": 30.0, "threshold": 135.0,
 		"color": Color("f7433f"),
-		"clear": { "single": "SDB", "full": "FC" }
+		"clear": { "full": "FC" },
+		"combo_break": false,
 	},
 	{
 		"name": "shit", "splash": false,
 		"accuracy": 0.0, "threshold": 180.0,
 		"color": Color("e5af32"),
-		"clear": { "single": "SD", "full": "FC" }
+		"clear": { "full": "FC" },
+		"combo_break": true,
 	},
 	#{
 	#	"name": "miss", "splash": false,
@@ -57,7 +62,7 @@ static func get_clear_flag(hit_reg: Dictionary) -> String:
 			var idx: int = JUDGMENTS.find(judge)
 			if idx == 1 and hit_reg[judge.name] == 1: flag = "WF"
 			elif idx == 2 and hit_reg[judge.name] == 1: flag = "BF"
-			elif hit_reg[judge.name] < 10:
+			elif hit_reg[judge.name] < 10 and "single" in judge.clear:
 				flag = judge.clear.single
 			else:
 				flag = judge.clear.full

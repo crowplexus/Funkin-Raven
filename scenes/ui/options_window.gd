@@ -53,9 +53,14 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 		changing_preference = not changing_preference
 		selector.modulate = Color.GREEN if changing_preference else Color.WHITE
 
-	if Input.is_action_just_pressed("ui_cancel") and changing_preference:
-		changing_preference = false
-		selector.modulate = Color.WHITE
+	if Input.is_action_just_pressed("ui_cancel"):
+		if changing_preference:
+			changing_preference = false
+			selector.modulate = Color.WHITE
+		else:
+			create_tween().set_ease(Tween.EASE_OUT).bind_node(self) \
+			.tween_property(self, "modulate:a", 0.0, 0.2) \
+			.finished.connect(self.leave)
 
 
 func update_selection(new: int = 0) -> void:
@@ -77,3 +82,9 @@ func update_page(new_page: int = 0) -> void:
 	page_name_label.text = "< %s >" % active_page.name.to_pascal_case()
 
 	update_selection()
+
+
+func leave() -> void:
+	if get_tree().paused == true:
+		get_tree().paused = false
+	self.queue_free()

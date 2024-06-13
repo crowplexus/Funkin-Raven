@@ -46,11 +46,12 @@ func mk_stats_string() -> String:
 	]
 	# crazy frog.
 	var cf: String = ""
-	if breaks != 0 and breaks < 10:
-		if breaks == 1: cf = "MF"
-		else: cf = "SDCB"
-	else:
+	if breaks == 0:
 		cf = Scoring.get_clear_flag(jhit_regis)
+	else:
+		if breaks < 10:
+			if breaks == 1: cf = "MF"
+			else: cf = "SDCB"
 
 	if not cf.is_empty(): status += " (%s)" % cf
 	return status
@@ -85,7 +86,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 
 	var input_notes: Array[Note] = note_queue.filter(func(queued: Note):
 		var is_player: bool = $"../".get_index() == queued.player
-		var hit_threshold: float = Scoring.JUDGMENTS[Scoring.JUDGMENTS.size() - 2].threshold * 0.001
+		var hit_threshold: float = Scoring.JUDGMENTS.back().threshold * 0.001
 		return (is_player and queued.column == key and
 			(queued.time - Conductor.time) < hit_threshold and
 			queued.hit_flag == 0)
@@ -115,22 +116,17 @@ func _unhandled_key_input(e: InputEvent) -> void:
 	note.hit_flag = 1 # flag the note as hit
 	send_hit_result(note)
 
-## Constructs a hit result.
+## Sends a hit result
 func send_hit_result(note: Note) -> void:
 	var diff: float = note.time - Conductor.time
 	var judge: Dictionary = Scoring.judge_note(absf(diff *  1000.0), note)
 
-	var hit_colour: Color = Color.DIM_GRAY
-	if "color" in judge: hit_colour = judge.color
-	elif "colour" in judge: hit_colour = judge.colour # british.
-
-	var cur: = get_tree().current_scene
-	cur.hit_result_label.text = (str(judge.name) +
-		"\nTiming: %sms" % snappedf(diff * 1000.0, 0.01))
-	cur.hit_result_label.modulate = hit_colour
-
 	if judge.name in jhit_regis:
 		jhit_regis[judge.name] += 1
+
+	if combo > 1 and "combo_break" in judge and judge.combo_break == true:
+		combo = 0
+		breaks += 1
 
 	var hit_result: = Note.HitResult.new()
 	hit_result.hit_time = diff * 1000.0
@@ -151,7 +147,9 @@ func send_hit_result(note: Note) -> void:
 	await RenderingServer.frame_post_draw
 	hit_result.unreference()
 
-## wow
+## increases score values and accuracy if provided.[br]
+## NOTE: please copy [code]Scoring.TEMPLATE_HIT_SCORE[/code]
+## and modify its values when using this
 func apply_score(score_struct: Dictionary) -> void:
 	if "score" in score_struct:
 		score = score_struct.score
@@ -163,4 +161,13 @@ func apply_score(score_struct: Dictionary) -> void:
 		total_notes_hit = score_struct.total_notes_hit
 	if "combo" in score_struct:
 		combo = score_struct.combo
+
+## increases misses and breaks combo if needed
+func apply_miss(column: int = 0) -> void:
+	if column < 0: column = 0
+	if combo > 1:
+		combo = 0
+		breaks += 1
+	misses += 1
+	note_miss.emit(column)
 #endregion
