@@ -36,11 +36,8 @@ func _ready() -> void:
 
 func update(amount: int = 0) -> void:
 	match option_type:
-		0:
-			if typeof(value) == TYPE_BOOL:
-				Preferences.set(variable, not value)
-		1:
-			Preferences.set(variable, value + steps * amount)
+		0: Preferences.set(variable, not value)
+		1: Preferences.set(variable, value + steps * amount)
 		2:
 			var current_val: int = 0
 			if value is int:
