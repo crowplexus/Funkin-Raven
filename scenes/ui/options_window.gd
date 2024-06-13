@@ -24,17 +24,22 @@ var current_selection: int = 0
 ## Disables scrolling if you are changing a preference.
 var changing_preference: bool = false
 
+var _display_ypos: float = 0.0
+
 
 func _ready() -> void:
-	update_selection()
 	update_page()
 
 
 func _process(delta: float) -> void:
-	selector.position.y = lerpf(
-		selected_pref.position.y, selector.position.y,
-		exp(-delta * 32)
-	)
+	if is_instance_valid(active_page):
+		if selector.position.y != selected_pref.position.y:
+			selector.position.y = lerpf(
+				selector.position.y, selected_pref.position.y + _display_ypos,
+				exp(-delta * 64))
+
+		if active_page.position.y != _display_ypos:
+			active_page.position.y = lerpf(active_page.position.y, _display_ypos, exp(-delta * 64))
 
 
 func _unhandled_key_input(_event: InputEvent) -> void:
@@ -66,8 +71,20 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 func update_selection(new: int = 0) -> void:
 	current_selection = wrapi(current_selection + new, 0, page_size)
 	selected_pref = active_page.get_child(current_selection)
-
 	option_descriptor.text = selected_pref.description
+
+	for pref: PreferenceBar in active_page.get_children():
+		if pref == selected_pref: pref.modulate.a = 1.0
+		else: pref.modulate.a = 0.6
+
+	_display_ypos = 0.0
+	# scrolling code by @srthero278 / @srtpro278
+	if page_size > 8 and active_page.size.y >= page_list.size.y:
+		_display_ypos = (
+			(page_list.size.y - active_page.size.y + 210)
+			* ((selected_pref.position.y - selected_pref.size.y + selected_pref.size.y)
+			/ page_list.size.y)
+		)
 
 
 func update_page(new_page: int = 0) -> void:
@@ -80,7 +97,6 @@ func update_page(new_page: int = 0) -> void:
 		page.visible = page == active_page
 
 	page_name_label.text = "< %s >" % active_page.name.to_pascal_case()
-
 	update_selection()
 
 

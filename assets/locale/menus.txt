@@ -1,0 +1,18 @@
+TAG,en_AU,pt_BR
+
+GENERIC_SCORE,Score,Pontos
+GENERIC_GRADE,Grade,Avaliação
+GENERIC_ACCURACY,Accuracy,Precisão
+
+DIFFICULTY_EASY,Easy,Fácil
+DIFFICULTY_NORMAL,Normal,Normal
+DIFFICULTY_HARD,Hard,Difícil
+DIFFICULTY_ERECT,Erect,Durão
+DIFFICULTY_NIGHTMARE,Nightmare,Pesadelo
+
+STORY_TOP_SCORE,Level Score,Pontuação da Fase
+FREEPLAY_TOP_SCORE,Top Score,Melhor Pontuação
+
+OPTIONS_PAGE_GAMEPLAY,Gameplay,Jogabilidade
+OPTIONS_PAGE_VISUALS,Visuals,Visuais
+OPTIONS_PAGE_BEHAVIOUR,Behaviour,Comportamento

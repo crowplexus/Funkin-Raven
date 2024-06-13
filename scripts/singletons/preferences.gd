@@ -1,6 +1,7 @@
 extends Node
 
-@export_group("Gameplay Options")
+#region Gameplay Options
+
 ## Self-explanatory.
 @export var keybinds: Dictionary = {
 	"note0": [	"S",	"Left"	],
@@ -14,7 +15,9 @@ var scroll_direction: int = 0
 ## Players will control themselves if enabled
 @export var botplay: bool = false
 
-@export_group("Visual Options")
+#endregion
+#region Visual Options
+
 ## Define here your frames per second limit.
 @export var framerate_cap: int = 60:
 	set(new_framerate):
@@ -36,6 +39,19 @@ var framerate_mode: String = "Capped":
 ## Enables a firework effect when hitting judgements that allow it.
 @export var note_splashes: bool = true
 
+#endregion
+#region Behaaviour Options
+
+## How should the countdown's speed behave when ticking?
+@export_enum("BPM based:0", "User defined:1")
+var countdown_mode: int = 0
+## How fast the countdown ticks down, measured in steps[br]
+## The higher the number, the slower it gets.
+@export var countdown_speed: int = 5:
+	set(new_speed):
+		countdown_speed = clampi(new_speed, 1, 10)
+
+#endregion
 #region Functions
 
 func _ready() -> void:

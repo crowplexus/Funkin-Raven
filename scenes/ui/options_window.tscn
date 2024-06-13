@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://deo3obwvipfis"]
 
 [ext_resource type="Script" path="res://scenes/ui/options_window.gd" id="1_gulft"]
-[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/font_files/vcr.ttf" id="2_mtl8v"]
+[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_mtl8v"]
 [ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/preference_bar.tscn" id="3_nu5bw"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_43sds"]
@@ -47,8 +47,9 @@ anchor_top = 0.1
 anchor_right = 0.5
 anchor_bottom = 0.767
 offset_left = -400.0
+offset_top = -8.0
 offset_right = 400.0
-offset_bottom = -0.23999
+offset_bottom = 11.76
 grow_horizontal = 2
 mouse_filter = 2
 
@@ -62,14 +63,9 @@ offset_bottom = 211.0
 color = Color(0, 1, 0.833333, 1)
 
 [node name="gameplay" type="VBoxContainer" parent="pages"]
-layout_mode = 1
-anchors_preset = 15
+layout_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -1.0
-offset_right = -1.0
-grow_horizontal = 2
-grow_vertical = 2
 mouse_filter = 2
 alignment = 1
 
@@ -99,8 +95,6 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -1.0
-offset_right = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -126,6 +120,22 @@ layout_mode = 2
 option_name = &"Note Splashes"
 description = "Enables a firework effect when hitting judgements that allow it."
 variable = "note_splashes"
+
+[node name="countdown_mode" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Countdown Mode"
+description = "How should the countdown's speed behave when ticking?"
+variable = "countdown_mode"
+option_type = 2
+display_names = Array[StringName]([&"BPM based", &"User defined"])
+
+[node name="countdown_speed" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Countdown Speed"
+description = "How fast the countdown ticks down, measured in steps
+The higher the number, the slower it gets."
+variable = "countdown_speed"
+option_type = 1
 
 [node name="selector" type="Label" parent="pages"]
 custom_minimum_size = Vector2(0, 50)

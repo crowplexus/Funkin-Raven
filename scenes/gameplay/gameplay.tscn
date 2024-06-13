@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scenes/gameplay/gameplay.gd" id="1_gfupu"]
 [ext_resource type="PackedScene" uid="uid://dab600stg4bxl" path="res://scenes/gameplay/fields/notefield.tscn" id="2_6wcp1"]
 [ext_resource type="PackedScene" uid="uid://dxm24padis8xt" path="res://scenes/backgrounds/stage.tscn" id="2_k2qad"]
-[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/font_files/vcr.ttf" id="3_i3403"]
+[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="3_i3403"]
 [ext_resource type="Script" path="res://scenes/gameplay/note_cluster.gd" id="5_sb58y"]
 
 [node name="gameplay" type="Node2D"]
