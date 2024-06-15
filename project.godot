@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+SoundBoard="*res://scenes/tools/sound_board.tscn"
 Preferences="*res://scripts/singletons/preferences.gd"
 Globals="*res://scripts/singletons/globals.gd"
 Conductor="*res://scripts/singletons/conductor.gd"
@@ -90,4 +91,5 @@ note3_p2={
 
 [rendering]
 
-renderer/rendering_method="mobile"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

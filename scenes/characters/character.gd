@@ -25,7 +25,13 @@ var _current_idle: int = 0
 var _previous_anim: StringName = ""
 
 
-func dance(forced: bool = false, force_idle: int = -1) -> void:
+func play_animation(anim: StringName, force: bool = false, force_frame: int = 0) -> void:
+	if force or _previous_anim != anim:
+		frame = force_frame
+
+	_previous_anim = anim
+
+func dance(_forced: bool = false, force_idle: int = -1) -> void:
 	if force_idle > -1 and force_idle < idle_list.size():
 		_current_idle = force_idle
 

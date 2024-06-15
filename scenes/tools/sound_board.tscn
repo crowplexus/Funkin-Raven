@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://wxlmudcif251"]
+
+[ext_resource type="Script" path="res://scenes/tools/sound_board.gd" id="1_afkcs"]
+
+[node name="sound_board" type="Node"]
+process_mode = 3
+script = ExtResource("1_afkcs")
+
+[node name="bgm_player" type="AudioStreamPlayer" parent="."]

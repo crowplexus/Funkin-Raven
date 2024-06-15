@@ -15,7 +15,7 @@ const JUDGMENTS: Array[Dictionary] = [
 		"name": "epic", "splash": true,
 		"accuracy": 100.0, "threshold": 22.5,
 		"color": Color("ff89c9"),
-		"clear": { "single": "SDE", "full": "EFC" },
+		"clear": { "full": "EFC" },
 		"combo_break": false,
 	},
 	{
@@ -37,7 +37,7 @@ const JUDGMENTS: Array[Dictionary] = [
 		"accuracy": 30.0, "threshold": 135.0,
 		"color": Color("f7433f"),
 		"clear": { "full": "FC" },
-		"combo_break": false,
+		"combo_break": true,
 	},
 	{
 		"name": "shit", "splash": false,
@@ -59,27 +59,35 @@ static func get_clear_flag(hit_reg: Dictionary) -> String:
 	for judge: Dictionary in JUDGMENTS:
 		if not "clear" in judge: continue
 		if judge.name in hit_reg and hit_reg[judge.name] > 0:
-			var idx: int = JUDGMENTS.find(judge)
-			if idx == 1 and hit_reg[judge.name] == 1: flag = "WF"
-			elif idx == 2 and hit_reg[judge.name] == 1: flag = "BF"
-			elif hit_reg[judge.name] < 10 and "single" in judge.clear:
+			var _idx: int = JUDGMENTS.find(judge)
+			#if idx == 1 and hit_reg[judge.name] == 1: flag = "WF"
+			#elif idx == 2 and hit_reg[judge.name] == 1: flag = "BF"
+			if hit_reg[judge.name] < 10 and "single" in judge.clear:
 				flag = judge.clear.single
 			else:
 				flag = judge.clear.full
 	return flag
 
-static func judge_note(millisecond_time: float, note: Note) -> Dictionary:
-	var result: Dictionary = Scoring.JUDGMENTS.back()
 
+static func judge_note(note: Note, fallback_diff: float = 0.0) -> Dictionary:
 	match note.kind:
 		_:
-			for i: int in JUDGMENTS.size():
-				var judgment: Dictionary = Scoring.JUDGMENTS[i]
-				if judgment.threshold == NAN:
-					continue
+			var result = null
+			if is_instance_valid(note.object) and note.object.has_meta("judge_note"):
+				result = note.object.call_deferred("judge_note", note)
+			if result == null or not result is Dictionary:
+				result = judge_time(fallback_diff)
+			return result
 
-				if millisecond_time <= judgment.threshold:
-					result = judgment
-					break
 
+static func judge_time(millisecond_time: float) -> Dictionary:
+	var result: Dictionary = Scoring.JUDGMENTS.back()
+	for i: int in JUDGMENTS.size():
+		var judgment: Dictionary = Scoring.JUDGMENTS[i]
+		if judgment.threshold == NAN:
+			continue
+
+		if millisecond_time <= judgment.threshold:
+			result = judgment
+			break
 	return result

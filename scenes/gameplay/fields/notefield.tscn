@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dab600stg4bxl"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/fields/notefield.gd" id="1_bd6jx"]
-[ext_resource type="Texture2D" uid="uid://cy0kn25ien48d" path="res://icon.svg" id="2_ki6np"]
+[ext_resource type="SpriteFrames" uid="uid://ct58h45og8cx6" path="res://assets/sprites/ui/normal/strumline.res" id="2_vqpbi"]
 
 [node name="notefield" type="Control"]
 layout_mode = 3
@@ -9,24 +9,27 @@ anchors_preset = 0
 script = ExtResource("1_bd6jx")
 
 [node name="receptors" type="Control" parent="."]
-modulate = Color(0.4, 0.4, 0.4, 1)
 anchors_preset = 0
 
-[node name="0" type="Sprite2D" parent="receptors"]
+[node name="0" type="AnimatedSprite2D" parent="receptors"]
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_ki6np")
+sprite_frames = ExtResource("2_vqpbi")
+animation = &"0 static"
 
-[node name="1" type="Sprite2D" parent="receptors"]
-position = Vector2(72, 0)
+[node name="1" type="AnimatedSprite2D" parent="receptors"]
+position = Vector2(80, 0)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_ki6np")
+sprite_frames = ExtResource("2_vqpbi")
+animation = &"1 static"
 
-[node name="2" type="Sprite2D" parent="receptors"]
-position = Vector2(144, 0)
+[node name="2" type="AnimatedSprite2D" parent="receptors"]
+position = Vector2(160, 0)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_ki6np")
+sprite_frames = ExtResource("2_vqpbi")
+animation = &"2 static"
 
-[node name="3" type="Sprite2D" parent="receptors"]
-position = Vector2(216, 0)
+[node name="3" type="AnimatedSprite2D" parent="receptors"]
+position = Vector2(240, 0)
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_ki6np")
+sprite_frames = ExtResource("2_vqpbi")
+animation = &"3 static"

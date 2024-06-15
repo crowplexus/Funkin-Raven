@@ -50,8 +50,9 @@ func mk_stats_string() -> String:
 		cf = Scoring.get_clear_flag(jhit_regis)
 	else:
 		if breaks < 10:
-			if breaks == 1: cf = "MF"
-			else: cf = "SDCB"
+			#if breaks == 1: cf = "MF"
+			#else:
+			cf = "SDCB"
 
 	if not cf.is_empty(): status += " (%s)" % cf
 	return status
@@ -68,58 +69,79 @@ signal note_hit(hit_result: Note.HitResult)
 signal note_miss(column: int)
 
 @export var controls: PackedStringArray = ["note0", "note1", "note2", "note3"]
+@export var botplay: bool = false
 
+var held_buttons: Array[bool] = []
 var note_queue: Array[Note] = []
+var _latest_hit_result: Note.HitResult
+
 
 func get_column_event(_event: InputEvent) -> int:
 	for i: int in controls.size():
-		if (Input.is_action_just_pressed(controls[i]) or
-			Input.is_action_just_released(controls[i])):
+		if _event.is_action(controls[i]):
 			return i
 	return -1
 
 
 func _unhandled_key_input(e: InputEvent) -> void:
 	var key: int = get_column_event(e)
-	if key == -1:
+	if key == -1 or botplay:
 		return
 
-	var input_notes: Array[Note] = note_queue.filter(func(queued: Note):
-		var is_player: bool = $"../".get_index() == queued.player
-		var hit_threshold: float = Scoring.JUDGMENTS.back().threshold * 0.001
-		return (is_player and queued.column == key and
-			(queued.time - Conductor.time) < hit_threshold and
-			queued.hit_flag == 0)
-	)
+	if key <= held_buttons.size():
+		held_buttons[key] = Input.is_action_pressed(controls[key])
 
-	if e.is_pressed() and input_notes.is_empty():
-		$"../".receptors.get_child(key).scale *= 0.8
-		$"../".call_deferred("play_ghost", key)
-		return
+	if Input.is_action_just_pressed(controls[key]):
+		var input_notes: Array[Note] = note_queue.filter(func(queued: Note):
+			var hit_threshold: float = Scoring.JUDGMENTS.back().threshold * 0.001
+			var can_be_hit: bool = (queued.time - Conductor.time) < hit_threshold
+			return (queued.column == key and queued.hit_flag == 0
+				and not queued.finished and can_be_hit)
+		)
+		if input_notes.size() > 1:
+			input_notes.sort_custom(Note.sort_by_time)
+		if input_notes.is_empty():
+			$"../".call_deferred("play_ghost", key)
+		else:
+			note_hit_tap(input_notes[0])
+			# play animation in receptor
+			$"../".call_deferred("play_glow", input_notes[0].column)
 
-	if input_notes.size() > 1:
-		input_notes.sort_custom(Note.sort_by_time)
-	#print_debug(input_notes)
-
-	if e.is_released():
+	elif Input.is_action_just_released(controls[key]):
 		# ghost tapping here
 		# also reset receptor animation
 		$"../".call_deferred("play_static", key)
 		return
 
-	var note: Note = input_notes[0]
-	if is_instance_valid(note.object):
-		note.object.call_deferred("hit_behaviour", note)
-		note.object.free()
 
-	$"../".call_deferred("play_glow", key)
-	note.hit_flag = 1 # flag the note as hit
-	send_hit_result(note)
+func note_hit_tap(note: Note) -> void:
+	if note.hit_flag == 0:
+		note.hit_flag = 1 # flag the note as hit
+
+	var hit_result: Note.HitResult = send_hit_result(note)
+	_latest_hit_result = hit_result
+	if is_instance_valid(note.object) and note.object.has_method("hit_behaviour"):
+		note.object.callv("hit_behaviour", [hit_result])
+
+	if is_instance_valid(note.object):
+		if hit_result.judgment.combo_break:
+			note.object.modulate.a = 0.4
+			note.object.modulate.v = 3.0
+		elif note.hold_length == 0.0:
+			note.object.queue_free()
+
+
+func note_hit_hold(note: Note) -> void:
+	score = score + 15
+	note_hit.emit(_latest_hit_result)
+	if note.hold_length <= 0.0:
+		_latest_hit_result.unreference()
+
 
 ## Sends a hit result
-func send_hit_result(note: Note) -> void:
+func send_hit_result(note: Note) -> Note.HitResult:
 	var diff: float = note.time - Conductor.time
-	var judge: Dictionary = Scoring.judge_note(absf(diff *  1000.0), note)
+	var judge: Dictionary = Scoring.judge_note(note, absf(diff * 1000.0))
 
 	if judge.name in jhit_regis:
 		jhit_regis[judge.name] += 1
@@ -136,16 +158,16 @@ func send_hit_result(note: Note) -> void:
 	note_hit.emit(hit_result)
 
 	var hit_score: = Scoring.TEMPLATE_HIT_SCORE.duplicate()
-	hit_score.health = health + floori(3 * note.hold_length)
+	hit_score.health = health + 3
 	hit_score.accuracy = accuracy_threshold + judge.accuracy
 	hit_score.total_notes_hit = total_notes_hit + 1
 	hit_score.score = score + 350
 	hit_score.combo = combo + 1
-
 	apply_score(hit_score)
 
-	await RenderingServer.frame_post_draw
-	hit_result.unreference()
+	#await RenderingServer.frame_post_draw
+	#hit_result.unreference()
+	return hit_result
 
 ## increases score values and accuracy if provided.[br]
 ## NOTE: please copy [code]Scoring.TEMPLATE_HIT_SCORE[/code]
@@ -169,5 +191,6 @@ func apply_miss(column: int = 0) -> void:
 		combo = 0
 		breaks += 1
 	misses += 1
+	health -= 3
 	note_miss.emit(column)
 #endregion

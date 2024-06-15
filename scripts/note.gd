@@ -9,7 +9,14 @@ class HitResult extends RefCounted:
 	var hit_time: float
 	var data: Note
 
+
 var object: CanvasItem
+var notefield: NoteField
+var receptor: CanvasItem:
+	get:
+		if is_instance_valid(notefield):
+			return notefield.get_receptor(column)
+		return null
 
 #region Spawn Data
 
@@ -18,16 +25,18 @@ var object: CanvasItem
 ## Column where the note spawns,
 ## for example, 2 would be Down / Light Blue
 @export var column: int = 0
-## Player who owns this note, declareed when loading charts.
+## Player who owns this note, declared when loading charts.
 @export var player: int = 0
 ## The note's kind, often declaring how it behaves
 @export var kind: StringName = "normal"
 ## The note's hold length, gives any Tap Notes
 ## a tail of a specific size.
 @export var hold_length: float = 0.0
+## Note scroll direction[br]
+## Defaults to Vector2(1, 1)
+@export var scroll: Vector2 = Vector2(1, 1)
 
 #endregion
-
 #region Input Data
 
 ## Hit Flag, declares what landed a hit on a tap note.[br][br]
@@ -37,15 +46,24 @@ var object: CanvasItem
 ## 2 - a Bot, AI or CPU.
 @export_enum("Miss:-1", "None:0", "Player:1", "AI:2")
 var hit_flag: int = 0
+#endregion
+#region Customisation
 ## The note's initial position, used for offsetting.
-var initial_pos: Vector2 = Vector2.ZERO
-## If the note behaves like a player note.
-var as_player: bool = false
+@export var initial_pos: Vector2 = Vector2.ZERO
+## If the note needs to be hit by a player to disappear.
+@export var as_player: bool = false
 ## How fast the note's object scrolls through the screen
-var speed: float = 1.0
+@export var speed: float = 1.0
+## Debug Mode forces certain behaviour functions for notes to disable
+@export var debug_mode: bool = false
+## If the note is moving towards its receptor.
+@export var moving: bool = true
+## If the note's hold needs to be updated
+@export var update_hold: bool = false
+## If the note finished operating (was hit or missed, etc)
+@export var finished: bool = false
 
 #endregion
-
 #region Other Utility Functions
 
 ## Sorts Data by using two Note objects, use with arrays.

@@ -1,19 +1,23 @@
 extends Node2D
 
+@export var skin: UISkin
+
 #region Scene Nodes
 
 @onready var camera: Camera2D = $"camera"
-@onready var ui_layer: CanvasLayer = $"ui_layer"
-@onready var status_label: Label = $"ui_layer/status_label"
-@onready var hit_result_label: Label = $"ui_layer/judge"
-@onready var note_cluster: Node2D = $"ui_layer/note_cluster"
-@onready var fields: Control = $"ui_layer/fields"
-
+@onready var ui_layer: CanvasLayer = $"hud"
+@onready var health_bar: = $"hud/main/health_bar"
+@onready var status_label: Label = $"hud/main/status_label"
+@onready var hit_result_label: Label = $"hud/main/judge"
+@onready var note_cluster: Node2D = $"hud/main/note_cluster"
+@onready var fields: Control = $"hud/main/fields"
+@onready var stage: StageBG = $"stage"
 #endregion
 #region Local Variables
 
 var music: AudioStreamPlayer
-var camera_beat_interval: int = 2
+var camera_beat_interval: int = 4
+var hud_beat_interval: int = 4
 var initial_camera_zoom: Vector2 = Vector2.ONE
 var initial_ui_zoom: Vector2 = Vector2.ONE
 var _need_to_play_music: bool = true
@@ -22,21 +26,29 @@ var _need_to_play_music: bool = true
 #region Node2D Functions
 
 func _ready() -> void:
-	await RenderingServer.frame_post_draw
-
 	Conductor.active = false
-	Conductor.time = -0.5
+	Conductor.time = -(Conductor.crotchet * 4)
+
+	var cam_zoom: Vector2 = Vector2.ONE
+	var cam_speed: float = 1.0
+	if is_instance_valid(stage):
+		cam_zoom = stage.camera_zoom
+		cam_speed = stage.camera_speed
 
 	init_music()
-	init_camera()
-	if not Preferences.botplay:
-		init_players(1)
+	init_fields()
+	init_camera(cam_zoom, cam_speed)
+	init_players([ fields.get_child(0) ])
 
 	initial_ui_zoom = ui_layer.scale
 
+	match Preferences.scroll_direction:
+		1:
+			health_bar.position.y = 80
+			status_label.position.y = 115
+
 	# Connect Signals
 	Conductor.beat_reached.connect(on_beat_reached)
-	note_cluster.note_incoming.connect(position_notes)
 	note_cluster.note_fly_over.connect(miss_fly_over)
 
 	await RenderingServer.frame_post_draw
@@ -48,29 +60,30 @@ func _process(delta: float) -> void:
 	# reset camera zooming #
 	if camera.zoom != initial_camera_zoom:
 		camera.zoom = Vector2(
-			lerpf(initial_camera_zoom.x, camera.zoom.x, exp(-delta * 40)),
-			lerpf(initial_camera_zoom.y, camera.zoom.y, exp(-delta * 40))
+			lerpf(initial_camera_zoom.x, camera.zoom.x, exp(-delta * 5)),
+			lerpf(initial_camera_zoom.y, camera.zoom.y, exp(-delta * 5))
 		)
 
 	if ui_layer.scale != initial_ui_zoom:
-		# same as above but for UI
-		pass
+		ui_layer.scale = Vector2(
+			lerpf(initial_ui_zoom.x, ui_layer.scale.x, exp(-delta * 5)),
+			lerpf(initial_ui_zoom.y, ui_layer.scale.y, exp(-delta * 5))
+		)
+		center_ui_layer()
 
 func _unhandled_key_input(e: InputEvent) -> void:
 	if e.is_pressed():
 		match e.keycode:
+			KEY_ESCAPE:
+				get_tree().change_scene_to_packed(load("res://scenes/menu/freeplay_menu.tscn"))
 			KEY_ENTER:
 				if not get_tree().paused:
-					var ow: Control = load("res://scenes/ui/options_window.tscn").instantiate()
-					ow.process_mode = Node.PROCESS_MODE_WHEN_PAUSED
-					#ow.pivot_offset = Vector2(1280/2,720/2)
-					ow.z_index = 5
-					ui_layer.add_child(ow)
+					var ow: Control = Globals.get_options_window()
 					get_tree().paused = true
+					ui_layer.add_child(ow)
 
 
 func _exit_tree() -> void:
-	note_cluster.note_incoming.disconnect(position_notes)
 	note_cluster.note_fly_over.disconnect(miss_fly_over)
 
 	for i: int in fields.get_child_count():
@@ -84,33 +97,39 @@ func _exit_tree() -> void:
 #endregions
 #region Gameplay Setup
 
-func init_players(player_count: int = 1) -> void:
-	for i: int in fields.get_child_count():
-		if i >= player_count:
-			break
+func init_fields() -> void:
+	for field: NoteField in fields.get_children():
+		note_cluster.call_deferred("connect_notefield", field)
+		field.reset_scroll_mods()
 
-		var field: NoteField = fields.get_child(i)
+
+func init_players(player_fields: Array[NoteField]) -> void:
+	for i: int in player_fields.size():
+		var field: NoteField = player_fields[i]
 		var player: Player = Player.new()
-		player.note_queue = note_cluster.note_queue
+		player.note_queue = note_cluster.note_queue.filter(func(note: Note):
+			return note.player == field.get_index())
 
 		for j: int in player.controls.size():
-			player.controls[j] += "_p%s" % str(i+1)
+			player.controls[j] += "_p%s" % str(i + 1)
+			player.held_buttons.append(false)
 
 		player.note_hit.connect(update_score_text)
 		player.note_hit.connect(show_combo_temporary)
 		# send hit result so the score text updates
 		var fake_result: = Note.HitResult.new()
+		player.botplay = Preferences.botplay
 		fake_result.player = player
 		player.note_hit.emit(fake_result)
 		field.make_playable(player)
 		fake_result.unreference()
 
 
-func init_camera(default_zoom: Vector2 = Vector2.ONE) -> void:
+func init_camera(default_zoom: Vector2 = Vector2.ONE, default_speed: float = 1.0) -> void:
 	camera.zoom = default_zoom
 	initial_camera_zoom = camera.zoom
 	camera.position_smoothing_enabled = true
-	camera.position_smoothing_speed = 3.0
+	camera.position_smoothing_speed = 3.0 * default_speed
 
 
 func init_music() -> void:
@@ -122,7 +141,7 @@ func init_music() -> void:
 	var track_path: String = "res://assets/songs/%s/" % Chart.global.song_info.folder
 	var in_variation: bool = not Chart.global.song_info.difficulty.variation.is_empty()
 
-	for fn: String in DirAccess.get_files_at(track_path):
+	for fn: String in DirAccess.open(track_path).get_files():
 		if in_variation:
 			break
 
@@ -145,11 +164,30 @@ func init_music() -> void:
 		vocals.bus = music.bus
 		music.add_child(vocals)
 
-	_need_to_play_music = is_instance_valid(music) and not music.playing
+	#_need_to_play_music = is_instance_valid(music) and not music.playing
 	##################
 
 #endregion
 #region Gameplay Loop
+
+var _count_progress: int = 0
+
+func process_countdown(_beat: int) -> void:
+	if _count_progress != skin.countdown_sprites.size():
+		var countdown_sprite: Sprite2D = Sprite2D.new()
+		countdown_sprite.texture = skin.countdown_sprites[_count_progress]
+		countdown_sprite.position = get_viewport_rect().size * 0.5
+		add_child(countdown_sprite)
+
+		create_tween().set_ease(Tween.EASE_IN_OUT).bind_node(countdown_sprite) \
+		.tween_property(countdown_sprite, "modulate:a", 0.0, 0.8 * Conductor.crotchet) \
+		.finished.connect(countdown_sprite.queue_free)
+
+	if _count_progress != skin.countdown_sounds.size():
+		SoundBoard.play_sfx(skin.countdown_sounds[_count_progress])
+
+	_count_progress += 1
+
 
 func process_conductor(delta: float) -> void:
 	if not Conductor.active:
@@ -163,24 +201,22 @@ func process_conductor(delta: float) -> void:
 				for track: AudioStreamPlayer in music.get_children():
 					track.play(0.0)
 				_need_to_play_music = false
-	elif not _need_to_play_music:
+	elif is_instance_valid(music) and music.playing:
 		Conductor.time = music.get_playback_position() + AudioServer.get_time_since_last_mix()
+
+	if get_player(1) != null:
+		health_bar.value = lerpf(health_bar.value, get_player(1).health, exp(-delta * 64))
 
 
 func on_beat_reached(beat: int) -> void:
-	if beat % camera_beat_interval == 0:
-		camera.zoom += Vector2(0.035, 0.035)
+	if beat < 0:
+		process_countdown(beat)
+		return
 
-## Connected to [code]note_cluster.note_incoming[/code], Used to poisition the notes
-func position_notes(note: Note) -> void:
-	for field: NoteField in fields.get_children():
-		if note.player == field.get_index():
-			var receptor: Sprite2D = field.receptors.get_child(note.column)
-			note.initial_pos = receptor.global_position
-			note.initial_pos.x -= note_cluster.global_position.x
-			note.initial_pos.y -= note_cluster.position.y
-			if is_instance_valid(field.player):
-				note.as_player = true
+	if beat % camera_beat_interval == 0:
+		camera.zoom += Vector2(0.015, 0.015)
+	if beat % hud_beat_interval == 0:
+		ui_layer.scale += Vector2(0.03, 0.03)
 
 ## Connected to [code]note_cluster.note_fly_over[/code] to handle
 ## missing notes by letting them fly above your notefield..
@@ -197,6 +233,14 @@ func miss_fly_over(note: Note) -> void:
 #region HUD Elements
 
 var combo_tween: Tween
+
+
+func center_ui_layer() -> void:
+	ui_layer.offset = Vector2(
+		(get_viewport_rect().size.x * -0.5) * (ui_layer.scale.x - 1.0),
+		(get_viewport_rect().size.y * -0.5) * (ui_layer.scale.y - 1.0)
+	)
+
 
 func update_score_text(hit_result: Note.HitResult) -> void:
 	if not is_instance_valid(hit_result.player) or not is_instance_valid(status_label):
@@ -227,5 +271,14 @@ func show_combo_temporary(hit_result: Note.HitResult) -> void:
 	combo_tween.bind_node(hit_result_label)
 	combo_tween.tween_property(hit_result_label, "modulate:a", 0.0, 0.5 * Conductor.crotchet) \
 	.set_delay(0.5 * Conductor.crotchet)
+
+#endregion
+#region Utilities
+
+func get_player(player_id: int) -> Player:
+	for field: NoteField in fields.get_children():
+		if is_instance_valid(field.player) and player_id == field.get_index() + 1:
+			return field.player
+	return null
 
 #endregion

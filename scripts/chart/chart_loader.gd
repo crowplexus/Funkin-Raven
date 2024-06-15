@@ -37,6 +37,7 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 		"%s-%s" % [song, difficulty.file],
 		"%s-chart-%s" % [song, difficulty.file],
 		"%s-chart" % song,
+		song, # worst case scenario
 	]
 
 	for i: String in file_names:
@@ -89,14 +90,16 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 		"legacy":
 			if not "song" in jsonf:
 				return chart
-			if "speed" in jsonf["song"]:
+
+			if "speed" in jsonf.song:
 				chart.note_speed = jsonf.song.speed
-			if "bpm" in jsonf["song"]:
-				chart.time_changes.append(Conductor.TIME_CHANGE_TEMPLATE)
+			if "bpm" in jsonf.song:
+				chart.time_changes.append(Conductor.TIME_CHANGE_TEMPLATE.duplicate())
 				chart.time_changes.front().bpm = jsonf.song.bpm
+
 			# load notes from the old format
-			if "notes" in jsonf["song"]:
-				for bar: Dictionary in jsonf["song"]["notes"]:
+			if "notes" in jsonf.song:
+				for bar: Dictionary in jsonf.song.notes:
 					# important values should always exist in data
 					if not "sectionNotes" in bar: bar["sectionNotes"] = []
 					if not "mustHitSection" in bar: bar["mustHitSection"] = false
@@ -109,8 +112,8 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 						var swag_note: Note = Chart.make_note({
 							"t": float(note[0]), # Time
 							"d": int(note[1]), # Column
+							"l": float(note[2]), # Sustain Length
 							"k": note_kind, # Kind
-							"s": float(note[2]) # Sustain Length
 						}, chart.key_amount)
 
 						# 0 -> Player, 1 -> Enemy
@@ -125,9 +128,10 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 
 	Conductor.sort_time_changes(chart.time_changes)
 
-	Conductor.time_changes = chart.time_changes.duplicate()
-	Conductor.apply_time_change(Conductor.time_changes.front())
 	#print_debug(chart)
+	Conductor.time_changes = chart.time_changes
+	Conductor.apply_time_change(chart.time_changes.front())
+
 	return chart
 
 
@@ -159,10 +163,10 @@ func convert_vanilla_metadata(_meta: Dictionary) -> void:
 static func make_note(data: Dictionary, _key_amount: int = 4) -> Note:
 	var swag_note: Note = Note.new()
 	if "t" in data: swag_note.time = float(data["t"] * 0.001)
-	if "t" in data: swag_note.column = int(data["d"]) % _key_amount
+	if "d" in data: swag_note.column = int(data["d"]) % _key_amount
+	if "l" in data: swag_note.hold_length = float(data["l"] * 0.001)
 	if "k" in data:
 		match data["k"]:
 			"Hurt Note": swag_note.kind = "mine"
 			_: swag_note.kind = StringName(data["k"])
-	if "s" in data: swag_note.hold_length = float(data["s"] * 0.001)
 	return swag_note

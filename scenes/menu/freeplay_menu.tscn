@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=3 uid="uid://2wkbyp2gb0gu"]
+
+[ext_resource type="Script" path="res://scenes/menu/freeplay_menu.gd" id="1_mwt6o"]
+[ext_resource type="Script" path="res://scripts/song_item.gd" id="2_8432q"]
+[ext_resource type="Texture2D" uid="uid://mr31twd36rpw" path="res://assets/sprites/menu/menuDesat.png" id="2_a718r"]
+[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="3_r3f4j"]
+
+[sub_resource type="Resource" id="Resource_fmqca"]
+script = ExtResource("2_8432q")
+display_name = &"Bopeebo"
+folder_name = &"bopeebo"
+difficulties = Array[Dictionary]([{
+"file": "easy",
+"variation": ""
+}, {
+"file": "normal",
+"variation": ""
+}, {
+"file": "hard",
+"variation": ""
+}, {
+"file": "erect",
+"variation": "erect"
+}, {
+"file": "erect",
+"target": "nightmare",
+"variation": "erect"
+}])
+
+[sub_resource type="Resource" id="Resource_66ify"]
+script = ExtResource("2_8432q")
+display_name = &"Darnell"
+folder_name = &"darnell"
+difficulties = Array[Dictionary]([{
+"file": "easy",
+"variation": ""
+}, {
+"file": "normal",
+"variation": ""
+}, {
+"file": "hard",
+"variation": ""
+}])
+
+[sub_resource type="LabelSettings" id="LabelSettings_r764n"]
+font = ExtResource("3_r3f4j")
+font_size = 32
+
+[node name="freeplay_menu" type="Node2D"]
+script = ExtResource("1_mwt6o")
+songs = Array[ExtResource("2_8432q")]([SubResource("Resource_fmqca"), SubResource("Resource_66ify")])
+
+[node name="background" type="Sprite2D" parent="."]
+modulate = Color(0.389287, 0.389287, 0.389287, 1)
+position = Vector2(640, 360)
+texture = ExtResource("2_a718r")
+
+[node name="song_container" type="VBoxContainer" parent="."]
+offset_left = 410.0
+offset_right = 870.0
+offset_bottom = 720.0
+mouse_filter = 2
+alignment = 1
+
+[node name="cool_song" type="Label" parent="song_container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Kepi Cuti"
+label_settings = SubResource("LabelSettings_r764n")
+horizontal_alignment = 1
+vertical_alignment = 1

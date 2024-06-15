@@ -19,7 +19,7 @@ var option_type: int = 0
 ## Display names for values, only useful when the option type is List ([code]2[/code])
 @export var display_names: Array[StringName] = []
 ## Number decimal points, only useful when the option type is Number ([code]1[/code])
-var steps: float = 1.0
+@export var steps: float = 1.0
 
 ## The preference's current value
 var value: Variant:

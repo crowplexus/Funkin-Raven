@@ -17,7 +17,21 @@ var active: bool = true
 
 var time: float = 0.0
 var time_changes: Array[Dictionary] = []
-var current_time_change: int = 0
+var current_time_change: int:
+	set(nt):
+		if time_changes.is_empty() or nt > time_changes.size():
+			return
+
+		Conductor.bpm = time_changes[nt].bpm
+		Conductor.steps_per_beat = time_changes[nt].signature_num
+		Conductor.beats_per_bar = time_changes[nt].signature_den
+		current_time_change = nt
+
+var rate: float = 1.0:
+	set(new_rate):
+		Engine.time_scale = new_rate
+		AudioServer.playback_speed_scale = new_rate
+		rate = new_rate
 
 var bpm: float = 100.0:
 	set(new_bpm):
@@ -49,22 +63,30 @@ var _previous_istep: int = 0
 
 
 func _process(_delta: float) -> void:
-	if not active:
-		return
+	if active:
+		var song_dt: float = time - _previous_time
+		var beat_dt: float = (bpm / 60.0) * song_dt
 
-	var song_dt: float = time - _previous_time
-	var beat_dt: float = (60.0 / bpm) * song_dt
+		if _previous_istep != istep:
+			step_reached.emit(istep)
+			if istep % 4 == 0: beat_reached.emit(ibeat)
+			if ibeat % 4 == 0: bar_reached.emit(ibar)
+			_previous_istep = istep
 
-	if istep > _previous_istep:
-		step_reached.emit(istep)
-		if istep % 4 == 0: beat_reached.emit(ibeat)
-		if ibeat % 4 == 0: bar_reached.emit(ibar)
-		_previous_istep = istep
+		fstep += beat_dt * steps_per_beat
+		fbeat += beat_dt # oh hi hello :D
+		fbar  += beat_dt / beats_per_bar
+		_previous_time = time
 
-	fstep += beat_dt * steps_per_beat
-	fbeat += beat_dt # oh hi hello :D
-	fbar  += beat_dt / beats_per_bar
-	_previous_time = time
+
+func _unhandled_key_input(e: InputEvent) -> void:
+	if e.pressed: match e.keycode:
+		KEY_F2:
+			rate -= 0.01
+			print_debug(rate)
+		KEY_F3:
+			rate += 0.01
+			print_debug(rate)
 
 #region Utility Functions
 
@@ -82,7 +104,7 @@ func time_change_from_vanilla(tc: Dictionary) -> Dictionary:
 ## Resets all the important values and data in the conductor.
 func reset() -> void:
 	time_changes.clear()
-	current_time_change = 0
+	#current_time_change = 0
 	_previous_time = 0.0
 	_previous_istep = 0
 	fbeat = 0.0

@@ -25,13 +25,15 @@ script = ExtResource("1_gulft")
 
 [node name="page_name_label" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -170.0
-offset_top = 20.0
-offset_right = 172.0
-offset_bottom = 50.0
+anchors_preset = -1
+anchor_left = 0.367
+anchor_top = 0.028
+anchor_right = 0.635
+anchor_bottom = 0.069
+offset_left = 0.23999
+offset_top = -0.16
+offset_right = 0.199951
+offset_bottom = 0.319996
 grow_horizontal = 2
 text = "< PAGE NAME >"
 label_settings = SubResource("LabelSettings_43sds")
@@ -75,13 +77,30 @@ option_name = &"Keybinds"
 description = "Self-explanatory."
 option_type = 3
 
-[node name="scroll" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+[node name="scroll_direction" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
 layout_mode = 2
 option_name = &"Scroll Direction"
 description = "Defines which direction the notes will scroll to."
 variable = "scroll_direction"
 option_type = 2
 display_names = Array[StringName]([&"Up", &"Down"])
+
+[node name="scroll_speed_behaviour" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Scroll Speed Behaviour"
+description = "Defines how scroll speed behaves in-game."
+variable = "scroll_speed_behaviour"
+option_type = 2
+display_names = Array[StringName]([&"Chart based", &"Multiplicative", &"Constant"])
+
+[node name="scroll_speed" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Scroll Speed"
+description = "Defines your set scroll speed, the Scroll Speed Behaviour
+option will dictate how it impacts gameplay."
+variable = "scroll_speed"
+option_type = 1
+steps = 0.01
 
 [node name="botplay" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
 layout_mode = 2
@@ -121,6 +140,14 @@ option_name = &"Note Splashes"
 description = "Enables a firework effect when hitting judgements that allow it."
 variable = "note_splashes"
 
+[node name="hold_layer" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Hold Note Layer"
+description = "Defines how hold notes should be layered."
+variable = "hold_layer"
+option_type = 2
+display_names = Array[StringName]([&"Above Receptors", &"Behind Receptors"])
+
 [node name="countdown_mode" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
 layout_mode = 2
 option_name = &"Countdown Mode"
@@ -153,12 +180,12 @@ vertical_alignment = 1
 
 [node name="descriptor" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = -1
+anchor_top = 0.837
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -117.0
-offset_bottom = -24.0
+anchor_bottom = 0.967
+offset_top = 0.359985
+offset_bottom = -0.240051
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_o27e5")

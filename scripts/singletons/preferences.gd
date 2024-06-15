@@ -12,6 +12,14 @@ extends Node
 ## Defines which direction the notes will scroll to.
 @export_enum("Up:0", "Down:1")
 var scroll_direction: int = 0
+## Defines how scroll speed behaves in-game.
+@export_enum("Chart based:0", "Multiplicative:1", "Constant:2")
+var scroll_speed_behaviour: int = 0
+## Defines your set scroll speed, the Scroll Speed Behaviour[br]
+## option will dictate how it impacts gameplay.
+@export var scroll_speed: float = 1.0:
+	set(new_speed):
+		scroll_speed = clampf(snappedf(new_speed, 0.001), 0.5, 10.0)
 ## Players will control themselves if enabled
 @export var botplay: bool = false
 
@@ -35,13 +43,14 @@ var framerate_mode: String = "Capped":
 			if new_mode == "Unlimited":
 				Engine.max_fps = 0
 		framerate_mode = new_mode
-
+## Defines how hold notes should be layered.
+@export_enum("Above Receptors:0", "Behind Receptors:1")
+var hold_layer: int = 1
 ## Enables a firework effect when hitting judgements that allow it.
 @export var note_splashes: bool = true
-
-#endregion
-#region Behaaviour Options
-
+## Enables certain flashing effects in menus and gameplay[br]
+## please disable this if you are sensitive to those.
+@export var flashing: bool = true
 ## How should the countdown's speed behave when ticking?
 @export_enum("BPM based:0", "User defined:1")
 var countdown_mode: int = 0
