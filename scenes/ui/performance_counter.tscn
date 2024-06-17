@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=3 uid="uid://dqy5gsnibni5l"]
+
+[ext_resource type="Script" path="res://scenes/ui/performance_counter.gd" id="1_yqb66"]
+
+[node name="performance_counter" type="CanvasLayer"]
+process_mode = 3
+layer = 128
+script = ExtResource("1_yqb66")
+
+[node name="update_timer" type="Timer" parent="."]
+
+[node name="ui" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="perf_label" type="RichTextLabel" parent="ui"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/normal_font_size = 14
+bbcode_enabled = true
+text = "N/A FPS"
+autowrap_mode = 2

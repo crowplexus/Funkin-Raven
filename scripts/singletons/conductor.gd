@@ -59,15 +59,22 @@ var fstep: float = 0.0
 var fbar: float = 0.0
 
 var _previous_time: float = 0.0
-var _previous_istep: int = 0
+var _previous_istep: int  = 0
 
+
+func _to_string() -> String:
+	return "Time: %s | Music Delta: %s\nStep: %s | Beat: %s | Bar: %s\nBPM: %s | Time Signature %s/%s" % [
+		str(time).pad_decimals(2), str(_previous_time - time).pad_decimals(2),
+		str(fstep).pad_decimals(2), str(fbeat).pad_decimals(2), str(fbar).pad_decimals(2),
+		str(bpm), str(steps_per_beat), str(beats_per_bar),
+	]
 
 func _process(_delta: float) -> void:
 	if active:
 		var song_dt: float = time - _previous_time
 		var beat_dt: float = (bpm / 60.0) * song_dt
 
-		if _previous_istep != istep:
+		if istep > _previous_istep:
 			step_reached.emit(istep)
 			if istep % 4 == 0: beat_reached.emit(ibeat)
 			if ibeat % 4 == 0: bar_reached.emit(ibar)
@@ -79,16 +86,22 @@ func _process(_delta: float) -> void:
 		_previous_time = time
 
 
-func _unhandled_key_input(e: InputEvent) -> void:
-	if e.pressed: match e.keycode:
-		KEY_F2:
-			rate -= 0.01
-			print_debug(rate)
-		KEY_F3:
-			rate += 0.01
-			print_debug(rate)
-
 #region Utility Functions
+
+## Resets all the important values and data in the conductor.
+func reset() -> void:
+	time_changes.clear()
+	#current_time_change = 0
+	set_time(0.0)
+
+## Sets the beat, and step values to new ones based on the given time.
+func set_time(new_time: float) -> void:
+	time = new_time
+	fbeat = Conductor.time_to_beat(new_time)
+	fstep = Conductor.time_to_step(new_time)
+	fbar  = Conductor.time_to_bar(new_time)
+	_previous_time = new_time
+	_previous_istep = floori(fstep)
 
 ## Converts a Time Change from Base Game (0.3) to the raven format.
 func time_change_from_vanilla(tc: Dictionary) -> Dictionary:
@@ -100,16 +113,6 @@ func time_change_from_vanilla(tc: Dictionary) -> Dictionary:
 	if "d" in tc: new_tc.signature_den = tc["d"]
 	if "bt" in tc: new_tc.beat_tuples = tc["bt"]
 	return new_tc
-
-## Resets all the important values and data in the conductor.
-func reset() -> void:
-	time_changes.clear()
-	#current_time_change = 0
-	_previous_time = 0.0
-	_previous_istep = 0
-	fbeat = 0.0
-	fstep = 0.0
-	fbar  = 0.0
 
 ## Utility function to sort through the time changes array
 func sort_time_changes(changes_to_sort: Array[Dictionary] = []) -> void:
@@ -138,19 +141,23 @@ func time_to_beat(ctime: float, cbpm: float = -1) -> float:
 	return (ctime * cbpm) / 60.0
 
 ## Ditto from [code]beat_to_time[/code] but converts to steps
-func step_to_time(ctime: float, cbpm: float = -1, spb: int = 4) -> float:
+func step_to_time(ctime: float, cbpm: float = -1, spb: int = 0) -> float:
+	if spb == 0: spb = Conductor.steps_per_beat
 	return beat_to_time(ctime, cbpm) / spb
 
 ## Ditto from [code]time_to_beat[/code] but converts to steps
-func time_to_step(ctime: float, cbpm: float = -1, spb: int = 4) -> float:
+func time_to_step(ctime: float, cbpm: float = -1, spb: int = 0) -> float:
+	if spb == 0: spb = Conductor.steps_per_beat
 	return time_to_beat(ctime, cbpm) * spb
 
 ## Ditto from [code]beat_to_time[/code] but converts to bars/measures
-func bar_to_time(ctime: float, cbpm: float = -1, bpb: int = 4) -> float:
+func bar_to_time(ctime: float, cbpm: float = -1, bpb: int = 0) -> float:
+	if bpb == 0: bpb = Conductor.beats_per_bar
 	return beat_to_time(ctime, cbpm) / bpb
 
 ## Ditto from [code]time_to_beat[/code] but converts to bars/measures
-func time_to_bar(ctime: float, cbpm: float = -1, bpb: int = 4) -> float:
+func time_to_bar(ctime: float, cbpm: float = -1, bpb: int = 0) -> float:
+	if bpb == 0: bpb = Conductor.beats_per_bar
 	return time_to_beat(ctime, cbpm) / bpb
 
 #endregion

@@ -25,12 +25,13 @@ var _need_to_play_music: bool = true
 
 func _ready() -> void:
 	Conductor.active = false
-	Conductor.time = -(Conductor.crotchet * 4)
+	Conductor.set_time(-(Conductor.crotchet * 5))
 
 	init_music()
 	init_fields()
 
 	init_players(fields.get_children())
+	health_bar.set_player(Preferences.playfield_side)
 
 	initial_ui_zoom = ui_layer.scale
 
@@ -41,7 +42,20 @@ func _ready() -> void:
 
 	# Connect Signals
 	Conductor.beat_reached.connect(on_beat_reached)
+	Conductor.beat_reached.connect(start_countdown)
 	Conductor.active = true
+
+
+func start_countdown(beat: int) -> void:
+	match beat:
+		# process_countdown(sound_id, sprite_id)
+		-4: process_countdown(0)
+		-3: process_countdown(1)
+		-2: process_countdown(2)
+		-1: process_countdown(3)
+
+	if beat == 0 and Conductor.beat_reached.is_connected(start_countdown):
+		Conductor.beat_reached.disconnect(start_countdown)
 
 
 func _process(delta: float) -> void:
@@ -52,6 +66,9 @@ func _process(delta: float) -> void:
 			lerpf(initial_ui_zoom.y, ui_layer.scale.y, exp(-delta * 5))
 		)
 		center_ui_layer()
+	if get_player(Preferences.playfield_side) != null:
+		health_bar.value = lerpf(health_bar.value, get_player(Preferences.playfield_side).health, exp(-delta * 64))
+
 
 func _unhandled_key_input(e: InputEvent) -> void:
 	if e.is_pressed():
@@ -124,12 +141,12 @@ func init_music() -> void:
 		if in_variation:
 			break
 
-		if fn.get_extension() != "ogg":
+		if fn.get_extension() != "import":
 			continue
 
 		if not is_instance_valid(music):
 			music = AudioStreamPlayer.new()
-			music.stream = load(track_path + fn) as AudioStream
+			music.stream = ResourceLoader.load(track_path + fn.get_basename())
 			music.name = "%s" % fn.get_basename()
 			music.stream.loop = false
 			music.bus = "BGM"
@@ -137,7 +154,7 @@ func init_music() -> void:
 			continue
 
 		var vocals: = AudioStreamPlayer.new()
-		vocals.stream = load(track_path + fn) as AudioStream
+		vocals.stream = ResourceLoader.load(track_path + fn.get_basename())
 		vocals.name = "%s" % fn.get_basename()
 		vocals.stream.loop = false
 		vocals.bus = music.bus
@@ -149,23 +166,22 @@ func init_music() -> void:
 #endregion
 #region Gameplay Loop
 
-var _count_progress: int = 0
+func process_countdown(snd_progress: int, spr_progress: int = -0) -> void:
+	if is_same(spr_progress, -0):
+		spr_progress = snd_progress
 
-func process_countdown(_beat: int) -> void:
-	if _count_progress != skin.countdown_sprites.size():
+	if spr_progress > -1 and spr_progress <= skin.countdown_sprites.size():
 		var countdown_sprite: Sprite2D = Sprite2D.new()
-		countdown_sprite.texture = skin.countdown_sprites[_count_progress]
+		countdown_sprite.texture = skin.countdown_sprites[spr_progress]
 		countdown_sprite.position = get_viewport_rect().size * 0.5
 		add_child(countdown_sprite)
 
 		create_tween().set_ease(Tween.EASE_IN_OUT).bind_node(countdown_sprite) \
-		.tween_property(countdown_sprite, "modulate:a", 0.0, 0.8 * Conductor.crotchet) \
+		.tween_property(countdown_sprite, "modulate:a", 0.0, 1.15 * Conductor.crotchet) \
 		.finished.connect(countdown_sprite.queue_free)
 
-	if _count_progress != skin.countdown_sounds.size():
-		SoundBoard.play_sfx(skin.countdown_sounds[_count_progress])
-
-	_count_progress += 1
+	if snd_progress > -1 and snd_progress <= skin.countdown_sounds.size():
+		SoundBoard.play_sfx(skin.countdown_sounds[snd_progress])
 
 
 func process_conductor(delta: float) -> void:
@@ -183,13 +199,9 @@ func process_conductor(delta: float) -> void:
 	elif is_instance_valid(music) and music.playing:
 		Conductor.time = music.get_playback_position() + AudioServer.get_time_since_last_mix()
 
-	if get_player(1) != null:
-		health_bar.value = lerpf(health_bar.value, get_player(1).health, exp(-delta * 64))
-
 
 func on_beat_reached(beat: int) -> void:
 	if beat < 0:
-		process_countdown(beat)
 		return
 
 	if beat % hud_beat_interval == 0:
@@ -254,7 +266,7 @@ func show_combo_temporary(hit_result: Note.HitResult) -> void:
 
 func get_player(player_id: int) -> Player:
 	for field: NoteField in fields.get_children():
-		if is_instance_valid(field.player) and player_id == field.get_index() + 1:
+		if is_instance_valid(field.player) and player_id == field.get_index():
 			return field.player
 	return null
 

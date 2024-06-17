@@ -42,3 +42,9 @@ func on_beat_reached(beat: int) -> void:
 	for icon: CanvasItem in get_children():
 		if beat % bop_interval == 0:
 			icon.scale *= 1.25
+
+
+func set_player(player: int) -> void:
+	match player:
+		0: fill_mode == ProgressBar.FILL_END_TO_BEGIN
+		1: fill_mode = ProgressBar.FILL_BEGIN_TO_END

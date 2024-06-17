@@ -22,6 +22,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 SoundBoard="*res://scenes/tools/sound_board.tscn"
+PerformanceCounter="*res://scenes/ui/performance_counter.tscn"
 Preferences="*res://scripts/singletons/preferences.gd"
 Globals="*res://scripts/singletons/globals.gd"
 Conductor="*res://scripts/singletons/conductor.gd"
