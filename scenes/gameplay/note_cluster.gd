@@ -1,7 +1,6 @@
 extends Node2D
 
 signal note_incoming(note: Note)
-signal note_fly_over(note: Note)
 
 const NOTE_KIND_OBJECTS: Dictionary = {
 	"normal": preload("res://scenes/gameplay/notes/normal.tscn"),
@@ -25,7 +24,7 @@ func _process(delta: float) -> void:
 			move_note_objects(delta)
 
 
-func move_note_objects(delta: float) -> void:
+func move_note_objects(_delta: float) -> void:
 	for note: Note in note_queue:
 		if not is_instance_valid(note) or note.finished:
 			continue
@@ -48,57 +47,6 @@ func move_note_objects(delta: float) -> void:
 			note.object.position.y += rel_time * (400.0 * absf(scroll_speed)) / absf(note_scale) * note.scroll.y
 			#note.object.position *= note.scroll
 
-		if not note.as_player:
-			if rel_time <= 0.0:
-				if note.hit_flag == 0 and is_instance_valid(note.notefield) and is_instance_valid(note.notefield.player):
-					note.hit_flag = 2
-					note.notefield.player.note_hit_tap(note)
-				note.moving = false
-				if note.hold_length > 0.0:
-					note.update_hold = true
-				else:
-					note.finished = true
-				animate_receptor(note)
-		else:
-			var dropped_hold: bool = false
-			if note.hit_flag == 1:
-				if not dropped_hold and note.hold_length > 0.0:
-					note.moving = false
-					if is_instance_valid(note.receptor) and is_instance_valid(note.object):
-						note.object.position.y = note.receptor.global_position.y
-					var player: Player = note.notefield.player
-					if note.column <= player.held_buttons.size():
-						note.update_hold = true
-						if note.hold_length > 0.5 and player.held_buttons[note.column] == false:
-							note.update_hold = true
-							player.apply_miss(note.column)
-							dropped_hold = true
-						elif Conductor.ibeat % 1 == 0:
-							if note.hold_length > 0.5:
-								player.note_hit_hold(note)
-							note.notefield.play_glow(note.column)
-
-			elif rel_time < -.15 and note.hit_flag != -1:
-				note.hit_flag = -1
-				note.finished = true
-				note_fly_over.emit(note)
-
-		# UPDATE HOLD #
-		if note.update_hold and note.hold_length > 0.0:
-			#if is_late and rel_time < 0.0 and note.hit_flag != 0:
-			#	note.hold_length += rel_time
-			#	is_late = false
-			note.hold_length -= delta / absf(note_scale)
-			if note.hold_length <= 0.0:
-				note.finished = true
-
-		# UPDATE OBJECT #
-		if is_instance_valid(note.object):
-			if note.update_hold and note.object.has_method("update_hold_size"):
-				note.object.call_deferred("update_hold_size")
-			if note.finished == true:
-				note.object.free()
-
 
 func spawn_notes() -> void:
 	while current_note != note_queue.size():
@@ -116,8 +64,6 @@ func spawn_notes() -> void:
 			note.notefield = field
 			if note.column < field.scroll_mods.size():
 				note.scroll = field.scroll_mods[note.column]
-			if is_instance_valid(field.player) and field.player.botplay == false:
-				note.as_player = true
 
 		note_incoming.emit(note)
 		if not is_instance_valid(note.object):

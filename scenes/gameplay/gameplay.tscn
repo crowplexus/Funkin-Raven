@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bjhgsn2eb2e1h"]
+[gd_scene load_steps=17 format=3 uid="uid://bjhgsn2eb2e1h"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/gameplay.gd" id="1_gfupu"]
 [ext_resource type="Texture2D" uid="uid://dd87wgxdwo82p" path="res://assets/sprites/ui/normal/prepare.png" id="2_4pdat"]
@@ -14,10 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://bftbew86tagc8" path="res://assets/sprites/ui/normal/go.png" id="5_p7f61"]
 [ext_resource type="Script" path="res://scenes/gameplay/note_cluster.gd" id="5_sb58y"]
 [ext_resource type="Script" path="res://scripts/ui_skin.gd" id="6_3188v"]
-[ext_resource type="Texture2D" uid="uid://dld56rmrbxk8f" path="res://assets/sprites/ui/normal/healthBar.png" id="6_qathf"]
-[ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="7_q3a1j"]
-[ext_resource type="Script" path="res://scenes/ui/health_bar.gd" id="7_ugsju"]
-[ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="8_5vu1o"]
+[ext_resource type="PackedScene" uid="uid://yruwyaxp0fdl" path="res://scenes/gameplay/hud/default.tscn" id="12_hchqv"]
 
 [sub_resource type="Resource" id="Resource_mec6n"]
 script = ExtResource("6_3188v")
@@ -36,18 +33,9 @@ position = Vector2(640, 360)
 
 [node name="hud" type="CanvasLayer" parent="."]
 
-[node name="main" type="Control" parent="hud"]
-clip_contents = true
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
+[node name="main" parent="hud" instance=ExtResource("12_hchqv")]
 
 [node name="judge" type="Label" parent="hud/main"]
-layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -78,56 +66,3 @@ process_thread_group_order = 1
 process_thread_messages = 1
 script = ExtResource("5_sb58y")
 connected_fields = [NodePath("../fields/1"), NodePath("../fields/2")]
-
-[node name="health_bar" type="TextureProgressBar" parent="hud/main" node_paths=PackedStringArray("icons")]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.5
-offset_top = 286.5
-offset_right = 300.5
-offset_bottom = 305.5
-grow_horizontal = 2
-grow_vertical = 2
-value = 50.0
-fill_mode = 1
-texture_under = ExtResource("6_qathf")
-texture_progress = ExtResource("6_qathf")
-tint_under = Color(1, 0, 0, 1)
-tint_progress = Color(0.333333, 1, 0, 1)
-script = ExtResource("7_ugsju")
-icons = [NodePath("player2"), NodePath("player1")]
-
-[node name="player2" type="Sprite2D" parent="hud/main/health_bar"]
-position = Vector2(299, -8)
-texture = ExtResource("7_q3a1j")
-offset = Vector2(-50, 0)
-hframes = 2
-
-[node name="player1" type="Sprite2D" parent="hud/main/health_bar"]
-position = Vector2(303, 5)
-texture = ExtResource("8_5vu1o")
-offset = Vector2(50, 0)
-flip_h = true
-hframes = 2
-
-[node name="status_label" type="Label" parent="hud/main"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -40.0
-offset_bottom = -24.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_fonts/font = ExtResource("3_i3403")
-theme_override_font_sizes/font_size = 18
-text = "[Score]: ? / [Combo Breaks]: ? / [Accuracy]: ?.??%"
-horizontal_alignment = 1
-vertical_alignment = 1

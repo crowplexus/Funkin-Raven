@@ -33,8 +33,8 @@ func _process(delta: float) -> void:
 
 		if icon.scale != Vector2.ONE:
 			icon.scale = Vector2(
-				lerpf( icon.scale.x, 1.0, exp(-delta * 64) ),
-				lerpf( icon.scale.y, 1.0, exp(-delta * 64) )
+				lerpf(1.0, icon.scale.x, exp(-delta * 16)),
+				lerpf(1.0, icon.scale.y, exp(-delta * 16))
 			)
 
 

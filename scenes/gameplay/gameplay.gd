@@ -38,7 +38,9 @@ func _ready() -> void:
 	init_music()
 	init_fields()
 	init_camera(cam_zoom, cam_speed)
-	init_players([ fields.get_child(0) ])
+
+	init_players(fields.get_children())
+	fields.get_child(0).player.botplay = Preferences.botplay
 
 	initial_ui_zoom = ui_layer.scale
 
@@ -49,9 +51,6 @@ func _ready() -> void:
 
 	# Connect Signals
 	Conductor.beat_reached.connect(on_beat_reached)
-	note_cluster.note_fly_over.connect(miss_fly_over)
-
-	await RenderingServer.frame_post_draw
 	Conductor.active = true
 
 
@@ -84,13 +83,12 @@ func _unhandled_key_input(e: InputEvent) -> void:
 
 
 func _exit_tree() -> void:
-	note_cluster.note_fly_over.disconnect(miss_fly_over)
-
 	for i: int in fields.get_child_count():
 		var field: NoteField = fields.get_child(i)
 		if is_instance_valid(field.player):
 			field.player.note_hit.disconnect(update_score_text)
 			field.player.note_hit.disconnect(show_combo_temporary)
+			field.player.note_fly_over.connect(miss_fly_over)
 
 	Conductor.beat_reached.disconnect(on_beat_reached)
 
@@ -103,8 +101,11 @@ func init_fields() -> void:
 		field.reset_scroll_mods()
 
 
-func init_players(player_fields: Array[NoteField]) -> void:
+func init_players(player_fields: Array = []) -> void:
 	for i: int in player_fields.size():
+		if not player_fields[i] is NoteField:
+			continue
+
 		var field: NoteField = player_fields[i]
 		var player: Player = Player.new()
 		player.note_queue = note_cluster.note_queue.filter(func(note: Note):
@@ -116,9 +117,10 @@ func init_players(player_fields: Array[NoteField]) -> void:
 
 		player.note_hit.connect(update_score_text)
 		player.note_hit.connect(show_combo_temporary)
+		player.note_fly_over.connect(miss_fly_over)
 		# send hit result so the score text updates
 		var fake_result: = Note.HitResult.new()
-		player.botplay = Preferences.botplay
+		player.botplay = true
 		fake_result.player = player
 		player.note_hit.emit(fake_result)
 		field.make_playable(player)

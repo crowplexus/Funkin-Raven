@@ -10,6 +10,14 @@ const TEMPLATE_HIT_SCORE: Dictionary = {
 }
 
 const MAX_SCORE: int = 500
+const PERFECT_JUDGMENT: Dictionary = {
+	"name": "perfect", "splash": true,
+	"accuracy": 100.0, "threshold": 22.5,
+	"color": Color("ff89c9"),
+	"clear": { "full": "PFC" },
+	"combo_break": false,
+}
+
 const JUDGMENTS: Array[Dictionary] = [
 	{
 		"name": "epic", "splash": true,

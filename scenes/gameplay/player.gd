@@ -66,26 +66,47 @@ func _ready() -> void:
 #region Player Input
 
 signal note_hit(hit_result: Note.HitResult)
+signal note_fly_over(note: Note)
 signal note_miss(column: int)
 
 @export var controls: PackedStringArray = ["note0", "note1", "note2", "note3"]
 @export var botplay: bool = false
 
-var held_buttons: Array[bool] = []
+## Notes that the player is able to hit.
 var note_queue: Array[Note] = []
+## Notes that have been hit, used during hold note input checks.
+var hit_note_queue: Array[Note] = []
+## Buttons being held by the player, for hold note input checks.
+var held_buttons: Array[bool] = []
 var _latest_hit_result: Note.HitResult
 
 
-func get_column_event(_event: InputEvent) -> int:
-	for i: int in controls.size():
-		if _event.is_action(controls[i]):
-			return i
-	return -1
+func _process(delta: float) -> void:
+	if not note_queue.is_empty():
+		for my_note: Note in note_queue:
+			if my_note.finished:
+				continue
+
+			if not my_note.finished and (my_note.time - Conductor.time) < -0.6:
+				my_note.hit_flag = -1
+				note_fly_over.emit(my_note)
+				finish_note(my_note)
+
+			if botplay and my_note.time <= Conductor.time and my_note.moving:
+				note_hit_tap(my_note)
+				my_note.update_hold = my_note.hold_length > 0.0
+				if my_note.update_hold: my_note.moving = false
+				if is_instance_valid(my_note.notefield):
+					my_note.notefield.botplay_receptor(my_note)
+				hit_note_queue.append(my_note)
+
+	if not hit_note_queue.is_empty():
+		_process_hit_queue(delta)
 
 
 func _unhandled_key_input(e: InputEvent) -> void:
 	var key: int = get_column_event(e)
-	if key == -1 or botplay:
+	if key == -1:
 		return
 
 	if key <= held_buttons.size():
@@ -103,43 +124,137 @@ func _unhandled_key_input(e: InputEvent) -> void:
 		if input_notes.is_empty():
 			$"../".call_deferred("play_ghost", key)
 		else:
-			note_hit_tap(input_notes[0])
+			var tap: Note = input_notes[0]
+			if tap.time < Conductor.time: tap.hit_timing = 2
+			else: tap.hit_timing = 1
+
+			if tap.hold_length > 0.0:
+				tap.trip_timer = 1.5 * tap.hold_length
+
+			note_hit_tap(tap)
+			hit_note_queue.append(tap)
 			# play animation in receptor
-			$"../".call_deferred("play_glow", input_notes[0].column)
+			$"../".call_deferred("play_glow", tap.column)
 
 	elif Input.is_action_just_released(controls[key]):
 		# ghost tapping here
 		# also reset receptor animation
 		$"../".call_deferred("play_static", key)
-		return
 
+## Returns a column from 0 to [code]controls.size()[/code]
+## Used by [code]_unhandled_key_input[/code] for knowing which note you are trying to hit.
+func get_column_event(_event: InputEvent) -> int:
+	for i: int in controls.size():
+		if _event.is_action(controls[i]):
+			return i
+	return -1
 
+## Loops through notes that have been hit[br]
+## this function is used mainly to handle hold note inputs
+func _process_hit_queue(delta: float) -> void:
+	for note: Note in hit_note_queue:
+		if note.finished:
+			continue
+
+		var rel_time: float = note.time - Conductor.time
+
+		if note.hit_flag == 1:
+			if not note.dropped and note.hold_length > 0.0:
+				if is_instance_valid(note.receptor) and is_instance_valid(note.object):
+					note.object.position.y = note.receptor.global_position.y
+				if note.column <= held_buttons.size():
+					note.update_hold = true
+					if note.hold_length > 0.01:
+						if held_buttons[note.column] == false:
+							note.trip_timer -= 0.1
+							if is_instance_valid(note.object):
+								note.object.modulate.a = lerpf(note.object.modulate.a, 0.8, exp(-delta * 0.5))
+						else:
+							if Conductor.ibeat % 1 == 0:
+								note_hit_hold(note)
+								if is_instance_valid(note.notefield):
+									note.notefield.play_glow(note.column)
+						if note.trip_timer <= 0.0:
+							note.moving = true
+							note.update_hold = false
+							apply_miss(note.column)
+							note.dropped = true
+							if is_instance_valid(note.notefield):
+								note.notefield.play_static(note.column)
+
+		update_hold_note(note)
+
+## Updates a hold note's size and objects.
+func update_hold_note(note: Note) -> void:
+	var rel_time: float = note.time - Conductor.time
+	if note.update_hold:
+		if note.hit_timing == 2 and rel_time < 0.0:
+			note.hold_length += rel_time
+			note.hit_timing = 0
+		var nscale: float = note.object.scale.x if is_instance_valid(note.object) else 0.7
+		note.hold_length -= get_process_delta_time() / absf(nscale)
+		if is_instance_valid(note.object) and  note.object.has_method("update_hold_size"):
+			note.object.call_deferred("update_hold_size")
+	if note.hold_length <= 0.0:
+		finish_note(note)
+
+## Queues a note as finished, used for input.
+func finish_note(note: Note) -> void:
+	note.finished = true
+	#note.moving = false
+	if note.hold_length <= 0.0:
+		note.update_hold = false
+	if is_instance_valid(note.object) and note.finished == true:
+		note.object.free()
+	if hit_note_queue.has(note):
+		hit_note_queue.erase(note)
+
+## Note hit function for tap notes[br]
+## Increases score and accuracy and judges your hit.
 func note_hit_tap(note: Note) -> void:
 	if note.hit_flag == 0:
-		note.hit_flag = 1 # flag the note as hit
+		note.hit_flag = 1 if not botplay else 2 # flag the note as hit
+
+	if note.hold_length > 0.0:
+		note.moving = false
 
 	var hit_result: Note.HitResult = send_hit_result(note)
 	_latest_hit_result = hit_result
-	if is_instance_valid(note.object) and note.object.has_method("hit_behaviour"):
-		note.object.callv("hit_behaviour", [hit_result])
 
-	if is_instance_valid(note.object):
-		if hit_result.judgment.combo_break:
+	if note.hit_flag == 1:
+		if is_instance_valid(note.object) and note.object.has_method("hit_behaviour"):
+			note.object.callv("hit_behaviour", [hit_result])
+
+		var combo_broke: bool = "combo_break" in hit_result.judgment and hit_result.judgment.combo_break
+		if is_instance_valid(note.object) and combo_broke:
 			note.object.modulate.a = 0.4
 			note.object.modulate.v = 3.0
-		elif note.hold_length == 0.0:
-			note.object.queue_free()
 
+	if note.hold_length == 0.0:
+		if is_instance_valid(note.object):
+			note.object.free()
+		note.finished = true
 
+## Note hit function for hold notes[br]
+## Increases score by 10 every frame when holding.
 func note_hit_hold(note: Note) -> void:
-	score = score + 15
-	note_hit.emit(_latest_hit_result)
+	if not botplay:
+		score = score + 15
+		note_hit.emit(_latest_hit_result)
 	if note.hold_length <= 0.0:
 		_latest_hit_result.unreference()
 
 
 ## Sends a hit result
 func send_hit_result(note: Note) -> Note.HitResult:
+	if botplay:
+		var botplay_hit_result: = Note.HitResult.new()
+		botplay_hit_result.hit_time = (note.time - Conductor.time) * 1000.0
+		botplay_hit_result.judgment = Scoring.PERFECT_JUDGMENT.duplicate()
+		botplay_hit_result.player = self
+		botplay_hit_result.data = note
+		return botplay_hit_result
+
 	var diff: float = note.time - Conductor.time
 	var judge: Dictionary = Scoring.judge_note(note, absf(diff * 1000.0))
 

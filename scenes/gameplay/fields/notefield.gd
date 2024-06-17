@@ -6,6 +6,7 @@ class_name NoteField
 @export var connected_characters: Array[Character] = []
 @export var scroll_mods: PackedVector2Array = []
 @export var player: Player = null
+@export var key_count: int = 4
 
 
 func reset_scroll_mods() -> void:
@@ -33,6 +34,16 @@ func get_receptor(column: int) -> CanvasItem:
 	if column < 0 or column > receptors.get_child_count():
 		column = 0
 	return receptors.get_child(column)
+
+
+func botplay_receptor(note: Note) -> void:
+	if not is_instance_valid(note):
+		return
+
+	var delay: float = (0.5 * Conductor.crotchet) + note.hold_length
+	play_glow.call_deferred(note.column)
+	await get_tree().create_timer(delay).timeout
+	play_static.call_deferred(note.column)
 
 #region Animations
 

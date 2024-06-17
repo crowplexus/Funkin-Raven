@@ -46,22 +46,31 @@ var receptor: CanvasItem:
 ## 2 - a Bot, AI or CPU.
 @export_enum("Miss:-1", "None:0", "Player:1", "AI:2")
 var hit_flag: int = 0
+## Tells if the note was hit earlier or later[br]
+## 1 being early, 2 being late.
+@export_enum("Undefined:0", "Early:1", "Late:2")
+var hit_timing: int = 0
+
+## If the note's hold was dropped from input.
+var dropped: bool = false
+## Hold Note trip timer, used for inputs to knowing when to drop the hold.
+var trip_timer: float = 0.0
 #endregion
 #region Customisation
 ## The note's initial position, used for offsetting.
 @export var initial_pos: Vector2 = Vector2.ZERO
-## If the note needs to be hit by a player to disappear.
-@export var as_player: bool = false
 ## How fast the note's object scrolls through the screen
 @export var speed: float = 1.0
+
+#region Updating
 ## Debug Mode forces certain behaviour functions for notes to disable
-@export var debug_mode: bool = false
+var debug_mode: bool = false
 ## If the note is moving towards its receptor.
-@export var moving: bool = true
+var moving: bool = true
 ## If the note's hold needs to be updated
-@export var update_hold: bool = false
+var update_hold: bool = false
 ## If the note finished operating (was hit or missed, etc)
-@export var finished: bool = false
+var finished: bool = false
 
 #endregion
 #region Other Utility Functions
