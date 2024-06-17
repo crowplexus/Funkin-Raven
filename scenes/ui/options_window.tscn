@@ -146,7 +146,7 @@ option_name = &"Hold Note Layer"
 description = "Defines how hold notes should be layered."
 variable = "hold_layer"
 option_type = 2
-display_names = Array[StringName]([&"Above Receptors", &"Behind Receptors"])
+display_names = Array[StringName]([&"Above Notes", &"Behind Notes"])
 
 [node name="countdown_mode" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
 layout_mode = 2

@@ -19,6 +19,7 @@ var music: AudioStreamPlayer
 var hud_beat_interval: int = 4
 var initial_ui_zoom: Vector2 = Vector2.ONE
 var _need_to_play_music: bool = true
+var _player_field: int = 0
 
 #endregion
 #region Node2D Functions
@@ -31,7 +32,6 @@ func _ready() -> void:
 	init_fields()
 
 	init_players(fields.get_children())
-	fields.get_child(0).player.botplay = Preferences.botplay
 
 	initial_ui_zoom = ui_layer.scale
 
@@ -104,7 +104,7 @@ func init_players(player_fields: Array = []) -> void:
 		player.note_fly_over.connect(miss_fly_over)
 		# send hit result so the score text updates
 		var fake_result: = Note.HitResult.new()
-		player.botplay = true
+		player.botplay = i != _player_field
 		fake_result.player = player
 		player.note_hit.emit(fake_result)
 		field.make_playable(player)

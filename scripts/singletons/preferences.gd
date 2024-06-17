@@ -44,7 +44,7 @@ var framerate_mode: String = "Capped":
 				Engine.max_fps = 0
 		framerate_mode = new_mode
 ## Defines how hold notes should be layered.
-@export_enum("Above Receptors:0", "Behind Receptors:1")
+@export_enum("Above Notes:0", "Behind Notes:1")
 var hold_layer: int = 1
 ## Enables a firework effect when hitting judgements that allow it.
 @export var note_splashes: bool = true

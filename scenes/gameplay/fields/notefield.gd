@@ -8,6 +8,8 @@ class_name NoteField
 @export var player: Player = null
 @export var key_count: int = 4
 
+var animation_timers: Array[Timer] = []
+
 
 func reset_scroll_mods() -> void:
 	var mod_pos: Vector2 = Vector2(1.0, 1.0)
@@ -16,6 +18,8 @@ func reset_scroll_mods() -> void:
 
 	for i: int in receptors.get_child_count():
 		var receptor: CanvasItem = receptors.get_child(i)
+		animation_timers.append(Timer.new())
+		receptor.add_child(animation_timers[i])
 		scroll_mods.append(mod_pos)
 		match mod_pos:
 			Vector2(1.0, -1.0):
@@ -25,7 +29,7 @@ func reset_scroll_mods() -> void:
 func make_playable(new_player: Player = null) -> void:
 	if new_player == null:
 		new_player = Player.new()
-	print_debug("adding player ", get_index() + 1)
+	print_debug("adding player ", get_index() + 1, " is bot? ", new_player.botplay)
 	player = new_player
 	add_child(player)
 
@@ -40,25 +44,32 @@ func botplay_receptor(note: Note) -> void:
 	if not is_instance_valid(note):
 		return
 
-	var delay: float = (0.5 * Conductor.crotchet) + note.hold_length
+	var anim_timer: Timer = animation_timers[note.column]
+	if is_instance_valid(anim_timer):
+		anim_timer.stop()
+
+	anim_timer.start((0.5 * Conductor.crotchet) + note.hold_length)
 	play_glow.call_deferred(note.column)
-	await get_tree().create_timer(delay).timeout
+	await anim_timer.timeout
 	play_static.call_deferred(note.column)
 
 #region Animations
 
 func play_static(key: int) -> void:
 	var receptor: = receptors.get_child(key)
+	receptor.frame = 0
 	receptor.play("%s static" % key)
 
 
 func play_ghost(key: int) -> void:
 	var receptor: = receptors.get_child(key)
+	receptor.frame = 0
 	receptor.play("%s press" % key)
 
 
 func play_glow(key: int) -> void:
 	var receptor: = receptors.get_child(key)
+	receptor.frame = 0
 	receptor.play("%s confirm" % key)
 
 #endregion
