@@ -4,7 +4,7 @@ extends Node2D
 
 #region Scene Nodes
 
-@onready var camera: Camera2D = $"camera"
+var camera: Camera2D
 @onready var ui_layer: CanvasLayer = $"hud"
 @onready var health_bar: = $"hud/main/health_bar"
 @onready var status_label: Label = $"hud/main/status_label"
@@ -16,9 +16,7 @@ extends Node2D
 #region Local Variables
 
 var music: AudioStreamPlayer
-var camera_beat_interval: int = 4
 var hud_beat_interval: int = 4
-var initial_camera_zoom: Vector2 = Vector2.ONE
 var initial_ui_zoom: Vector2 = Vector2.ONE
 var _need_to_play_music: bool = true
 
@@ -29,15 +27,8 @@ func _ready() -> void:
 	Conductor.active = false
 	Conductor.time = -(Conductor.crotchet * 4)
 
-	var cam_zoom: Vector2 = Vector2.ONE
-	var cam_speed: float = 1.0
-	if is_instance_valid(stage):
-		cam_zoom = stage.camera_zoom
-		cam_speed = stage.camera_speed
-
 	init_music()
 	init_fields()
-	init_camera(cam_zoom, cam_speed)
 
 	init_players(fields.get_children())
 	fields.get_child(0).player.botplay = Preferences.botplay
@@ -56,13 +47,6 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	process_conductor(delta)
-	# reset camera zooming #
-	if camera.zoom != initial_camera_zoom:
-		camera.zoom = Vector2(
-			lerpf(initial_camera_zoom.x, camera.zoom.x, exp(-delta * 5)),
-			lerpf(initial_camera_zoom.y, camera.zoom.y, exp(-delta * 5))
-		)
-
 	if ui_layer.scale != initial_ui_zoom:
 		ui_layer.scale = Vector2(
 			lerpf(initial_ui_zoom.x, ui_layer.scale.x, exp(-delta * 5)),
@@ -125,13 +109,6 @@ func init_players(player_fields: Array = []) -> void:
 		player.note_hit.emit(fake_result)
 		field.make_playable(player)
 		fake_result.unreference()
-
-
-func init_camera(default_zoom: Vector2 = Vector2.ONE, default_speed: float = 1.0) -> void:
-	camera.zoom = default_zoom
-	initial_camera_zoom = camera.zoom
-	camera.position_smoothing_enabled = true
-	camera.position_smoothing_speed = 3.0 * default_speed
 
 
 func init_music() -> void:
@@ -215,8 +192,6 @@ func on_beat_reached(beat: int) -> void:
 		process_countdown(beat)
 		return
 
-	if beat % camera_beat_interval == 0:
-		camera.zoom += Vector2(0.015, 0.015)
 	if beat % hud_beat_interval == 0:
 		ui_layer.scale += Vector2(0.03, 0.03)
 

@@ -28,14 +28,12 @@ skin = SubResource("Resource_mec6n")
 
 [node name="stage" parent="." instance=ExtResource("2_k2qad")]
 
-[node name="camera" type="Camera2D" parent="."]
-position = Vector2(640, 360)
-
 [node name="hud" type="CanvasLayer" parent="."]
 
 [node name="main" parent="hud" instance=ExtResource("12_hchqv")]
 
 [node name="judge" type="Label" parent="hud/main"]
+layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
