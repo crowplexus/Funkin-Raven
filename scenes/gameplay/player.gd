@@ -106,7 +106,7 @@ func _process(delta: float) -> void:
 
 func _unhandled_key_input(e: InputEvent) -> void:
 	var key: int = get_column_event(e)
-	if key == -1:
+	if key == -1 or botplay:
 		return
 
 	if key <= held_buttons.size():
