@@ -72,7 +72,7 @@ func _exit_tree() -> void:
 		if is_instance_valid(field.player):
 			field.player.note_hit.disconnect(update_score_text)
 			field.player.note_hit.disconnect(show_combo_temporary)
-			field.player.note_fly_over.connect(miss_fly_over)
+			field.player.note_fly_over.disconnect(miss_fly_over)
 
 	Conductor.beat_reached.disconnect(on_beat_reached)
 

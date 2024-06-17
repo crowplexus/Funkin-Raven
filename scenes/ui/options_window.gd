@@ -34,9 +34,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if is_instance_valid(active_page):
 		if selector.position.y != selected_pref.position.y:
-			selector.position.y = lerpf(
-				selector.position.y, selected_pref.position.y + _display_ypos,
-				exp(-delta * 64))
+			selector.position.y = lerpf(selected_pref.position.y + _display_ypos,
+				selector.position.y, exp(-delta * 32))
 
 		if active_page.position.y != _display_ypos:
 			active_page.position.y = lerpf(active_page.position.y, _display_ypos, exp(-delta * 64))

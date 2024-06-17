@@ -156,8 +156,6 @@ func _process_hit_queue(delta: float) -> void:
 		if note.finished:
 			continue
 
-		var rel_time: float = note.time - Conductor.time
-
 		if note.hit_flag == 1:
 			if not note.dropped and note.hold_length > 0.0:
 				if is_instance_valid(note.receptor) and is_instance_valid(note.object):

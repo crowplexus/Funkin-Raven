@@ -5,8 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://c8pnaux2afp74" path="res://assets/sprites/week1/stagefront.png" id="2_kbfct"]
 [ext_resource type="Texture2D" uid="uid://c3ip1hqsuujwt" path="res://assets/sprites/week1/stagecurtains.png" id="3_dbx6f"]
 
-[node name="stage" type="Node2D"]
+[node name="stage" type="Node2D" node_paths=PackedStringArray("camera")]
 script = ExtResource("1_kru8d")
+camera = NodePath("camera_2d")
 
 [node name="camera_2d" type="Camera2D" parent="."]
 position = Vector2(640, 360)
