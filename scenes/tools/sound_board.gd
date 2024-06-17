@@ -10,6 +10,7 @@ func play_bgm(bgm_stream: AudioStream, volume: float = 0.7) -> void:
 	bgm_player.volume_db = linear_to_db(volume)
 	bgm_player.name = bgm_stream.resource_path.get_file().get_basename()
 	bgm_player.stream = bgm_stream
+	bgm_player.stream.loop = true
 
 	bgm_player.play(0.0)
 

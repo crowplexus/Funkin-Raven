@@ -87,7 +87,7 @@ func _process(delta: float) -> void:
 			if my_note.finished:
 				continue
 
-			if not my_note.finished and (my_note.time - Conductor.time) < -0.6:
+			if my_note.moving and (my_note.time - Conductor.time) < -0.6:
 				my_note.hit_flag = -1
 				note_fly_over.emit(my_note)
 				finish_note(my_note)

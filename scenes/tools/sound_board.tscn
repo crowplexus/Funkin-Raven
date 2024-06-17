@@ -7,3 +7,4 @@ process_mode = 3
 script = ExtResource("1_afkcs")
 
 [node name="bgm_player" type="AudioStreamPlayer" parent="."]
+bus = &"BGM"
