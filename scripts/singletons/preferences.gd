@@ -20,8 +20,14 @@ var scroll_speed_behaviour: int = 0
 @export var scroll_speed: float = 1.0:
 	set(new_speed):
 		scroll_speed = clampf(snappedf(new_speed, 0.001), 0.5, 10.0)
-## Players will control themselves if enabled
-@export var botplay: bool = false
+## Which playfield belongs to the player?[br]
+## NOTE: None will make the game enter Botplay Mode.
+@export_enum("Right:0", "Left:1", "None:-1") #, "Both:3")
+var playfield_side: int = 0:
+	set(new_side):
+		match new_side:
+			2: playfield_side = -1 # temporary
+			_: playfield_side = new_side
 
 #endregion
 #region Visual Options
@@ -69,14 +75,13 @@ func _ready() -> void:
 
 func init_keybinds() -> void:
 	for action_name: String in keybinds:
-		for i: int in keybinds.get(action_name).size():
-			var action_player: StringName = StringName(action_name + "_p%s" % str(i + 1))
-			if InputMap.has_action(action_player):
-				InputMap.action_erase_events(action_player)
+		if InputMap.has_action(action_name):
+			InputMap.action_erase_events(action_name)
 
-			var key: String = keybinds.get(action_name)[i]
+		for i: int in keybinds[action_name].size():
 			var _new_event: = InputEventKey.new()
+			var key: String = keybinds[action_name][i]
 			_new_event.keycode = OS.find_keycode_from_string(key.to_lower())
-			InputMap.action_add_event(action_player, _new_event)
+			InputMap.action_add_event(action_name, _new_event)
 
 #endregion

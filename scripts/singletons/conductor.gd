@@ -122,7 +122,7 @@ func sort_time_changes(changes_to_sort: Array[Dictionary] = []) -> void:
 ## Utility function to apply a given time change.
 func apply_time_change(tc: Dictionary) -> void:
 	# TODO: more
-	if "bpm" in tc: Conductor.bpm = tc.bpm
+	#if "bpm" in tc: Conductor.bpm = tc.bpm
 	Conductor.current_time_change = time_changes.find(tc)
 	print_debug("time change applied, current time change is ", Conductor.current_time_change)
 	print_debug("bpm applied from time change, current bpm is ", Conductor.bpm)

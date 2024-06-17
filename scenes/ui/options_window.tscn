@@ -102,11 +102,14 @@ variable = "scroll_speed"
 option_type = 1
 steps = 0.01
 
-[node name="botplay" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+[node name="playfield_side" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
 layout_mode = 2
-option_name = &"Botplay"
-description = "Players will control themselves if enabled"
-variable = "botplay"
+option_name = &"PlayField Side"
+description = "Which playfield belongs to the player?
+NOTE: None will make the game enter Botplay Mode."
+variable = "playfield_side"
+option_type = 2
+display_names = Array[StringName]([&"Right", &"Left", &"None"])
 
 [node name="visuals" type="VBoxContainer" parent="pages"]
 visible = false

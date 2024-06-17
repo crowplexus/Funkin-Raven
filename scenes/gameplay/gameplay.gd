@@ -19,7 +19,6 @@ var music: AudioStreamPlayer
 var hud_beat_interval: int = 4
 var initial_ui_zoom: Vector2 = Vector2.ONE
 var _need_to_play_music: bool = true
-var _player_field: int = 0
 
 #endregion
 #region Node2D Functions
@@ -67,14 +66,14 @@ func _unhandled_key_input(e: InputEvent) -> void:
 
 
 func _exit_tree() -> void:
+	Conductor.reset()
+	Conductor.beat_reached.disconnect(on_beat_reached)
 	for i: int in fields.get_child_count():
 		var field: NoteField = fields.get_child(i)
 		if is_instance_valid(field.player):
 			field.player.note_hit.disconnect(update_score_text)
 			field.player.note_hit.disconnect(show_combo_temporary)
 			field.player.note_fly_over.disconnect(miss_fly_over)
-
-	Conductor.beat_reached.disconnect(on_beat_reached)
 
 #endregions
 #region Gameplay Setup
@@ -96,7 +95,8 @@ func init_players(player_fields: Array = []) -> void:
 			return note.player == field.get_index())
 
 		for j: int in player.controls.size():
-			player.controls[j] += "_p%s" % str(i + 1)
+			# TODO ↓
+			#player.controls[j] += "_p%s" % str(i + 1)
 			player.held_buttons.append(false)
 
 		player.note_hit.connect(update_score_text)
@@ -104,7 +104,7 @@ func init_players(player_fields: Array = []) -> void:
 		player.note_fly_over.connect(miss_fly_over)
 		# send hit result so the score text updates
 		var fake_result: = Note.HitResult.new()
-		player.botplay = i != _player_field
+		player.botplay = i != Preferences.playfield_side
 		fake_result.player = player
 		player.note_hit.emit(fake_result)
 		field.make_playable(player)

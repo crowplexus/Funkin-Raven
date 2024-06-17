@@ -53,6 +53,7 @@ func update(amount: int = 0) -> void:
 	#print_debug(value)
 	reset_preference_label()
 
+
 func reset_preference_label() -> void:
 	if is_instance_valid(preference_label):
 		var final_text: String = ""
