@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://yruwyaxp0fdl"]
+[gd_scene load_steps=10 format=3 uid="uid://yruwyaxp0fdl"]
 
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="1_4b7be"]
 [ext_resource type="Script" path="res://scenes/gameplay/hud/default.gd" id="1_x5alm"]
@@ -6,6 +6,22 @@
 [ext_resource type="Script" path="res://scenes/ui/health_bar.gd" id="5_7au2h"]
 [ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="6_ajevi"]
 [ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="7_rmixp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t65mt"]
+bg_color = Color(0, 0, 0, 0.392157)
+corner_detail = 1
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6y843"]
+bg_color = Color(0.745098, 0.917647, 1, 1)
+corner_detail = 1
+anti_aliasing = false
+
+[sub_resource type="LabelSettings" id="LabelSettings_daqce"]
+font = ExtResource("1_4b7be")
+font_size = 20
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
 
 [node name="default" type="Control"]
 layout_mode = 3
@@ -65,6 +81,37 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_fonts/font = ExtResource("1_4b7be")
 theme_override_font_sizes/font_size = 18
-text = "[Score]: ? / [Combo Breaks]: ? / [Accuracy]: ?.??%"
+text = "[Score]: ? • [Combo Breaks]: ? • [Accuracy]: ?.??%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="timer" type="ProgressBar" parent="."]
+custom_minimum_size = Vector2(0, 15)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.264
+anchor_top = 0.003
+anchor_right = 0.735
+anchor_bottom = 0.024
+offset_left = 0.0800171
+offset_top = -0.16
+offset_right = 0.199951
+offset_bottom = -0.280001
+grow_horizontal = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_t65mt")
+theme_override_styles/fill = SubResource("StyleBoxFlat_6y843")
+show_percentage = false
+
+[node name="label" type="Label" parent="timer"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.04
+anchor_right = 1.0
+anchor_bottom = 2.707
+offset_bottom = -0.00500107
+grow_horizontal = 2
+text = "??? | ?:?? / ?:?? (?%)"
+label_settings = SubResource("LabelSettings_daqce")
 horizontal_alignment = 1
 vertical_alignment = 1

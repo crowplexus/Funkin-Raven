@@ -85,6 +85,12 @@ variable = "scroll_direction"
 option_type = 2
 display_names = Array[StringName]([&"Up", &"Down"])
 
+[node name="centered_playfield" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Centered PlayField"
+description = "Centers your notes and hides the enemy's."
+variable = "centered_playfield"
+
 [node name="scroll_speed_behaviour" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
 layout_mode = 2
 option_name = &"Scroll Speed Behaviour"
@@ -151,21 +157,11 @@ variable = "hold_layer"
 option_type = 2
 display_names = Array[StringName]([&"Above Notes", &"Behind Notes"])
 
-[node name="countdown_mode" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+[node name="show_timer" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
 layout_mode = 2
-option_name = &"Countdown Mode"
-description = "How should the countdown's speed behave when ticking?"
-variable = "countdown_mode"
-option_type = 2
-display_names = Array[StringName]([&"BPM based", &"User defined"])
-
-[node name="countdown_speed" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
-layout_mode = 2
-option_name = &"Countdown Speed"
-description = "How fast the countdown ticks down, measured in steps
-The higher the number, the slower it gets."
-variable = "countdown_speed"
-option_type = 1
+option_name = &"Show Timer"
+description = "Enables a timer at the top of the screen, shows song elapsed time and total time."
+variable = "show_timer"
 
 [node name="selector" type="Label" parent="pages"]
 custom_minimum_size = Vector2(0, 50)

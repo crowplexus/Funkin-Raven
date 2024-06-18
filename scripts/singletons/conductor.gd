@@ -16,6 +16,7 @@ const TIME_CHANGE_TEMPLATE: Dictionary = {
 var active: bool = true
 
 var time: float = 0.0
+var length: float = 0.0
 var time_changes: Array[Dictionary] = []
 var current_time_change: int:
 	set(nt):
@@ -63,11 +64,12 @@ var _previous_istep: int  = 0
 
 
 func _to_string() -> String:
-	return "Time: %s | Music Delta: %s\nStep: %s | Beat: %s | Bar: %s\nBPM: %s | Time Signature %s/%s" % [
+	return "Time: %s | Music Delta: %s\nStep: %s | Beat: %s | Bar: %s\nBPM: %s | Playback Rate: %s | Time Signature %s/%s" % [
 		str(time).pad_decimals(2), str(_previous_time - time).pad_decimals(2),
 		str(fstep).pad_decimals(2), str(fbeat).pad_decimals(2), str(fbar).pad_decimals(2),
-		str(bpm), str(steps_per_beat), str(beats_per_bar),
+		str(bpm), str(rate).pad_decimals(2), str(steps_per_beat), str(beats_per_bar),
 	]
+
 
 func _process(_delta: float) -> void:
 	if active:
@@ -90,6 +92,7 @@ func _process(_delta: float) -> void:
 
 ## Resets all the important values and data in the conductor.
 func reset() -> void:
+	length = 0.0
 	time_changes.clear()
 	#current_time_change = 0
 	set_time(0.0)

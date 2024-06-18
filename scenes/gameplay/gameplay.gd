@@ -6,6 +6,7 @@ extends Node2D
 
 var camera: Camera2D
 @onready var ui_layer: CanvasLayer = $"hud"
+@onready var main_hud: Control = $"hud/main"
 @onready var health_bar: = $"hud/main/health_bar"
 @onready var status_label: Label = $"hud/main/status_label"
 @onready var hit_result_label: Label = $"hud/main/judge"
@@ -37,8 +38,8 @@ func _ready() -> void:
 
 	match Preferences.scroll_direction:
 		1:
-			health_bar.position.y = 80
-			status_label.position.y = 115
+			health_bar.position.y = 100
+			status_label.position.y = 135
 
 	# Connect Signals
 	Conductor.beat_reached.connect(on_beat_reached)
@@ -122,6 +123,13 @@ func init_players(player_fields: Array = []) -> void:
 		# send hit result so the score text updates
 		var fake_result: = Note.HitResult.new()
 		player.botplay = i != Preferences.playfield_side
+		if Preferences.centered_playfield:
+			# stupid check
+			if (Preferences.playfield_side != -1 and player.botplay == false
+				or Preferences.playfield_side == -1 and i == 0):
+				field.playfield_warp = 0.5
+			else:
+				field.visible = false
 		fake_result.player = player
 		player.note_hit.emit(fake_result)
 		field.make_playable(player)
@@ -161,6 +169,10 @@ func init_music() -> void:
 		music.add_child(vocals)
 
 	#_need_to_play_music = is_instance_valid(music) and not music.playing
+	if is_instance_valid(music):
+		Conductor.length = music.stream.get_length()
+	else:
+		Conductor.length = note_cluster.note_queue.back().time
 	##################
 
 #endregion
@@ -207,7 +219,7 @@ func on_beat_reached(beat: int) -> void:
 	if beat % hud_beat_interval == 0:
 		ui_layer.scale += Vector2(0.03, 0.03)
 
-## Connected to [code]note_cluster.note_fly_over[/code] to handle
+## Connected to [code]player.note_fly_over[/code] to handle
 ## missing notes by letting them fly above your notefield..
 func miss_fly_over(note: Note) -> void:
 	for field: NoteField in fields.get_children():
@@ -235,7 +247,10 @@ func update_score_text(hit_result: Note.HitResult) -> void:
 	if not is_instance_valid(hit_result.player) or not is_instance_valid(status_label):
 		return
 
-	status_label.text = hit_result.player.mk_stats_string()
+	if main_hud.has_method("update_score_text"):
+		main_hud.call_deferred("update_score_text", hit_result)
+	else:
+		status_label.text = hit_result.player.mk_stats_string()
 
 
 func show_combo_temporary(hit_result: Note.HitResult) -> void:

@@ -41,8 +41,8 @@ class_name Player
 #endregion
 
 func mk_stats_string() -> String:
-	var status: String = "[Score]: %s / [Combo Breaks]: %s / [Accuracy]: %s" % [
-		score, breaks, str(snappedf(accuracy, 0.01)) + "%"
+	var status: String = "[Score]: %s • [Combo Breaks]: %s • [Accuracy]: %s%%" % [
+		score, breaks, snappedf(accuracy, 0.01),
 	]
 	# crazy frog.
 	var cf: String = ""

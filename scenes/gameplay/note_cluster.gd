@@ -74,6 +74,8 @@ func spawn_notes() -> void:
 			note.object.position.y = INF
 
 		if is_instance_valid(note.object):
+			if is_instance_valid(note.notefield):
+				note.object.visible = note.receptor.visible and note.notefield.visible
 			if note.object.get("note") == null:
 				note.object.set("note", note)
 			add_child(note.object)

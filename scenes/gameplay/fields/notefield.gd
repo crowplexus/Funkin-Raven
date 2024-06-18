@@ -9,6 +9,15 @@ class_name NoteField
 @export var key_count: int = 4
 
 var animation_timers: Array[Timer] = []
+## Warps the notefield to either the Left (0) side of the screen
+## Center (0.5, or Right (1).
+var playfield_warp: float:
+	set(new_warp):
+		match new_warp:
+			0: position.x = 100
+			0.5: position.x = 305
+			1: position.x = 500
+		playfield_warp = new_warp
 
 
 func reset_scroll_mods() -> void:
@@ -21,6 +30,7 @@ func reset_scroll_mods() -> void:
 		animation_timers.append(Timer.new())
 		receptor.add_child(animation_timers[i])
 		scroll_mods.append(mod_pos)
+
 		match mod_pos:
 			Vector2(1.0, -1.0):
 				receptor.position.y = 330

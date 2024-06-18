@@ -46,5 +46,5 @@ func on_beat_reached(beat: int) -> void:
 
 func set_player(player: int) -> void:
 	match player:
-		0: fill_mode == ProgressBar.FILL_END_TO_BEGIN
+		0: fill_mode = ProgressBar.FILL_END_TO_BEGIN
 		1: fill_mode = ProgressBar.FILL_BEGIN_TO_END

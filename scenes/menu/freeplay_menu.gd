@@ -39,6 +39,8 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 		}
 		SoundBoard.stop_bgm()
 		Chart.global = Chart.request(song.file, song.diff)
+		if Chart.global.song_info.name == "???":
+			Chart.global.song_info.name = songs[current_selection].display_name
 		Globals.change_scene(load("res://scenes/gameplay/gameplay.tscn"))
 
 

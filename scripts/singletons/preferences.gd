@@ -12,6 +12,8 @@ extends Node
 ## Defines which direction the notes will scroll to.
 @export_enum("Up:0", "Down:1")
 var scroll_direction: int = 0
+## Centers your notes and hides the enemy's.
+@export var centered_playfield: bool = false
 ## Defines how scroll speed behaves in-game.
 @export_enum("Chart based:0", "Multiplicative:1", "Constant:2")
 var scroll_speed_behaviour: int = 0
@@ -57,6 +59,8 @@ var hold_layer: int = 1
 ## Enables certain flashing effects in menus and gameplay[br]
 ## please disable this if you are sensitive to those.
 @export var flashing: bool = true
+## Enables a timer at the top of the screen, shows song elapsed time and total time.
+@export var show_timer: bool = true
 ## How should the countdown's speed behave when ticking?
 @export_enum("BPM based:0", "User defined:1")
 var countdown_mode: int = 0

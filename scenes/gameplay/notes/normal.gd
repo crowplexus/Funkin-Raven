@@ -57,7 +57,7 @@ func update_hold_size() -> void:
 
 
 func hit_behaviour(result: Note.HitResult) -> void:
-	if result.judgment.splash:
+	if result.judgment.splash and Preferences.note_splashes:
 		display_splash()
 
 

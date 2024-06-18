@@ -18,3 +18,20 @@ func get_options_window() -> Control:
 	ow.process_mode = Node.PROCESS_MODE_ALWAYS
 	ow.z_index = 100
 	return ow
+
+#region Number Related Functions
+func format_to_time(value: float) -> String:
+	var formatter: String = "%02d:%02d" % [
+		float_to_minute(value),
+		float_to_seconds(value)
+	]
+
+	var hours: int = float_to_hours(value)
+	if hours != 0: # append hours if needed
+		formatter = ("%02d:" % hours) + formatter
+	return formatter
+
+func float_to_hours(value: float) -> int: return int(value / 3600.0)
+func float_to_minute(value: float) -> int: return int(value / 60) % 60
+func float_to_seconds(value: float) -> float: return fmod(value, 60)
+#endregion
