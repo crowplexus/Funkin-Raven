@@ -121,7 +121,6 @@ func init_players(player_fields: Array = []) -> void:
 		player.note_hit.connect(combo_group.pop_up_combo)
 		player.note_fly_over.connect(miss_fly_over)
 		# send hit result so the score text updates
-		var fake_result: = Note.HitResult.new()
 		player.botplay = i != Preferences.playfield_side
 		if Preferences.centered_playfield:
 			# stupid check
@@ -130,10 +129,7 @@ func init_players(player_fields: Array = []) -> void:
 				field.playfield_warp = 0.5
 			else:
 				field.visible = false
-		fake_result.player = player
-		player.note_hit.emit(fake_result, false)
 		field.make_playable(player)
-		fake_result.unreference()
 
 
 func init_music() -> void:
@@ -143,12 +139,12 @@ func init_music() -> void:
 		return
 
 	var track_path: String = "res://assets/songs/%s/" % Chart.global.song_info.folder
-	var in_variation: bool = not Chart.global.song_info.difficulty.variation.is_empty()
+	var difficulty: Dictionary = Chart.global.song_info.difficulty
+	var audio_folder: Array[String] = []
+	audio_folder.append_array(DirAccess.open(track_path).get_files())
 
-	for fn: String in DirAccess.open(track_path).get_files():
-		if in_variation:
-			break
-
+	# TODO: somehow load only variation audio files when it's in a variation?
+	for fn: String in audio_folder:
 		if fn.get_extension() != "import":
 			continue
 

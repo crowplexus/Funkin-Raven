@@ -17,6 +17,7 @@ const DEFAULT_STAR_COUNT: int = -1
 ## [code]target[/code] is which difficulty within the data file to load[br]
 ## [code]variation[/code] is a suffix for audio files to load before playing the song.
 @export var difficulty: Dictionary = {
+	"display_name": "Normal",
 	"file": "normal",
 	"variation": "",
 }

@@ -73,7 +73,7 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 					FileAccess.open(meta_path, FileAccess.READ)
 					.get_as_text()))
 
-			if "scrollSpeed" in jsonf:
+			if "scrollSpeed" in jsonf and real_difficulty in jsonf["scrollSpeed"]:
 				chart.note_speed = float(jsonf["scrollSpeed"][real_difficulty])
 
 			# load notes

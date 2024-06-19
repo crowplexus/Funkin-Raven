@@ -27,11 +27,14 @@ func _process(_delta: float) -> void:
 	update_time_bar()
 
 
-func update_score_text(hit_result: Note.HitResult, is_tap: bool) -> void:
-	status_label.text = hit_result.player.mk_stats_string() \
-		.replace("Score", tr("GENERIC_SCORE")) \
-		.replace("Combo Breaks", tr("GENERIC_COMBO_BREAKS")) \
-		.replace("Accuracy", tr("GENERIC_ACCURACY"))
+func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
+	if hit_result.player.botplay == true:
+		status_label.text = tr("GENERIC_BOTPLAY_ENABLED")
+	else:
+		status_label.text = hit_result.player.mk_stats_string() \
+			.replace("Score", tr("GENERIC_SCORE")) \
+			.replace("Combo Breaks", tr("GENERIC_COMBO_BREAKS")) \
+			.replace("Accuracy", tr("GENERIC_ACCURACY"))
 
 
 func update_time_bar() -> void:

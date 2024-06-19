@@ -90,8 +90,9 @@ func _process(delta: float) -> void:
 
 			if my_note.moving and (my_note.time - Conductor.time) < -0.3:
 				my_note.hit_flag = -1
-				note_fly_over.emit(my_note)
-				finish_note(my_note)
+				if (my_note.time - Conductor.time) < -(0.3 + my_note.hold_length - 0.5):
+					note_fly_over.emit(my_note)
+					finish_note(my_note)
 
 			if botplay and my_note.time <= Conductor.time:
 				note_hit_tap(my_note)
@@ -104,7 +105,7 @@ func _process(delta: float) -> void:
 						my_note.notefield.play_glow(my_note.column)
 					update_hold_note(my_note)
 
-	if held_buttons.has(true) and not hold_note_queue.is_empty():
+	if not hold_note_queue.is_empty():
 		manage_hit_queue(delta)
 
 
@@ -159,48 +160,51 @@ func get_column_event(_event: InputEvent) -> int:
 func manage_hit_queue(delta: float) -> void:
 	if delta == 0.0: delta = get_process_delta_time()
 
-	for note: Note in hold_note_queue:
-		if note.dropped or note.finished:
+	for hold: Note in hold_note_queue:
+		if hold.finished:
 			continue
 
-		match note.hit_flag:
-			1: # player
-				hold_note_input(note)
-			2: # botplay
-				if Conductor.ibeat % 1 == 0 and is_instance_valid(note.notefield):
-					note.notefield.play_glow(note.column)
-				if note.hold_length <= 0.0:
-					hold_note_queue.erase(note)
-		update_hold_note(note)
+		if not hold.dropped:
+			match hold.hit_flag:
+				1: # player
+					hold_note_input(hold)
+				2: # botplay
+					if Conductor.ibeat % 1 == 0 and is_instance_valid(hold.notefield):
+						hold.notefield.play_glow(hold.column)
+		if hold.hold_length <= 0.0:
+			hold_note_queue.erase(hold)
+		update_hold_note(hold)
 
 
 ## Handles hold note input.
-func hold_note_input(note: Note, delta: float = 0.0) -> void:
-	if note.dropped or note.hold_length == 0.0:
+func hold_note_input(hold: Note, delta: float = 0.0) -> void:
+	if hold.dropped or hold.hold_length == 0.0:
 		return
 
-	if is_instance_valid(note.receptor) and is_instance_valid(note.object):
-		note.object.position.y = note.receptor.global_position.y
-	if note.column <= held_buttons.size():
-		note.update_hold = true
-		if note.hold_length > 0.01:
-			if held_buttons[note.column] == false:
-				note.trip_timer -= 0.1
-				if is_instance_valid(note.object):
-					note.object.modulate.a = lerpf(note.object.modulate.a, 0.8, exp(-delta * 0.5))
+	if is_instance_valid(hold.receptor) and is_instance_valid(hold.object):
+		hold.object.position.y = hold.receptor.global_position.y
+	if hold.column <= held_buttons.size():
+		hold.update_hold = true
+		if hold.hold_length > 0.01:
+			if held_buttons[hold.column] == false:
+				hold.trip_timer -= 0.1
+				if is_instance_valid(hold.object):
+					hold.object.modulate.a = lerpf(hold.object.modulate.a, 0.8, exp(-delta * 0.5))
 			else:
 				if Conductor.ibeat % 1 == 0:
-					note_hit_hold(note)
-					if is_instance_valid(note.notefield):
-						note.notefield.play_glow(note.column)
-			if note.trip_timer <= 0.0:
-				note.moving = true
-				note.update_hold = false
-				apply_miss(note.column)
-				note.dropped = true
-				if is_instance_valid(note.notefield):
-					note.notefield.play_static(note.column)
-				hold_note_queue.erase(note)
+					note_hit_hold(hold)
+					if is_instance_valid(hold.notefield):
+						hold.notefield.play_glow(hold.column)
+			if hold.trip_timer <= 0.0:
+				hold.update_hold = false
+				if is_instance_valid(hold.object):
+					hold.object.modulate.a = 0.3
+				apply_miss(hold.column)
+				hold.dropped = true
+				hold.moving = true
+				if is_instance_valid(hold.notefield):
+					hold.notefield.play_static(hold.column)
+				hold_note_queue.erase(hold)
 
 ## Updates a hold note's size and objects.
 func update_hold_note(note: Note, delta: float = 0.0) -> void:
@@ -258,10 +262,11 @@ func note_hit_tap(note: Note) -> void:
 ## Increases score by 10 every frame when holding.
 func note_hit_hold(note: Note) -> void:
 	score = score + 15
-	note_hit.emit(_latest_hit_result, false)
+	if Conductor.ibeat % 2 == 0 or note.hold_length <= 0.0:
+		note_hit.emit(_latest_hit_result, false)
 	if is_instance_valid(_latest_hit_result) and note.hold_length <= 0.0:
 		_latest_hit_result.unreference()
-		hold_note_queue.erase(note)
+		#hold_note_queue.erase(note)
 
 
 ## Sends a hit result

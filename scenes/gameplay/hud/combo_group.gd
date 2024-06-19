@@ -98,11 +98,11 @@ func show_combo_temporary(hit_result: Note.HitResult, is_tap: bool) -> void:
 	if not is_tap or hit_result.judgment == null or hit_result.judgment.is_empty():
 		return
 
-	var hit_colour: Color = Color.DIM_GRAY
+	var _hit_colour: Color = Color.DIM_GRAY
 	if "color" in hit_result.judgment:
-		hit_colour = hit_result.judgment.color
+		_hit_colour = hit_result.judgment.color
 	elif "colour" in hit_result.judgment: # british.
-		hit_colour = hit_result.judgment.colour
+		_hit_colour = hit_result.judgment.colour
 
 	#hit_result_label.text = (str(hit_result.judgment.name) +
 	#	"\nTiming: %sms" % snappedf(hit_result.hit_time, 0.001) +
