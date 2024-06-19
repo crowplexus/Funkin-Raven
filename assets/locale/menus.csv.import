@@ -2,7 +2,7 @@
 
 importer="csv_translation"
 type="Translation"
-uid="uid://ch75tafb7qien"
+uid="uid://badfevsea32j4"
 
 [deps]
 
@@ -14,4 +14,4 @@ dest_files=["res://assets/locale/menus.en_US.translation", "res://assets/locale/
 [params]
 
 compress=true
-delimiter=0
+delimiter=2
