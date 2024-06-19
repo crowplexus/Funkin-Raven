@@ -46,14 +46,15 @@ func _process(delta: float) -> void:
 func _unhandled_key_input(_event: InputEvent) -> void:
 	var ud: int = int(Input.get_axis("ui_up", "ui_down"))
 	var lr: int = int(Input.get_axis("ui_left", "ui_right"))
-	if not changing_preference:
-		if ud: update_selection(ud)
-		if lr: update_page(lr)
-	else:
+
+	if changing_preference:
 		var shift_mult: int = 1
 		if Input.is_key_label_pressed(KEY_SHIFT):
 			shift_mult = 5
 		if lr: selected_pref.update(shift_mult * lr)
+	else:
+		if ud: update_selection(ud)
+		if lr: update_page(lr)
 
 	if Input.is_action_just_pressed("ui_accept"):
 		changing_preference = not changing_preference
@@ -61,14 +62,20 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 
 	if Input.is_action_just_pressed("ui_cancel"):
 		if changing_preference:
-			changing_preference = false
-			selector.modulate = Color.WHITE
-			match selected_pref.name:
-				"language": reload_text()
+			stop_changing_pref()
 		else:
 			create_tween().set_ease(Tween.EASE_OUT).bind_node(self) \
 			.tween_property(self, "modulate:a", 0.0, 0.2) \
 			.finished.connect(self.leave)
+
+
+func stop_changing_pref() -> void:
+	selector.modulate = Color.WHITE
+	changing_preference = false
+	match selected_pref.name:
+		"language": reload_text()
+		_ when selected_pref.name.ends_with("keybind"):
+			Preferences.init_keybinds()
 
 
 func update_selection(new: int = 0) -> void:

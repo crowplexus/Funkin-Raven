@@ -75,8 +75,8 @@ signal note_miss(column: int)
 
 ## Notes that the player is able to hit.
 var note_queue: Array[Note] = []
-## Notes that have been hit, used during hold note input checks.
-var hit_note_queue: Array[Note] = []
+## Hold note queue, used for hold inputs.
+var hold_note_queue: Array[Note] = []
 ## Buttons being held by the player, for hold note input checks.
 var held_buttons: Array[bool] = []
 var _latest_hit_result: Note.HitResult
@@ -99,9 +99,10 @@ func _process(delta: float) -> void:
 				if my_note.update_hold: my_note.moving = false
 				if is_instance_valid(my_note.notefield):
 					my_note.notefield.botplay_receptor(my_note)
-				hit_note_queue.append(my_note)
+				if my_note.hold_length > 0.0:
+					hold_note_queue.append(my_note)
 
-	if not hit_note_queue.is_empty():
+	if held_buttons.has(true) and not hold_note_queue.is_empty():
 		manage_hit_queue(delta)
 
 
@@ -133,7 +134,8 @@ func _unhandled_key_input(e: InputEvent) -> void:
 				tap.trip_timer = 1.5 * tap.hold_length
 
 			note_hit_tap(tap)
-			hit_note_queue.append(tap)
+			if tap.hold_length > 0.0:
+				hold_note_queue.append(tap)
 			# play animation in receptor
 			$"../".call_deferred("play_glow", tap.column)
 
@@ -152,10 +154,13 @@ func get_column_event(_event: InputEvent) -> int:
 
 ## Loops through notes that have been hit[br]
 ## this function is used mainly to handle hold note inputs
-func manage_hit_queue(_delta: float) -> void:
-	for note: Note in hit_note_queue:
-		if note.finished:
+func manage_hit_queue(delta: float) -> void:
+	if delta == 0.0: delta = get_process_delta_time()
+
+	for note: Note in hold_note_queue:
+		if note.dropped or note.finished:
 			continue
+
 		match note.hit_flag:
 			1: # player
 				hold_note_input(note)
@@ -169,8 +174,6 @@ func manage_hit_queue(_delta: float) -> void:
 func hold_note_input(note: Note, delta: float = 0.0) -> void:
 	if note.dropped or note.hold_length == 0.0:
 		return
-
-	if delta == 0.0: delta = get_process_delta_time()
 
 	if is_instance_valid(note.receptor) and is_instance_valid(note.object):
 		note.object.position.y = note.receptor.global_position.y
@@ -193,6 +196,8 @@ func hold_note_input(note: Note, delta: float = 0.0) -> void:
 				note.dropped = true
 				if is_instance_valid(note.notefield):
 					note.notefield.play_static(note.column)
+				if hold_note_queue.find(note) != -1:
+					hold_note_queue.erase(note)
 
 ## Updates a hold note's size and objects.
 func update_hold_note(note: Note, delta: float = 0.0) -> void:
@@ -253,6 +258,8 @@ func note_hit_hold(note: Note) -> void:
 	note_hit.emit(_latest_hit_result, false)
 	if is_instance_valid(_latest_hit_result) and note.hold_length <= 0.0:
 		_latest_hit_result.unreference()
+		if hold_note_queue.find(note) != -1:
+			hold_note_queue.erase(note)
 
 
 ## Sends a hit result

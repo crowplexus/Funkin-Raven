@@ -78,6 +78,9 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 
 			# load notes
 			for note: Dictionary in jsonf["notes"][real_difficulty]:
+				if "d" in note and int(note["d"]) == -1:
+					continue
+
 				var swag_note: Note = Chart.make_note(note)
 				if "d" in note:
 					var player: int = 0
@@ -105,6 +108,9 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 					if not "mustHitSection" in bar: bar["mustHitSection"] = false
 
 					for note: Array in bar["sectionNotes"]:
+						if int(note[1]) == -1:
+							continue
+
 						var note_kind: StringName = "normal"
 						if 3 in note and note[3] is String:
 							note_kind = StringName(note[3])

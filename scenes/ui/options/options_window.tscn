@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://deo3obwvipfis"]
+[gd_scene load_steps=8 format=3 uid="uid://deo3obwvipfis"]
 
 [ext_resource type="Script" path="res://scenes/ui/options/options_window.gd" id="1_gulft"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_mtl8v"]
 [ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/options/preference_bar.tscn" id="3_nu5bw"]
 [ext_resource type="Script" path="res://scenes/ui/options/language_option.gd" id="4_8fbq6"]
+[ext_resource type="Script" path="res://scenes/ui/options/keybind_option.gd" id="4_awyi8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_43sds"]
 font = ExtResource("2_mtl8v")
@@ -72,12 +73,6 @@ anchor_bottom = 1.0
 mouse_filter = 2
 alignment = 1
 
-[node name="keybinds" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
-layout_mode = 2
-option_name = &"Keybinds"
-description = "Self-explanatory."
-option_type = 3
-
 [node name="scroll_direction" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
 layout_mode = 2
 option_name = &"Scroll Direction"
@@ -117,6 +112,38 @@ NOTE: None will make the game enter Botplay Mode."
 variable = "playfield_side"
 option_type = 2
 display_names = Array[StringName]([&"Right", &"Left", &"None"])
+
+[node name="keybinds" type="VBoxContainer" parent="pages"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+alignment = 1
+
+[node name="note0_keybind" parent="pages/keybinds" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+script = ExtResource("4_awyi8")
+option_name = &"Note Left Keybind"
+variable = "note0"
+
+[node name="note1_keybind" parent="pages/keybinds" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+script = ExtResource("4_awyi8")
+option_name = &"Note Down Keybind"
+variable = "note1"
+
+[node name="note2_keybind" parent="pages/keybinds" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+script = ExtResource("4_awyi8")
+option_name = &"Note Up Keybind"
+variable = "note2"
+
+[node name="note3_keybind" parent="pages/keybinds" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+script = ExtResource("4_awyi8")
+option_name = &"Note Right Keybind"
+variable = "note3"
 
 [node name="visuals" type="VBoxContainer" parent="pages"]
 visible = false

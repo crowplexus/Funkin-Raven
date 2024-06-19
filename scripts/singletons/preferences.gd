@@ -4,10 +4,10 @@ extends Node
 
 ## Self-explanatory.
 @export var keybinds: Dictionary = {
-	"note0": [	"S",	"Left"	],
-	"note1": [	"D",	"Down"	],
-	"note2": [	"K",	"Up"	],
-	"note3": [	"L",	"Right"	],
+	"note0": [	"A",	"Left"	],
+	"note1": [	"S",	"Down"	],
+	"note2": [	"W",	"Up"	],
+	"note3": [	"D",	"Right"	],
 }
 ## Defines which direction the notes will scroll to.
 @export_enum("Up:0", "Down:1")
