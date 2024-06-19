@@ -23,7 +23,7 @@ func update_text() -> void:
 	perf_label.text += "[font_size=18]%s[/font_size] FPS" % Performance.get_monitor(Performance.TIME_FPS)
 	if OS.is_debug_build():
 		perf_label.text += "\n[font_size=18]%s[/font_size] RAM\n" % [
-			String.humanize_size(Performance.get_monitor(Performance.MEMORY_STATIC))]
+			String.humanize_size(int(Performance.get_monitor(Performance.MEMORY_STATIC)))]
 
 	if _debug_display:
 		perf_label.text += "\n			- Conductor -\n"

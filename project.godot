@@ -72,3 +72,7 @@ note3={
 , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194321,"key_label":0,"unicode":0,"echo":false,"script":null)
 ]
 }
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://assets/locale/general.en_AU.translation", "res://assets/locale/general.en_US.translation", "res://assets/locale/general.es_ES.translation", "res://assets/locale/general.pt_BR.translation", "res://assets/locale/menus.en_AU.translation", "res://assets/locale/menus.en_US.translation", "res://assets/locale/menus.es_ES.translation", "res://assets/locale/menus.pt_BR.translation")

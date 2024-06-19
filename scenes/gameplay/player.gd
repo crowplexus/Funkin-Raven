@@ -65,8 +65,9 @@ func _ready() -> void:
 
 #region Player Input
 
-signal note_hit(hit_result: Note.HitResult)
+signal note_hit(hit_result: Note.HitResult, is_tap: bool)
 signal note_fly_over(note: Note)
+signal combo_break(note: Note)
 signal note_miss(column: int)
 
 @export var controls: PackedStringArray = ["note0", "note1", "note2", "note3"]
@@ -87,7 +88,7 @@ func _process(delta: float) -> void:
 			if my_note.finished:
 				continue
 
-			if my_note.moving and (my_note.time - Conductor.time) < -0.6:
+			if my_note.moving and (my_note.time - Conductor.time) < -0.3:
 				my_note.hit_flag = -1
 				note_fly_over.emit(my_note)
 				finish_note(my_note)
@@ -217,8 +218,8 @@ func finish_note(note: Note) -> void:
 		note.update_hold = false
 	if is_instance_valid(note.object) and note.finished == true:
 		note.object.free()
-	if hit_note_queue.has(note):
-		hit_note_queue.erase(note)
+	#if hit_note_queue.has(note):
+	#	hit_note_queue.erase(note)
 
 ## Note hit function for tap notes[br]
 ## Increases score and accuracy and judges your hit.
@@ -226,11 +227,11 @@ func note_hit_tap(note: Note) -> void:
 	if note.hit_flag == 0:
 		note.hit_flag = 1 if not botplay else 2 # flag the note as hit
 
+
+	var hit_result: Note.HitResult = send_hit_result(note, true)
+	_latest_hit_result = hit_result
 	if note.hold_length > 0.0:
 		note.moving = false
-
-	var hit_result: Note.HitResult = send_hit_result(note)
-	_latest_hit_result = hit_result
 
 	if note.hit_flag == 1:
 		if is_instance_valid(note.object) and note.object.has_method("hit_behaviour"):
@@ -240,23 +241,25 @@ func note_hit_tap(note: Note) -> void:
 		if is_instance_valid(note.object) and combo_broke:
 			note.object.modulate.a = 0.4
 			note.object.modulate.v = 3.0
+			combo_break.emit(note)
 
 	if note.hold_length == 0.0:
-		if is_instance_valid(note.object):
-			note.object.free()
-		note.finished = true
+		finish_note(note)
 
 ## Note hit function for hold notes[br]
 ## Increases score by 10 every frame when holding.
 func note_hit_hold(note: Note) -> void:
 	score = score + 15
-	note_hit.emit(_latest_hit_result)
+	note_hit.emit(_latest_hit_result, false)
 	if is_instance_valid(_latest_hit_result) and note.hold_length <= 0.0:
 		_latest_hit_result.unreference()
 
 
 ## Sends a hit result
-func send_hit_result(note: Note) -> Note.HitResult:
+func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
+	if combo < 0:
+		combo = 0
+
 	if botplay:
 		var botplay_hit_result: = Note.HitResult.new()
 		botplay_hit_result.hit_time = (note.time - Conductor.time) * 1000.0
@@ -280,7 +283,7 @@ func send_hit_result(note: Note) -> Note.HitResult:
 	hit_result.judgment = judge
 	hit_result.player = self
 	hit_result.data = note
-	note_hit.emit(hit_result)
+	note_hit.emit(hit_result, is_tap)
 
 	var hit_score: = Scoring.TEMPLATE_HIT_SCORE.duplicate()
 	hit_score.health = health + 3
@@ -315,6 +318,9 @@ func apply_miss(column: int = 0) -> void:
 	if combo > 1:
 		combo = 0
 		breaks += 1
+	else:
+		combo -= 1
+
 	misses += 1
 	health -= 3
 	note_miss.emit(column)

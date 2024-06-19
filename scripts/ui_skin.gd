@@ -16,4 +16,17 @@ class_name UISkin
 	preload("res://assets/audio/sfx/gameplay/introGo.ogg"),
 ]
 
+@export var judgment_row: Texture2D = preload("res://assets/sprites/ui/normal/judgments.png")
+@export var combo_row: Texture2D = preload("res://assets/sprites/ui/normal/combo.png")
+
+@export_category("Filtering")
+
 @export var countdown_sprite_filter: = CanvasItem.TEXTURE_FILTER_LINEAR
+@export var judgment_sprite_filter: = CanvasItem.TEXTURE_FILTER_LINEAR
+@export var combo_num_sprite_filter: = CanvasItem.TEXTURE_FILTER_LINEAR
+
+@export_category("Scaling")
+
+@export var countdown_sprite_scale: Vector2 = Vector2.ONE
+@export var judgment_sprite_scale:  Vector2 = Vector2(0.65, 0.65)
+@export var combo_num_sprite_scale: Vector2 = Vector2(0.45, 0.45)

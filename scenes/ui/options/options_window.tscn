@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://deo3obwvipfis"]
+[gd_scene load_steps=7 format=3 uid="uid://deo3obwvipfis"]
 
-[ext_resource type="Script" path="res://scenes/ui/options_window.gd" id="1_gulft"]
+[ext_resource type="Script" path="res://scenes/ui/options/options_window.gd" id="1_gulft"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_mtl8v"]
-[ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/preference_bar.tscn" id="3_nu5bw"]
+[ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/options/preference_bar.tscn" id="3_nu5bw"]
+[ext_resource type="Script" path="res://scenes/ui/options/language_option.gd" id="4_8fbq6"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_43sds"]
 font = ExtResource("2_mtl8v")
@@ -162,6 +163,14 @@ layout_mode = 2
 option_name = &"Show Timer"
 description = "Enables a timer at the top of the screen, shows song elapsed time and total time."
 variable = "show_timer"
+
+[node name="language" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+script = ExtResource("4_8fbq6")
+option_name = &"Language"
+description = "Language used in the menus and user interface."
+variable = "language"
+option_type = 2
 
 [node name="selector" type="Label" parent="pages"]
 custom_minimum_size = Vector2(0, 50)

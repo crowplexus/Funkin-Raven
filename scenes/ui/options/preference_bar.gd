@@ -22,16 +22,12 @@ var option_type: int = 0
 @export var steps: float = 1.0
 
 ## The preference's current value
-var value: Variant:
-	get: return Preferences.get(variable)
-	set(new_value):
-		var old_value = value
-		if old_value != value:
-			reset_preference_label()
+var value: Variant
+var _force_name: StringName = ""
 
 
 func _ready() -> void:
-	reset_preference_label()
+	check_value()
 
 
 func update(amount: int = 0) -> void:
@@ -49,15 +45,21 @@ func update(amount: int = 0) -> void:
 			if value is String or value is StringName:
 				next_value = display_names[next_value]
 			Preferences.set(variable, next_value)
-
 	#print_debug(value)
+	check_value()
+
+
+func check_value() -> void:
+	value = Preferences.get(variable)
 	reset_preference_label()
 
 
 func reset_preference_label() -> void:
 	if is_instance_valid(preference_label):
-		var final_text: String = ""
-		final_text = option_name
+		var final_text: String = option_name
+		var trans_name: = tr("OPTION_NAME_%s" % option_name.to_snake_case().to_upper())
+		if not trans_name.begins_with("OPTION_NAME_"):
+			final_text = trans_name
 		# display value name in there too #
 		if option_type < 3:
 			final_text += ": %s" % get_value_name()
@@ -65,6 +67,11 @@ func reset_preference_label() -> void:
 
 
 func get_value_name() -> StringName:
+	if not _force_name.is_empty():
+		var copy = _force_name
+		_force_name = ""
+		return copy
+
 	var value_name: StringName = str(value)
 	match value_name.to_snake_case():
 		"true": value_name = "ON"
@@ -77,4 +84,8 @@ func get_value_name() -> StringName:
 						value_name = display_names[value]
 					elif value is String or value is StringName:
 						value_name = display_names[display_names.find(value)]
+
+	var trans_str: = "OPTION_VALUE_%s" % value_name.to_snake_case().to_upper()
+	if not trans_str.begins_with("OPTION_VALUE_"):
+		value_name = trans_str
 	return value_name

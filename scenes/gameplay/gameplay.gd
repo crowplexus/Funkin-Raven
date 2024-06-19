@@ -7,9 +7,8 @@ extends Node2D
 var camera: Camera2D
 @onready var ui_layer: CanvasLayer = $"hud"
 @onready var main_hud: Control = $"hud/main"
+@onready var combo_group: Control = $"hud/combo_group"
 @onready var health_bar: = $"hud/main/health_bar"
-@onready var status_label: Label = $"hud/main/status_label"
-@onready var hit_result_label: Label = $"hud/main/judge"
 @onready var note_cluster: Node2D = $"hud/main/note_cluster"
 @onready var fields: Control = $"hud/main/fields"
 @onready var stage: StageBG = $"stage"
@@ -35,11 +34,6 @@ func _ready() -> void:
 	health_bar.set_player(Preferences.playfield_side)
 
 	initial_ui_zoom = ui_layer.scale
-
-	match Preferences.scroll_direction:
-		1:
-			health_bar.position.y = 100
-			status_label.position.y = 135
 
 	# Connect Signals
 	Conductor.beat_reached.connect(on_beat_reached)
@@ -90,7 +84,8 @@ func _exit_tree() -> void:
 		var field: NoteField = fields.get_child(i)
 		if is_instance_valid(field.player):
 			field.player.note_hit.disconnect(update_score_text)
-			field.player.note_hit.disconnect(show_combo_temporary)
+			field.player.note_hit.disconnect(combo_group.pop_up_judge)
+			field.player.note_hit.disconnect(combo_group.pop_up_combo)
 			field.player.note_fly_over.disconnect(miss_fly_over)
 
 #endregions
@@ -118,7 +113,8 @@ func init_players(player_fields: Array = []) -> void:
 			player.held_buttons.append(false)
 
 		player.note_hit.connect(update_score_text)
-		player.note_hit.connect(show_combo_temporary)
+		player.note_hit.connect(combo_group.pop_up_judge)
+		player.note_hit.connect(combo_group.pop_up_combo)
 		player.note_fly_over.connect(miss_fly_over)
 		# send hit result so the score text updates
 		var fake_result: = Note.HitResult.new()
@@ -131,7 +127,7 @@ func init_players(player_fields: Array = []) -> void:
 			else:
 				field.visible = false
 		fake_result.player = player
-		player.note_hit.emit(fake_result)
+		player.note_hit.emit(fake_result, false)
 		field.make_playable(player)
 		fake_result.unreference()
 
@@ -227,14 +223,12 @@ func miss_fly_over(note: Note) -> void:
 			field.player.apply_miss(note.column)
 			var fake_result: = Note.HitResult.new()
 			fake_result.player = field.player
-			update_score_text(fake_result)
+			update_score_text(fake_result, true)
+			combo_group.pop_up_combo(fake_result, true)
 			fake_result.unreference()
 
 #endregion
 #region HUD Elements
-
-var combo_tween: Tween
-
 
 func center_ui_layer() -> void:
 	ui_layer.offset = Vector2(
@@ -243,38 +237,12 @@ func center_ui_layer() -> void:
 	)
 
 
-func update_score_text(hit_result: Note.HitResult) -> void:
-	if not is_instance_valid(hit_result.player) or not is_instance_valid(status_label):
+func update_score_text(hit_result: Note.HitResult, is_tap: bool) -> void:
+	if not is_instance_valid(hit_result.player) or not is_instance_valid(main_hud):
 		return
 
 	if main_hud.has_method("update_score_text"):
-		main_hud.call_deferred("update_score_text", hit_result)
-	else:
-		status_label.text = hit_result.player.mk_stats_string()
-
-
-func show_combo_temporary(hit_result: Note.HitResult) -> void:
-	if hit_result.judgment == null or hit_result.judgment.is_empty():
-		return
-
-	var hit_colour: Color = Color.DIM_GRAY
-	if "color" in hit_result.judgment:
-		hit_colour = hit_result.judgment.color
-	elif "colour" in hit_result.judgment: # british.
-		hit_colour = hit_result.judgment.colour
-
-	hit_result_label.text = (str(hit_result.judgment.name) +
-		"\nTiming: %sms" % snappedf(hit_result.hit_time, 0.001) +
-		"\nCombo: %s" % hit_result.player.combo)
-	hit_result_label.modulate = hit_colour
-
-	if is_instance_valid(combo_tween):
-		combo_tween.kill()
-
-	combo_tween = create_tween().set_ease(Tween.EASE_OUT)
-	combo_tween.bind_node(hit_result_label)
-	combo_tween.tween_property(hit_result_label, "modulate:a", 0.0, 0.5 * Conductor.crotchet) \
-	.set_delay(0.5 * Conductor.crotchet)
+		main_hud.callv("update_score_text", [hit_result, is_tap])
 
 #endregion
 #region Utilities

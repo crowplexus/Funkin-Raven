@@ -7,6 +7,8 @@ extends Control
 @onready var selector: = $"pages/selector"
 @onready var all_pages: Array:
 	get:
+		if not is_instance_valid(page_list):
+			return []
 		return page_list.get_children().filter(func(node):
 			return node is VBoxContainer
 		)
@@ -61,6 +63,8 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 		if changing_preference:
 			changing_preference = false
 			selector.modulate = Color.WHITE
+			match selected_pref.name:
+				"language": reload_text()
 		else:
 			create_tween().set_ease(Tween.EASE_OUT).bind_node(self) \
 			.tween_property(self, "modulate:a", 0.0, 0.2) \
@@ -70,7 +74,7 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 func update_selection(new: int = 0) -> void:
 	current_selection = wrapi(current_selection + new, 0, page_size)
 	selected_pref = active_page.get_child(current_selection)
-	option_descriptor.text = selected_pref.description
+	reload_description()
 
 	for pref: PreferenceBar in active_page.get_children():
 		if pref == selected_pref: pref.modulate.a = 1.0
@@ -95,8 +99,32 @@ func update_page(new_page: int = 0) -> void:
 	for page: VBoxContainer in all_pages:
 		page.visible = page == active_page
 
-	page_name_label.text = "< %s >" % active_page.name.to_pascal_case()
+	reload_page_name()
 	update_selection()
+
+
+func reload_text() -> void:
+	reload_page_name()
+	reload_description()
+	for page: VBoxContainer in all_pages:
+		for pref: PreferenceBar in active_page.get_children():
+			pref.reset_preference_label()
+
+
+func reload_page_name() -> void:
+	if not is_instance_valid(active_page):
+		return
+	var page_name: String = active_page.name
+	var trans_name: = tr("OPTION_PAGE_%s" % active_page.name.to_snake_case().to_upper())
+	if not trans_name.begins_with("OPTION_PAGE_"):
+		page_name = trans_name
+	page_name_label.text = "< %s >" % page_name
+
+
+func reload_description() -> void:
+	if not is_instance_valid(selected_pref):
+		return
+	option_descriptor.text = selected_pref.description
 
 
 func leave() -> void:

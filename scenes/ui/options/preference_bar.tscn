@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://3e0gva7f3ej5"]
 
-[ext_resource type="Script" path="res://scenes/ui/preference_bar.gd" id="1_tmrfj"]
+[ext_resource type="Script" path="res://scenes/ui/options/preference_bar.gd" id="1_tmrfj"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_d8es2"]
 
 [node name="preference_bar" type="Control"]

@@ -61,6 +61,15 @@ const JUDGMENTS: Array[Dictionary] = [
 	#},
 ]
 
+static func get_judge_by_name(name: StringName) -> Dictionary:
+	var result: Dictionary = Scoring.JUDGMENTS.back()
+	for i: int in JUDGMENTS.size():
+		var judgment: Dictionary = Scoring.JUDGMENTS[i]
+		if judgment.name == name:
+			result = judgment
+			break
+	return result
+
 
 static func get_clear_flag(hit_reg: Dictionary) -> String:
 	var flag: String = ""

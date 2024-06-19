@@ -69,7 +69,11 @@ var countdown_mode: int = 0
 @export var countdown_speed: int = 5:
 	set(new_speed):
 		countdown_speed = clampi(new_speed, 1, 10)
-
+## Language used in the menus and user interface.
+@export var language: String = "en_AU":
+	set(new_locale):
+		language = new_locale
+		TranslationServer.set_locale(new_locale)
 #endregion
 #region Functions
 
