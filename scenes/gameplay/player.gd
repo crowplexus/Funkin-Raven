@@ -93,14 +93,16 @@ func _process(delta: float) -> void:
 				note_fly_over.emit(my_note)
 				finish_note(my_note)
 
-			if botplay and my_note.time <= Conductor.time and my_note.moving:
+			if botplay and my_note.time <= Conductor.time:
 				note_hit_tap(my_note)
-				my_note.update_hold = my_note.hold_length > 0.0
-				if my_note.update_hold: my_note.moving = false
 				if is_instance_valid(my_note.notefield):
 					my_note.notefield.botplay_receptor(my_note)
 				if my_note.hold_length > 0.0:
-					hold_note_queue.append(my_note)
+					my_note.update_hold = true
+					my_note.moving = false
+					if Conductor.ibeat % 1 == 0 and is_instance_valid(my_note.notefield):
+						my_note.notefield.play_glow(my_note.column)
+					update_hold_note(my_note)
 
 	if held_buttons.has(true) and not hold_note_queue.is_empty():
 		manage_hit_queue(delta)
@@ -167,6 +169,8 @@ func manage_hit_queue(delta: float) -> void:
 			2: # botplay
 				if Conductor.ibeat % 1 == 0 and is_instance_valid(note.notefield):
 					note.notefield.play_glow(note.column)
+				if note.hold_length <= 0.0:
+					hold_note_queue.erase(note)
 		update_hold_note(note)
 
 
@@ -196,8 +200,7 @@ func hold_note_input(note: Note, delta: float = 0.0) -> void:
 				note.dropped = true
 				if is_instance_valid(note.notefield):
 					note.notefield.play_static(note.column)
-				if hold_note_queue.find(note) != -1:
-					hold_note_queue.erase(note)
+				hold_note_queue.erase(note)
 
 ## Updates a hold note's size and objects.
 func update_hold_note(note: Note, delta: float = 0.0) -> void:
@@ -232,23 +235,23 @@ func note_hit_tap(note: Note) -> void:
 	if note.hit_flag == 0:
 		note.hit_flag = 1 if not botplay else 2 # flag the note as hit
 
-
 	var hit_result: Note.HitResult = send_hit_result(note, true)
 	_latest_hit_result = hit_result
 	if note.hold_length > 0.0:
 		note.moving = false
 
-	if note.hit_flag == 1:
-		if is_instance_valid(note.object) and note.object.has_method("hit_behaviour"):
-			note.object.callv("hit_behaviour", [hit_result])
+	match note.hit_flag:
+		1:
+			if is_instance_valid(note.object) and note.object.has_method("hit_behaviour"):
+				note.object.callv("hit_behaviour", [hit_result])
 
-		var combo_broke: bool = "combo_break" in hit_result.judgment and hit_result.judgment.combo_break
-		if is_instance_valid(note.object) and combo_broke:
-			note.object.modulate.a = 0.4
-			note.object.modulate.v = 3.0
-			combo_break.emit(note)
+			var combo_broke: bool = "combo_break" in hit_result.judgment and hit_result.judgment.combo_break
+			if is_instance_valid(note.object) and combo_broke:
+				note.object.modulate.a = 0.4
+				note.object.modulate.v = 3.0
+				combo_break.emit(note)
 
-	if note.hold_length == 0.0:
+	if note.hold_length <= 0.0:
 		finish_note(note)
 
 ## Note hit function for hold notes[br]
@@ -258,8 +261,7 @@ func note_hit_hold(note: Note) -> void:
 	note_hit.emit(_latest_hit_result, false)
 	if is_instance_valid(_latest_hit_result) and note.hold_length <= 0.0:
 		_latest_hit_result.unreference()
-		if hold_note_queue.find(note) != -1:
-			hold_note_queue.erase(note)
+		hold_note_queue.erase(note)
 
 
 ## Sends a hit result

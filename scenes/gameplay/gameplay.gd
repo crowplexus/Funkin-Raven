@@ -68,6 +68,10 @@ func _process(delta: float) -> void:
 func _unhandled_key_input(e: InputEvent) -> void:
 	if e.is_pressed():
 		match e.keycode:
+			KEY_5:
+				music.seek(music.get_playback_position() + 5)
+				for track: AudioStreamPlayer in music.get_children():
+					track.seek(music.get_playback_position())
 			KEY_ESCAPE:
 				get_tree().change_scene_to_packed(load("res://scenes/menu/freeplay_menu.tscn"))
 			KEY_ENTER:
