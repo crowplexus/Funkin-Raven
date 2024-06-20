@@ -262,6 +262,7 @@ _data = {
 [node name="dad" type="Node2D"]
 script = ExtResource("1_ux777")
 display_name = &"Daddy Dearest"
+camera_offset = Vector2(230, 0)
 
 [node name="sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("1_b6jed")

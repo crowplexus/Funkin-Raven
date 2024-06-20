@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bjhgsn2eb2e1h"]
+[gd_scene load_steps=21 format=3 uid="uid://bjhgsn2eb2e1h"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/gameplay.gd" id="1_gfupu"]
 [ext_resource type="Texture2D" uid="uid://dd87wgxdwo82p" path="res://assets/sprites/ui/normal/prepare.png" id="2_4pdat"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://5u40shy36q27" path="res://assets/sprites/ui/normal/judgments.png" id="11_hk4xw"]
 [ext_resource type="PackedScene" uid="uid://yruwyaxp0fdl" path="res://scenes/gameplay/hud/default.tscn" id="12_hchqv"]
 [ext_resource type="PackedScene" uid="uid://bc1se7ekgu1ux" path="res://scenes/gameplay/hud/combo_group.tscn" id="17_3r26l"]
+[ext_resource type="PackedScene" uid="uid://bcn0ldilqlnur" path="res://scenes/gameplay/event_machine.tscn" id="18_7d1c2"]
 
 [sub_resource type="Resource" id="Resource_mec6n"]
 script = ExtResource("6_3188v")
@@ -78,3 +79,5 @@ process_thread_group_order = 1
 process_thread_messages = 1
 script = ExtResource("5_sb58y")
 connected_fields = [NodePath("../fields/1"), NodePath("../fields/2")]
+
+[node name="event_machine" parent="." instance=ExtResource("18_7d1c2")]

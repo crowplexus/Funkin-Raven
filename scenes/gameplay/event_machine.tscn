@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bcn0ldilqlnur"]
+
+[ext_resource type="Script" path="res://scenes/gameplay/event_machine.gd" id="1_fcmsk"]
+
+[node name="event_machine" type="Node"]
+script = ExtResource("1_fcmsk")

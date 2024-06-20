@@ -12,7 +12,7 @@ const NOTE_KIND_OBJECTS: Dictionary = {
 
 
 func _ready() -> void:
-	if is_instance_valid(Chart.global):
+	if is_instance_valid(Chart.global) and note_queue.is_empty():
 		note_queue = Chart.global.notes.duplicate()
 	Conductor.fstep_reached.connect(try_spawning)
 

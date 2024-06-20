@@ -29,7 +29,7 @@ var playfield_spot: float:
 func on_note_hit(hit_result: Note.HitResult, is_tap: bool) -> void:
 	if not is_instance_valid(hit_result.data):
 		return
-	chars_sing(hit_result.data.column, Conductor.istep % 2 == 0)
+	chars_sing(hit_result.data.column, is_tap or Conductor.ibeat % 1 == 0)
 
 
 func reset_scroll_mods() -> void:
@@ -103,10 +103,10 @@ func botplay_receptor(note: Note) -> void:
 	if is_instance_valid(anim_timer):
 		anim_timer.stop()
 
-	anim_timer.start((0.5 * Conductor.crotchet) + note.hold_length)
-	play_glow.call_deferred(note.column)
-	await anim_timer.timeout
-	play_static.call_deferred(note.column)
+		anim_timer.start((0.2 * Conductor.crotchet) + note.hold_length)
+		play_glow.call_deferred(note.column)
+		await anim_timer.timeout
+		play_static.call_deferred(note.column)
 
 #endregion
 #region Connected Characters
@@ -122,6 +122,6 @@ func chars_sing(column: int = 0, force: bool = false, cooldown_delay: float = 0.
 		if personaje.animation_context != 2:
 			var sing_column: int = column % personaje.sing_list.size()
 			personaje.sing(sing_column, force)
-			personaje._idle_cooldown = (12 * Conductor.semiquaver) + cooldown_delay
+			personaje.idle_cooldown = (12 * Conductor.semiquaver) + cooldown_delay
 
 #endregion

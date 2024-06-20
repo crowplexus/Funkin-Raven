@@ -10,6 +10,7 @@ var camera: Camera2D
 @onready var combo_group: Control = $"hud/combo_group"
 @onready var health_bar: = $"hud/main/health_bar"
 @onready var note_cluster: Node2D = $"hud/main/note_cluster"
+@onready var event_mach: EventMachine = $"event_machine"
 @onready var fields: Control = $"hud/main/fields"
 #endregion
 #region Local Variables
@@ -28,7 +29,7 @@ func _ready() -> void:
 	Conductor.set_time(-(Conductor.crotchet * 5))
 	remove_child($"stage")
 
-	if is_instance_valid(Chart.global.song_info):
+	if is_instance_valid(Chart.global) and is_instance_valid(Chart.global.song_info):
 		var np: NodePath = "res://scenes/backgrounds/%s.tscn" % [
 			Chart.global.song_info.background]
 		#print_debug("trying to create stage")
@@ -74,10 +75,8 @@ func _process(delta: float) -> void:
 func _unhandled_key_input(e: InputEvent) -> void:
 	if e.is_pressed():
 		match e.keycode:
-			KEY_5:
-				music.seek(music.get_playback_position() + 5)
-				for track: AudioStreamPlayer in music.get_children():
-					track.seek(music.get_playback_position())
+			KEY_4:
+				display_countdown(0, 0)
 			KEY_ESCAPE:
 				get_tree().change_scene_to_packed(load("res://scenes/menu/freeplay_menu.tscn"))
 			KEY_ENTER:
@@ -102,7 +101,7 @@ func _exit_tree() -> void:
 #region Gameplay Setup
 
 func init_fields() -> void:
-	if not is_instance_valid(Chart.global.song_info):
+	if not is_instance_valid(Chart.global) or not is_instance_valid(Chart.global.song_info):
 		return
 
 	var nf_config: = Chart.global.song_info.notefields
@@ -248,10 +247,15 @@ func display_countdown(snd_progress: int, spr_progress: int = -0) -> void:
 		var countdown_sprite: Sprite2D = Sprite2D.new()
 		countdown_sprite.texture = skin.countdown_sprites[spr_progress]
 		countdown_sprite.position = get_viewport_rect().size * 0.5
-		add_child(countdown_sprite)
+		countdown_sprite.scale.y += 0.2
+		ui_layer.add_child(countdown_sprite)
 
-		create_tween().set_ease(Tween.EASE_IN_OUT).bind_node(countdown_sprite) \
-		.tween_property(countdown_sprite, "modulate:a", 0.0, 1.15 * Conductor.crotchet) \
+		# animation :o #
+		create_tween().set_ease(Tween.EASE_IN).bind_node(countdown_sprite).set_parallel(true) \
+		.tween_property(countdown_sprite, "scale:y", countdown_sprite.scale.y - 0.2, 0.15 * Conductor.crotchet)
+
+		create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD).bind_node(countdown_sprite) \
+		.tween_property(countdown_sprite, "modulate:a", 0.0, 1.25 * Conductor.crotchet).set_delay(0.2 * Conductor.crotchet) \
 		.finished.connect(countdown_sprite.queue_free)
 
 	if snd_progress > -1 and snd_progress <= skin.countdown_sounds.size():

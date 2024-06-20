@@ -64,6 +64,7 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 		if changing_preference:
 			stop_changing_pref()
 		else:
+			Preferences.save_prefs()
 			create_tween().set_ease(Tween.EASE_OUT).bind_node(self) \
 			.tween_property(self, "modulate:a", 0.0, 0.2) \
 			.finished.connect(self.leave)

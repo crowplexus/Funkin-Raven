@@ -1,5 +1,11 @@
 extends Node
 
+signal prefs_saved()
+signal prefs_loaded()
+
+const _SAVE_FILE: = "user://raven_prefs.cfg"
+var _file: ConfigFile = ConfigFile.new()
+
 #region Gameplay Options
 
 ## Self-explanatory.
@@ -78,6 +84,8 @@ var countdown_mode: int = 0
 #region Functions
 
 func _ready() -> void:
+	load_prefs()
+	await RenderingServer.frame_post_draw # bro.
 	init_keybinds()
 
 
@@ -91,5 +99,43 @@ func init_keybinds() -> void:
 			var key: String = keybinds[action_name][i]
 			_new_event.keycode = OS.find_keycode_from_string(key.to_lower())
 			InputMap.action_add_event(action_name, _new_event)
+
+
+func save_prefs() -> void:
+	var _e: Error = _file.load(_SAVE_FILE)
+	var _props: Array[Dictionary] = get_vars()
+	for prop: Variant in _props:
+		#print_debug(prop.name)
+		if prop.name.begins_with("_"):
+			continue
+		_file.set_value("Preferences", prop.name, get(prop.name))
+	_file.save(_SAVE_FILE)
+	prefs_saved.emit()
+	#_file.unreference()
+
+
+func load_prefs() -> void:
+	var e: Error = _file.load(_SAVE_FILE)
+	if e != OK:
+		save_prefs()
+		await prefs_saved
+
+	var _props: Array[Dictionary] = get_vars()
+	for prop: Variant in _props:
+		if prop.name.begins_with("_"):
+			continue
+		if not _file.has_section_key("Preferences", prop.name):
+			_file.set_value("Preferences", prop.name, get(prop.name))
+		else:
+			set(prop.name, _file.get_value("Preferences", prop.name, get(prop.name)))
+
+	prefs_loaded.emit()
+	#_file.unreference()
+
+
+func get_vars() -> Array[Dictionary]:
+	var _props: Array[Dictionary] = get_property_list()
+	for _i: int in 19: _props.remove_at(0)
+	return _props
 
 #endregion

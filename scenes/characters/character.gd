@@ -15,6 +15,7 @@ class_name Character
 @export_enum("Dancing:0", "Singing:1", "Special:2")
 var animation_context: int = 0
 @export var sing_duration: float = 5.0
+@export var camera_offset: Vector2 = Vector2.ZERO
 
 @export_category("Animations")
 
@@ -25,9 +26,9 @@ var animation_context: int = 0
 ## Interval (in beats) for characters to [code]dance()[/code]
 @export var dance_interval: int = 2
 
+var idle_cooldown: float = 0.0
 var _current_idle: int = 0
 var _previous_anim: StringName = ""
-var _idle_cooldown: float = 0.0
 
 
 func _ready() -> void:
@@ -39,9 +40,9 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if animation_context != 0:
-		if _idle_cooldown > 0.0:
-			_idle_cooldown -= delta * (sing_duration * (Conductor.semibreve * 0.25))
-		if _idle_cooldown <= 0.0:
+		if idle_cooldown > 0.0:
+			idle_cooldown -= delta * (sing_duration * (Conductor.semibreve * 0.25))
+		if idle_cooldown <= 0.0:
 			dance()
 
 
@@ -62,7 +63,7 @@ func play_animation(anim: StringName, force: bool = false, force_frame: int = 0)
 
 
 func try_dance(beat: int) -> void: # i hate this <3 @crowplexus
-	if _idle_cooldown == 0.0 and beat % dance_interval == 0:
+	if idle_cooldown <= 0.0 and beat % dance_interval == 0:
 		dance(sprite.frame_progress > 0.0)
 
 
