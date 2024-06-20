@@ -275,7 +275,7 @@ func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
 	if botplay:
 		var botplay_hit_result: = Note.HitResult.new()
 		botplay_hit_result.hit_time = (note.time - Conductor.time) * 1000.0
-		botplay_hit_result.judgment = Scoring.PERFECT_JUDGMENT.duplicate()
+		botplay_hit_result.judgment.merge(Scoring.JUDGMENTS.perfect)
 		botplay_hit_result.player = self
 		botplay_hit_result.data = note
 		botplay_hit.emit(botplay_hit_result, is_tap)
@@ -287,6 +287,9 @@ func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
 	var diff: float = note.time - Conductor.time
 	var judge: Dictionary = Scoring.judge_note(note, absf(diff * 1000.0))
 	var judge_name: String = Scoring.JUDGMENTS.find_key(judge)
+	if judge_name == "miss":
+		apply_miss(note.column)
+		return _latest_hit_result
 
 	if combo > 1 and judge.combo_break == true:
 		combo = 0

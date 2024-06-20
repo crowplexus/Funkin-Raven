@@ -12,50 +12,56 @@ const TEMPLATE_HIT_SCORE: Dictionary = {
 const MAX_SCORE: int = 500
 const HIT_THRESHOLD: float = 200.0
 
-const PERFECT_JUDGMENT: Dictionary = {
-	"name": "perfect", "splash": true,
-	"accuracy": 100.0, "threshold": 22.5,
-	"color": Color("ff89c9"),
-	"clear": { "full": "PFC" },
-	"combo_break": false,
-}
-
 const JUDGMENTS: Dictionary = {
+	"perfect": {
+		"splash": true, "combo_break": false,
+		"accuracy": 100.0, "threshold": 5.0,
+		"color": Color("ff89c9"),
+		"clear": { "full": "PFC" },
+		"visible": false, # hides judgment sprite
+	},
 	"epic": {
 		"splash": true, "combo_break": false,
 		"accuracy": 100.0, "threshold": 22.5,
 		"color": Color("ff89c9"),
-		"clear": { "full": "EFC"  },
+		"clear": { "full": "EFC" },
+		"visible": true,
 	},
 	"sick": {
 		"splash": true, "combo_break": false,
 		"accuracy": 90.0, "threshold": 45.0,
 		"color": Color("626592"),
 		"clear": { "single": "SDS", "full": "SFC" },
+		"visible": true,
 	},
 	"good": {
 		"splash": false, "combo_break": false,
 		"accuracy": 85.0, "threshold": 90.0,
 		"color": Color("77d0c1"),
 		"clear": { "single": "SDG", "full": "GFC" },
+		"visible": true,
 	},
 	"bad": {
 		"splash": false, "combo_break": true,
 		"accuracy": 30.0, "threshold": 135.0,
 		"color": Color("f7433f"),
 		"clear": { "full": "FC" },
+		"visible": true,
 	},
 	"shit": {
 		"splash": false, "combo_break": true,
 		"accuracy": 0.0, "threshold": 180.0,
 		"color": Color("e5af32"),
 		"clear": { "full": "FC" },
+		"visible": true,
 	},
-	#"miss": {
-	#	"splash": false, "combo_break": false
-	#	"accuracy": 0.0, "threshold": NAN,
-	#	"color": Color.DIM_GRAY,
-	#},
+	"miss": {
+		"splash": false, "combo_break": false,
+		"accuracy": 0.0, "threshold": HIT_THRESHOLD,
+		"color": Color.CRIMSON,
+		"clear": { "full": "" }, # it isn't lol
+		"visible": false,
+	},
 }
 
 static func get_judge_by_name(name: StringName) -> Dictionary:
@@ -112,13 +118,15 @@ static func judge_time(millisecond_time: float) -> Dictionary:
 	# this is faster than a for loop but less convenient
 	# at this moment i'm aiming for performance.
 	match millisecond_time:
-		_ when millisecond_time <= JUDGMENTS["epic"].threshold:
-			return JUDGMENTS["epic"]
-		_ when millisecond_time <= JUDGMENTS["sick"].threshold:
-			return JUDGMENTS["sick"]
-		_ when millisecond_time <= JUDGMENTS["good"].threshold:
-			return JUDGMENTS["good"]
-		_ when millisecond_time <= JUDGMENTS["bad"].threshold:
-			return JUDGMENTS["bad"]
+		_ when millisecond_time <= JUDGMENTS.epic.threshold:
+			return JUDGMENTS.epic
+		_ when millisecond_time <= JUDGMENTS.sick.threshold:
+			return JUDGMENTS.sick
+		_ when millisecond_time <= JUDGMENTS.good.threshold:
+			return JUDGMENTS.good
+		_ when millisecond_time <= JUDGMENTS.bad.threshold:
+			return JUDGMENTS.bad
+		_ when millisecond_time <= JUDGMENTS.shit.threshold:
+			return JUDGMENTS.shit
 		_: # Default Judgment.
-			return JUDGMENTS["shit"]
+			return JUDGMENTS.miss

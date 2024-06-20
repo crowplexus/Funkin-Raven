@@ -36,7 +36,7 @@ func recreate_popup_tween() -> Tween:
 
 
 func pop_up_judge(hit_result: Note.HitResult, is_tap: bool) -> void:
-	if not is_tap:
+	if not is_tap or not hit_result.judgment.visible:
 		return
 
 	judgment_sprite.frame = hit_result.judgment.frame
