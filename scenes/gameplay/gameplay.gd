@@ -49,11 +49,11 @@ func _ready() -> void:
 
 func start_countdown(beat: int) -> void:
 	match beat:
-		# process_countdown(sound_id, sprite_id)
-		-4: process_countdown(0)
-		-3: process_countdown(1)
-		-2: process_countdown(2)
-		-1: process_countdown(3)
+		# display_countdown(sound_id, sprite_id)
+		-4: display_countdown(0)
+		-3: display_countdown(1)
+		-2: display_countdown(2)
+		-1: display_countdown(3)
 
 	if beat == 0 and Conductor.ibeat_reached.is_connected(start_countdown):
 		Conductor.ibeat_reached.disconnect(start_countdown)
@@ -240,7 +240,7 @@ func init_stage(path: NodePath) -> void:
 #endregion
 #region Gameplay Loop
 
-func process_countdown(snd_progress: int, spr_progress: int = -0) -> void:
+func display_countdown(snd_progress: int, spr_progress: int = -0) -> void:
 	if is_same(spr_progress, -0):
 		spr_progress = snd_progress
 

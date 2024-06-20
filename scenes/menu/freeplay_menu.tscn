@@ -1,108 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://2wkbyp2gb0gu"]
+[gd_scene load_steps=6 format=3 uid="uid://2wkbyp2gb0gu"]
 
 [ext_resource type="Script" path="res://scenes/menu/freeplay_menu.gd" id="1_mwt6o"]
-[ext_resource type="Script" path="res://scripts/song_item.gd" id="2_8432q"]
 [ext_resource type="Texture2D" uid="uid://mr31twd36rpw" path="res://assets/sprites/menu/menuDesat.png" id="2_a718r"]
+[ext_resource type="Resource" uid="uid://llhw2mb1u7hu" path="res://assets/funkin_bundle.tres" id="2_m5145"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="3_r3f4j"]
-
-[sub_resource type="Resource" id="Resource_1u0n1"]
-script = ExtResource("2_8432q")
-display_name = &"Bopeebo"
-folder_name = &"bopeebo"
-difficulties = Array[Dictionary]([{
-"display_name": "Easy",
-"file": "easy",
-"variation": ""
-}, {
-"display_name": "Normal",
-"file": "normal",
-"variation": ""
-}, {
-"display_name": "Hard",
-"file": "hard",
-"variation": ""
-}, {
-"display_name": "Erect",
-"file": "erect",
-"variation": "erect"
-}, {
-"display_name": "Nightmare",
-"file": "erect",
-"target": "nightmare",
-"variation": "erect"
-}])
-
-[sub_resource type="Resource" id="Resource_ebc6k"]
-script = ExtResource("2_8432q")
-display_name = &"Darnell"
-folder_name = &"darnell"
-difficulties = Array[Dictionary]([{
-"display_name": "Easy",
-"file": "easy",
-"variation": ""
-}, {
-"display_name": "Normal",
-"file": "normal",
-"variation": ""
-}, {
-"display_name": "Hard",
-"file": "hard",
-"variation": ""
-}])
-
-[sub_resource type="Resource" id="Resource_7ypun"]
-script = ExtResource("2_8432q")
-display_name = &"Lit Up"
-folder_name = &"lit-up"
-difficulties = Array[Dictionary]([{
-"display_name": "Easy",
-"file": "easy",
-"variation": ""
-}, {
-"display_name": "Normal",
-"file": "normal",
-"variation": ""
-}, {
-"display_name": "Hard",
-"file": "hard",
-"variation": ""
-}, {
-"display_name": "Erect",
-"file": "erect",
-"variation": "erect"
-}, {
-"display_name": "Nightmare",
-"file": "erect",
-"target": "nightmare",
-"variation": "erect"
-}])
-
-[sub_resource type="Resource" id="Resource_v8j3b"]
-script = ExtResource("2_8432q")
-display_name = &"2hot"
-folder_name = &"2hot"
-difficulties = Array[Dictionary]([{
-"display_name": "Easy",
-"file": "easy",
-"variation": ""
-}, {
-"display_name": "Normal",
-"file": "normal",
-"variation": ""
-}, {
-"display_name": "Hard",
-"file": "hard",
-"variation": ""
-}, {
-"display_name": "Erect",
-"file": "erect",
-"variation": "erect"
-}, {
-"display_name": "Nightmare",
-"file": "erect",
-"target": "nightmare",
-"variation": "erect"
-}])
 
 [sub_resource type="LabelSettings" id="LabelSettings_r764n"]
 font = ExtResource("3_r3f4j")
@@ -110,7 +11,7 @@ font_size = 32
 
 [node name="freeplay_menu" type="Node2D"]
 script = ExtResource("1_mwt6o")
-songs = Array[ExtResource("2_8432q")]([SubResource("Resource_1u0n1"), SubResource("Resource_ebc6k"), SubResource("Resource_7ypun"), SubResource("Resource_v8j3b")])
+bundle = ExtResource("2_m5145")
 
 [node name="background" type="Sprite2D" parent="."]
 modulate = Color(0.389287, 0.389287, 0.389287, 1)

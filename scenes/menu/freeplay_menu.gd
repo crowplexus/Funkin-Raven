@@ -5,7 +5,8 @@ extends Node2D
 
 @export var item_idle_opacity: float = 0.6
 @export var item_selected_opacity: float = 1.0
-@export var songs: Array[SongItem] = []
+@export var bundle: Bundle
+var songs: Array[SongItem] = []
 
 var current_item: CanvasItem
 var current_difficulty: Dictionary
@@ -17,6 +18,7 @@ var music_fade_twn: Tween
 func _ready() -> void:
 	play_bgm_check(Globals.MENU_MUSIC)
 	$"ui/song_container/random".modulate.a = item_idle_opacity
+	songs = bundle.get_all_songs()
 	generate_songs()
 
 
