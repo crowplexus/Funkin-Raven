@@ -25,6 +25,8 @@ OPTION_NAME_PLAY_FIELD_SIDE	PlayField Side	PlayField Side	Lado do Jogador	Lado d
 
 OPTION_NAME_FRAMERATE_CAP	Framerate Cap	Framerate Cap	Taxa de Quadros	Límite de Frecuencia
 OPTION_NAME_FRAMERATE_MODE	Framerate Mode	Framerate Mode	Modo da Taxa de	Quadros	Modo de Frecuencia
+OPTION_NAME_NOTE_SPLASHES	Note Splashes	Note Splashes	Note Splashes	Note Splashes
+OPTION_NAME_COLOURED_COMBO	Colored Combo	Coloured Combo	Combo Colorido	Combo con Colores
 OPTION_NAME_SHOW_TIMER	Show Timer	Show Timer	Mostrar Relógio	Mostrar Cronómetro
 OPTION_NAME_HOLD_NOTE_LAYER	Hold Note Layer	Hold Note Layer	Região das Holds	Región de las Holds
 OPTION_NAME_LANGUAGE	Language	Language	Idioma	Lenguaje
@@ -34,7 +36,13 @@ OPTION_VALUE_ON ON	ON	SIM	SÍ
 OPTION_VALUE_OFF	OFF	OFF	NÃO	NO
 OPTION_VALUE_UP Up	Up	Cima	Arriba
 OTPION_VALUE_DOWN	Down	Down	Baixo	Abajo
+OPTION_VALUE_NONE	None	None	Nenhum	Ninguno
+
 OPTION_VALUE_CAPPED	Capped  Capped	Fixo	Fijo
 OPTION_VALUE_UNLIMITED	Unlimited	Unlimited	Ilimitado	Sin limites
 OPTION_VALUE_ABOVE_NOTES	Above Notes	Above Notes	Acima das Notas	Por encima de las notas
 OPTION_VALUE_BEHIND_NOTES	Behind Notes	Behind Notes	Atrás das Notas	Detrás de las notas
+
+OPTION_VALUE_ONLY_JUDGMENTS	Only Judgements	Only Judgments	Apenas Classificações	Sólo clasificaciones
+OPTION_VALUE_ONLY_COMBO	Only Combo	Only Combo	Apenas Combo	Sólo Combo
+OPTION_VALUE_JUDGES_AND_COMBO	Judges and Combo	Judges and Combo	Classif. e Combo	Classif. y Combo

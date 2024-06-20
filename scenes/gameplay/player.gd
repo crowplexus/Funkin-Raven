@@ -45,23 +45,16 @@ func mk_stats_string() -> String:
 		score, breaks, snappedf(accuracy, 0.01),
 	]
 	# crazy frog.
-	var cf: String = ""
-	if breaks == 0:
-		cf = Scoring.get_clear_flag(jhit_regis)
-	else:
-		if breaks < 10:
-			#if breaks == 1: cf = "MF"
-			#else:
-			cf = "SDCB"
-
+	var cf: String = Scoring.get_clear_flag(jhit_regis)
 	if not cf.is_empty(): status += " (%s)" % cf
 	return status
 
 
 func _ready() -> void:
 	health = max_health / 2
-	for judge: Dictionary in Scoring.JUDGMENTS:
-		jhit_regis[judge.name] = 0
+	for judge: String in Scoring.JUDGMENTS.keys():
+		jhit_regis[judge] = 0
+	jhit_regis["breaks"] = breaks
 
 #region Player Input
 
@@ -121,7 +114,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 
 	if Input.is_action_just_pressed(controls[key]):
 		var input_notes: Array[Note] = note_queue.filter(func(queued: Note):
-			var hit_threshold: float = Scoring.JUDGMENTS.back().threshold * 0.001
+			var hit_threshold: float = Scoring.HIT_THRESHOLD * 0.001
 			var can_be_hit: bool = (queued.time - Conductor.time) < hit_threshold
 			return (queued.column == key and queued.hit_flag == 0
 				and not queued.finished and can_be_hit)
@@ -293,20 +286,15 @@ func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
 
 	var diff: float = note.time - Conductor.time
 	var judge: Dictionary = Scoring.judge_note(note, absf(diff * 1000.0))
+	var judge_name: String = Scoring.JUDGMENTS.find_key(judge)
 
-	if judge.name in jhit_regis:
-		jhit_regis[judge.name] += 1
-
-	if combo > 1 and "combo_break" in judge and judge.combo_break == true:
+	if combo > 1 and judge.combo_break == true:
 		combo = 0
 		breaks += 1
+		jhit_regis["breaks"] = breaks
 
-	var hit_result: = Note.HitResult.new()
-	hit_result.hit_time = diff * 1000.0
-	hit_result.judgment = judge
-	hit_result.player = self
-	hit_result.data = note
-	note_hit.emit(hit_result, is_tap)
+	if judge_name in jhit_regis:
+		jhit_regis[judge_name] += 1
 
 	var hit_score: = Scoring.TEMPLATE_HIT_SCORE.duplicate()
 	hit_score.health = health + 3
@@ -316,6 +304,14 @@ func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
 	hit_score.combo = combo + 1
 	apply_score(hit_score)
 
+	var hit_result: = Note.HitResult.new()
+	hit_result.hit_time = diff * 1000.0
+	hit_result.judgment.merge(judge)
+	hit_result.judgment.name = judge_name
+	hit_result.judgment.frame = Scoring.JUDGMENTS.keys().find(judge_name)
+	hit_result.player = self
+	hit_result.data = note
+	note_hit.emit(hit_result, is_tap)
 	#await RenderingServer.frame_post_draw
 	#hit_result.unreference()
 	return hit_result

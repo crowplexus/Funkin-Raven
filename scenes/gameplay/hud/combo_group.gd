@@ -39,10 +39,19 @@ func pop_up_judge(hit_result: Note.HitResult, is_tap: bool) -> void:
 	if not is_tap:
 		return
 
-	judgment_sprite.frame = Scoring.JUDGMENTS.find(hit_result.judgment)
+	judgment_sprite.frame = hit_result.judgment.frame
 	judgment_sprite.position = get_viewport_rect().size * 0.5
 	#judgment_sprite.modulate = hit_result.judgment.color
-	judgment_sprite.modulate.a = 1.0
+	judgment_sprite.modulate = Color.WHITE
+	if Preferences.coloured_combo == 1 or Preferences.coloured_combo == 3:
+		match Preferences.combo_colour_mode:
+			0:
+				if "color" in hit_result.judgment:
+					judgment_sprite.modulate = hit_result.judgment.color
+					judgment_sprite.modulate.v = 1.2
+			1:
+				judgment_sprite.modulate = Scoring.get_clear_flag_color(
+					Scoring.get_clear_flag(hit_result.player.jhit_regis))
 	judgment_sprite.position.y -= 80
 	judgment_sprite.scale *= 1.1
 
@@ -64,9 +73,21 @@ func pop_up_combo(hit_result: Note.HitResult, is_tap: bool) -> void:
 
 	var konbo_janai: bool = sign(count) == -1
 	var combo_colour: Color = Color.WHITE
+	if not konbo_janai:
+		if Preferences.coloured_combo == 2 or Preferences.coloured_combo == 3:
+			match Preferences.combo_colour_mode:
+				0:
+					if "color" in hit_result.judgment:
+						combo_colour = hit_result.judgment.color
+						combo_colour.v = 1.2
+				1:
+					combo_colour = Scoring.get_clear_flag_color(
+						Scoring.get_clear_flag(hit_result.player.jhit_regis))
+	else:
+		combo_colour = Color.CRIMSON
+
 	var _str_combo: String = str(count).pad_zeros(2)
 	var offsetx: float = _str_combo.length() - 3
-	if konbo_janai: combo_colour = Color.RED
 
 	for i: int in _str_combo.length():
 		if _template_combos.size() < _str_combo.length():
@@ -101,8 +122,6 @@ func show_combo_temporary(hit_result: Note.HitResult, is_tap: bool) -> void:
 	var _hit_colour: Color = Color.DIM_GRAY
 	if "color" in hit_result.judgment:
 		_hit_colour = hit_result.judgment.color
-	elif "colour" in hit_result.judgment: # british.
-		_hit_colour = hit_result.judgment.colour
 
 	#hit_result_label.text = (str(hit_result.judgment.name) +
 	#	"\nTiming: %sms" % snappedf(hit_result.hit_time, 0.001) +

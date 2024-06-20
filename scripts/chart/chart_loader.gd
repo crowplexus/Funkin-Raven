@@ -266,7 +266,9 @@ static func convert_vanilla_event(event: Dictionary, bpm: float) -> ChartEvent:
 					elif event.v is Dictionary:
 						e.values = event.v
 					if "char" in e.values:
-						e.values.char = int(e.values.char + 1)
+						var lol = e.values.char
+						if lol is String: lol = lol.to_int()
+						e.values.char = int(lol + 1)
 					if not "ease" in e.values:
 						e.values.ease = "CLASSIC"
 		_:

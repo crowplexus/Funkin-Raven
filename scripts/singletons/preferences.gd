@@ -67,6 +67,12 @@ var hold_layer: int = 1
 @export var flashing: bool = true
 ## Enables a timer at the top of the screen, shows song elapsed time and total time.
 @export var show_timer: bool = true
+## Makes combo coloured after the judgements you hit.
+@export_enum("None:0", "Only Judgments:1", "Only Combo:2", "Judges and Combo:3")
+var coloured_combo: int = 2
+## Dictates how [code]coloured_combo[/code] should colour the judgments and/or combo
+@export_enum("Judgment:0", "Clear Flag:1")
+var combo_colour_mode: int = 1
 ## How should the countdown's speed behave when ticking?
 @export_enum("BPM based:0", "User defined:1")
 var countdown_mode: int = 0

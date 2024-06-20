@@ -30,7 +30,7 @@ func _ready() -> void:
 		match Preferences.scroll_speed_behaviour:
 			1: scroll_speed += Preferences.scroll_speed
 			2: scroll_speed  = Preferences.scroll_speed
-		hold.size.y = absf((600.0 * absf(scroll_speed)) * note.hold_length	)
+		hold.size.y = absf((400.0 * absf(scroll_speed)) * note.hold_length	)
 
 		tail = $"hold_container/hold".duplicate()
 		var tail_tex: = HOLD_FRAMES.get_frame_texture("%s hold" % note.column, 1)

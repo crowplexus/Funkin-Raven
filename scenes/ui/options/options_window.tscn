@@ -114,6 +114,7 @@ option_type = 2
 display_names = Array[StringName]([&"Right", &"Left", &"None"])
 
 [node name="keybinds" type="VBoxContainer" parent="pages"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -178,6 +179,22 @@ layout_mode = 2
 option_name = &"Note Splashes"
 description = "Enables a firework effect when hitting judgements that allow it."
 variable = "note_splashes"
+
+[node name="coloured_combo" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Coloured Combo"
+description = "Makes combo coloured after  either your judgments or clear flag."
+variable = "coloured_combo"
+option_type = 2
+display_names = Array[StringName]([&"None", &"Only Judgments", &"Only Combo", &"Judges and Combo"])
+
+[node name="combo_colour_mode" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+layout_mode = 2
+option_name = &"Combo Colour Mode"
+description = "Dictates how \"Coloured Combo\" should colour the judgments and/or combo"
+variable = "combo_colour_mode"
+option_type = 2
+display_names = Array[StringName]([&"Judgment", &"Clear Flag"])
 
 [node name="hold_layer" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
 layout_mode = 2
