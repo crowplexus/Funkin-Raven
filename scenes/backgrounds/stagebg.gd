@@ -8,7 +8,7 @@ var initial_camera_zoom: Vector2 = Vector2.ONE
 func _ready() -> void:
 	if is_instance_valid(camera):
 		initial_camera_zoom = camera.zoom
-		Conductor.beat_reached.connect(on_beat_reached)
+		Conductor.ibeat_reached.connect(on_ibeat_reached)
 
 
 func _process(delta: float) -> void:
@@ -21,10 +21,10 @@ func _process(delta: float) -> void:
 
 
 func _exit_tree() -> void:
-	if Conductor.beat_reached.is_connected(on_beat_reached):
-		Conductor.beat_reached.disconnect(on_beat_reached)
+	if Conductor.ibeat_reached.is_connected(on_ibeat_reached):
+		Conductor.ibeat_reached.disconnect(on_ibeat_reached)
 
 
-func on_beat_reached(beat: int) -> void:
-	if beat % camera_beat_interval == 0:
+func on_ibeat_reached(ibeat: int) -> void:
+	if ibeat % camera_beat_interval == 0:
 		camera.zoom += Vector2(0.015, 0.015)

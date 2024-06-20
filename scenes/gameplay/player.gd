@@ -66,6 +66,7 @@ func _ready() -> void:
 #region Player Input
 
 signal note_hit(hit_result: Note.HitResult, is_tap: bool)
+signal botplay_hit(hit_result: Note.HitResult, is_tap: bool)
 signal note_fly_over(note: Note)
 signal combo_break(note: Note)
 signal note_miss(column: int)
@@ -98,6 +99,7 @@ func _process(delta: float) -> void:
 				note_hit_tap(my_note)
 				if is_instance_valid(my_note.notefield):
 					my_note.notefield.botplay_receptor(my_note)
+					my_note.notefield.on_note_hit(_latest_hit_result, true)
 				if my_note.hold_length > 0.0:
 					my_note.update_hold = true
 					my_note.moving = false
@@ -139,6 +141,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 			note_hit_tap(tap)
 			if tap.hold_length > 0.0:
 				hold_note_queue.append(tap)
+			tap.notefield.on_note_hit(_latest_hit_result, true)
 			# play animation in receptor
 			$"../".call_deferred("play_glow", tap.column)
 
@@ -195,6 +198,7 @@ func hold_note_input(hold: Note, delta: float = 0.0) -> void:
 					note_hit_hold(hold)
 					if is_instance_valid(hold.notefield):
 						hold.notefield.play_glow(hold.column)
+					hold.notefield.on_note_hit(_latest_hit_result, false)
 			if hold.trip_timer <= 0.0:
 				hold.update_hold = false
 				if is_instance_valid(hold.object):
@@ -262,11 +266,12 @@ func note_hit_tap(note: Note) -> void:
 ## Increases score by 10 every frame when holding.
 func note_hit_hold(note: Note) -> void:
 	score = score + 15
-	if Conductor.ibeat % 2 == 0 or note.hold_length <= 0.0:
-		note_hit.emit(_latest_hit_result, false)
-	if is_instance_valid(_latest_hit_result) and note.hold_length <= 0.0:
-		_latest_hit_result.unreference()
-		#hold_note_queue.erase(note)
+	if is_instance_valid(_latest_hit_result):
+		if Conductor.ibeat % 2 == 0 or note.hold_length <= 0.0:
+			note_hit.emit(_latest_hit_result, false)
+		if note.hold_length <= 0.0:
+			_latest_hit_result.unreference()
+			#hold_note_queue.erase(note)
 
 
 ## Sends a hit result
@@ -280,6 +285,10 @@ func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
 		botplay_hit_result.judgment = Scoring.PERFECT_JUDGMENT.duplicate()
 		botplay_hit_result.player = self
 		botplay_hit_result.data = note
+		botplay_hit.emit(botplay_hit_result, is_tap)
+		# caused a funny bug which made the combo popups play on botplay holds
+		#note_hit.emit(botplay_hit_result, is_tap)
+		_latest_hit_result = botplay_hit_result
 		return botplay_hit_result
 
 	var diff: float = note.time - Conductor.time

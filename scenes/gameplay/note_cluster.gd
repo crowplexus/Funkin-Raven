@@ -14,14 +14,20 @@ const NOTE_KIND_OBJECTS: Dictionary = {
 func _ready() -> void:
 	if is_instance_valid(Chart.global):
 		note_queue = Chart.global.notes.duplicate()
+	Conductor.fstep_reached.connect(try_spawning)
+
+
+func _exit_tree() -> void:
+	if Conductor.fstep_reached.is_connected(try_spawning):
+		Conductor.fstep_reached.disconnect(try_spawning)
 
 
 func _process(delta: float) -> void:
 	await RenderingServer.frame_post_draw
-	if note_queue.size() != 0:
-		spawn_notes.call_deferred()
-		if get_child_count() != 0:
-			move_note_objects(delta)
+	#if not note_queue.is_empty():
+	#	spawn_notes.call_deferred()
+	if get_child_count() != 0:
+		move_note_objects(delta)
 
 
 func move_note_objects(_delta: float) -> void:
@@ -48,53 +54,55 @@ func move_note_objects(_delta: float) -> void:
 			#note.object.position *= note.scroll
 
 
-func spawn_notes() -> void:
-	while current_note != note_queue.size():
-		var note: Note = note_queue[current_note]
-		var time_rel: float = note.time - Conductor.time
-		var spawn_delay: float = 0.9 * note.speed
-		if note_queue[current_note].speed < 1.0:
-			spawn_delay = 0.9 / note.speed
+func try_spawning(_fstep: float) -> void:
+	if not self.is_node_ready(): return
+	await RenderingServer.frame_post_draw
+	self.spawn_notes.call_deferred()
 
-		if time_rel > spawn_delay:
+
+func spawn_notes() -> void:
+	while current_note < note_queue.size():
+		var relative: float = absf(note_queue[current_note].time - Conductor.time)
+		var spawn_delay: float = 0.9 * note_queue[current_note].speed
+		if note_queue[current_note].speed < 1.0:
+			spawn_delay = 0.9 / note_queue[current_note].speed
+
+		if relative > spawn_delay:
 			break
 
-		if note.player <= connected_fields.size():
-			var field: = connected_fields[note.player]
-			note.notefield = field
-			if note.column < field.scroll_mods.size():
-				note.scroll = field.scroll_mods[note.column]
-
-		note_incoming.emit(note)
-		if not is_instance_valid(note.object):
-			var kind: StringName = "normal"
-			if note.kind in NOTE_KIND_OBJECTS:
-				kind = note.kind
-			note.object = NOTE_KIND_OBJECTS[kind].instantiate()
-			note.object.position.y = INF
-
-		if is_instance_valid(note.object):
-			if is_instance_valid(note.notefield):
-				note.object.visible = note.receptor.visible and note.notefield.visible
-			if note.object.get("note") == null:
-				note.object.set("note", note)
-			add_child(note.object)
+		spawn_note(current_note)
 		current_note += 1
 
 
-func animate_receptor(tn: Note) -> void:
-	if not is_instance_valid(tn.notefield):
+func spawn_note(id: int) -> void:
+	if note_queue.size() < id:
 		return
 
-	var delay: float = (0.5 * Conductor.crotchet) + tn.hold_length
-	tn.notefield.call_deferred("play_glow", tn.column)
-	await get_tree().create_timer(delay).timeout
-	tn.notefield.call_deferred("play_static", tn.column)
+	var note: Note = note_queue[id] as Note
+	if note.player <= connected_fields.size():
+		var field: = connected_fields[note.player]
+		if is_instance_valid(field):
+			note.notefield = field
+			if note.column < field.key_count:
+				note.scroll = field.scroll_mods[note.column]
+	# technically the note already spawned so
+	note_incoming.emit(note)
+	if not is_instance_valid(note.object):
+		var kind: StringName = "normal"
+		if note.kind in NOTE_KIND_OBJECTS:
+			kind = note.kind
+		note.object = NOTE_KIND_OBJECTS[kind].instantiate()
+		note.object.name = note.kind + str(get_child_count())
+		note.object.position.y = INF
+	# spawn object
+	if is_instance_valid(note.notefield):
+		note.object.visible = note.receptor.visible and note.notefield.visible
+	note.object.set("note", note)
+	add_child(note.object)
 
 
 func connect_notefield(new_field: NoteField) -> void:
-	if is_instance_valid(new_field):
-		connected_fields.append(new_field)
+	connected_fields.append(new_field)
 
 
 func disconnect_notefield(field: NoteField) -> void:

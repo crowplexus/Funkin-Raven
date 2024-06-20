@@ -9,17 +9,14 @@ extends Node2D
 
 var current_item: CanvasItem
 var current_difficulty: Dictionary
-var current_selection: int = 0
-var current_alternative: int = 0
+var current_selection: int = 1
+var current_alternative: int = 1
 var _transitioning: bool = false
-var _template_song: Label
-
+var music_fade_twn: Tween
 
 func _ready() -> void:
-	if not SoundBoard.is_bgm_playing():
-		SoundBoard.play_bgm(Globals.MENU_MUSIC, 0.7)
-	_template_song = song_list.get_child(0).duplicate()
-	song_list.remove_child($"ui/song_container/cool_song")
+	play_bgm_check(Globals.MENU_MUSIC)
+	$"ui/song_container/random".modulate.a = item_idle_opacity
 	generate_songs()
 
 
@@ -40,10 +37,17 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 		add_child(ow)
 
 	if Input.is_action_just_pressed("ui_accept"):
+		if current_selection == 0:
+			current_selection = randi_range(1, song_list.get_child_count())
+			update_selection()
+
+		SoundBoard.play_sfx(Globals.MENU_CONFIRM_SFX)
+		await get_tree().create_timer(1.0).timeout
+
 		SoundBoard.stop_bgm()
-		Chart.global = Chart.request(songs[current_selection].folder_name, current_difficulty)
+		Chart.global = Chart.request(songs[current_selection - 1].folder_name, current_difficulty)
 		if Chart.global.song_info.name == "???":
-			Chart.global.song_info.name = songs[current_selection].display_name
+			Chart.global.song_info.name = songs[current_selection - 1].display_name
 		Globals.change_scene(load("res://scenes/gameplay/gameplay.tscn"))
 
 
@@ -54,10 +58,21 @@ func update_selection(new_sel: int = 0) -> void:
 	current_item = song_list.get_child(current_selection)
 	current_item.modulate.a = item_selected_opacity
 
+	# i have to tell my brain to stop hardcoding @crowplexus
+	var menu_bgm_name: = Globals.MENU_MUSIC.resource_path.get_file().get_basename()
+	var random_bgm_name: = Globals.RANDOM_MUSIC.resource_path.get_file().get_basename()
+
+	match SoundBoard.current_bgm:
+		menu_bgm_name when current_selection == 0:
+			play_bgm_check(Globals.RANDOM_MUSIC, true, true)
+		random_bgm_name when current_selection != 0:
+			play_bgm_check(Globals.MENU_MUSIC, true, true)
+	update_alternative()
+
 
 func update_alternative(new_alt: int = 0) -> void:
-	current_alternative = wrapi(current_alternative + new_alt, 0, songs[current_selection].difficulties.size())
-	current_difficulty = songs[current_selection].difficulties[current_alternative]
+	current_alternative = wrapi(current_alternative + new_alt, 0, songs[current_selection - 1].difficulties.size())
+	current_difficulty = songs[current_selection - 1].difficulties[current_alternative]
 	diff_label.text = current_difficulty.display_name
 	if current_difficulty.size() > 1:
 		diff_label.text = "< %s > " % current_difficulty.display_name
@@ -66,10 +81,12 @@ func update_alternative(new_alt: int = 0) -> void:
 
 func generate_songs() -> void:
 	for item: Control in song_list.get_children():
+		if item.get_index() == 0:
+			continue
 		item.free()
 
 	for song: SongItem in songs:
-		var new_item: Label = _template_song.duplicate()
+		var new_item: Label = song_list.get_child(0).duplicate()
 		new_item.name = song.display_name.to_snake_case()
 		new_item.modulate.a = item_idle_opacity
 		new_item.text = song.display_name
@@ -77,3 +94,9 @@ func generate_songs() -> void:
 
 	update_selection()
 	update_alternative()
+
+
+func play_bgm_check(song: AudioStream, skip_check: bool = false, fade: bool = false) -> void:
+	if not SoundBoard.is_bgm_playing() or skip_check:
+		SoundBoard.play_bgm(song, 0.01 if fade else 0.7)
+		if fade: SoundBoard.fade_bgm(0.01, 0.7, 1.0)

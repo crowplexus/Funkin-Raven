@@ -1,12 +1,15 @@
 extends Node
 
-const MENU_MUSIC: AudioStream = preload("res://assets/audio/bgm/freakyMenu.ogg")
+const MENU_MUSIC: AudioStream = preload("res://assets/audio/bgm/menu/freakyMenu.ogg")
+const RANDOM_MUSIC: AudioStream = preload("res://assets/audio/bgm/menu/freeplayRandom.ogg")
 const MENU_MUSIC_BPM: float = 102.0
 
 const MENU_SCROLL_SFX: AudioStream = preload("res://assets/audio/sfx/menu/scrollMenu.ogg")
 const MENU_CONFIRM_SFX: AudioStream = preload("res://assets/audio/sfx/menu/confirmMenu.ogg")
 const MENU_CANCEL_SFX: AudioStream = preload("res://assets/audio/sfx/menu/cancelMenu.ogg")
 const OPTIONS_WINDOW: PackedScene = preload("res://scenes/ui/options/options_window.tscn")
+
+const DEFAULT_STAGE: PackedScene = preload("res://scenes/backgrounds/mainStage.tscn")
 
 
 func change_scene(scene: PackedScene) -> void:

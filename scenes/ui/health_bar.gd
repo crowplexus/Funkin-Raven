@@ -8,12 +8,12 @@ var _has_icons: bool = false
 func _ready() -> void:
 	_has_icons = not icons.is_empty()
 	if _has_icons:
-		Conductor.beat_reached.connect(on_beat_reached)
+		Conductor.ibeat_reached.connect(on_ibeat_reached)
 
 
 func _exit_tree() -> void:
 	if _has_icons:
-		Conductor.beat_reached.disconnect(on_beat_reached)
+		Conductor.ibeat_reached.disconnect(on_ibeat_reached)
 
 
 func _process(delta: float) -> void:
@@ -38,9 +38,9 @@ func _process(delta: float) -> void:
 			)
 
 
-func on_beat_reached(beat: int) -> void:
+func on_ibeat_reached(ibeat: int) -> void:
 	for icon: CanvasItem in get_children():
-		if beat % bop_interval == 0:
+		if ibeat % bop_interval == 0:
 			icon.scale *= 1.25
 
 

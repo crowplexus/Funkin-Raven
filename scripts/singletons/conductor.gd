@@ -1,8 +1,12 @@
 extends Node
 
-signal step_reached(step: int)
-signal beat_reached(beat: int)
-signal bar_reached (bar : int)
+signal istep_reached(istep: int)
+signal ibeat_reached(ibeat: int)
+signal ibar_reached (ibar : int)
+
+signal fstep_reached(fstep: float)
+signal fbeat_reached(fbeat: float)
+signal fbar_reached (fbar : float)
 
 const TIME_CHANGE_TEMPLATE: Dictionary = {
 	"bpm": 100.0,
@@ -60,6 +64,7 @@ var fstep: float = 0.0
 var fbar: float = 0.0
 
 var _previous_time: float = 0.0
+var _previous_fstep: float  = 0.0
 var _previous_istep: int  = 0
 
 
@@ -77,10 +82,16 @@ func _process(_delta: float) -> void:
 		var beat_dt: float = (bpm / 60.0) * song_dt
 
 		if istep > _previous_istep:
-			step_reached.emit(istep)
-			if istep % 4 == 0: beat_reached.emit(ibeat)
-			if ibeat % 4 == 0: bar_reached.emit(ibar)
+			istep_reached.emit(istep)
+			if istep % 4 == 0: ibeat_reached.emit(ibeat)
+			if ibeat % 4 == 0: ibar_reached.emit(ibar)
 			_previous_istep = istep
+		# might not use depending on the result
+		if fstep > _previous_fstep:
+			fstep_reached.emit(fstep)
+			if fmod(fstep, 4) == 0: fbeat_reached.emit(fbeat)
+			if fmod(fbeat, 4) == 0: fbar_reached.emit(fbar)
+			_previous_fstep = fstep
 
 		fstep += beat_dt * steps_per_beat
 		fbeat += beat_dt # oh hi hello :D
@@ -105,6 +116,7 @@ func set_time(new_time: float) -> void:
 	fbar  = Conductor.time_to_bar(new_time)
 	_previous_time = new_time
 	_previous_istep = floori(fstep)
+	_previous_fstep = fstep
 
 ## Converts a Time Change from Base Game (0.3) to the raven format.
 func time_change_from_vanilla(tc: Dictionary) -> Dictionary:

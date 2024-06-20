@@ -25,18 +25,18 @@ func _ready() -> void:
 	enter_sprite.play("ENTER IDLE")
 	enter_sprite.animation_finished.connect(_enter_animation)
 
+	Conductor.bpm = Globals.MENU_MUSIC_BPM
+	Conductor.ibeat_reached.connect(on_ibeat_reached)
+
 	if not SoundBoard.is_bgm_playing():
-		SoundBoard.play_bgm(Globals.MENU_MUSIC, 0.005)
-		create_tween().set_ease(Tween.EASE_IN).bind_node(SoundBoard.bgm_player) \
-		.tween_property(SoundBoard.bgm_player, "volume_db", linear_to_db(0.7), 4.0)
-		Conductor.beat_reached.connect(on_beat_reached)
-		Conductor.bpm = Globals.MENU_MUSIC_BPM
+		SoundBoard.play_bgm(Globals.MENU_MUSIC, 0.01)
+		SoundBoard.fade_bgm(0.01, 0.7, 4.0)
 		Conductor.active = true
 
 
 func _process(_delta: float) -> void:
 	if SoundBoard.is_bgm_playing():
-		Conductor.time = SoundBoard.bgm_player.get_playback_position() - AudioServer.get_time_since_last_mix()
+		Conductor.time = SoundBoard.bgm_player.get_playback_position() + AudioServer.get_time_since_last_mix()
 
 
 func _unhandled_key_input(_event: InputEvent) -> void:
@@ -53,18 +53,18 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 
 
 func _exit_tree() -> void:
-	Conductor.beat_reached.disconnect(on_beat_reached)
+	Conductor.ibeat_reached.disconnect(on_ibeat_reached)
 
 
-func on_beat_reached(beat: int) -> void:
-	if beat % 2 == 0:
+func on_ibeat_reached(ibeat: int) -> void:
+	if ibeat % 2 == 0:
 		logo_animation.seek(0.0)
 		logo_animation.play("bump")
 
 	if _intro_skipped == true:
 		return
 
-	match beat:
+	match ibeat:
 		16: skip_intro(Color.WHITE, 1.0 if Preferences.flashing else 0.0)
 
 

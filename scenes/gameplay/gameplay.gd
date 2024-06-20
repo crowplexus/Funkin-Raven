@@ -11,10 +11,10 @@ var camera: Camera2D
 @onready var health_bar: = $"hud/main/health_bar"
 @onready var note_cluster: Node2D = $"hud/main/note_cluster"
 @onready var fields: Control = $"hud/main/fields"
-@onready var stage: StageBG = $"stage"
 #endregion
 #region Local Variables
 
+var stage: StageBG
 var music: AudioStreamPlayer
 var hud_beat_interval: int = 4
 var initial_ui_zoom: Vector2 = Vector2.ONE
@@ -26,18 +26,24 @@ var _need_to_play_music: bool = true
 func _ready() -> void:
 	Conductor.active = false
 	Conductor.set_time(-(Conductor.crotchet * 5))
+	remove_child($"stage")
+
+	if is_instance_valid(Chart.global.song_info):
+		var np: NodePath = "res://scenes/backgrounds/%s.tscn" % [
+			Chart.global.song_info.background]
+		#print_debug("trying to create stage")
+		init_stage(np)
 
 	init_music()
 	init_fields()
-
 	init_players(fields.get_children())
 	health_bar.set_player(Preferences.playfield_side)
 
 	initial_ui_zoom = ui_layer.scale
 
 	# Connect Signals
-	Conductor.beat_reached.connect(on_beat_reached)
-	Conductor.beat_reached.connect(start_countdown)
+	Conductor.ibeat_reached.connect(on_ibeat_reached)
+	Conductor.ibeat_reached.connect(start_countdown)
 	Conductor.active = true
 
 
@@ -49,8 +55,8 @@ func start_countdown(beat: int) -> void:
 		-2: process_countdown(2)
 		-1: process_countdown(3)
 
-	if beat == 0 and Conductor.beat_reached.is_connected(start_countdown):
-		Conductor.beat_reached.disconnect(start_countdown)
+	if beat == 0 and Conductor.ibeat_reached.is_connected(start_countdown):
+		Conductor.ibeat_reached.disconnect(start_countdown)
 
 
 func _process(delta: float) -> void:
@@ -83,7 +89,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 
 func _exit_tree() -> void:
 	Conductor.reset()
-	Conductor.beat_reached.disconnect(on_beat_reached)
+	Conductor.ibeat_reached.disconnect(on_ibeat_reached)
 	for i: int in fields.get_child_count():
 		var field: NoteField = fields.get_child(i)
 		if is_instance_valid(field.player):
@@ -96,9 +102,31 @@ func _exit_tree() -> void:
 #region Gameplay Setup
 
 func init_fields() -> void:
-	for field: NoteField in fields.get_children():
-		note_cluster.call_deferred("connect_notefield", field)
-		field.reset_scroll_mods()
+	if not is_instance_valid(Chart.global.song_info):
+		return
+
+	var nf_config: = Chart.global.song_info.notefields
+	for i: int in nf_config.size():
+		var new_nf: NoteField
+		var config: Dictionary = nf_config[i]
+		if i < fields.get_child_count():
+			new_nf = fields.get_child(i)
+		else:
+			new_nf = fields.get_child(0).duplicate()
+			fields.add_child(new_nf)
+
+		# characters #
+		if "characters" in config and is_instance_valid(stage):
+			for character: String in config.characters:
+				if stage.has_node(character) and stage.get_node(character) is Character:
+					new_nf.connected_characters.append(stage.get_node(character))
+		if not "name" in config or config.name.is_empty():
+			new_nf.name = &"%s" % str(new_nf.get_index()+1)
+		Chart.global.song_info.configure_notefield(new_nf, config)
+
+	for nf: NoteField in fields.get_children():
+		note_cluster.call_deferred("connect_notefield", nf)
+		nf.reset_scroll_mods()
 
 
 func init_players(player_fields: Array = []) -> void:
@@ -126,7 +154,7 @@ func init_players(player_fields: Array = []) -> void:
 			# stupid check
 			if (Preferences.playfield_side != -1 and player.botplay == false
 				or Preferences.playfield_side == -1 and i == 0):
-				field.playfield_warp = 0.5
+				field.playfield_spot = 0.5
 			else:
 				field.visible = false
 		field.make_playable(player)
@@ -139,7 +167,7 @@ func init_music() -> void:
 		return
 
 	var track_path: String = "res://assets/songs/%s/" % Chart.global.song_info.folder
-	var difficulty: Dictionary = Chart.global.song_info.difficulty
+	var _difficulty: Dictionary = Chart.global.song_info.difficulty
 	var audio_folder: Array[String] = []
 	audio_folder.append_array(DirAccess.open(track_path).get_files())
 
@@ -170,6 +198,44 @@ func init_music() -> void:
 	else:
 		Conductor.length = note_cluster.note_queue.back().time
 	##################
+
+
+func init_stage(path: NodePath) -> void:
+	if not ResourceLoader.exists(path):
+		push_warning("Stage path ", path, " is inexistant or inaccessible, loading default stage...")
+		stage = Globals.DEFAULT_STAGE.instantiate()
+	else:
+		stage = load(String(path)).instantiate()
+		if is_instance_valid(stage.camera):
+			camera = stage.camera
+
+	add_child(stage)
+	move_child(stage, 0)
+
+	if not is_instance_valid(stage) or Chart.global.song_info.characters.is_empty():
+		push_warning("There are no characters in the chart metadata to load.")
+		return
+
+	for i: int in Chart.global.song_info.characters.size():
+		var actor: String = Chart.global.song_info.characters[i]
+		var char_path: = "res://scenes/characters/%s.tscn" % actor
+		if not ResourceLoader.exists(char_path):
+			push_warning("Tried to load character ", actor, " which doesn't exist in res://scenes/characters/")
+			continue
+
+		if stage.find_child("player%s" % str(i + 1)) == null:
+			push_warning("Stage named ", stage.name, " has no Marker2D named player", str(i + 1), " skipping...")
+			continue
+
+		var marker: = stage.get_node("player%s" % str(i + 1))
+		var character: Character = load(char_path).instantiate()
+		character.global_position = marker.global_position
+		character.name = "player%s" % str(i + 1)
+
+		var index: int = marker.get_index()
+		stage.remove_child(marker)
+		stage.add_child(character)
+		stage.move_child(character, index)
 
 #endregion
 #region Gameplay Loop
@@ -208,11 +274,11 @@ func process_conductor(delta: float) -> void:
 		Conductor.time = music.get_playback_position() + AudioServer.get_time_since_last_mix()
 
 
-func on_beat_reached(beat: int) -> void:
-	if beat < 0:
+func on_ibeat_reached(ibeat: int) -> void:
+	if ibeat < 0:
 		return
 
-	if beat % hud_beat_interval == 0:
+	if ibeat % hud_beat_interval == 0:
 		ui_layer.scale += Vector2(0.03, 0.03)
 
 ## Connected to [code]player.note_fly_over[/code] to handle

@@ -8,6 +8,34 @@ class_name SongInfo
 ## on the [code]evel[/code] dictionary
 const DEFAULT_STAR_COUNT: int = -1
 
+## Default Notefield configuration.
+const DEFAULT_NOTEFIELD_CONFIG: Array[Dictionary] = [
+	{
+		"name": "1", # custom name
+		"spot": 1.0, # right
+		"characters": ["player1"], # node names e.g: player1, player2
+		"key_count": 4,
+		"visible": true,
+		"scale": Vector2.ONE,
+	},
+	{
+		"name": "2",
+		"spot": 0.0, # left
+		"characters": ["player2"],
+		"key_count": 4,
+		"visible": true,
+		"scale": Vector2.ONE,
+	},
+	#{
+	#	"name": "3",
+	#	"spot": 0.5, # center
+	#	"characters": ["player3"],
+	#	"key_count": 4,
+	#	"visible": true,
+	#	"scale": Vector2.ONE,
+	#},
+]
+
 ## Display Name for the song.
 @export var name: StringName = "???"
 ## Folder Name for the song, usually provided when loading the chart.
@@ -21,6 +49,8 @@ const DEFAULT_STAR_COUNT: int = -1
 	"file": "normal",
 	"variation": "",
 }
+## Notefield configuration for gameplay purposes.
+@export var notefields: Array[Dictionary] = DEFAULT_NOTEFIELD_CONFIG.duplicate()
 ## Dictionary with song credits, such as[br]
 ## the composer of the song[br]
 ## who mapped it, etc...
@@ -39,6 +69,31 @@ const DEFAULT_STAR_COUNT: int = -1
 @export var background: StringName = ""
 ## Contains names for characters that appear in the song.
 @export var characters: PackedStringArray = []
+
+
+func configure_notefield(nf: NoteField, config: Dictionary) -> void:
+	if "name" in config: nf.name = config.name
+	if "spot" in config: nf.playfield_spot = config.spot
+	if "visible" in config: nf.visible = config.visible
+	if "key_count" in config: nf.key_count = config.key_count
+	if "scale" in config:
+		if config.scale is Vector2: nf.scale = config.scale
+		elif config.scale is float: nf.scale = Vector2(config.scale, config.scale)
+
+
+static func parse_json_notefield_conf(config: Dictionary, id: int) -> Dictionary:
+	var nfg: Dictionary = SongInfo.DEFAULT_NOTEFIELD_CONFIG[id].duplicate()
+	if "name" in config: nfg.name = config.name
+	if "spot" in config: nfg.spot = config.spot
+	if "characters" in config: nfg.characters = config.characters
+	if "keyCount" in config: nfg.key_count = config["keyCount"]
+	if "visible" in config: nfg.visible = config.visible
+	if "scale" in config:
+		if config.scale is float:
+			nfg.scale = Vector2(config.scale, config.scale)
+		elif config.scale is Array:
+			nfg.scale = Vector2(config.scale[0], config.scale[1])
+	return nfg
 
 
 func _to_string() -> String:

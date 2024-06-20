@@ -1,6 +1,9 @@
-extends AnimatedSprite2D
+extends Node2D
 ## ...
 class_name Character
+
+@onready var sprite: = $"sprite"
+@onready var animation_player: AnimationPlayer = $"sprite/animation_player"
 
 @export_category("Character")
 
@@ -10,7 +13,8 @@ class_name Character
 @export var animation_suffix: String = ""
 ## Current animation context, defualts to Dancing ([code]0[/code])
 @export_enum("Dancing:0", "Singing:1", "Special:2")
-var animation_content: int = 0
+var animation_context: int = 0
+@export var sing_duration: float = 5.0
 
 @export_category("Animations")
 
@@ -23,17 +27,54 @@ var animation_content: int = 0
 
 var _current_idle: int = 0
 var _previous_anim: StringName = ""
+var _idle_cooldown: float = 0.0
+
+
+func _ready() -> void:
+	if not is_instance_valid(animation_player):
+		push_warning("Your character has no AnimationPlayer node attached to it, it will be unable to play animations.")
+	else:
+		Conductor.ibeat_reached.connect(try_dance)
+
+
+func _process(delta: float) -> void:
+	if animation_context != 0:
+		if _idle_cooldown > 0.0:
+			_idle_cooldown -= delta * (sing_duration * (Conductor.semibreve * 0.25))
+		if _idle_cooldown <= 0.0:
+			dance()
+
+
+func _exit_tree() -> void:
+	if Conductor.ibeat_reached.is_connected(try_dance):
+		Conductor.ibeat_reached.disconnect(try_dance)
 
 
 func play_animation(anim: StringName, force: bool = false, force_frame: int = 0) -> void:
 	if force or _previous_anim != anim:
-		frame = force_frame
-
+		sprite.frame = force_frame
+		if is_instance_valid(animation_player):
+			animation_player.seek(0.0)
+	if is_instance_valid(animation_player):
+		animation_player.play(anim)
+		#print_debug("i am ",display_name,"and i'm playing animation ",anim)
 	_previous_anim = anim
 
-func dance(_forced: bool = false, force_idle: int = -1) -> void:
+
+func try_dance(beat: int) -> void: # i hate this <3 @crowplexus
+	if _idle_cooldown == 0.0 and beat % dance_interval == 0:
+		dance(sprite.frame_progress > 0.0)
+
+
+func dance(force: bool = false, force_idle: int = -1) -> void:
 	if force_idle > -1 and force_idle < idle_list.size():
 		_current_idle = force_idle
 
-	#play_animation(idle_list[_current_idle], forced)
+	play_animation(idle_list[_current_idle], force)
 	_current_idle = wrapi(_current_idle + 1, 0, idle_list.size())
+	animation_context = 0
+
+
+func sing(column: int, force: bool = false) -> void:
+	play_animation(sing_list[column], force)
+	animation_context = 1

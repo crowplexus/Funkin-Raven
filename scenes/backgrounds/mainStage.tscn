@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3 uid="uid://dxm24padis8xt"]
+
+[ext_resource type="Script" path="res://scenes/backgrounds/stagebg.gd" id="1_krhs7"]
+[ext_resource type="Texture2D" uid="uid://52ox3piq83tg" path="res://assets/sprites/week1/stageback.png" id="2_2ie5m"]
+[ext_resource type="Texture2D" uid="uid://c8pnaux2afp74" path="res://assets/sprites/week1/stagefront.png" id="3_jr7cl"]
+[ext_resource type="Texture2D" uid="uid://c3ip1hqsuujwt" path="res://assets/sprites/week1/stagecurtains.png" id="4_2fn8c"]
+
+[node name="main_stage" type="Node2D" node_paths=PackedStringArray("camera")]
+script = ExtResource("1_krhs7")
+camera = NodePath("camera_2d")
+
+[node name="camera_2d" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+zoom = Vector2(0.8, 0.8)
+position_smoothing_enabled = true
+
+[node name="stageback" type="Sprite2D" parent="."]
+position = Vector2(605, 371)
+texture = ExtResource("2_2ie5m")
+
+[node name="stagefront" type="Sprite2D" parent="."]
+position = Vector2(765, 851)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("3_jr7cl")
+
+[node name="stagecurtains" type="Sprite2D" parent="."]
+position = Vector2(676, 415)
+texture = ExtResource("4_2fn8c")
+
+[node name="player3" type="Marker2D" parent="."]
+position = Vector2(662, 316)
+gizmo_extents = 160.0
+
+[node name="player2" type="Marker2D" parent="."]
+position = Vector2(358, 340)
+gizmo_extents = 160.0
+
+[node name="player1" type="Marker2D" parent="."]
+position = Vector2(966, 524)
+gizmo_extents = 160.0

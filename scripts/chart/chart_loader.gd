@@ -4,7 +4,9 @@ class_name Chart
 static var global: Chart
 
 
+
 @export var notes: Array[Note] = []
+@export var events: Array[ChartEvent] = []
 @export var time_changes: Array[Dictionary] = []
 @export var song_info: SongInfo = SongInfo.new()
 @export var key_amount: int = 4
@@ -109,6 +111,18 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 
 					for note: Array in bar["sectionNotes"]:
 						if int(note[1]) == -1:
+							# classic psych engine events / lullaby events
+							var classic_event: ChartEvent = ChartEvent.new()
+							classic_event.name = note[2]
+							classic_event.values = [ note[3], note[4] ]
+							classic_event.time = Conductor.time_to_step(note[0] * 0.001)
+							chart.events.append(classic_event)
+							continue
+						if note[1] is Array:
+							for e: int in note[1].size():
+								chart.events.append(make_psych_event(
+									[note[0], note[1]], e)
+								)
 							continue
 
 						var note_kind: StringName = "normal"
@@ -130,13 +144,23 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 						swag_note.speed = chart.note_speed
 						chart.notes.append(swag_note)
 
+	if "strumConfig" in jsonf and jsonf["strumConfig"] is Array:
+		chart.song_info.notefields.clear()
+		for i: int in jsonf["strumConfig"].size():
+			var cfg: Dictionary = jsonf["strumConfig"][i]
+			var nfg: Dictionary = SongInfo.parse_json_notefield_conf(cfg, i)
+			chart.song_info.notefields.append(nfg)
 	# set the bpm to the chart's bpm
 
-	Conductor.sort_time_changes(chart.time_changes)
+	chart.notes.sort_custom(func(a: Note, b: Note):
+		return a.time < b.time)
+	chart.events.sort_custom(func(a: ChartEvent, b: ChartEvent):
+		return a.time < b.time)
 
-	#print_debug(chart)
+	Conductor.sort_time_changes(chart.time_changes)
 	Conductor.time_changes = chart.time_changes
 	Conductor.apply_time_change(chart.time_changes.front())
+	#print_debug(chart)
 
 	return chart
 
@@ -166,6 +190,7 @@ func convert_vanilla_metadata(_meta: Dictionary) -> void:
 		if "ratings" in _meta["playData"]:
 			song_info.stars = _meta["playData"].ratings
 
+
 static func make_note(data: Dictionary, _key_amount: int = 4) -> Note:
 	var swag_note: Note = Note.new()
 	if "t" in data: swag_note.time = float(data["t"] * 0.001)
@@ -176,3 +201,14 @@ static func make_note(data: Dictionary, _key_amount: int = 4) -> Note:
 			"Hurt Note": swag_note.kind = "mine"
 			_: swag_note.kind = StringName(data["k"])
 	return swag_note
+
+
+static func make_psych_event(event: Array, column: int) -> ChartEvent:
+	var e: ChartEvent = ChartEvent.new()
+	e.name = event[1][column][0]
+	e.values = [
+		event[1][column][1],
+		event[1][column][2],
+	]
+	e.time = Conductor.time_to_step(event[0] * 0.001)
+	return e
