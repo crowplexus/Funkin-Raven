@@ -288,11 +288,11 @@ func on_ibeat_reached(ibeat: int) -> void:
 func miss_fly_over(note: Note) -> void:
 	for field: NoteField in fields.get_children():
 		if note.player == field.get_index() and is_instance_valid(field.player):
-			field.player.apply_miss(note.column)
+			#field.player.apply_miss(note.column)
 			var fake_result: = Note.HitResult.new()
 			fake_result.player = field.player
-			update_score_text(fake_result, true)
 			combo_group.pop_up_combo(fake_result, true)
+			update_score_text(fake_result, true)
 			fake_result.unreference()
 
 #endregion

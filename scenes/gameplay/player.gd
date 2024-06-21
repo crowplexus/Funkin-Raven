@@ -85,7 +85,10 @@ func _process(delta: float) -> void:
 			if my_note.moving and (my_note.time - Conductor.time) < -0.3:
 				my_note.hit_flag = -1
 				if (my_note.time - Conductor.time) < -(0.3 + my_note.hold_length - 0.5):
-					my_note.object.call_deferred("miss_behaviour", my_note.column)
+					if is_instance_valid(my_note.object):
+						my_note.object.call_deferred("miss_behaviour", my_note.column)
+					apply_miss(my_note.column)
+					jhit_regis["breaks"] = breaks
 					note_fly_over.emit(my_note)
 					finish_note(my_note)
 
