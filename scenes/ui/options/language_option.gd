@@ -14,14 +14,6 @@ func _ready() -> void:
 		match cn_split[1]: # shorten names
 			"United States of America": cn_split[1] = "United States"
 
-		var cn_trans: = [
-			tr("LANG_%s" % cn_split[0].to_snake_case().to_upper()),
-			tr("COUNTRY_%s" % cn_split[1].to_snake_case().to_upper())]
-		if not cn_trans[0].begins_with("LANG_"):
-			cn_split[0] = cn_trans[0]
-		if not cn_trans[1].begins_with("COUNTRY_"):
-			cn_split[1] = cn_trans[1]
-
 		display_names.append("%s (%s)" % [ cn_split[0], cn_split[1] ])
 	update()
 

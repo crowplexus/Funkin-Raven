@@ -123,9 +123,6 @@ func reload_page_name() -> void:
 	if not is_instance_valid(active_page):
 		return
 	var page_name: String = active_page.name
-	var trans_name: = tr("OPTION_PAGE_%s" % active_page.name.to_snake_case().to_upper())
-	if not trans_name.begins_with("OPTION_PAGE_"):
-		page_name = trans_name
 	page_name_label.text = "< %s >" % page_name
 
 

@@ -57,9 +57,6 @@ func check_value() -> void:
 func reset_preference_label() -> void:
 	if is_instance_valid(preference_label):
 		var final_text: String = option_name
-		var trans_name: = tr("OPTION_NAME_%s" % option_name.to_snake_case().to_upper())
-		if not trans_name.begins_with("OPTION_NAME_"):
-			final_text = trans_name
 		# display value name in there too #
 		if option_type < 3:
 			final_text += ": %s" % get_value_name()
@@ -85,7 +82,4 @@ func get_value_name() -> StringName:
 					elif value is String or value is StringName:
 						value_name = display_names[display_names.find(value)]
 
-	var trans_str: = "OPTION_VALUE_%s" % value_name.to_snake_case().to_upper()
-	if not trans_str.begins_with("OPTION_VALUE_"):
-		value_name = trans_str
 	return value_name

@@ -29,12 +29,9 @@ func _process(_delta: float) -> void:
 
 func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 	if hit_result.player.botplay == true:
-		status_label.text = tr("GENERIC_BOTPLAY_ENABLED")
+		status_label.text = "BotPlay Enabled"
 	else:
-		status_label.text = hit_result.player.mk_stats_string() \
-			.replace("Score", tr("GENERIC_SCORE")) \
-			.replace("Combo Breaks", tr("GENERIC_COMBO_BREAKS")) \
-			.replace("Accuracy", tr("GENERIC_ACCURACY"))
+		status_label.text = hit_result.player.mk_stats_string()
 
 
 func update_time_bar() -> void:
