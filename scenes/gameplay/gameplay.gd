@@ -75,8 +75,6 @@ func _process(delta: float) -> void:
 func _unhandled_key_input(e: InputEvent) -> void:
 	if e.is_pressed():
 		match e.keycode:
-			KEY_4:
-				display_countdown(0, 0)
 			KEY_ESCAPE:
 				get_tree().change_scene_to_packed(load("res://scenes/menu/freeplay_menu.tscn"))
 			KEY_ENTER:

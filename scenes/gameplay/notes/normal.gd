@@ -5,16 +5,22 @@ const HOLD_FRAMES: SpriteFrames = preload("res://assets/sprites/ui/normal/NOTE_a
 var note: Note
 
 @onready var hold_container: Control = $"hold_container"
-@onready var splash: AnimatedSprite2D = $"splash"
+
+@onready var splash_spr: AnimatedSprite2D = $"splash"
+@onready var cover_spr: AnimatedSprite2D = $"cover"
 
 var tap: Sprite2D
 var hold: TextureRect
 var tail: TextureRect
 
+var _covers: Array[AnimatedSprite2D] = []
+
 
 func _ready() -> void:
 	if not is_instance_valid(note):
 		return
+
+	_covers.resize(note.notefield.key_count)
 
 	tap = $"tap"
 	tap.frame = note.column
@@ -46,8 +52,6 @@ func update_hold_size() -> void:
 	if not is_instance_valid(hold) or note.hold_length == 0.0:
 		return
 
-	if note.update_hold and tap.visible:
-		tap.hide()
 
 	if is_instance_valid(hold):
 		hold.size.y = absf(600.0 * absf(note.speed)) * note.hold_length
@@ -55,22 +59,40 @@ func update_hold_size() -> void:
 		if is_instance_valid(tail):
 			tail.position.y = hold.position.y + hold.size.y
 
+	if note.update_hold and tap.visible:
+		tap.hide()
+
+	var cover: = _covers[note.column % _covers.size()]
+	if is_instance_valid(cover) and Conductor.ibeat % 1 == 0:
+		#print_debug("updating cover")
+		if cover.animation.begins_with("begin"):
+			await cover.animation_finished
+		cover.play("progress%s" % note.column, 0.9)
+
+
+func finish() -> void:
+	if note.update_hold:
+		var cover: = _covers[note.column % _covers.size()]
+		if is_instance_valid(cover) and Conductor.ibeat % 1 == 0:
+			cover.play("finish%s" % note.column)
+
 
 func hit_behaviour(result: Note.HitResult) -> void:
 	if result.judgment.splash and Preferences.note_splashes:
 		display_splash()
+		if not note.moving and result.data.hold_length > 0.0:
+			display_cover()
 
 
-func miss_behaviour(_note: Note) -> void:
-	modulate.a = 0.4
-	pass
+func miss_behaviour(_column: int) -> void:
+	modulate.a = 0.3
 
 
 func display_splash() -> void:
 	if not is_instance_valid(note.receptor):
 		return
 
-	var splash_item: = splash.duplicate() as AnimatedSprite2D
+	var splash_item: = splash_spr.duplicate() as AnimatedSprite2D
 	splash_item.global_position = note.receptor.global_position
 	splash_item.modulate.a = 0.6
 	splash_item.top_level = true
@@ -78,3 +100,21 @@ func display_splash() -> void:
 	note.receptor.add_child(splash_item)
 	splash_item.play("splash%s %s" % [ note.column, randi_range(1, 2) ])
 	splash_item.animation_finished.connect(splash_item.queue_free)
+
+
+func display_cover() -> void:
+	if not is_instance_valid(note.receptor):
+		return
+
+	var cover: = cover_spr.duplicate() as AnimatedSprite2D
+	cover.top_level = true
+	cover.visible = true
+	note.receptor.add_child(cover)
+	cover.global_position = note.receptor.global_position
+
+	cover.play("begin%s" % note.column)
+	cover.animation_finished.connect(func():
+		if cover.animation.begins_with("finish"):
+			cover.queue_free()
+	)
+	_covers[note.column % _covers.size()] = cover

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="Bundle" load_steps=13 format=3 uid="uid://llhw2mb1u7hu"]
+[gd_resource type="Resource" script_class="Bundle" load_steps=12 format=3 uid="uid://llhw2mb1u7hu"]
 
 [ext_resource type="Script" path="res://scripts/content/bundle.gd" id="1_45q1f"]
 [ext_resource type="Script" path="res://scripts/content/level_item.gd" id="1_g28nu"]
@@ -149,17 +149,7 @@ script = ExtResource("1_g28nu")
 level_name = "DUE DEBTS"
 song_list = Array[ExtResource("2_l0nbh")]([SubResource("Resource_lnh5v"), SubResource("Resource_mniut"), SubResource("Resource_vhikq")])
 
-[sub_resource type="Resource" id="Resource_j0swt"]
-script = ExtResource("2_l0nbh")
-display_name = &"split-screen"
-folder_name = &"split-screen"
-difficulties = Array[Dictionary]([{
-"display_name": "Hard",
-"file": "hard",
-"variation": ""
-}])
-
 [resource]
 script = ExtResource("1_45q1f")
 level_list = Array[ExtResource("1_g28nu")]([SubResource("Resource_k8l10"), SubResource("Resource_tyja2")])
-song_list = Array[ExtResource("2_l0nbh")]([SubResource("Resource_j0swt")])
+song_list = Array[ExtResource("2_l0nbh")]([])

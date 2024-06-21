@@ -39,7 +39,7 @@ func pop_up_judge(hit_result: Note.HitResult, is_tap: bool) -> void:
 	if not is_tap or not hit_result.judgment.visible:
 		return
 
-	judgment_sprite.frame = hit_result.judgment.frame
+	judgment_sprite.frame = hit_result.judgment.frame - 1
 	judgment_sprite.position = get_viewport_rect().size * 0.5
 	#judgment_sprite.modulate = hit_result.judgment.color
 	judgment_sprite.modulate = Color.WHITE

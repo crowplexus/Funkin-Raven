@@ -53,7 +53,8 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 
 
 func _exit_tree() -> void:
-	Conductor.ibeat_reached.disconnect(on_ibeat_reached)
+	if Conductor.ibeat_reached.is_connected(on_ibeat_reached):
+		Conductor.ibeat_reached.disconnect(on_ibeat_reached)
 
 
 func on_ibeat_reached(ibeat: int) -> void:

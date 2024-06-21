@@ -85,6 +85,7 @@ func _process(delta: float) -> void:
 			if my_note.moving and (my_note.time - Conductor.time) < -0.3:
 				my_note.hit_flag = -1
 				if (my_note.time - Conductor.time) < -(0.3 + my_note.hold_length - 0.5):
+					my_note.object.call_deferred("miss_behaviour", my_note.column)
 					note_fly_over.emit(my_note)
 					finish_note(my_note)
 
@@ -195,6 +196,7 @@ func hold_note_input(hold: Note, delta: float = 0.0) -> void:
 			if hold.trip_timer <= 0.0:
 				hold.update_hold = false
 				if is_instance_valid(hold.object):
+					hold.object.call_deferred("miss_behaviour", hold.column)
 					hold.object.modulate.a = 0.3
 				apply_miss(hold.column)
 				hold.dropped = true
@@ -223,9 +225,12 @@ func update_hold_note(note: Note, delta: float = 0.0) -> void:
 func finish_note(note: Note) -> void:
 	note.finished = true
 	#note.moving = false
+	if is_instance_valid(note.object):
+		note.object.call_deferred("finish")
+		await RenderingServer.frame_pre_draw # wait next frame
 	if note.hold_length <= 0.0:
 		note.update_hold = false
-	if is_instance_valid(note.object) and note.finished == true:
+	if is_instance_valid(note.object):
 		note.object.free()
 	#if hit_note_queue.has(note):
 	#	hit_note_queue.erase(note)

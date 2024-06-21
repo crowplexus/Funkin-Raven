@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://c3mcxybk6adsd"]
+[gd_scene load_steps=5 format=3 uid="uid://c3mcxybk6adsd"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/notes/normal.gd" id="1_vxqwi"]
 [ext_resource type="Texture2D" uid="uid://dl3kkxdsldfgd" path="res://assets/sprites/ui/normal/notes.png" id="2_bvdbs"]
 [ext_resource type="SpriteFrames" uid="uid://cb0ugm5kr53r6" path="res://assets/sprites/ui/normal/splashes.res" id="3_myx6o"]
+[ext_resource type="SpriteFrames" uid="uid://53yvc1fwh4e6" path="res://assets/sprites/ui/normal/holdCoverMerged.res" id="4_rigk7"]
 
 [node name="normal" type="Node2D"]
 scale = Vector2(0.7, 0.7)
@@ -33,3 +34,9 @@ offset_right = 97.2857
 offset_bottom = 266.0
 expand_mode = 1
 stretch_mode = 1
+
+[node name="cover" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = ExtResource("4_rigk7")
+animation = &"progress0"
+offset = Vector2(-10, 50)

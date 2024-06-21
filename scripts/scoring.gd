@@ -91,7 +91,7 @@ static func get_clear_flag(hit_reg: Dictionary) -> String:
 static func get_clear_flag_color(flag: String) -> Color:
 	match flag:
 		JUDGMENTS.epic.clear.full:
-			Color.MEDIUM_PURPLE
+			return Color.MEDIUM_PURPLE
 		JUDGMENTS.sick.clear.full, JUDGMENTS.sick.clear.single:
 			return Color.ROYAL_BLUE
 		JUDGMENTS.good.clear.full, JUDGMENTS.good.clear.single:
