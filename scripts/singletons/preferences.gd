@@ -63,7 +63,7 @@ var hold_layer: int = 1
 ## Enables a firework effect when hitting judgements that allow it.
 @export var note_splashes: bool = true
 ## Enables certain flashing effects in menus and gameplay[br]
-## please disable this if you are sensitive to those.
+## Please disable this if you are sensitive to those.
 @export var flashing: bool = true
 ## Enables a timer at the top of the screen, shows song elapsed time and total time.
 @export var show_timer: bool = true

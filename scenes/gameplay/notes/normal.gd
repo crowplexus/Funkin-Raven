@@ -54,7 +54,7 @@ func update_hold_size() -> void:
 
 
 	if is_instance_valid(hold):
-		hold.size.y = absf(600.0 * absf(note.speed)) * note.hold_length
+		hold.size.y = absf(600.0 * absf(note.real_speed)) * note.hold_length
 		#hold.size.y /= absf(self.scale.y)
 		if is_instance_valid(tail):
 			tail.position.y = hold.position.y + hold.size.y

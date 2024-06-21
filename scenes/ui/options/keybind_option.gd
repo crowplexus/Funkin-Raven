@@ -1,4 +1,4 @@
-extends PreferenceBar
+extends OptionItem
 
 
 func _ready() -> void:

@@ -35,7 +35,7 @@ func move_note_objects(_delta: float) -> void:
 		if not is_instance_valid(note) or note.finished:
 			continue
 
-		var rel_time: float = note.time - Conductor.time
+		var rel_time: float = note.visual_time - Conductor.time
 		var note_scale: float = 0.7
 
 		if is_instance_valid(note.object) and note.moving:
@@ -43,14 +43,10 @@ func move_note_objects(_delta: float) -> void:
 			if is_instance_valid(note.notefield):
 				real_position = note.receptor.global_position
 
-			var scroll_speed: float = note.speed
-			match Preferences.scroll_speed_behaviour:
-				1: scroll_speed += Preferences.scroll_speed
-				2: scroll_speed  = Preferences.scroll_speed
 			note.object.global_position = note.initial_pos + real_position
 			note.object.position.x *= note.scroll.x
 			#note.object.position.x = note.initial_position.x + (90 * note.object.scale.x) * note.column
-			note.object.position.y += rel_time * (400.0 * absf(scroll_speed)) / absf(note_scale) * note.scroll.y
+			note.object.position.y += rel_time * (400.0 * absf(note.real_speed)) / absf(note_scale) * note.scroll.y
 			#note.object.position *= note.scroll
 
 

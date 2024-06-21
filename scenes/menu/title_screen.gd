@@ -49,7 +49,7 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 			SoundBoard.play_sfx(Globals.MENU_CONFIRM_SFX)
 			_transitioning = true
 			await get_tree().create_timer(1.0).timeout
-			get_tree().change_scene_to_packed(load("res://scenes/menu/freeplay_menu.tscn"))
+			Globals.change_scene(load("res://scenes/menu/main_menu.tscn"))
 
 
 func _exit_tree() -> void:

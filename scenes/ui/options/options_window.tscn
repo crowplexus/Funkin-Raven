@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/ui/options/options_window.gd" id="1_gulft"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_mtl8v"]
-[ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/options/preference_bar.tscn" id="3_nu5bw"]
+[ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/options/option_item.tscn" id="3_wjca4"]
 [ext_resource type="Script" path="res://scenes/ui/options/keybind_option.gd" id="4_awyi8"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_43sds"]
@@ -21,7 +21,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 script = ExtResource("1_gulft")
 
 [node name="page_name_label" type="Label" parent="."]
@@ -45,16 +44,16 @@ vertical_alignment = 1
 clip_contents = true
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
+anchor_left = 0.187
 anchor_top = 0.1
-anchor_right = 0.5
-anchor_bottom = 0.767
-offset_left = -400.0
+anchor_right = 0.812
+anchor_bottom = 0.783
+offset_left = 0.639984
 offset_top = -8.0
-offset_right = 400.0
-offset_bottom = 11.76
+offset_right = 0.639893
+offset_bottom = 0.23999
 grow_horizontal = 2
-mouse_filter = 2
+mouse_filter = 1
 
 [node name="selector_" type="ColorRect" parent="pages"]
 visible = false
@@ -69,10 +68,9 @@ color = Color(0, 1, 0.833333, 1)
 layout_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
-mouse_filter = 2
 alignment = 1
 
-[node name="scroll_direction" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+[node name="scroll_direction" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Scroll Direction"
 description = "Defines which direction the notes will scroll to."
@@ -80,13 +78,13 @@ variable = "scroll_direction"
 option_type = 2
 display_names = Array[StringName]([&"Up", &"Down"])
 
-[node name="centered_playfield" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+[node name="centered_playfield" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Centered PlayField"
 description = "Centers your notes and hides the enemy's."
 variable = "centered_playfield"
 
-[node name="scroll_speed_behaviour" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+[node name="scroll_speed_behaviour" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Scroll Speed Behaviour"
 description = "Defines how scroll speed behaves in-game."
@@ -94,7 +92,7 @@ variable = "scroll_speed_behaviour"
 option_type = 2
 display_names = Array[StringName]([&"Chart based", &"Multiplicative", &"Constant"])
 
-[node name="scroll_speed" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+[node name="scroll_speed" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Scroll Speed"
 description = "Defines your set scroll speed, the Scroll Speed Behaviour
@@ -103,7 +101,7 @@ variable = "scroll_speed"
 option_type = 1
 steps = 0.01
 
-[node name="playfield_side" parent="pages/gameplay" instance=ExtResource("3_nu5bw")]
+[node name="playfield_side" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"PlayField Side"
 description = "Which playfield belongs to the player?
@@ -123,25 +121,25 @@ grow_vertical = 2
 mouse_filter = 2
 alignment = 1
 
-[node name="note0_keybind" parent="pages/keybinds" instance=ExtResource("3_nu5bw")]
+[node name="note0_keybind" parent="pages/keybinds" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 script = ExtResource("4_awyi8")
 option_name = &"Note Left Keybind"
 variable = "note0"
 
-[node name="note1_keybind" parent="pages/keybinds" instance=ExtResource("3_nu5bw")]
+[node name="note1_keybind" parent="pages/keybinds" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 script = ExtResource("4_awyi8")
 option_name = &"Note Down Keybind"
 variable = "note1"
 
-[node name="note2_keybind" parent="pages/keybinds" instance=ExtResource("3_nu5bw")]
+[node name="note2_keybind" parent="pages/keybinds" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 script = ExtResource("4_awyi8")
 option_name = &"Note Up Keybind"
 variable = "note2"
 
-[node name="note3_keybind" parent="pages/keybinds" instance=ExtResource("3_nu5bw")]
+[node name="note3_keybind" parent="pages/keybinds" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 script = ExtResource("4_awyi8")
 option_name = &"Note Right Keybind"
@@ -158,14 +156,14 @@ grow_vertical = 2
 mouse_filter = 2
 alignment = 1
 
-[node name="framerate" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+[node name="framerate" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Framerate Cap"
 description = "Define here your frames per second limit."
 variable = "framerate_cap"
 option_type = 1
 
-[node name="framerate_mode" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+[node name="framerate_mode" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Framerate Mode"
 description = "Define how the engine should treat framerate."
@@ -173,13 +171,20 @@ variable = "framerate_mode"
 option_type = 2
 display_names = Array[StringName]([&"Capped", &"Unlimited", &"VSync"])
 
-[node name="note_splashes" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+[node name="flashing" parent="pages/visuals" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Flashing Lights"
+description = "Enables certain flashing effects in menus and gameplay
+Please disable this if you are sensitive to those."
+variable = "flashing"
+
+[node name="note_splashes" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Note Splashes"
 description = "Enables a firework effect when hitting judgements that allow it."
 variable = "note_splashes"
 
-[node name="coloured_combo" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+[node name="coloured_combo" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Coloured Combo"
 description = "Makes combo coloured after  either your judgments or clear flag."
@@ -187,7 +192,7 @@ variable = "coloured_combo"
 option_type = 2
 display_names = Array[StringName]([&"None", &"Only Judgments", &"Only Combo", &"Judges and Combo"])
 
-[node name="combo_colour_mode" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+[node name="combo_colour_mode" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Combo Colour Mode"
 description = "Dictates how \"Coloured Combo\" should colour the judgments and/or combo"
@@ -195,7 +200,7 @@ variable = "combo_colour_mode"
 option_type = 2
 display_names = Array[StringName]([&"Judgment", &"Clear Flag"])
 
-[node name="hold_layer" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+[node name="hold_layer" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Hold Note Layer"
 description = "Defines how hold notes should be layered."
@@ -203,7 +208,7 @@ variable = "hold_layer"
 option_type = 2
 display_names = Array[StringName]([&"Above Notes", &"Behind Notes"])
 
-[node name="show_timer" parent="pages/visuals" instance=ExtResource("3_nu5bw")]
+[node name="show_timer" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Show Timer"
 description = "Enables a timer at the top of the screen, shows song elapsed time and total time."

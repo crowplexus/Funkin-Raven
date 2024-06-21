@@ -103,12 +103,12 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 					continue
 
 				var swag_note: Note = Chart.make_note(note)
-				if "d" in note:
-					var player: int = 0
-					if int(note["d"]) % (chart.key_amount * 2) >= chart.key_amount:
-						player = 1
-					swag_note.player = player
-					swag_note.speed = chart.note_speed
+				var player: int = 0
+				if int(note["d"]) % (chart.key_amount * 2) >= chart.key_amount:
+					player = 1
+				swag_note.player = player
+				swag_note.speed = chart.note_speed
+				swag_note.visual_time = swag_note.time
 				chart.notes.append(swag_note)
 
 			if "events" in jsonf:
@@ -182,6 +182,7 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 							player = int(bar["mustHitSection"])
 						swag_note.player = player
 						swag_note.speed = chart.note_speed
+						swag_note.visual_time = swag_note.time
 						chart.notes.append(swag_note)
 
 					var focus_camera: ChartEvent = ChartEvent.new()

@@ -22,23 +22,32 @@ func _ready() -> void:
 	generate_songs()
 
 
-func _unhandled_key_input(_event: InputEvent) -> void:
+func _unhandled_input(e: InputEvent) -> void:
+	# prevents a bug with moving the mouse which would change selections nonstop
+	if e is InputEventMouseMotion:
+		return
+
 	if _transitioning == true:
 		return
 
 	var ud: int = int(Input.get_axis("ui_up", "ui_down"))
 	var lr: int = int(Input.get_axis("ui_left", "ui_right"))
+	if e is InputEventMouse and e.shift_pressed:
+		lr = ud
+
 	if ud: update_selection(ud)
 	if lr: update_alternative(lr)
 
-	if Input.is_key_label_pressed(KEY_O) and not get_tree().paused:
-		var ow: Control = Globals.get_options_window()
-		#ow.position = get_viewport_rect().size * 0.5
-		ow.set_deferred("size", get_viewport_rect().size)
-		get_tree().paused = true
-		add_child(ow)
+	if Input.is_action_just_pressed("ui_cancel"):
+		_transitioning = true
+		# stupid check to stop random bgm when its playing
+		if SoundBoard.current_bgm != Globals.MENU_MUSIC.resource_path.get_file().get_basename():
+			play_bgm_check(Globals.MENU_MUSIC, true)
+		SoundBoard.play_sfx(Globals.MENU_CANCEL_SFX)
+		Globals.change_scene(load("res://scenes/menu/main_menu.tscn"))
 
 	if Input.is_action_just_pressed("ui_accept"):
+		_transitioning = true
 		if current_selection == 0:
 			current_selection = randi_range(1, song_list.get_child_count())
 			update_selection()

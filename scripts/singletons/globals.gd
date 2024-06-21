@@ -11,9 +11,18 @@ const OPTIONS_WINDOW: PackedScene = preload("res://scenes/ui/options/options_win
 
 const DEFAULT_STAGE: PackedScene = preload("res://scenes/backgrounds/mainStage.tscn")
 
+#region Scenes
 
-func change_scene(scene: PackedScene) -> void:
+func change_scene(scene: PackedScene, skip_transition: bool = false) -> void:
+	if not skip_transition: await Transition.play_in()
 	get_tree().change_scene_to_packed(scene)
+	if not skip_transition: await Transition.play_out()
+
+
+func reset_scene(skip_transition: bool = false) -> void:
+	if not skip_transition: await Transition.play_in("fade")
+	get_tree().reload_current_scene()
+	if not skip_transition: await Transition.play_out("fade")
 
 
 func get_options_window() -> Control:
@@ -21,6 +30,9 @@ func get_options_window() -> Control:
 	ow.process_mode = Node.PROCESS_MODE_ALWAYS
 	ow.z_index = 100
 	return ow
+
+#endregion
+#region Text
 
 ## Converts text to a dictionary[br]
 ## Format (in text string):[br]
@@ -40,6 +52,7 @@ func text_to_dictionary(text: String, separator: String = ",") -> Dictionary:
 				data[cur_node] = thingy
 	return data
 
+#endregion
 #region Number Related Functions
 func format_to_time(value: float) -> String:
 	var formatter: String = "%02d:%02d" % [
@@ -55,4 +68,28 @@ func format_to_time(value: float) -> String:
 func float_to_hours(value: float) -> int: return int(value / 3600.0)
 func float_to_minute(value: float) -> int: return int(value / 60) % 60
 func float_to_seconds(value: float) -> float: return fmod(value, 60)
+#endregion
+#region Canvas Item
+
+func begin_flicker(node: CanvasItem, duration: float = 1.0, interval: float = 0.04,
+	end_vis: bool = false, force: bool = false, finish_callable: Callable = func() -> void: pass) -> void:
+	####
+	if node == null: return
+	if force: node.self_modulate.a = 1.0
+
+	var twn: Tween = create_tween()
+	twn.set_loops(int(duration/interval))
+	twn.bind_node(node)
+
+	twn.finished.connect(func() -> void:
+		node.self_modulate.a = 1.0 if end_vis else 0.0
+		if finish_callable != null:
+			finish_callable.call()
+	)
+
+	twn.tween_callback(func() -> void:
+		var val: float = 1.0 if node.self_modulate.a < 1.0 else 0.0
+		node.self_modulate.a = val
+	).set_delay(interval)
+
 #endregion

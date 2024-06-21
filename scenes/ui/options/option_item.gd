@@ -1,5 +1,5 @@
 @tool extends Control
-class_name PreferenceBar
+class_name OptionItem
 
 @onready var color_rect: ColorRect = $"color_rect"
 @onready var preference_label: Label = $"preference_label"
@@ -83,3 +83,33 @@ func get_value_name() -> StringName:
 						value_name = display_names[display_names.find(value)]
 
 	return value_name
+
+
+func _on_mouse_entered() -> void:
+	if not is_instance_valid($"../../../"):
+		return
+	if self != $"../../../".selected_pref:
+		modulate.a = 0.8
+
+
+func _on_mouse_exited() -> void:
+	if not is_instance_valid($"../../../"):
+		return
+	if self != $"../../../".selected_pref:
+		modulate.a = 0.6
+
+
+func _on_gui_input(e: InputEvent) -> void:
+	var can_input: bool = is_instance_valid($"../../../")
+	if not can_input:
+		return
+
+	if e.is_pressed() and e.is_action("ui_accept"):
+		var window: Control =  $"../../../"
+		if self == window.selected_pref and  e.double_click == true:
+			window.changing_preference = not window.changing_preference
+			window.selector.modulate = Color.GREEN if window.changing_preference else Color.WHITE
+
+		elif not window.changing_preference:
+			window.current_selection = self.get_index()
+			window.update_selection()

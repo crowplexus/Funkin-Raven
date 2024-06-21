@@ -55,12 +55,26 @@ var hit_timing: int = 0
 var dropped: bool = false
 ## Hold Note trip timer, used for inputs to knowing when to drop the hold.
 var trip_timer: float = 0.0
+
 #endregion
-#region Customisation
+#region SVs data
+
 ## The note's initial position, used for offsetting.
 @export var initial_pos: Vector2 = Vector2.ZERO
-## How fast the note's object scrolls through the screen
+## Note's [bold]visual[/bold] time, used when positioning.
+@export var visual_time: float = 0.0
+## How fast the note's object scrolls through the screen.
 @export var speed: float = 1.0
+
+var real_speed: float:
+	get:
+		var scroll_speed: float = speed
+		match Preferences.scroll_speed_behaviour:
+			1: scroll_speed += Preferences.scroll_speed
+			2: scroll_speed  = Preferences.scroll_speed
+		return scroll_speed
+
+#endregion
 
 #region Updating
 ## Debug Mode forces certain behaviour functions for notes to disable

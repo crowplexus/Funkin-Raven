@@ -1,4 +1,4 @@
-extends PreferenceBar
+extends OptionItem
 
 var _lang_codes: PackedStringArray = []
 

@@ -81,7 +81,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 				if not get_tree().paused:
 					var ow: Control = Globals.get_options_window()
 					get_tree().paused = true
-					ui_layer.add_child(ow)
+					PerformanceCounter.add_child(ow)
 
 
 func _exit_tree() -> void:
@@ -283,6 +283,11 @@ func on_ibeat_reached(ibeat: int) -> void:
 	if ibeat % hud_beat_interval == 0:
 		ui_layer.scale += Vector2(0.03, 0.03)
 
+
+	#if ibeat % 1 == 0:
+	#	var note: = note_cluster.note_queue[note_cluster.current_note] as Note
+	#	note.visual_time = note.visual_time - 1.0
+
 ## Connected to [code]player.note_fly_over[/code] to handle
 ## missing notes by letting them fly above your notefield..
 func miss_fly_over(note: Note) -> void:
@@ -313,7 +318,7 @@ func update_score_text(hit_result: Note.HitResult, is_tap: bool) -> void:
 		main_hud.callv("update_score_text", [hit_result, is_tap])
 
 #endregion
-#region Utilities
+#region Utils
 
 func get_player(player_id: int) -> Player:
 	for field: NoteField in fields.get_children():

@@ -1,16 +1,16 @@
 [gd_scene load_steps=3 format=3 uid="uid://3e0gva7f3ej5"]
 
-[ext_resource type="Script" path="res://scenes/ui/options/preference_bar.gd" id="1_tmrfj"]
+[ext_resource type="Script" path="res://scenes/ui/options/option_item.gd" id="1_tmrfj"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_d8es2"]
 
 [node name="preference_bar" type="Control"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 3
-anchors_preset = 15
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.069
+offset_bottom = 0.319996
 grow_horizontal = 2
-grow_vertical = 2
+mouse_default_cursor_shape = 2
 script = ExtResource("1_tmrfj")
 
 [node name="color_rect" type="ColorRect" parent="."]
@@ -19,6 +19,7 @@ layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 grow_horizontal = 2
+mouse_filter = 1
 color = Color(0, 0, 0, 0.376471)
 
 [node name="preference_label" type="Label" parent="."]
@@ -33,3 +34,7 @@ theme_override_font_sizes/font_size = 32
 text = "Unknown: ?"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

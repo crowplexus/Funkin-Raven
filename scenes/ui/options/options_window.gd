@@ -20,17 +20,21 @@ extends Control
 		return 0
 
 ## Current selected preference box.
-var selected_pref: PreferenceBar
+var selected_pref: OptionItem
 ## Current selected item.
 var current_selection: int = 0
 ## Disables scrolling if you are changing a preference.
 var changing_preference: bool = false
 
 var _display_ypos: float = 0.0
+var _just_started: bool = true # bandaid
 
 
 func _ready() -> void:
 	update_page()
+	# i hate this <3
+	await RenderingServer.frame_post_draw
+	_just_started = false
 
 
 func _process(delta: float) -> void:
@@ -43,9 +47,14 @@ func _process(delta: float) -> void:
 			active_page.position.y = lerpf(active_page.position.y, _display_ypos, exp(-delta * 64))
 
 
-func _unhandled_key_input(_event: InputEvent) -> void:
+func _unhandled_input(e: InputEvent) -> void:
+	if _just_started:
+		return
+
 	var ud: int = int(Input.get_axis("ui_up", "ui_down"))
 	var lr: int = int(Input.get_axis("ui_left", "ui_right"))
+	if e is InputEventMouse and e.shift_pressed:
+		lr = ud
 
 	if changing_preference:
 		var shift_mult: int = 1
@@ -56,11 +65,11 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 		if ud: update_selection(ud)
 		if lr: update_page(lr)
 
-	if Input.is_action_just_pressed("ui_accept"):
+	if not e is InputEventMouse and Input.is_action_just_pressed("ui_accept"):
 		changing_preference = not changing_preference
 		selector.modulate = Color.GREEN if changing_preference else Color.WHITE
 
-	if Input.is_action_just_pressed("ui_cancel"):
+	if not e is InputEventMouse and Input.is_action_just_pressed("ui_cancel"):
 		if changing_preference:
 			stop_changing_pref()
 		else:
@@ -84,7 +93,7 @@ func update_selection(new: int = 0) -> void:
 	selected_pref = active_page.get_child(current_selection)
 	reload_description()
 
-	for pref: PreferenceBar in active_page.get_children():
+	for pref: OptionItem in active_page.get_children():
 		if pref == selected_pref: pref.modulate.a = 1.0
 		else: pref.modulate.a = 0.6
 
@@ -100,13 +109,10 @@ func update_selection(new: int = 0) -> void:
 
 func update_page(new_page: int = 0) -> void:
 	var current_page: int = all_pages.find(active_page)
-
 	current_page = wrapi(current_page + new_page, 0, all_pages.size())
 	active_page = all_pages[current_page]
-
 	for page: VBoxContainer in all_pages:
 		page.visible = page == active_page
-
 	reload_page_name()
 	update_selection()
 
@@ -115,14 +121,14 @@ func reload_text() -> void:
 	reload_page_name()
 	reload_description()
 	for page: VBoxContainer in all_pages:
-		for pref: PreferenceBar in active_page.get_children():
+		for pref: OptionItem in active_page.get_children():
 			pref.reset_preference_label()
 
 
 func reload_page_name() -> void:
 	if not is_instance_valid(active_page):
 		return
-	var page_name: String = active_page.name
+	var page_name: String = active_page.name.to_upper()
 	page_name_label.text = "< %s >" % page_name
 
 
@@ -133,6 +139,8 @@ func reload_description() -> void:
 
 
 func leave() -> void:
-	if get_tree().paused == true:
+	if get_tree().paused:
 		get_tree().paused = false
+	await RenderingServer.frame_pre_draw
 	self.queue_free()
+
