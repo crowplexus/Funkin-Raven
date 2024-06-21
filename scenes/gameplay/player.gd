@@ -294,6 +294,7 @@ func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
 	var judge_name: String = Scoring.JUDGMENTS.find_key(judge)
 	if judge_name == "miss":
 		apply_miss(note.column)
+		jhit_regis["breaks"] = breaks
 		return _latest_hit_result
 
 	if combo > 1 and judge.combo_break == true:
