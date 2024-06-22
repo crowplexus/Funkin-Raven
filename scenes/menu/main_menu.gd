@@ -50,8 +50,8 @@ func confirm_selection():
 		Globals.begin_flicker(current_item, 1.0, 0.06, false)
 	await get_tree().create_timer(1.0).timeout
 	match current_item.name:
-		#"story":
-		#	Globals.change_scene(load("res://scenes/menu/story_menu.tscn"))
+		"story":
+			Globals.change_scene(load("res://scenes/menu/story_menu.tscn"))
 		"freeplay":
 			Globals.change_scene(load("res://scenes/menu/freeplay_menu.tscn"))
 		"options":

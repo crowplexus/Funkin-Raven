@@ -4,6 +4,7 @@
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_d8es2"]
 
 [node name="preference_bar" type="Control"]
+modulate = Color(1, 1, 1, 0.6)
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 3
 anchor_right = 1.0

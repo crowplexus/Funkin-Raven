@@ -26,11 +26,9 @@ func _unhandled_key_input(e: InputEvent) -> void:
 
 			var key: int = e.keycode
 			Preferences.keybinds[variable][0] = OS.get_keycode_string(key)
-			$"../../../".stop_changing_pref()
+			window.stop_changing_pref()
 			check_value()
 
 
 func is_selected() -> bool:
-	var p: bool =  $"../../../".changing_preference
-	var v: bool =  $"../../../".selected_pref == self
-	return p and v
+	return window.changing_preference and window.selected_pref == self

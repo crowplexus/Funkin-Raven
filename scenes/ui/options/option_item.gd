@@ -3,6 +3,8 @@ class_name OptionItem
 
 @onready var color_rect: ColorRect = $"color_rect"
 @onready var preference_label: Label = $"preference_label"
+@onready var window: Control = $"../../../"
+
 ## The option's display name in the options window.
 @export var option_name: StringName = "Unknown":
 	set(new_name):
@@ -20,6 +22,8 @@ var option_type: int = 0
 @export var display_names: Array[StringName] = []
 ## Number decimal points, only useful when the option type is Number ([code]1[/code])
 @export var steps: float = 1.0
+## Treats this as a non-option
+@export var pseudo: bool = false
 
 ## The preference's current value
 var value: Variant
@@ -58,7 +62,7 @@ func reset_preference_label() -> void:
 	if is_instance_valid(preference_label):
 		var final_text: String = option_name
 		# display value name in there too #
-		if option_type < 3:
+		if option_type < 3 and not pseudo:
 			final_text += ": %s" % get_value_name()
 		preference_label.text = final_text
 
@@ -86,26 +90,25 @@ func get_value_name() -> StringName:
 
 
 func _on_mouse_entered() -> void:
-	if not is_instance_valid($"../../../"):
+	if not is_instance_valid(window):
 		return
-	if self != $"../../../".selected_pref:
+	if self != window.selected_pref:
 		modulate.a = 0.8
 
 
 func _on_mouse_exited() -> void:
-	if not is_instance_valid($"../../../"):
+	if not is_instance_valid(window):
 		return
-	if self != $"../../../".selected_pref:
+	if self != window.selected_pref:
 		modulate.a = 0.6
 
 
 func _on_gui_input(e: InputEvent) -> void:
-	var can_input: bool = is_instance_valid($"../../../")
+	var can_input: bool = is_instance_valid(window)
 	if not can_input:
 		return
 
 	if e.is_pressed() and e.is_action("ui_accept"):
-		var window: Control =  $"../../../"
 		if self == window.selected_pref and  e.double_click == true:
 			window.changing_preference = not window.changing_preference
 			window.selector.modulate = Color.GREEN if window.changing_preference else Color.WHITE

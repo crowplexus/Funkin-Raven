@@ -1,9 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://deo3obwvipfis"]
+[gd_scene load_steps=9 format=3 uid="uid://deo3obwvipfis"]
 
 [ext_resource type="Script" path="res://scenes/ui/options/options_window.gd" id="1_gulft"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_mtl8v"]
 [ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/options/option_item.tscn" id="3_wjca4"]
 [ext_resource type="Script" path="res://scenes/ui/options/keybind_option.gd" id="4_awyi8"]
+[ext_resource type="Script" path="res://scenes/ui/options/page_item.gd" id="5_4l7t0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o27e5"]
+bg_color = Color(0, 0, 0, 0.572549)
 
 [sub_resource type="LabelSettings" id="LabelSettings_43sds"]
 font = ExtResource("2_mtl8v")
@@ -11,8 +15,9 @@ font_size = 32
 outline_size = 6
 outline_color = Color(0, 0, 0, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o27e5"]
-bg_color = Color(0, 0, 0, 0.572549)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1s7ih"]
+bg_color = Color(0, 0, 0, 0.592157)
+corner_detail = 1
 
 [node name="options_window" type="Control"]
 layout_mode = 3
@@ -23,46 +28,49 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_gulft")
 
-[node name="page_name_label" type="Label" parent="."]
+[node name="left_panel" type="Panel" parent="."]
+clip_contents = true
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.367
-anchor_top = 0.028
-anchor_right = 0.635
-anchor_bottom = 0.069
-offset_left = 0.23999
-offset_top = -0.16
-offset_right = 0.199951
-offset_bottom = 0.319996
+anchor_left = 0.04
+anchor_top = 0.089
+anchor_right = 0.262
+anchor_bottom = 0.379
+offset_left = -0.200005
+offset_top = -0.0800018
+offset_right = 0.639954
+offset_bottom = 0.119995
+mouse_filter = 1
+
+[node name="page_selector" type="VBoxContainer" parent="left_panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
-text = "< PAGE NAME >"
-label_settings = SubResource("LabelSettings_43sds")
-horizontal_alignment = 1
-vertical_alignment = 1
+grow_vertical = 2
+alignment = 1
+
+[node name="gameplay" parent="left_panel/page_selector" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+script = ExtResource("5_4l7t0")
+option_name = &"Gameplay"
+pseudo = true
 
 [node name="pages" type="Panel" parent="."]
 clip_contents = true
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.187
-anchor_top = 0.1
-anchor_right = 0.812
+anchor_left = 0.262
+anchor_top = 0.089
+anchor_right = 0.887
 anchor_bottom = 0.783
-offset_left = 0.639984
-offset_top = -8.0
+offset_left = 0.639954
+offset_top = -0.0800018
 offset_right = 0.639893
 offset_bottom = 0.23999
 grow_horizontal = 2
 mouse_filter = 1
-
-[node name="selector_" type="ColorRect" parent="pages"]
-visible = false
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 0
-offset_top = 161.0
-offset_right = 800.0
-offset_bottom = 211.0
-color = Color(0, 1, 0.833333, 1)
 
 [node name="gameplay" type="VBoxContainer" parent="pages"]
 layout_mode = 2
@@ -219,8 +227,8 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 161.0
-offset_bottom = 211.0
+offset_top = 116.0
+offset_bottom = 166.0
 grow_horizontal = 2
 theme_override_fonts/font = ExtResource("2_mtl8v")
 theme_override_font_sizes/font_size = 32
@@ -233,9 +241,9 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.837
 anchor_right = 1.0
-anchor_bottom = 0.967
-offset_top = 0.359985
-offset_bottom = -0.240051
+anchor_bottom = 0.978
+offset_top = 8.35992
+offset_bottom = -0.160095
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/normal = SubResource("StyleBoxFlat_o27e5")
@@ -243,4 +251,60 @@ text = "This option will do things to your game that have never been done before
 label_settings = SubResource("LabelSettings_43sds")
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="help_key" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.837
+anchor_right = 1.0
+anchor_bottom = 0.978
+offset_left = 1032.0
+offset_top = -593.64
+offset_right = -10.0
+offset_bottom = -673.16
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("2_mtl8v")
+theme_override_font_sizes/font_size = 20
+text = "Press F1 for Help"
+horizontal_alignment = 2
+
+[node name="help_text" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("2_mtl8v")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_1s7ih")
+text = "- Options Menu Help -
+
+So let's go over keybinds since that's basically the only thing we can go over, this menu is dead simple so this is enough.
+
+-----------------------------
+
+While *not* modifying options...
+
+Left/Right or Click on Left Panel to Change Page
+Up/Down or Click on an Option to select It
+Enter/Space or Double Click an option to modify it
+
+While modifying an option...
+
+Use Left/Right or Shift+Mouse Wheel to modify the option's value
+Press Enter/Space or Double Click again to stop modifying
+You can also press Escape to stop modifying
+
+
+That's pretty much it
+Thanks for reading allat."
+horizontal_alignment = 1
 autowrap_mode = 2
