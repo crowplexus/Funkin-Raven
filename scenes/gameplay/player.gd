@@ -311,8 +311,8 @@ func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
 	var hit_score: = Scoring.TEMPLATE_HIT_SCORE.duplicate()
 	hit_score.health = health + 3
 	hit_score.accuracy = accuracy_threshold + judge.accuracy
+	hit_score.score = score + Scoring.get_raven_score(1)
 	hit_score.total_notes_hit = total_notes_hit + 1
-	hit_score.score = score + 350
 	hit_score.combo = combo + 1
 	apply_score(hit_score)
 

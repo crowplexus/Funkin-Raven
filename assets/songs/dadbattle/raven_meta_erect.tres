@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="SongInfo" load_steps=5 format=3 uid="uid://c8c7fs1ofyltv"]
+
+[ext_resource type="AudioStream" uid="uid://cldac3ru6mgyx" path="res://assets/songs/dadbattle/Inst-erect.ogg" id="1_6ulgl"]
+[ext_resource type="Script" path="res://scripts/chart/song_info.gd" id="2_l2dqv"]
+[ext_resource type="AudioStream" uid="uid://dx1ixp6yq4usc" path="res://assets/songs/dadbattle/Voices-bf-erect.ogg" id="3_wu3yj"]
+[ext_resource type="AudioStream" uid="uid://dp8iyorvaltgs" path="res://assets/songs/dadbattle/Voices-dad-erect.ogg" id="4_s0djj"]
+
+[resource]
+script = ExtResource("2_l2dqv")
+name = &"???"
+notefields = Array[Dictionary]([{
+"characters": ["player1"],
+"key_count": 4,
+"name": "1",
+"scale": Vector2(1, 1),
+"spot": 1.0,
+"visible": true
+}, {
+"characters": ["player2"],
+"key_count": 4,
+"name": "2",
+"scale": Vector2(1, 1),
+"spot": 0.0,
+"visible": true
+}])
+credits = {
+"charter": "???",
+"composer": "???"
+}
+stars = {}
+background = &""
+characters = []
+instrumental = ExtResource("1_6ulgl")
+vocals = Array[AudioStream]([ExtResource("3_wu3yj"), ExtResource("4_s0djj")])

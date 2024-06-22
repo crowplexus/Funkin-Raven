@@ -4,8 +4,8 @@
 [ext_resource type="Script" path="res://scenes/gameplay/hud/default.gd" id="1_x5alm"]
 [ext_resource type="Texture2D" uid="uid://dld56rmrbxk8f" path="res://assets/sprites/ui/normal/healthBar.png" id="4_s0553"]
 [ext_resource type="Script" path="res://scenes/ui/health_bar.gd" id="5_7au2h"]
-[ext_resource type="Texture2D" uid="uid://5sqbf0e5oswl" path="res://assets/sprites/characters/icons/dad.png" id="6_ajevi"]
-[ext_resource type="Texture2D" uid="uid://cu4r5okvtl6an" path="res://assets/sprites/characters/icons/bf.png" id="7_rmixp"]
+[ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="6_ajevi"]
+[ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="7_rmixp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t65mt"]
 bg_color = Color(0, 0, 0, 0.392157)

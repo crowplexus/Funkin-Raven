@@ -39,18 +39,18 @@ const DEFAULT_NOTEFIELD_CONFIG: Array[Dictionary] = [
 ## Display Name for the song.
 @export var name: StringName = "???"
 ## Folder Name for the song, usually provided when loading the chart.
-@export var folder: StringName = "test"
+var folder: StringName = "test"
 ## Difficulty Name for the song, usually provided when loading the chart.[br]
 ## [code]file is which *data* file to load in the file system[/code][br]
 ## [code]target[/code] is which difficulty within the data file to load[br]
 ## [code]variation[/code] is a suffix for audio files to load before playing the song.
-@export var difficulty: Dictionary = {
+var difficulty: Dictionary = {
 	"display_name": "Normal",
 	"file": "normal",
 	"variation": "",
 }
 ## Notefield configuration for gameplay purposes.
-@export var notefields: Array[Dictionary] = DEFAULT_NOTEFIELD_CONFIG.duplicate()
+@export var notefields: Array[Dictionary] = DEFAULT_NOTEFIELD_CONFIG
 ## Dictionary with song credits, such as[br]
 ## the composer of the song[br]
 ## who mapped it, etc...
@@ -69,6 +69,10 @@ const DEFAULT_NOTEFIELD_CONFIG: Array[Dictionary] = [
 @export var background: StringName = ""
 ## Contains names for characters that appear in the song.
 @export var characters: PackedStringArray = []
+## Audio stream for the instrumental that will be played in-game.
+@export var instrumental: AudioStream
+## Contains audio streams with vocal files.
+@export var vocals: Array[AudioStream] = []
 
 
 func configure_notefield(nf: NoteField, config: Dictionary) -> void:

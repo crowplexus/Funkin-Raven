@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://dxa6jomu2c082"]
+[gd_scene load_steps=11 format=3 uid="uid://dxa6jomu2c082"]
 
 [ext_resource type="SpriteFrames" path="res://assets/sprites/characters/dearests/daddyDearest.res" id="1_b6jed"]
 [ext_resource type="Script" path="res://scenes/characters/character.gd" id="1_ux777"]
+[ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="2_p7ilo"]
 
 [sub_resource type="Animation" id="Animation_7v120"]
 resource_name = "RESET"
@@ -263,6 +264,7 @@ _data = {
 script = ExtResource("1_ux777")
 display_name = &"Daddy Dearest"
 camera_offset = Vector2(230, 0)
+health_icon = ExtResource("2_p7ilo")
 
 [node name="sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("1_b6jed")

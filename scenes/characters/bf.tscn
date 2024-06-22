@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://comp8s0yidnj3"]
+[gd_scene load_steps=16 format=3 uid="uid://comp8s0yidnj3"]
 
 [ext_resource type="Script" path="res://scenes/characters/character.gd" id="1_nvdx5"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/characters/boyfriend/boyfriend.res" id="2_sdxu0"]
+[ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="2_wdlpy"]
 
 [sub_resource type="Animation" id="Animation_7v120"]
 resource_name = "RESET"
@@ -472,6 +473,7 @@ _data = {
 [node name="bf" type="Node2D"]
 script = ExtResource("1_nvdx5")
 display_name = &"Boyfriend"
+health_icon = ExtResource("2_wdlpy")
 
 [node name="sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_sdxu0")

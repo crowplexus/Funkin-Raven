@@ -3,12 +3,10 @@ class_name Chart
 
 static var global: Chart
 
-
-
 @export var notes: Array[Note] = []
 @export var events: Array[ChartEvent] = []
 @export var time_changes: Array[Dictionary] = []
-@export var song_info: SongInfo = SongInfo.new()
+@export var song_info: SongInfo
 @export var key_amount: int = 4
 @export var note_speed: float = 1.0
 
@@ -23,9 +21,6 @@ func _to_string() -> String:
 static func request(song: StringName, difficulty: Dictionary = { "file": "normal", "target": "normal", "variation": "" }) -> Chart:
 	var chart: Chart = Chart.new()
 	var path_chosen: String = ""
-	chart.song_info.folder = song
-	chart.song_info.difficulty = difficulty
-
 	# set the *real* chart difficulty
 	var real_difficulty: StringName = difficulty.file
 	if "target" in difficulty:
@@ -34,11 +29,11 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 		real_difficulty = difficulty.variation
 
 	var file_names: PackedStringArray = [
+		"%s-chart-%s" % [song, difficulty.file],
+		"%s-%s" % [song, difficulty.file],
+		"%s-chart" % song,
 		difficulty.file,
 		real_difficulty,
-		"%s-%s" % [song, difficulty.file],
-		"%s-chart-%s" % [song, difficulty.file],
-		"%s-chart" % song,
 		song, # worst case scenario
 	]
 
@@ -47,6 +42,22 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 		if ResourceLoader.exists(path):
 			path_chosen = path
 			break
+
+	var meta_thingies: PackedStringArray = [
+		"res://assets/songs/%s/raven_meta_%s.tres" % [song, difficulty.variation],
+		"res://assets/songs/%s/%s_meta_%s.tres" % [song, song, difficulty.variation],
+		"res://assets/songs/%s/raven_meta.tres" % song,
+		"res://assets/songs/%s/%s_meta.tres" % [song, song],
+	]
+	for i: String in meta_thingies:
+		if ResourceLoader.exists(i):
+			chart.song_info = load(i)
+			break
+
+	if not is_instance_valid(chart.song_info):
+		chart.song_info = SongInfo.new()
+	chart.song_info.folder = song
+	chart.song_info.difficulty = difficulty
 
 	if path_chosen.is_empty():
 		push_warning("Unable to load song at folder: ", song, ", with difficulty: ", difficulty, ", please check your files.")

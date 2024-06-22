@@ -114,6 +114,46 @@ static func judge_note(note: Note, fallback_diff: float = 0.0) -> Dictionary:
 			return result
 
 
+static func get_raven_score(x: float) -> int:
+	return MAX_SCORE
+
+
+static func get_wife_score(max_millis: float, version: int = 3, ts: float = -1.0) -> int:
+	if ts < 0.0: ts = AudioServer.playback_speed_scale
+	var score: float = 0
+	match version:
+		3:
+			var werwerwerf: Callable = func(x: float):
+				var a1: float = 0.254829592
+				var a2: float = -0.284496736
+				var a3: float = 1.421413741
+				var a4: float = -1.453152027
+				var a5: float = 1.061405429
+				var p: float = 0.3275911
+				var xs: float = sign(x)
+				x = abs(x)
+				var t: float = 1.0 / (1.0 + p * x)
+				var y: float = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * exp(-x * x)
+				return xs * y
+
+			var j_pow: float = 0.75
+			var ridic: float = 5.0 * ts
+			var absolute_max_ms: float = absf(max_millis * 1000.0)
+			var wife3_max_boo_weight: float = 180.0 * ts
+			var wife3_miss_weight: float = -5.5
+			if absolute_max_ms <= ridic:
+				return MAX_SCORE
+
+			var zero: float = 65.0 * pow(ts, j_pow)
+			var dev:  float = 22.7 * pow(ts, j_pow)
+			if max_millis <= zero:
+				score = MAX_SCORE * werwerwerf.call((zero-max_millis)/dev)
+			if max_millis <= wife3_max_boo_weight:
+				score = (max_millis-zero)*wife3_miss_weight/(wife3_max_boo_weight-zero)
+			score = wife3_miss_weight
+	return score
+
+
 static func judge_time(millisecond_time: float) -> Dictionary:
 	# this is faster than a for loop but less convenient
 	# at this moment i'm aiming for performance.

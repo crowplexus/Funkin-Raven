@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="SongInfo" load_steps=5 format=3 uid="uid://b3u2yed23qhie"]
+
+[ext_resource type="Script" path="res://scripts/chart/song_info.gd" id="1_4reu3"]
+[ext_resource type="AudioStream" uid="uid://bc2n45svb0ety" path="res://assets/songs/2hot/Inst.ogg" id="1_g73jd"]
+[ext_resource type="AudioStream" uid="uid://bqoqab52d2gxb" path="res://assets/songs/2hot/Voices-pico.ogg" id="3_ucvoc"]
+[ext_resource type="AudioStream" uid="uid://cai2y2j5sqgxc" path="res://assets/songs/2hot/Voices-darnell.ogg" id="4_rxydi"]
+
+[resource]
+script = ExtResource("1_4reu3")
+name = &"2hot"
+notefields = Array[Dictionary]([{
+"characters": ["player1"],
+"key_count": 4,
+"name": "1",
+"scale": Vector2(1, 1),
+"spot": 1.0,
+"visible": true
+}, {
+"characters": ["player2"],
+"key_count": 4,
+"name": "2",
+"scale": Vector2(1, 1),
+"spot": 0.0,
+"visible": true
+}])
+credits = {
+"charter": "???",
+"composer": "???"
+}
+stars = {}
+background = &""
+characters = []
+instrumental = ExtResource("1_g73jd")
+vocals = Array[AudioStream]([ExtResource("3_ucvoc"), ExtResource("4_rxydi")])

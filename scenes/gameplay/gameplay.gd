@@ -29,7 +29,7 @@ func _ready() -> void:
 	Conductor.set_time(-(Conductor.crotchet * 5))
 	remove_child($"stage")
 
-	if is_instance_valid(Chart.global) and is_instance_valid(Chart.global.song_info):
+	if is_instance_valid(Chart.global):
 		var np: NodePath = "res://scenes/backgrounds/%s.tscn" % [
 			Chart.global.song_info.background]
 		#print_debug("trying to create stage")
@@ -70,7 +70,7 @@ func _process(delta: float) -> void:
 		)
 		center_ui_layer()
 	if get_player(Preferences.playfield_side) != null:
-		health_bar.value = lerpf(health_bar.value, get_player(Preferences.playfield_side).health, exp(-delta * 64))
+		health_bar.value = lerpf(health_bar.value, get_player(Preferences.playfield_side).health, exp(-delta * 96))
 
 
 func _unhandled_key_input(e: InputEvent) -> void:
@@ -100,7 +100,7 @@ func _exit_tree() -> void:
 #region Gameplay Setup
 
 func init_fields() -> void:
-	if not is_instance_valid(Chart.global) or not is_instance_valid(Chart.global.song_info):
+	if not is_instance_valid(Chart.global):
 		return
 
 	var nf_config: = Chart.global.song_info.notefields
@@ -164,39 +164,30 @@ func init_music() -> void:
 	if not is_instance_valid(Chart.global):
 		return
 
-	var track_path: String = "res://assets/songs/%s/" % Chart.global.song_info.folder
-	var _difficulty: Dictionary = Chart.global.song_info.difficulty
-	var audio_folder: Array[String] = []
-	audio_folder.append_array(DirAccess.open(track_path).get_files())
+	var inst_stream: AudioStream = Chart.global.song_info.instrumental
+	if is_instance_valid(inst_stream):
+		music = AudioStreamPlayer.new()
+		music.name = inst_stream.resource_path.get_file().get_basename()
+		music.stream = inst_stream
+		music.finished.connect(leave)
+		music.stream.loop = false
+		music.bus = "BGM"
+		add_child(music)
 
-	# TODO: somehow load only variation audio files when it's in a variation?
-	for fn: String in audio_folder:
-		if fn.get_extension() != "import":
-			continue
-
-		if not is_instance_valid(music):
-			music = AudioStreamPlayer.new()
-			music.stream = ResourceLoader.load(track_path + fn.get_basename())
-			music.name = "%s" % fn.get_basename()
-			music.finished.connect(leave)
-			music.stream.loop = false
-			music.bus = "BGM"
-			add_child(music)
-			continue
-
+	for vocal_stream: AudioStream in Chart.global.song_info.vocals:
+		if not is_instance_valid(music): continue
 		var vocals: = AudioStreamPlayer.new()
-		vocals.stream = ResourceLoader.load(track_path + fn.get_basename())
-		vocals.name = "%s" % fn.get_basename()
+		vocals.name = vocal_stream.resource_path.get_file().get_basename()
+		vocals.stream = vocal_stream
 		vocals.stream.loop = false
 		vocals.bus = music.bus
+		print_debug(vocals.name)
 		music.add_child(vocals)
 
-	#_need_to_play_music = is_instance_valid(music) and not music.playing
 	if is_instance_valid(music):
 		Conductor.length = music.stream.get_length()
 	else:
 		Conductor.length = note_cluster.note_queue.back().time
-	##################
 
 
 func init_stage(path: NodePath) -> void:

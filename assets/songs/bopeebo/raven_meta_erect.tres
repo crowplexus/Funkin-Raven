@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="SongInfo" load_steps=5 format=3 uid="uid://ds2xushkyb28i"]
+
+[ext_resource type="AudioStream" uid="uid://blhb6i18wh3oj" path="res://assets/songs/bopeebo/Inst-erect.ogg" id="1_87bej"]
+[ext_resource type="Script" path="res://scripts/chart/song_info.gd" id="2_0bmqh"]
+[ext_resource type="AudioStream" uid="uid://c4dddqafc7xfk" path="res://assets/songs/bopeebo/Voices-bf-erect.ogg" id="3_gdyll"]
+[ext_resource type="AudioStream" uid="uid://c8oammgaav1d3" path="res://assets/songs/bopeebo/Voices-dad-erect.ogg" id="4_ot6ai"]
+
+[resource]
+script = ExtResource("2_0bmqh")
+name = &"???"
+notefields = Array[Dictionary]([{
+"characters": ["player1"],
+"key_count": 4,
+"name": "1",
+"scale": Vector2(1, 1),
+"spot": 1.0,
+"visible": true
+}, {
+"characters": ["player2"],
+"key_count": 4,
+"name": "2",
+"scale": Vector2(1, 1),
+"spot": 0.0,
+"visible": true
+}])
+credits = {
+"charter": "???",
+"composer": "???"
+}
+stars = {}
+background = &""
+characters = []
+instrumental = ExtResource("1_87bej")
+vocals = Array[AudioStream]([ExtResource("3_gdyll"), ExtResource("4_ot6ai")])

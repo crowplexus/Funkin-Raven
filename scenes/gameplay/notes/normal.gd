@@ -20,8 +20,6 @@ func _ready() -> void:
 	if not is_instance_valid(note):
 		return
 
-	_covers.resize(note.notefield.key_count)
-
 	tap = $"tap"
 	tap.frame = note.column
 	if note.hold_length > 0.0:
@@ -62,18 +60,18 @@ func update_hold_size() -> void:
 	if note.update_hold and tap.visible:
 		tap.hide()
 
-	var cover: = _covers[note.column % _covers.size()]
-	if is_instance_valid(cover) and Conductor.ibeat % 1 == 0:
-		#print_debug("updating cover")
-		if cover.animation.begins_with("begin"):
-			await cover.animation_finished
-		cover.play("progress%s" % note.column, 0.9)
+	for cover in _covers:
+		if is_instance_valid(cover) and Conductor.ibeat % 1 == 0:
+			#print_debug("updating cover")
+			if cover.animation.begins_with("begin"):
+				await cover.animation_finished
+			cover.play("progress%s" % note.column, 0.9)
 
 
 func finish() -> void:
-	if note.update_hold:
-		var cover: = _covers[note.column % _covers.size()]
-		if is_instance_valid(cover) and Conductor.ibeat % 1 == 0:
+	if note.update_hold and Conductor.ibeat % 1 == 0:
+		for cover in _covers:
+			#print_debug("updating cover")
 			cover.play("finish%s" % note.column)
 
 
@@ -83,9 +81,8 @@ func hit_behaviour(result: Note.HitResult) -> void:
 
 	if result.judgment.splash and Preferences.note_splashes:
 		display_splash()
-		# i'll fix it later tbh @crowplexus
-		#if not note.moving and result.data.hold_length > 0.0:
-		#	display_cover()
+		if not note.moving and result.data.hold_length > 0.0:
+			display_cover()
 
 
 func miss_behaviour(_column: int) -> void:
@@ -121,4 +118,4 @@ func display_cover() -> void:
 		if cover.animation.begins_with("finish"):
 			cover.queue_free()
 	)
-	_covers[note.column % _covers.size()] = cover
+	_covers.append(cover)
