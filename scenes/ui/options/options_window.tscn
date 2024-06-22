@@ -192,6 +192,14 @@ option_name = &"Note Splashes"
 description = "Enables a firework effect when hitting judgements that allow it."
 variable = "note_splashes"
 
+[node name="status_display_mode" parent="pages/visuals" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Status Bar Display"
+description = "Define how the status bar should display information."
+variable = "status_display_mode"
+option_type = 2
+display_names = Array[StringName]([&"Full", &"No Score", &"Only Score"])
+
 [node name="coloured_combo" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Coloured Combo"

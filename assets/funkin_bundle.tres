@@ -88,7 +88,7 @@ difficulties = Array[Dictionary]([{
 [sub_resource type="Resource" id="Resource_k8l10"]
 script = ExtResource("1_g28nu")
 level_name = "DADDY DEAREST"
-clear_color = Color(249, 207, 80, 1)
+clear_color = Color(0.976471, 0.811765, 0.317647, 1)
 song_list = Array[ExtResource("2_l0nbh")]([SubResource("Resource_vtydj"), SubResource("Resource_f5vmx"), SubResource("Resource_3k0kd")])
 
 [sub_resource type="Resource" id="Resource_lnh5v"]
@@ -148,7 +148,7 @@ difficulties = Array[Dictionary]([{
 [sub_resource type="Resource" id="Resource_tyja2"]
 script = ExtResource("1_g28nu")
 level_name = "DUE DEBTS"
-clear_color = Color(249, 207, 80, 1)
+clear_color = Color(0.254902, 0.235294, 0.682353, 1)
 song_list = Array[ExtResource("2_l0nbh")]([SubResource("Resource_lnh5v"), SubResource("Resource_mniut"), SubResource("Resource_vhikq")])
 
 [resource]

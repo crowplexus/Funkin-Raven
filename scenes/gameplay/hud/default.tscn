@@ -69,12 +69,15 @@ hframes = 2
 
 [node name="status_label" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -40.0
-offset_bottom = -24.0
+anchors_preset = -1
+anchor_left = 0.261
+anchor_top = 0.944
+anchor_right = 0.745
+anchor_bottom = 0.967
+offset_left = -0.0800171
+offset_top = 0.319946
+offset_right = 0.399902
+offset_bottom = -0.240051
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)

@@ -3,18 +3,18 @@
 [ext_resource type="Script" path="res://scenes/ui/transition/animations/wipe_transition.gd" id="1_2ux4i"]
 
 [sub_resource type="Gradient" id="Gradient_02jev"]
-offsets = PackedFloat32Array(0, 0.123596, 0.550562, 0.820225, 1)
+offsets = PackedFloat32Array(0, 0.267081, 0.550562, 0.813665, 1)
 colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_xucsf"]
 gradient = SubResource("Gradient_02jev")
 width = 1280
-height = 1050
+height = 1300
 fill_to = Vector2(0, 1)
 
 [sub_resource type="Animation" id="Animation_7nps2"]
 resource_name = "in"
-length = 0.50001
+length = 0.70001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -25,12 +25,12 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(640, -500), Vector2(640, 375)]
+"values": [Vector2(640, -560), Vector2(640, 320)]
 }
 
 [sub_resource type="Animation" id="Animation_vhdk7"]
 resource_name = "out"
-length = 0.50001
+length = 0.70001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -41,7 +41,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(640, 375), Vector2(640, 1440)]
+"values": [Vector2(640, 320), Vector2(640, 1440)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mbb7o"]
@@ -60,7 +60,7 @@ grow_vertical = 2
 script = ExtResource("1_2ux4i")
 
 [node name="sprite" type="Sprite2D" parent="."]
-position = Vector2(640, -500)
+position = Vector2(640, -560)
 texture = SubResource("GradientTexture2D_xucsf")
 
 [node name="animation_player" type="AnimationPlayer" parent="sprite"]

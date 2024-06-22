@@ -86,6 +86,11 @@ var countdown_mode: int = 0
 	set(new_locale):
 		language = new_locale
 		TranslationServer.set_locale(new_locale)
+
+## Define how the status bar should display information.
+@export_enum("Full:0", "No Score:1", "Only Score:2")
+var status_display_mode: int = 0
+
 #endregion
 #region Functions
 

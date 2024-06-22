@@ -29,7 +29,7 @@ var playfield_spot: float:
 func on_note_hit(hit_result: Note.HitResult, is_tap: bool) -> void:
 	if not is_instance_valid(hit_result.data):
 		return
-	chars_sing(hit_result.data.column, is_tap or Conductor.ibeat % 1 == 0)
+	chars_sing(hit_result.data.column, is_tap or Conductor.istep % 1 == 0)
 
 
 func reset_scroll_mods() -> void:

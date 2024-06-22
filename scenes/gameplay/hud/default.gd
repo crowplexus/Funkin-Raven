@@ -30,8 +30,11 @@ func _process(_delta: float) -> void:
 func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 	if hit_result.player.botplay == true:
 		status_label.text = "BotPlay Enabled"
-	else:
-		status_label.text = hit_result.player.mk_stats_string()
+		return
+	match Preferences.status_display_mode:
+		1: status_label.text = hit_result.player.mk_stats_string().right(-16)
+		2: status_label.text = hit_result.player.mk_stats_string().left(13)
+		_: status_label.text = hit_result.player.mk_stats_string()
 
 
 func update_time_bar() -> void:
