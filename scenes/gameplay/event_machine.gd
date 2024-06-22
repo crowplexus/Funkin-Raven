@@ -7,8 +7,6 @@ signal event_fired(id: int)
 
 @export var event_list: Array[ChartEvent] = []
 @export var current_event_id: int = 0
-## Names for events that should be avoided.
-@export var unfireable_events: Array[StringName] = []
 
 
 func call_event(id: int) -> void:
@@ -75,7 +73,7 @@ func call_event(id: int) -> void:
 
 
 func _ready() -> void:
-	if is_instance_valid(Chart.global) and event_list.is_empty():
+	if is_instance_valid(Chart.global):
 		event_list = Chart.global.events.duplicate()
 	if not event_list.is_empty():
 		Conductor.fstep_reached.connect(event_step)
@@ -88,19 +86,13 @@ func _exit_tree() -> void:
 
 func event_step(fstep: float) -> void:
 	# return if it's at the end of the list
-	if event_list.size() == current_event_id:
+	if event_list.size() <= current_event_id:
 		return
-
 	var event: ChartEvent = event_list[current_event_id]
-	# advance if the event can't be fired
-	if unfireable_events.has(event.name):
-		current_event_id = event_list.find(event) + 1
-
-	var step: float = (event.step + event.delay)
-	if absf(step - fstep) <= 0.05:
+	var estep: float = (event.step + event.delay)
+	if fstep >= estep and not event.fired:
 		call_event(current_event_id)
-		#await event_fired
-		current_event_id = event_list.find(event) + 1
+		current_event_id += 1
 
 
 func convert_flixel_tween_ease(v: String) -> Tween.EaseType:
