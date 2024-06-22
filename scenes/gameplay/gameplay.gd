@@ -61,7 +61,8 @@ func start_countdown(beat: int) -> void:
 
 
 func _process(delta: float) -> void:
-	process_conductor(delta)
+	if Conductor.active:
+		process_conductor(delta)
 	if ui_layer.scale != initial_ui_zoom:
 		ui_layer.scale = Vector2(
 			lerpf(initial_ui_zoom.x, ui_layer.scale.x, exp(-delta * 5)),
@@ -177,6 +178,7 @@ func init_music() -> void:
 			music = AudioStreamPlayer.new()
 			music.stream = ResourceLoader.load(track_path + fn.get_basename())
 			music.name = "%s" % fn.get_basename()
+			music.finished.connect(leave)
 			music.stream.loop = false
 			music.bus = "BGM"
 			add_child(music)
@@ -234,6 +236,8 @@ func init_stage(path: NodePath) -> void:
 		stage.add_child(character)
 		stage.move_child(character, index)
 
+	main_hud.call_deferred("setup_healthbar")
+
 #endregion
 #region Gameplay Loop
 
@@ -261,9 +265,6 @@ func display_countdown(snd_progress: int, spr_progress: int = -0) -> void:
 
 
 func process_conductor(delta: float) -> void:
-	if not Conductor.active:
-		return
-
 	if _need_to_play_music:
 		Conductor.time += delta
 		if Conductor.time >= 0.0:
@@ -299,6 +300,13 @@ func miss_fly_over(note: Note) -> void:
 			combo_group.pop_up_combo(fake_result, true)
 			update_score_text(fake_result, true)
 			fake_result.unreference()
+
+
+func leave() -> void:
+	# TODO: for levels, i need a playlist
+	# and then we just switch to the next song
+	# this is fine for now
+	Globals.change_scene(load("res://scenes/menu/freeplay_menu.tscn"))
 
 #endregion
 #region HUD Elements

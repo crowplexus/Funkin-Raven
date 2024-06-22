@@ -78,6 +78,9 @@ func finish() -> void:
 
 
 func hit_behaviour(result: Note.HitResult) -> void:
+	if not is_instance_valid(result):
+		return
+
 	if result.judgment.splash and Preferences.note_splashes:
 		display_splash()
 		# i'll fix it later tbh @crowplexus

@@ -14,8 +14,12 @@ class_name Character
 ## Current animation context, defualts to Dancing ([code]0[/code])
 @export_enum("Dancing:0", "Singing:1", "Special:2")
 var animation_context: int = 0
+## Duration of sing animations.
 @export var sing_duration: float = 5.0
+## Offset of the camera when focusing on the character.
 @export var camera_offset: Vector2 = Vector2.ZERO
+## Character's health icon, displayed on the healthbar.
+@export var health_icon: Texture2D = preload("res://assets/sprites/characters/icons/face.png")
 
 @export_category("Animations")
 

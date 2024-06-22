@@ -133,6 +133,8 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 				chart.song_info.characters.append(jsonf.song.player2)
 			if "gfVersion" in jsonf.song:
 				chart.song_info.characters.append(jsonf.song["gfVersion"])
+			if "stage" in jsonf.song:
+				chart.song_info.background = jsonf.song.stage
 
 			if fake_bpm != chart.time_changes[time_change_id].bpm:
 				fake_bpm = chart.time_changes[time_change_id].bpm
