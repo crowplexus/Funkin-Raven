@@ -3,7 +3,7 @@
 [ext_resource type="AudioStream" uid="uid://cll64711snq7r" path="res://assets/songs/bopeebo/Inst.ogg" id="1_dy8m5"]
 [ext_resource type="Script" path="res://scripts/chart/song_info.gd" id="1_iexkq"]
 [ext_resource type="AudioStream" uid="uid://u6pcllntd6v3" path="res://assets/songs/bopeebo/Voices-bf.ogg" id="3_nfck4"]
-[ext_resource type="AudioStream" uid="uid://dgf5mefy5vl5h" path="res://assets/songs/fresh/Voices-dad.ogg" id="4_o01to"]
+[ext_resource type="AudioStream" uid="uid://cw8aq4logjgpx" path="res://assets/songs/bopeebo/Voices-dad.ogg" id="4_a6wic"]
 
 [resource]
 script = ExtResource("1_iexkq")
@@ -31,4 +31,4 @@ stars = {}
 background = &""
 characters = []
 instrumental = ExtResource("1_dy8m5")
-vocals = Array[AudioStream]([ExtResource("3_nfck4"), ExtResource("4_o01to")])
+vocals = Array[AudioStream]([ExtResource("3_nfck4"), ExtResource("4_a6wic")])

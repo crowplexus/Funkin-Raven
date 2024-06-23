@@ -72,6 +72,7 @@ var real_speed: float:
 		match Preferences.scroll_speed_behaviour:
 			1: scroll_speed += Preferences.scroll_speed
 			2: scroll_speed  = Preferences.scroll_speed
+		scroll_speed /= AudioServer.playback_speed_scale
 		return scroll_speed
 
 #endregion

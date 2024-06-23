@@ -5,26 +5,6 @@ extends Control
 @onready var time_label: = $"timer/label"
 @onready var status_label: = $"status_label"
 
-var kade_grades: Array = [
-	# psych engine looking array
-	[	99.9935,	"AAAAA"	],
-	[	99.980,		"AAAA:"	],
-	[	99.970,		"AAAA."	],
-	[	99.955,		"AAAA"	],
-	[	99.90,		"AAA:"	],
-	[	99.80,		"AAA."	],
-	[	99.70,		"AAA"	],
-	[	99.0,		"AA:"	],
-	[	96.50,		"AA."	],
-	[	93.0,		"AA"	],
-	[	90.0,		"A:"	],
-	[	85.0,		"A."	],
-	[	80.0,		"A"		],
-	[	70.0,		"B"		],
-	[	60.0,		"C"		],
-	[	59.0,		"D"		],
-]
-
 var song_name: StringName = ""
 
 
@@ -83,8 +63,22 @@ func update_time_bar() -> void:
 		time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
 
 
-func get_ke_grade(acc: float) -> String:
-	for g: Array in kade_grades:
-		if acc >= g[0]:
-			return g[1]
-	return "N/A"
+func get_ke_grade(acc: float):
+	match acc: # "use a for loop" this is literally faster and easier readable please st
+		_ when acc >= 99.9935: return "AAAAA"
+		_ when acc >= 99.980: return "AAAA:"
+		_ when acc >= 99.970: return "AAAA."
+		_ when acc >= 99.955: return "AAAA"
+		_ when acc == 99.90: return "AAA:"
+		_ when acc >= 99.80: return "AAA."
+		_ when acc >= 99.70: return "AAA"
+		_ when acc >= 99.0: return "AA:"
+		_ when acc >= 96.50: return "AA."
+		_ when acc >= 93.0: return "AA"
+		_ when acc >= 90.0: return "A:"
+		_ when acc >= 85.0: return "A."
+		_ when acc >= 80.0: return "A"
+		_ when acc >= 70.0: return "B"
+		_ when acc >= 61.0: return "C"
+		_ when acc < 60.0: return "D"
+		_: return "N/A"

@@ -53,10 +53,12 @@ skin = SubResource("Resource_mec6n")
 
 [node name="hud" type="CanvasLayer" parent="."]
 
-[node name="combo_group" parent="hud" instance=ExtResource("17_3r26l")]
-skin = SubResource("Resource_uhmp4")
-
 [node name="default" parent="hud" instance=ExtResource("12_hchqv")]
+
+[node name="combo_group" parent="hud" instance=ExtResource("17_3r26l")]
+offset_top = 168.0
+offset_bottom = -304.0
+skin = SubResource("Resource_uhmp4")
 
 [node name="fields" type="Control" parent="hud"]
 layout_mode = 3

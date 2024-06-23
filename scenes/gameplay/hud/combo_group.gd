@@ -40,7 +40,7 @@ func pop_up_judge(hit_result: Note.HitResult, is_tap: bool) -> void:
 		return
 
 	judgment_sprite.frame = hit_result.judgment.frame - 1
-	judgment_sprite.position = get_viewport_rect().size * 0.5
+	judgment_sprite.position = self.size * 0.5
 	#judgment_sprite.modulate = hit_result.judgment.color
 	judgment_sprite.modulate = Color.WHITE
 	if Preferences.coloured_combo == 1 or Preferences.coloured_combo == 3:
@@ -95,7 +95,7 @@ func pop_up_combo(hit_result: Note.HitResult, is_tap: bool) -> void:
 			_combo_tweens.append(null)
 
 		var num_score: = _template_combos[i]
-		num_score.position = get_viewport_rect().size * 0.5
+		num_score.position = self.size * 0.5
 		num_score.position.x += 45 * (i - offsetx)
 		num_score.modulate = combo_colour
 		num_score.scale *= 1.2

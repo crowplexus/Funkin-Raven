@@ -28,24 +28,3 @@ func update_text() -> void:
 	if _debug_display:
 		perf_label.text += "\n			- Conductor -\n"
 		perf_label.text += "\n[font_size=15]%s[/font_size]" % Conductor.to_string()
-
-
-func _unhandled_key_input(e: InputEvent) -> void:
-	if e.pressed: match e.keycode:
-		KEY_F3:
-			_debug_display = not _debug_display
-			var conductor_delta: float = 0.8 * Conductor.semiquaver
-			_update_delay = 1.0 if not _debug_display else conductor_delta
-			update_text()
-		KEY_F4:
-			Conductor.rate -= 0.01
-			print_debug(Conductor.rate)
-		KEY_F5:
-			Conductor.rate += 0.01
-			print_debug(Conductor.rate)
-		KEY_F11:
-			match DisplayServer.window_get_mode():
-				DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
-					DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-				_: # anything but fullscreen
-					DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)

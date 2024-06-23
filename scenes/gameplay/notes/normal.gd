@@ -26,15 +26,11 @@ func _ready() -> void:
 		if not note.debug_mode:
 			hold_container.scale *= note.scroll
 			if Preferences.hold_layer == 1:
-				hold_container.z_index = -1
+				move_child(hold_container, 0)
 
 		hold = hold_container.get_node("hold")
 		hold.texture = HOLD_FRAMES.get_frame_texture("%s hold" % note.column, 0)
-		var scroll_speed: float = note.speed
-		match Preferences.scroll_speed_behaviour:
-			1: scroll_speed += Preferences.scroll_speed
-			2: scroll_speed  = Preferences.scroll_speed
-		hold.size.y = absf((400.0 * absf(scroll_speed)) * note.hold_length	)
+		hold.size.y = absf((400.0 * absf(note.real_speed)) * note.hold_length	)
 
 		tail = $"hold_container/hold".duplicate()
 		var tail_tex: = HOLD_FRAMES.get_frame_texture("%s hold" % note.column, 1)
@@ -50,18 +46,15 @@ func update_hold_size() -> void:
 	if not is_instance_valid(hold) or note.hold_length == 0.0:
 		return
 
-
-	if is_instance_valid(hold):
-		hold.size.y = absf(600.0 * absf(note.real_speed)) * (note.hold_length + 0.1)
-		#hold.size.y /= absf(self.scale.y)
-		if is_instance_valid(tail):
-			tail.position.y = hold.position.y + hold.size.y
-
 	if note.update_hold and tap.visible:
 		tap.hide()
+	hold.size.y = (600.0 * absf(note.real_speed)) * note.hold_length
+	#hold.size.y /= absf(self.scale.y)
+	if is_instance_valid(tail):
+		tail.position.y = hold.position.y + hold.size.y
 
 	for cover in _covers:
-		if is_instance_valid(cover) and Conductor.ibeat % 1 == 0:
+		if Conductor.ibeat % 1 == 0:
 			#print_debug("updating cover")
 			if cover.animation.begins_with("begin"):
 				await cover.animation_finished
@@ -78,7 +71,6 @@ func finish() -> void:
 func hit_behaviour(result: Note.HitResult) -> void:
 	if not is_instance_valid(result):
 		return
-
 	if result.judgment.splash and Preferences.note_splashes:
 		display_splash()
 		if not note.moving and result.data.hold_length > 0.0:

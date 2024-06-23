@@ -158,6 +158,9 @@ static func judge_time(millisecond_time: float) -> Dictionary:
 	# this is faster than a for loop but less convenient
 	# at this moment i'm aiming for performance.
 	match millisecond_time:
+		# -- example --
+		# _ when millisecond_time <= JUDGEMENTS.my_custom_judge.threshold:
+		#	return JUDGMENTS.my_custom_judge
 		_ when millisecond_time <= JUDGMENTS.epic.threshold:
 			return JUDGMENTS.epic
 		_ when millisecond_time <= JUDGMENTS.sick.threshold:

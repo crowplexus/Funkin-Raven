@@ -15,7 +15,6 @@ func _ready() -> void:
 			health_bar.position.y = 100
 			status_label.position.y = 135
 	health_bar.modulate.a = 0.0
-	health_bar.set_player(Preferences.playfield_side)
 	hb_twn = create_tween().set_ease(Tween.EASE_IN).bind_node(health_bar)
 	hb_twn.tween_property(health_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
 	if is_instance_valid(Chart.global):

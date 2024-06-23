@@ -15,6 +15,38 @@ const DEFAULT_STAGE: PackedScene = preload("res://scenes/backgrounds/mainStage.t
 var ENGINE_VERSION: String:
 	get: return ProjectSettings.get_setting("application/config/version")
 
+var special_keybinds: Dictionary = {
+	#KEY_F1: func():
+	#	Conductor.rate -= 0.01
+	#	print_debug(Conductor.rate),
+	#KEY_F2: func():
+	#	Conductor.rate += 0.01
+	#	print_debug(Conductor.rate),
+	KEY_F3: func():
+		PerformanceCounter._debug_display = not PerformanceCounter._debug_display
+		var conductor_delta: float = 0.8 * Conductor.semiquaver
+		PerformanceCounter._update_delay = 1.0 if not PerformanceCounter._debug_display else conductor_delta
+		PerformanceCounter.update_text(),
+	KEY_F5: func():
+		Globals.reset_scene(true),
+	KEY_F11: func():
+		match DisplayServer.window_get_mode():
+			DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
+				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			_: # anything but fullscreen
+				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
+}
+
+#region Node Funcs
+
+func _unhandled_key_input(e: InputEvent) -> void:
+	if e.is_pressed():
+		for k: Variant in special_keybinds:
+			if e.keycode == k and special_keybinds[k] is Callable:
+				special_keybinds[k].call_deferred()
+
+#endregion
+
 #region Scenes
 
 func change_scene(scene: PackedScene, skip_transition: bool = false) -> void:

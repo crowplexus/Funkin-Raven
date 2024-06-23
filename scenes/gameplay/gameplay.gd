@@ -31,6 +31,8 @@ func _ready() -> void:
 	if not is_instance_valid(Chart.global):
 		Chart.global = Chart.request("test", SongItem.DEFAULT_DIFFICULTY_SET[1])
 
+	note_cluster.note_queue = Chart.global.notes.duplicate()
+	note_cluster._ready()
 	$"hud/default".free()
 	$"stage".free()
 
@@ -84,7 +86,7 @@ func _process(delta: float) -> void:
 		)
 		center_ui_layer()
 
-	if is_instance_valid(health_bar):
+	if is_instance_valid(health_bar) and is_instance_valid(get_player(Preferences.playfield_side)):
 		var health_deluxe: float = get_player(Preferences.playfield_side).health
 		health_bar.value = lerpf(health_bar.value, health_deluxe, exp(-delta * 96))
 
@@ -316,6 +318,10 @@ func miss_fly_over(note: Note) -> void:
 
 
 func leave() -> void:
+	Conductor.active = false
+	Conductor.reset() # reset rate
+	Conductor.rate = 1.0
+
 	# TODO: for levels, i need a playlist
 	# and then we just switch to the next song
 	# this is fine for now
@@ -355,6 +361,7 @@ func load_hud(hud_scene: PackedScene, set_as_main: bool = true) -> void:
 		current_hud = instance
 		if instance.get("health_bar") != null:
 			health_bar = instance.health_bar
+			health_bar.set_player(Preferences.playfield_side)
 
 
 func unload_hud(hud_name: NodePath) -> void:

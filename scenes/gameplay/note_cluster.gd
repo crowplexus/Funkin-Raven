@@ -12,9 +12,8 @@ const NOTE_KIND_OBJECTS: Dictionary = {
 
 
 func _ready() -> void:
-	if is_instance_valid(Chart.global) and note_queue.is_empty():
-		note_queue = Chart.global.notes.duplicate()
-	Conductor.fstep_reached.connect(try_spawning)
+	if not note_queue.is_empty():
+		Conductor.fstep_reached.connect(try_spawning)
 
 
 func _exit_tree() -> void:
@@ -59,9 +58,9 @@ func try_spawning(_fstep: float) -> void:
 func spawn_notes() -> void:
 	while current_note < note_queue.size():
 		var relative: float = absf(note_queue[current_note].time - Conductor.time)
-		var spawn_delay: float = 0.9 * note_queue[current_note].speed
-		if note_queue[current_note].speed < 1.0:
-			spawn_delay = 0.9 / note_queue[current_note].speed
+		var spawn_delay: float = 0.9 * note_queue[current_note].real_speed
+		if note_queue[current_note].real_speed < 1.0:
+			spawn_delay = 0.9 / note_queue[current_note].real_speed
 
 		if relative > spawn_delay:
 			break
