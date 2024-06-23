@@ -4,8 +4,8 @@ extends Control
 @onready var time_bar: = $"timer"
 @onready var time_label: = $"timer/label"
 @onready var status_label: = $"status_label"
-var hb_twn: Tween
 
+var hb_twn: Tween
 var song_name: StringName = ""
 
 
@@ -14,14 +14,13 @@ func _ready() -> void:
 		1:
 			health_bar.position.y = 100
 			status_label.position.y = 135
-
-
 	health_bar.modulate.a = 0.0
+	health_bar.set_player(Preferences.playfield_side)
 	hb_twn = create_tween().set_ease(Tween.EASE_IN).bind_node(health_bar)
 	hb_twn.tween_property(health_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
 	if is_instance_valid(Chart.global):
 		song_name = Chart.global.song_info.name
-	time_label.visible = Preferences.show_timer
+	time_bar.visible = Preferences.show_timer
 
 
 func setup_healthbar() -> void:
@@ -52,7 +51,7 @@ func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 
 
 func update_time_bar() -> void:
-	if time_label.visible and Conductor.time >= 0.0:
+	if time_bar.visible and Conductor.time >= 0.0:
 		time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
 		time_label.text = "%s%s / %s (%s)" % [
 			"%s | " % song_name if not song_name.is_empty() else "",

@@ -6,16 +6,16 @@ extends Node2D
 
 var camera: Camera2D
 @onready var ui_layer: CanvasLayer = $"hud"
-@onready var main_hud: Control = $"hud/main"
 @onready var combo_group: Control = $"hud/combo_group"
-@onready var health_bar: = $"hud/main/health_bar"
-@onready var note_cluster: Node2D = $"hud/main/note_cluster"
+@onready var note_cluster: Node2D = $"hud/note_cluster"
 @onready var event_mach: EventMachine = $"event_machine"
-@onready var fields: Control = $"hud/main/fields"
+@onready var fields: Control = $"hud/fields"
 #endregion
 #region Local Variables
 
 var stage: StageBG
+var current_hud: Control
+var health_bar: Control
 var music: AudioStreamPlayer
 var hud_beat_interval: int = 4
 var initial_ui_zoom: Vector2 = Vector2.ONE
@@ -27,18 +27,32 @@ var _need_to_play_music: bool = true
 func _ready() -> void:
 	Conductor.active = false
 	Conductor.set_time(-(Conductor.crotchet * 5))
-	remove_child($"stage")
 
-	if is_instance_valid(Chart.global):
-		var np: NodePath = "res://scenes/backgrounds/%s.tscn" % [
-			Chart.global.song_info.background]
-		#print_debug("trying to create stage")
-		init_stage(np)
+	if not is_instance_valid(Chart.global):
+		Chart.global = Chart.request("test", SongItem.DEFAULT_DIFFICULTY_SET[1])
+
+	$"hud/default".free()
+	$"stage".free()
+
+	match Chart.global.song_info.name: # if you wanna load custom huds
+		# -- Examples! --
+		# "Lo-Fight", "Overhead", "Ballistic":
+		#	load_hud(load("res://scenes/gameplay/hud/kade.tscn"))
+		# "Psychic", "Wilter", "Uproar":
+		#	load_hud(load("res://scenes/gameplay/hud/psych.tscn"))
+		# "The Great Punishment" "Curious Cat", "Metamorphosis":
+		#	load_hud(load("res://scenes/gameplay/hud/codename.tscn"))
+		_:
+			load_hud(Globals.DEFAULT_HUD)
+
+	var np: NodePath = "res://scenes/backgrounds/%s.tscn" % [
+		Chart.global.song_info.background]
+	#print_debug("trying to create stage")
+	init_stage(np)
 
 	init_music()
 	init_fields()
 	init_players(fields.get_children())
-	health_bar.set_player(Preferences.playfield_side)
 
 	initial_ui_zoom = ui_layer.scale
 
@@ -69,8 +83,10 @@ func _process(delta: float) -> void:
 			lerpf(initial_ui_zoom.y, ui_layer.scale.y, exp(-delta * 5))
 		)
 		center_ui_layer()
-	if get_player(Preferences.playfield_side) != null:
-		health_bar.value = lerpf(health_bar.value, get_player(Preferences.playfield_side).health, exp(-delta * 96))
+
+	if is_instance_valid(health_bar):
+		var health_deluxe: float = get_player(Preferences.playfield_side).health
+		health_bar.value = lerpf(health_bar.value, health_deluxe, exp(-delta * 96))
 
 
 func _unhandled_key_input(e: InputEvent) -> void:
@@ -181,7 +197,7 @@ func init_music() -> void:
 		vocals.stream = vocal_stream
 		vocals.stream.loop = false
 		vocals.bus = music.bus
-		print_debug(vocals.name)
+		#print_debug(vocals.name)
 		music.add_child(vocals)
 
 	if is_instance_valid(music):
@@ -227,7 +243,8 @@ func init_stage(path: NodePath) -> void:
 		stage.add_child(character)
 		stage.move_child(character, index)
 
-	main_hud.call_deferred("setup_healthbar")
+	if is_instance_valid(current_hud):
+		current_hud.call_deferred("setup_healthbar")
 
 #endregion
 #region Gameplay Loop
@@ -275,6 +292,11 @@ func on_ibeat_reached(ibeat: int) -> void:
 	if ibeat % hud_beat_interval == 0:
 		ui_layer.scale += Vector2(0.03, 0.03)
 
+	#match Chart.global.song_info.name:
+	#	"DadBattle Erect":
+	#		if ibeat == 63:
+	#			unload_hud("kade")
+	#			load_hud(load("res://scenes/gameplay/hud/default.tscn"))
 
 	#if ibeat % 1 == 0:
 	#	var note: = note_cluster.note_queue[note_cluster.current_note] as Note
@@ -310,14 +332,35 @@ func center_ui_layer() -> void:
 
 
 func update_score_text(hit_result: Note.HitResult, is_tap: bool) -> void:
-	if not is_instance_valid(hit_result.player) or not is_instance_valid(main_hud):
+	if not is_instance_valid(hit_result.player) or not is_instance_valid(current_hud):
 		return
 
-	if main_hud.has_method("update_score_text"):
-		main_hud.callv("update_score_text", [hit_result, is_tap])
+	if current_hud.has_method("update_score_text"):
+		current_hud.callv("update_score_text", [hit_result, is_tap])
 
 #endregion
 #region Utils
+
+func load_hud(hud_scene: PackedScene, set_as_main: bool = true) -> void:
+	var hud_name: StringName = hud_scene.resource_path.get_file().get_basename()
+	if ui_layer.has_node(NodePath(hud_name)):
+		push_warning("You're trying to load a hud that is already loaded!")
+		return
+
+	var instance: Control = hud_scene.instantiate()
+	instance.name = hud_name
+	ui_layer.add_child(instance)
+	ui_layer.move_child(instance, 2)
+	if set_as_main:
+		current_hud = instance
+		if instance.get("health_bar") != null:
+			health_bar = instance.health_bar
+
+
+func unload_hud(hud_name: NodePath) -> void:
+	if ui_layer.has_node(hud_name):
+		ui_layer.get_node(hud_name).queue_free()
+
 
 func get_player(player_id: int) -> Player:
 	for field: NoteField in fields.get_children():

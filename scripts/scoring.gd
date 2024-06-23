@@ -114,11 +114,11 @@ static func judge_note(note: Note, fallback_diff: float = 0.0) -> Dictionary:
 			return result
 
 
-static func get_raven_score(x: float) -> int:
+static func get_raven_score(_x: float) -> int:
 	return MAX_SCORE
 
 
-static func get_wife_score(max_millis: float, version: int = 3, ts: float = -1.0) -> int:
+static func get_wife_score(max_millis: float, version: int = 3, ts: float = -1.0) -> float:
 	if ts < 0.0: ts = AudioServer.playback_speed_scale
 	var score: float = 0
 	match version:

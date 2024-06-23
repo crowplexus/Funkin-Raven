@@ -9,7 +9,11 @@ const MENU_CONFIRM_SFX: AudioStream = preload("res://assets/audio/sfx/menu/confi
 const MENU_CANCEL_SFX: AudioStream = preload("res://assets/audio/sfx/menu/cancelMenu.ogg")
 const OPTIONS_WINDOW: PackedScene = preload("res://scenes/ui/options/options_window.tscn")
 
+const DEFAULT_HUD: PackedScene = preload("res://scenes/gameplay/hud/default.tscn")
 const DEFAULT_STAGE: PackedScene = preload("res://scenes/backgrounds/mainStage.tscn")
+
+var ENGINE_VERSION: String:
+	get: return ProjectSettings.get_setting("application/config/version")
 
 #region Scenes
 

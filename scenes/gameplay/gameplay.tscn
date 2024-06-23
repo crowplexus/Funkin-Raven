@@ -56,24 +56,24 @@ skin = SubResource("Resource_mec6n")
 [node name="combo_group" parent="hud" instance=ExtResource("17_3r26l")]
 skin = SubResource("Resource_uhmp4")
 
-[node name="main" parent="hud" instance=ExtResource("12_hchqv")]
+[node name="default" parent="hud" instance=ExtResource("12_hchqv")]
 
-[node name="fields" type="Control" parent="hud/main"]
+[node name="fields" type="Control" parent="hud"]
 layout_mode = 3
 anchors_preset = 0
 offset_top = 120.0
 offset_bottom = 120.0
 scale = Vector2(1.5, 1.5)
 
-[node name="1" parent="hud/main/fields" instance=ExtResource("2_6wcp1")]
+[node name="1" parent="hud/fields" instance=ExtResource("2_6wcp1")]
 offset_left = 500.0
 offset_right = 500.0
 
-[node name="2" parent="hud/main/fields" instance=ExtResource("2_6wcp1")]
+[node name="2" parent="hud/fields" instance=ExtResource("2_6wcp1")]
 offset_left = 100.0
 offset_right = 100.0
 
-[node name="note_cluster" type="Node2D" parent="hud/main" node_paths=PackedStringArray("connected_fields")]
+[node name="note_cluster" type="Node2D" parent="hud" node_paths=PackedStringArray("connected_fields")]
 process_thread_group = 2
 process_thread_group_order = 1
 process_thread_messages = 1

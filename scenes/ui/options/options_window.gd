@@ -32,7 +32,7 @@ var _just_started: bool = true # bandaid
 
 
 func _ready() -> void:
-	var v: float = 0.0
+	var _v: float = 0.0
 	for page: VBoxContainer in all_pages:
 		var a: Control
 		if page.get_index() == 0:
@@ -42,7 +42,7 @@ func _ready() -> void:
 			page_selector.add_child(a)
 		a.name = page.name
 		a.option_name = page.name.to_upper()
-		v += a.size.y
+		_v += a.size.y
 
 	update_page()
 	# i hate this <3
