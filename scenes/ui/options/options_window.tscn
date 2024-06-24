@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://deo3obwvipfis"]
+[gd_scene load_steps=10 format=3 uid="uid://deo3obwvipfis"]
 
 [ext_resource type="Script" path="res://scenes/ui/options/options_window.gd" id="1_gulft"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_mtl8v"]
 [ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/options/option_item.tscn" id="3_wjca4"]
 [ext_resource type="Script" path="res://scenes/ui/options/keybind_option.gd" id="4_awyi8"]
 [ext_resource type="Script" path="res://scenes/ui/options/page_item.gd" id="5_4l7t0"]
+[ext_resource type="AudioStream" uid="uid://toqn7nqo322h" path="res://assets/audio/sfx/ui/volume_appear.ogg" id="6_beq18"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o27e5"]
 bg_color = Color(0, 0, 0, 0.572549)
@@ -55,7 +56,6 @@ alignment = 1
 layout_mode = 2
 script = ExtResource("5_4l7t0")
 option_name = &"Gameplay"
-pseudo = true
 
 [node name="pages" type="Panel" parent="."]
 clip_contents = true
@@ -85,6 +85,17 @@ description = "Defines which direction the notes will scroll to."
 variable = "scroll_direction"
 option_type = 2
 display_names = Array[StringName]([&"Up", &"Down"])
+
+[node name="beat_offset" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Beat Offset"
+name_display = "@ms"
+description = "Changes how early or late the Conductor is offset to, this will also make it so notes spawn earlier/later than usual,
+Recommended if you use bluetooth headphones."
+variable = "beat_offset"
+option_type = 1
+steps = 0.1
+speed = 16.0
 
 [node name="centered_playfield" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -191,6 +202,14 @@ layout_mode = 2
 option_name = &"Note Splashes"
 description = "Enables a firework effect when hitting judgements that allow it."
 variable = "note_splashes"
+
+[node name="hud_style" parent="pages/visuals" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"HUD Style"
+description = "Choose a HUD Style."
+variable = "hud_style"
+option_type = 2
+display_names = Array[StringName]([&"Song-specific", &"Raven", &"Kade", &"Psych", &"Classic"])
 
 [node name="status_display_mode" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -316,3 +335,7 @@ That's pretty much it
 Thanks for reading allat."
 horizontal_alignment = 1
 autowrap_mode = 2
+
+[node name="metronome" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_beq18")
+bus = &"SFX"

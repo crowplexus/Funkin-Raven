@@ -33,7 +33,7 @@ func setup_healthbar() -> void:
 
 
 func _process(_delta: float) -> void:
-	if Conductor.active:
+	if time_bar.visible and Conductor.time >= 0.0:
 		update_time_bar()
 
 
@@ -50,12 +50,11 @@ func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 
 
 func update_time_bar() -> void:
-	if time_bar.visible and Conductor.time >= 0.0:
-		time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
-		time_label.text = "%s%s / %s (%s)" % [
-			"%s | " % song_name if not song_name.is_empty() else "",
-			Globals.format_to_time(Conductor.time),
-			Globals.format_to_time(Conductor.length),
-			"%d%%" % [time_bar.value]
-		]
+	time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
+	time_label.text = "%s%s / %s (%s)" % [
+		"%s | " % song_name if not song_name.is_empty() else "",
+		Globals.format_to_time(Conductor.time),
+		Globals.format_to_time(Conductor.length),
+		"%d%%" % [time_bar.value]
+	]
 

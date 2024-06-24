@@ -1,0 +1,73 @@
+[gd_scene load_steps=7 format=3 uid="uid://bi000h6yu2ng7"]
+
+[ext_resource type="Script" path="res://scenes/gameplay/hud/classic.gd" id="1_fryib"]
+[ext_resource type="Texture2D" uid="uid://dld56rmrbxk8f" path="res://assets/sprites/ui/normal/healthBar.png" id="2_kekhx"]
+[ext_resource type="Script" path="res://scenes/ui/health_bar.gd" id="3_iy8im"]
+[ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="4_i4s7x"]
+[ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="5_u7t57"]
+[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="6_1ah54"]
+
+[node name="classic" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fryib")
+
+[node name="health_bar" type="TextureProgressBar" parent="." node_paths=PackedStringArray("icons")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.5
+offset_top = 286.5
+offset_right = 300.5
+offset_bottom = 305.5
+grow_horizontal = 2
+grow_vertical = 2
+value = 50.0
+fill_mode = 1
+texture_under = ExtResource("2_kekhx")
+texture_progress = ExtResource("2_kekhx")
+tint_under = Color(1, 0, 0, 1)
+tint_progress = Color(0.333333, 1, 0, 1)
+script = ExtResource("3_iy8im")
+icons = [null, null]
+
+[node name="player2" type="Sprite2D" parent="health_bar"]
+position = Vector2(299, -8)
+texture = ExtResource("4_i4s7x")
+offset = Vector2(-50, 0)
+hframes = 2
+
+[node name="player1" type="Sprite2D" parent="health_bar"]
+position = Vector2(303, 5)
+texture = ExtResource("5_u7t57")
+offset = Vector2(50, 0)
+flip_h = true
+hframes = 2
+
+[node name="status_label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.587
+anchor_top = 0.942
+anchor_right = 0.738
+anchor_bottom = 0.967
+offset_left = -0.359985
+offset_top = -0.240051
+offset_right = 0.359985
+offset_bottom = -0.240051
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(640, 678)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("6_1ah54")
+theme_override_font_sizes/font_size = 16
+text = "Score:0"
+vertical_alignment = 1

@@ -18,7 +18,6 @@ var _transitioning: bool = false
 
 
 func _ready() -> void:
-	Conductor.active = false
 	RenderingServer.set_default_clear_color(Color.BLACK)
 	await RenderingServer.frame_post_draw
 
@@ -31,12 +30,11 @@ func _ready() -> void:
 	if not SoundBoard.is_bgm_playing():
 		SoundBoard.play_bgm(Globals.MENU_MUSIC, 0.01)
 		SoundBoard.fade_bgm(0.01, 0.7, 4.0)
-		Conductor.active = true
 
 
 func _process(_delta: float) -> void:
 	if SoundBoard.is_bgm_playing():
-		Conductor.time = SoundBoard.bgm_player.get_playback_position() + AudioServer.get_time_since_last_mix()
+		Conductor.update(SoundBoard.get_bgm_pos() + AudioServer.get_time_since_last_mix())
 
 
 func _unhandled_key_input(_event: InputEvent) -> void:

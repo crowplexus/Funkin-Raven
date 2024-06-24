@@ -10,6 +10,7 @@ class_name OptionItem
 	set(new_name):
 		option_name = new_name
 		reset_preference_label()
+@export var name_display: String = "@"
 ## The option's description in the options window.
 @export_multiline var description: String = ""
 ## Preference variable name (in [code]Preferences[/code] class)
@@ -22,8 +23,8 @@ var option_type: int = 0
 @export var display_names: Array[StringName] = []
 ## Number decimal points, only useful when the option type is Number ([code]1[/code])
 @export var steps: float = 1.0
-## Treats this as a non-option
-@export var pseudo: bool = false
+## Incremental speed used when holding shift while changing number options.
+@export var speed: float = 8.0
 
 ## The preference's current value
 var value: Variant
@@ -62,7 +63,7 @@ func reset_preference_label() -> void:
 	if is_instance_valid(preference_label):
 		var final_text: String = option_name
 		# display value name in there too #
-		if option_type < 3 and not pseudo:
+		if option_type < 3:
 			final_text += ": %s" % get_value_name()
 		preference_label.text = final_text
 
@@ -86,7 +87,7 @@ func get_value_name() -> StringName:
 					elif value is String or value is StringName:
 						value_name = display_names[display_names.find(value)]
 
-	return value_name
+	return name_display.replace("@", value_name)
 
 
 func _on_mouse_entered() -> void:

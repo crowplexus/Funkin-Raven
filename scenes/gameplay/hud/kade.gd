@@ -34,7 +34,7 @@ func setup_healthbar() -> void:
 
 
 func _process(_delta: float) -> void:
-	if Conductor.active:
+	if time_bar.visible and Conductor.time >= 0.0:
 		update_time_bar()
 
 
@@ -59,8 +59,7 @@ func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 
 
 func update_time_bar() -> void:
-	if time_bar.visible and Conductor.time >= 0.0:
-		time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
+	time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
 
 
 func get_ke_grade(acc: float):

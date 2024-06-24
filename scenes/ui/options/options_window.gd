@@ -4,6 +4,7 @@ extends Control
 @onready var help_text: Label = $"help_text"
 @onready var page_selector: = $"left_panel/page_selector"
 @onready var active_page: VBoxContainer = $"pages/gameplay"
+@onready var metronome_sfx: AudioStreamPlayer = $"metronome"
 @onready var option_descriptor: Label = $"descriptor"
 @onready var selector: = $"pages/selector"
 @onready var all_pages: Array:
@@ -45,9 +46,15 @@ func _ready() -> void:
 		_v += a.size.y
 
 	update_page()
+	Conductor.ibeat_reached.connect(play_metro)
 	# i hate this <3
 	await RenderingServer.frame_post_draw
 	_just_started = false
+
+
+func _exit_tree() -> void:
+	if Conductor.ibeat_reached.is_connected(play_metro):
+		Conductor.ibeat_reached.disconnect(play_metro)
 
 
 func _process(delta: float) -> void:
@@ -55,6 +62,10 @@ func _process(delta: float) -> void:
 		if selector.position.y != selected_pref.position.y:
 			selector.position.y = lerpf(selected_pref.position.y + _display_ypos,
 				selector.position.y, exp(-delta * 32))
+
+		match selected_pref.name:
+			"note_offset":
+				Conductor.update(SoundBoard.get_bgm_pos() + AudioServer.get_time_since_last_mix())
 
 	if is_instance_valid(active_page):
 		if active_page.position.y != _display_ypos:
@@ -73,7 +84,7 @@ func _unhandled_input(e: InputEvent) -> void:
 	if changing_preference:
 		var shift_mult: int = 1
 		if Input.is_key_label_pressed(KEY_SHIFT):
-			shift_mult = 5
+			shift_mult = selected_pref.speed
 		if lr: selected_pref.update(shift_mult * lr)
 	else:
 		if ud: update_selection(ud)
@@ -162,6 +173,11 @@ func _calculate_page_size() -> Vector2:
 	for page: OptionItem in active_page.get_children():
 		v += page.size
 	return v
+
+
+func play_metro(ibeat: int) -> void:
+	metronome_sfx.pitch_scale = 0.9 if ibeat % 2 == 0 else 1.0
+	metronome_sfx.play(0.0)
 
 
 func leave() -> void:

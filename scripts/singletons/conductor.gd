@@ -17,8 +17,6 @@ const TIME_CHANGE_TEMPLATE: Dictionary = {
 	"signature_den": 4,
 }
 
-var active: bool = true
-
 var time: float = 0.0
 var length: float = 0.0
 var time_changes: Array[Dictionary] = []
@@ -76,27 +74,26 @@ func _to_string() -> String:
 	]
 
 
-func _process(_delta: float) -> void:
-	if active:
-		var song_dt: float = time - _previous_time
-		var beat_dt: float = (bpm / 60.0) * song_dt
-
-		if istep > _previous_istep:
-			istep_reached.emit(istep)
-			if istep % 4 == 0: ibeat_reached.emit(ibeat)
-			if ibeat % 4 == 0: ibar_reached.emit(ibar)
-			_previous_istep = istep
-		# might not use depending on the result
-		if fstep > _previous_fstep:
-			fstep_reached.emit(fstep)
-			if fmod(fstep, 4) == 0: fbeat_reached.emit(fbeat)
-			if fmod(fbeat, 4) == 0: fbar_reached.emit(fbar)
-			_previous_fstep = fstep
-
-		fstep += beat_dt * steps_per_beat
-		fbeat += beat_dt # oh hi hello :D
-		fbar  += beat_dt / beats_per_bar
-		_previous_time = time
+func update(delta_time: float) -> void:
+	time = delta_time
+	var song_dt: float = time - _previous_time
+	var beat_dt: float = (bpm / 60.0) * song_dt
+	# call step hit and stuff
+	if istep > _previous_istep:
+		istep_reached.emit(istep)
+		if istep % 4 == 0: ibeat_reached.emit(ibeat)
+		if ibeat % 4 == 0: ibar_reached.emit(ibar)
+		_previous_istep = istep
+	# might not use this one depending on the result
+	if fstep > _previous_fstep:
+		fstep_reached.emit(fstep)
+		if fmod(fstep, 4) == 0: fbeat_reached.emit(fbeat)
+		if fmod(fbeat, 4) == 0: fbar_reached.emit(fbar)
+		_previous_fstep = fstep
+	fstep += beat_dt * steps_per_beat
+	fbeat += beat_dt # oh hi hello :D
+	fbar  += beat_dt / beats_per_bar
+	_previous_time = time
 
 
 #region Utility Functions

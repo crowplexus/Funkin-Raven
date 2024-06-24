@@ -1,6 +1,12 @@
 extends OptionItem
 
 
+func reset_preference_label() -> void:
+	if is_instance_valid(preference_label):
+		var final_text: String = option_name
+		preference_label.text = final_text
+
+
 func _on_mouse_entered() -> void:
 	if not is_instance_valid(window):
 		return
@@ -11,6 +17,7 @@ func _on_mouse_exited() -> void:
 	if not is_instance_valid(window):
 		return
 	modulate.a = 1.0 if name == window.active_page.name else 0.6
+
 
 func _on_gui_input(e: InputEvent) -> void:
 	if e.is_released() or not is_instance_valid(window):

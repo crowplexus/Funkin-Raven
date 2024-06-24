@@ -52,8 +52,15 @@ func play_sfx(sound: AudioStream, volume: float = 0.7) -> void:
 	#print_debug(sfx.name)
 	sfx.play(0.0)
 
+
+func get_bgm_pos() -> float:
+	if SoundBoard.is_bgm_playing():
+		return SoundBoard.bgm_player.get_playback_position()
+	return 0.0
+
 func is_bgm_playing() -> bool:
 	return is_instance_valid(SoundBoard.bgm_player) and SoundBoard.bgm_player.playing
+
 
 func stop_bgm() -> void:
 	if SoundBoard.bgm_player.playing:

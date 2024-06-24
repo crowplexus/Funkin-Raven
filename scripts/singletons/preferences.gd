@@ -18,6 +18,12 @@ var _file: ConfigFile = ConfigFile.new()
 ## Defines which direction the notes will scroll to.
 @export_enum("Up:0", "Down:1")
 var scroll_direction: int = 0
+## Changes how early or late the Conductor is offset to,[br]
+## this will also make it so notes spawn earlier/later than usual,
+## Recommended if you use bluetooth headphones.
+@export var beat_offset: float = 0.0:
+	set(new):
+		beat_offset = clampf(snappedf(new, 0.001), 0, 500)
 ## Centers your notes and hides the enemy's.
 @export var centered_playfield: bool = false
 ## Defines how scroll speed behaves in-game.
@@ -90,6 +96,9 @@ var countdown_mode: int = 0
 ## Define how the status bar should display information.
 @export_enum("Full:0", "No Score:1", "Only Score:2")
 var status_display_mode: int = 0
+## Choose a HUD Style.
+@export_enum("Song-specific:0", "Raven:1", "Kade:2", "Psych:3", "Classic:4")
+var hud_style: int = 0
 
 #endregion
 #region Functions

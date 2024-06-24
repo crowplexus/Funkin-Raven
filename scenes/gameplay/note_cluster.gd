@@ -12,6 +12,7 @@ const NOTE_KIND_OBJECTS: Dictionary = {
 
 
 func _ready() -> void:
+	current_note = 0
 	if not note_queue.is_empty():
 		Conductor.fstep_reached.connect(try_spawning)
 
@@ -57,12 +58,13 @@ func try_spawning(_fstep: float) -> void:
 
 func spawn_notes() -> void:
 	while current_note < note_queue.size():
-		var relative: float = absf(note_queue[current_note].time - Conductor.time)
+		var ct: float = note_queue[current_note].time
+		var relative: float = absf(ct - Conductor.time + (Preferences.beat_offset * 0.001))
 		var spawn_delay: float = 0.9 * note_queue[current_note].real_speed
 		if note_queue[current_note].real_speed < 1.0:
 			spawn_delay = 0.9 / note_queue[current_note].real_speed
 
-		if relative > spawn_delay:
+		if (relative) > spawn_delay:
 			break
 
 		spawn_note(current_note)

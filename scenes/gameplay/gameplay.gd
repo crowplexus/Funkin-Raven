@@ -25,7 +25,6 @@ var _need_to_play_music: bool = true
 #region Node2D Functions
 
 func _ready() -> void:
-	Conductor.active = false
 	Conductor.set_time(-(Conductor.crotchet * 5))
 
 	if not is_instance_valid(Chart.global):
@@ -36,16 +35,21 @@ func _ready() -> void:
 	$"hud/default".free()
 	$"stage".free()
 
-	match Chart.global.song_info.name: # if you wanna load custom huds
-		# -- Examples! --
-		# "Lo-Fight", "Overhead", "Ballistic":
-		#	load_hud(load("res://scenes/gameplay/hud/kade.tscn"))
-		# "Psychic", "Wilter", "Uproar":
-		#	load_hud(load("res://scenes/gameplay/hud/psych.tscn"))
-		# "The Great Punishment" "Curious Cat", "Metamorphosis":
-		#	load_hud(load("res://scenes/gameplay/hud/codename.tscn"))
-		_:
-			load_hud(Globals.DEFAULT_HUD)
+	match Preferences.hud_style:
+		1: load_hud(Globals.DEFAULT_HUD)
+		2: load_hud(load("res://scenes/gameplay/hud/kade.tscn"))
+		3: load_hud(load("res://scenes/gameplay/hud/psych.tscn"))
+		4: load_hud(load("res://scenes/gameplay/hud/classic.tscn"))
+		_: match Chart.global.song_info.name: # if you wanna load custom huds
+			# -- Examples! --
+			# "Lo-Fight", "Overhead", "Ballistic":
+			#	load_hud(load("res://scenes/gameplay/hud/kade.tscn"))
+			# "Psychic", "Wilter", "Uproar":
+			#	load_hud(load("res://scenes/gameplay/hud/psych.tscn"))
+			# "The Great Punishment" "Curious Cat", "Metamorphosis":
+			#	load_hud(load("res://scenes/gameplay/hud/codename.tscn"))
+			_:
+				load_hud(Globals.DEFAULT_HUD)
 
 	var np: NodePath = "res://scenes/backgrounds/%s.tscn" % [
 		Chart.global.song_info.background]
@@ -61,7 +65,6 @@ func _ready() -> void:
 	# Connect Signals
 	Conductor.ibeat_reached.connect(on_ibeat_reached)
 	Conductor.ibeat_reached.connect(start_countdown)
-	Conductor.active = true
 
 
 func start_countdown(beat: int) -> void:
@@ -77,8 +80,7 @@ func start_countdown(beat: int) -> void:
 
 
 func _process(delta: float) -> void:
-	if Conductor.active:
-		process_conductor(delta)
+	process_conductor(delta)
 	if ui_layer.scale != initial_ui_zoom:
 		ui_layer.scale = Vector2(
 			lerpf(initial_ui_zoom.x, ui_layer.scale.x, exp(-delta * 5)),
@@ -276,7 +278,7 @@ func display_countdown(snd_progress: int, spr_progress: int = -0) -> void:
 
 func process_conductor(delta: float) -> void:
 	if _need_to_play_music:
-		Conductor.time += delta
+		Conductor.update(Conductor.time + delta)
 		if Conductor.time >= 0.0:
 			if is_instance_valid(music):
 				music.play(0.0)
@@ -284,7 +286,7 @@ func process_conductor(delta: float) -> void:
 					track.play(0.0)
 				_need_to_play_music = false
 	elif is_instance_valid(music) and music.playing:
-		Conductor.time = music.get_playback_position() + AudioServer.get_time_since_last_mix()
+		Conductor.update(music.get_playback_position() + AudioServer.get_time_since_last_mix())
 
 
 func on_ibeat_reached(ibeat: int) -> void:
@@ -294,15 +296,10 @@ func on_ibeat_reached(ibeat: int) -> void:
 	if ibeat % hud_beat_interval == 0:
 		ui_layer.scale += Vector2(0.03, 0.03)
 
-	#match Chart.global.song_info.name:
-	#	"DadBattle Erect":
-	#		if ibeat == 63:
-	#			unload_hud("kade")
-	#			load_hud(load("res://scenes/gameplay/hud/default.tscn"))
-
-	#if ibeat % 1 == 0:
-	#	var note: = note_cluster.note_queue[note_cluster.current_note] as Note
-	#	note.visual_time = note.visual_time - 1.0
+	if is_instance_valid(music) and music.get_child_count() != 0:
+		for track: AudioStreamPlayer in music.get_children():
+			if (music.get_playback_position() - track.get_playback_position()) > 0.01:
+				resync_vocals()
 
 ## Connected to [code]player.note_fly_over[/code] to handle
 ## missing notes by letting them fly above your notefield..
@@ -364,6 +361,11 @@ func load_hud(hud_scene: PackedScene, set_as_main: bool = true) -> void:
 			health_bar.set_player(Preferences.playfield_side)
 
 
+func unload_current_hud() -> void:
+	if is_instance_valid(current_hud):
+		current_hud.queue_free()
+
+
 func unload_hud(hud_name: NodePath) -> void:
 	if ui_layer.has_node(hud_name):
 		ui_layer.get_node(hud_name).queue_free()
@@ -375,4 +377,10 @@ func get_player(player_id: int) -> Player:
 			return field.player
 	return null
 
+# temporary until godot 4.3
+func resync_vocals() -> void:
+	if not is_instance_valid(music):
+		return
+	for track: AudioStreamPlayer in music.get_children():
+		track.seek(music.get_playback_position())
 #endregion

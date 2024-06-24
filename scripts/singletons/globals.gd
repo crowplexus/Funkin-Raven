@@ -91,14 +91,12 @@ func text_to_dictionary(text: String, separator: String = ",") -> Dictionary:
 #endregion
 #region Number Related Functions
 func format_to_time(value: float) -> String:
-	var formatter: String = "%02d:%02d" % [
-		float_to_minute(value),
-		float_to_seconds(value)
-	]
-
-	var hours: int = float_to_hours(value)
+	var minutes: float = Globals.float_to_minute(value)
+	var seconds: float = Globals.float_to_seconds(value)
+	var formatter: String = "%2d:%02d" % [minutes, seconds]
+	var hours: int = Globals.float_to_hours(value)
 	if hours != 0: # append hours if needed
-		formatter = ("%02d:" % hours) + formatter
+		formatter = ("%2d:%02d:02d" % [hours, minutes, seconds])
 	return formatter
 
 func float_to_hours(value: float) -> int: return int(value / 3600.0)
