@@ -82,10 +82,10 @@ func _unhandled_input(e: InputEvent) -> void:
 		lr = ud
 
 	if changing_preference:
-		var shift_mult: int = 1
+		var shift_mult: float = 1.0
 		if Input.is_key_label_pressed(KEY_SHIFT):
 			shift_mult = selected_pref.speed
-		if lr: selected_pref.update(shift_mult * lr)
+		if lr: selected_pref.update(int(shift_mult * lr))
 	else:
 		if ud: update_selection(ud)
 		if lr: update_page(lr)

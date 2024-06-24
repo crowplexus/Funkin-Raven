@@ -1,5 +1,6 @@
 extends Node
 
+const STARTING_SCENE: PackedScene = preload("res://scenes/menu/title_screen.tscn")
 const MENU_MUSIC: AudioStream = preload("res://assets/audio/bgm/menu/freakyMenu.ogg")
 const RANDOM_MUSIC: AudioStream = preload("res://assets/audio/bgm/menu/freeplayRandom.ogg")
 const MENU_MUSIC_BPM: float = 102.0
