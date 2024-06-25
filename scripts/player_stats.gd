@@ -38,9 +38,10 @@ func _to_string() -> String:
 		score, breaks, snappedf(accuracy, 0.01),
 	]
 	# crazy frog.
-	var cf: String = Scoring.get_clear_flag(hit_registry)
-	if breaks > 0 and breaks < 10: cf = "SDCB"
-	if not cf.is_empty(): status += " (%s)" % cf
+	if breaks < 10:
+		var cf: String = Scoring.get_clear_flag(hit_registry)
+		if breaks > 0: cf = "SDCB"
+		if not cf.is_empty(): status += " (%s)" % cf
 	return status
 
 
