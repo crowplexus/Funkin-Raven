@@ -1,11 +1,13 @@
 extends Control
 
-@onready var health_bar: = $"health_bar"
-@onready var time_bar: = $"timer"
-@onready var time_label: = $"timer/label"
-@onready var status_label: = $"status_label"
+@onready var health_bar: TextureProgressBar = $"health_bar"
+@onready var time_bar: TextureProgressBar = $"timer"
+@onready var time_label: Label = $"timer/label"
+@onready var status_label: Label = $"status_label"
+@onready var icon_animation: AnimationPlayer = $"health_bar/animation_player"
 
-var song_name: StringName = ""
+@export var icon_bump_interval: int = 1
+var _song_name: StringName = ""
 
 
 func _ready() -> void:
@@ -16,11 +18,17 @@ func _ready() -> void:
 			time_bar.position.y = get_viewport_rect().size.y * 0.96
 
 	if is_instance_valid(Chart.global):
-		song_name = Chart.global.song_info.name
-	$"watermark".text = "%s - FR v%s" % [ song_name, Globals.ENGINE_VERSION ]
+		_song_name = Chart.global.song_info.name
+	$"watermark".text = "%s - FR v%s" % [ _song_name, Globals.ENGINE_VERSION ]
 	time_bar.visible = Preferences.show_timer
-	time_label.text = song_name
+	time_label.text = _song_name
 	time_bar.value = 0.0
+	Conductor.ibeat_reached.connect(icon_thingy)
+
+
+func _exit_tree() -> void:
+	if Conductor.ibeat_reached.is_connected(icon_thingy):
+		Conductor.ibeat_reached.disconnect(icon_thingy)
 
 
 func setup_healthbar() -> void:
@@ -40,16 +48,22 @@ func _process(_delta: float) -> void:
 
 func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 	if hit_result.player.botplay == true:
-		status_label.text = "BotPlay Enabled"
+		status_label.text = "BOTPLAY"
 		return
 
-	var grade: String = Scoring.get_clear_flag(hit_result.player.jhit_regis)
-	var grade_str: String = "(Clear) " if grade.is_empty() else "("+grade+") "
-	grade_str += get_ke_grade(snappedf(hit_result.player.accuracy, 0.01))
+	var grade: String = Scoring.get_clear_flag(hit_result.player.stats.hit_registry)
+	var ke_cbs: int = hit_result.player.stats.misses + hit_result.player.stats.breaks
+	if ke_cbs > 0 and ke_cbs < 10:
+		grade = "SDCB"
+	elif ke_cbs >= 10:
+		grade = "Clear"
+
+	var grade_str: String = "("+grade+") "
+	grade_str += get_ke_grade(snappedf(hit_result.player.stats.accuracy, 0.01))
 
 	var text: String = "Score: %s | Combo Breaks: %s | Accuracy: %s%%" % [
-		hit_result.player.score, hit_result.player.misses + hit_result.player.breaks,
-		str(snappedf(hit_result.player.accuracy, 0.01)),
+		hit_result.player.stats.score, ke_cbs,
+		str(snappedf(hit_result.player.stats.accuracy, 0.01)),
 	]
 	text += " | %s" % grade_str
 	match Preferences.status_display_mode:
@@ -60,6 +74,12 @@ func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 
 func update_time_bar() -> void:
 	time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
+
+
+func icon_thingy(ibeat: int) -> void:
+	if ibeat % icon_bump_interval == 0:
+		icon_animation.seek(0.0)
+		icon_animation.play("bump")
 
 
 func get_ke_grade(acc: float):

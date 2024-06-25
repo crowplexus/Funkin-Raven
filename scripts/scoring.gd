@@ -9,7 +9,7 @@ const TEMPLATE_HIT_SCORE: Dictionary = {
 	"combo": 0,
 }
 
-const MAX_SCORE: int = 500
+const RAVEN_MAX_SCORE: int = 500
 const HIT_THRESHOLD: float = 200.0
 
 const JUDGMENTS: Dictionary = {
@@ -71,9 +71,7 @@ static func get_judge_by_name(name: StringName) -> Dictionary:
 
 
 static func get_clear_flag(hit_reg: Dictionary) -> String:
-	if hit_reg.breaks > 0:
-		return "SDCB" if hit_reg.breaks < 10 else ""
-	elif hit_reg.shit > 0:
+	if hit_reg.shit > 0:
 		return JUDGMENTS.shit.clear.full
 	elif hit_reg.bad > 0:
 		return JUDGMENTS.bad.clear.full
@@ -115,7 +113,7 @@ static func judge_note(note: Note, fallback_diff: float = 0.0) -> Dictionary:
 
 
 static func get_raven_score(_x: float) -> int:
-	return MAX_SCORE
+	return RAVEN_MAX_SCORE
 
 
 static func get_wife_score(max_millis: float, version: int = 3, ts: float = -1.0) -> float:
@@ -139,15 +137,16 @@ static func get_wife_score(max_millis: float, version: int = 3, ts: float = -1.0
 			var j_pow: float = 0.75
 			var ridic: float = 5.0 * ts
 			var absolute_max_ms: float = absf(max_millis * 1000.0)
+			var wife3_max_points: float = 2.0
 			var wife3_max_boo_weight: float = 180.0 * ts
 			var wife3_miss_weight: float = -5.5
 			if absolute_max_ms <= ridic:
-				return MAX_SCORE
+				return wife3_max_points
 
 			var zero: float = 65.0 * pow(ts, j_pow)
 			var dev:  float = 22.7 * pow(ts, j_pow)
 			if max_millis <= zero:
-				score = MAX_SCORE * werwerwerf.call((zero-max_millis)/dev)
+				score = wife3_max_points * werwerwerf.call((zero-max_millis)/dev)
 			if max_millis <= wife3_max_boo_weight:
 				score = (max_millis-zero)*wife3_miss_weight/(wife3_max_boo_weight-zero)
 			score = wife3_miss_weight

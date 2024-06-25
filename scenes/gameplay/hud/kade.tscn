@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://clhixabbhsyog"]
+[gd_scene load_steps=10 format=3 uid="uid://clhixabbhsyog"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/hud/kade.gd" id="1_b2qlu"]
 [ext_resource type="Texture2D" uid="uid://dld56rmrbxk8f" path="res://assets/sprites/ui/normal/healthBar.png" id="2_cmbio"]
@@ -6,6 +6,40 @@
 [ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="4_ckos5"]
 [ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="5_wleqm"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="6_atq0u"]
+
+[sub_resource type="Animation" id="Animation_febrr"]
+resource_name = "bump"
+length = 0.416671
+step = 0.0416667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("player1:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0416667, 0.0833333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1.2, 1.2), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("player2:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0416667, 0.0833333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1.2, 1.2), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_k3r61"]
+_data = {
+"bump": SubResource("Animation_febrr")
+}
 
 [sub_resource type="LabelSettings" id="LabelSettings_daqce"]
 font = ExtResource("6_atq0u")
@@ -41,20 +75,27 @@ texture_progress = ExtResource("2_cmbio")
 tint_under = Color(1, 0, 0, 1)
 tint_progress = Color(0.333333, 1, 0, 1)
 script = ExtResource("3_ts7n2")
-icons = [null, null]
+icons = [NodePath("player2"), NodePath("player1")]
 
 [node name="player2" type="Sprite2D" parent="health_bar"]
 position = Vector2(299, -8)
+scale = Vector2(1.2, 1.2)
 texture = ExtResource("4_ckos5")
 offset = Vector2(-50, 0)
 hframes = 2
 
 [node name="player1" type="Sprite2D" parent="health_bar"]
 position = Vector2(303, 5)
+scale = Vector2(1.2, 1.2)
 texture = ExtResource("5_wleqm")
 offset = Vector2(50, 0)
 flip_h = true
 hframes = 2
+
+[node name="animation_player" type="AnimationPlayer" parent="health_bar"]
+libraries = {
+"": SubResource("AnimationLibrary_k3r61")
+}
 
 [node name="status_label" type="Label" parent="."]
 layout_mode = 1
@@ -73,7 +114,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("6_atq0u")
 theme_override_font_sizes/font_size = 16
-text = "Score: ? | Combo Breaks: ? | Accuracy: ?% | N/A"
+text = "Score: 0 | Combo Breaks: 0 | Accuracy: 0% | N/A"
 horizontal_alignment = 1
 vertical_alignment = 1
 

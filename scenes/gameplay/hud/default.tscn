@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://yruwyaxp0fdl"]
+[gd_scene load_steps=12 format=3 uid="uid://yruwyaxp0fdl"]
 
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="1_4b7be"]
 [ext_resource type="Script" path="res://scenes/gameplay/hud/default.gd" id="1_x5alm"]
@@ -6,6 +6,63 @@
 [ext_resource type="Script" path="res://scenes/ui/health_bar.gd" id="5_7au2h"]
 [ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="6_ajevi"]
 [ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="7_rmixp"]
+
+[sub_resource type="Animation" id="Animation_r7lpl"]
+resource_name = "bump"
+length = 0.583338
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("player1:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1.1, 1.1), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("player2:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1.1, 1.1), Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("player1:skew")
+tracks/2/interp = 4
+tracks/2/loop_wrap = false
+tracks/2/keys = {
+"times": PackedFloat32Array(0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 2,
+"values": [-0.0872665, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("player2:skew")
+tracks/3/interp = 4
+tracks/3/loop_wrap = false
+tracks/3/keys = {
+"times": PackedFloat32Array(0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 2,
+"values": [0.0872665, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5ymaa"]
+_data = {
+"bump": SubResource("Animation_r7lpl")
+}
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t65mt"]
 bg_color = Color(0, 0, 0, 0.392157)
@@ -52,7 +109,7 @@ texture_progress = ExtResource("4_s0553")
 tint_under = Color(1, 0, 0, 1)
 tint_progress = Color(0.333333, 1, 0, 1)
 script = ExtResource("5_7au2h")
-icons = [null, null]
+icons = [NodePath("player2"), NodePath("player1")]
 
 [node name="player2" type="Sprite2D" parent="health_bar"]
 position = Vector2(299, -8)
@@ -66,6 +123,11 @@ texture = ExtResource("7_rmixp")
 offset = Vector2(50, 0)
 flip_h = true
 hframes = 2
+
+[node name="animation_player" type="AnimationPlayer" parent="health_bar"]
+libraries = {
+"": SubResource("AnimationLibrary_5ymaa")
+}
 
 [node name="status_label" type="Label" parent="."]
 layout_mode = 1
@@ -84,7 +146,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_fonts/font = ExtResource("1_4b7be")
 theme_override_font_sizes/font_size = 18
-text = "[Score]: ? • [Combo Breaks]: ? • [Accuracy]: ?.??%"
+text = "[Score]: 0 • [Combo Breaks]: 0 • [Accuracy]: N/A%"
 horizontal_alignment = 1
 vertical_alignment = 1
 

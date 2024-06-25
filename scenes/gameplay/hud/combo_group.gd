@@ -69,7 +69,7 @@ func pop_up_combo(hit_result: Note.HitResult, is_tap: bool) -> void:
 	if not is_tap:
 		return
 
-	var count: int = hit_result.player.combo
+	var count: int = hit_result.player.stats.combo
 
 	var konbo_janai: bool = sign(count) == -1
 	var combo_colour: Color = Color.WHITE
@@ -81,8 +81,9 @@ func pop_up_combo(hit_result: Note.HitResult, is_tap: bool) -> void:
 						combo_colour = hit_result.judgment.color
 						combo_colour.v = 1.2
 				1:
-					combo_colour = Scoring.get_clear_flag_color(
-						Scoring.get_clear_flag(hit_result.player.jhit_regis))
+					var cf: String = Scoring.get_clear_flag(hit_result.player.stats.hit_registry)
+					if hit_result.player.stats.breaks > 0 and hit_result.player.stats.breaks < 10: cf = "SDCB"
+					combo_colour = Scoring.get_clear_flag_color(cf)
 	else:
 		combo_colour = Color.CRIMSON
 

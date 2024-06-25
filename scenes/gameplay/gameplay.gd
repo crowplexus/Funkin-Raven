@@ -154,6 +154,7 @@ func init_players(player_fields: Array = []) -> void:
 
 		var field: NoteField = player_fields[i]
 		var player: Player = Player.new()
+		player.stats = PlayerStats.new()
 		player.note_queue = note_cluster.note_queue.filter(func(note: Note):
 			return note.player == field.get_index())
 

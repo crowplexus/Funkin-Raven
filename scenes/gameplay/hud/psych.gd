@@ -1,11 +1,13 @@
 extends Control
 
-@onready var health_bar: = $"health_bar"
-@onready var time_bar: = $"timer"
-@onready var time_label: = $"timer/label"
-@onready var status_label: = $"status_label"
+@onready var health_bar: TextureProgressBar = $"health_bar"
+@onready var time_bar: ProgressBar = $"timer"
+@onready var time_label: Label = $"timer/label"
+@onready var status_label: Label = $"status_label"
+@onready var icon_animation: AnimationPlayer = $"health_bar/animation_player"
+@export var icon_bump_interval: int = 1
 
-var tb_twn: Tween
+var _tb_twn: Tween
 
 
 func _ready() -> void:
@@ -16,8 +18,8 @@ func _ready() -> void:
 			time_bar.position.y = size.y - 34
 
 	time_bar.modulate.a = 0.0
-	tb_twn = create_tween().set_ease(Tween.EASE_IN).bind_node(health_bar)
-	tb_twn.tween_property(time_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
+	_tb_twn = create_tween().set_ease(Tween.EASE_IN).bind_node(health_bar)
+	_tb_twn.tween_property(time_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
 	time_bar.visible = Preferences.show_timer
 
 
@@ -29,6 +31,12 @@ func setup_healthbar() -> void:
 			health_bar.get_child(0).texture = stage.get_node("player2").health_icon
 		if stage.has_node("player1") and stage.get_node("player1") is Character:
 			health_bar.get_child(1).texture = stage.get_node("player1").health_icon
+	Conductor.ibeat_reached.connect(icon_thingy)
+
+
+func _exit_tree() -> void:
+	if Conductor.ibeat_reached.is_connected(icon_thingy):
+		Conductor.ibeat_reached.disconnect(icon_thingy)
 
 
 func _process(_delta: float) -> void:
@@ -41,12 +49,17 @@ func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 		status_label.text = "BOTPLAY"
 		return
 
-	var acc: float = snappedf(hit_result.player.accuracy, 0.01)
-	var rating_fc: String = Scoring.get_clear_flag(hit_result.player.jhit_regis)
-	var acc_str: String = " (%s%%) - %s" % [ acc, "Clear" if rating_fc.is_empty() else rating_fc ]
+	var acc: float = snappedf(hit_result.player.stats.accuracy, 0.01)
+	# psych rating fc
+	var rating_fc: String = Scoring.get_clear_flag(hit_result.player.stats.hit_registry)
+	if hit_result.player.stats.misses > 0 and hit_result.player.stats.misses < 10:
+		rating_fc = "SDCB"
+	elif hit_result.player.stats.misses >= 10:
+		rating_fc = "Clear"
 
+	var acc_str: String = " (%s%%) - %s" % [ acc, rating_fc ]
 	var text: String = "Score: %s | Misses: %s | Rating: %s" % [
-		hit_result.player.score, hit_result.player.misses,
+		hit_result.player.stats.score, hit_result.player.stats.misses,
 		get_rating(acc) + acc_str,
 	]
 	match Preferences.status_display_mode:
@@ -60,6 +73,12 @@ func update_time_bar() -> void:
 	time_label.text = "%s" % [
 		Globals.format_to_time(Conductor.length - Conductor.time)
 	]
+
+
+func icon_thingy(ibeat: int) -> void:
+	if ibeat % icon_bump_interval == 0:
+		icon_animation.seek(0.0)
+		icon_animation.play("bump")
 
 
 func get_rating(acc: float):
