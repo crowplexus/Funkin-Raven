@@ -1,9 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://3e0gva7f3ej5"]
+[gd_scene load_steps=2 format=3 uid="uid://3e0gva7f3ej5"]
 
 [ext_resource type="Script" path="res://scenes/ui/options/option_item.gd" id="1_tmrfj"]
-[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_d8es2"]
 
-[node name="preference_bar" type="Control"]
+[node name="option_item" type="Control"]
 modulate = Color(1, 1, 1, 0.6)
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 3
@@ -14,15 +13,6 @@ grow_horizontal = 2
 mouse_default_cursor_shape = 2
 script = ExtResource("1_tmrfj")
 
-[node name="color_rect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-grow_horizontal = 2
-mouse_filter = 1
-color = Color(0, 0, 0, 0.376471)
-
 [node name="preference_label" type="Label" parent="."]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 1
@@ -30,7 +20,6 @@ anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 50.0
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("2_d8es2")
 theme_override_font_sizes/font_size = 32
 text = "Unknown: ?"
 horizontal_alignment = 1

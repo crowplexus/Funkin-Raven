@@ -1,6 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://dqy5gsnibni5l"]
+[gd_scene load_steps=7 format=3 uid="uid://dqy5gsnibni5l"]
 
 [ext_resource type="Script" path="res://scenes/ui/performance_counter.gd" id="1_yqb66"]
+[ext_resource type="AudioStream" uid="uid://toqn7nqo322h" path="res://assets/audio/sfx/ui/volume_appear.ogg" id="2_s5ctp"]
+[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_w4tef"]
+[ext_resource type="AudioStream" uid="uid://btaoww5eaxduc" path="res://assets/audio/sfx/ui/volume_change.ogg" id="3_6m2cv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ip6fy"]
+bg_color = Color(0, 0, 0, 1)
+border_color = Color(0, 0, 0, 1)
+corner_detail = 1
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dchgc"]
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(1, 1, 1, 1)
+border_color = Color(0, 0, 0, 1)
+corner_detail = 1
+anti_aliasing = false
 
 [node name="performance_counter" type="CanvasLayer"]
 process_mode = 3
@@ -34,3 +51,44 @@ theme_override_font_sizes/normal_font_size = 14
 bbcode_enabled = true
 text = "N/A FPS"
 autowrap_mode = 2
+
+[node name="volume_bar" type="ProgressBar" parent="ui"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.977
+anchor_top = 0.004
+anchor_right = 0.996
+anchor_bottom = 0.25
+offset_left = 0.255981
+offset_top = 0.12
+offset_right = 0.0878906
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_ip6fy")
+theme_override_styles/fill = SubResource("StyleBoxFlat_dchgc")
+value = 50.0
+fill_mode = 3
+show_percentage = false
+
+[node name="bus_label" type="Label" parent="ui/volume_bar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -1.455
+anchor_top = 1.0
+anchor_right = 0.998
+anchor_bottom = 1.101
+offset_left = 0.0200081
+offset_top = 8.0
+offset_right = 0.020153
+offset_bottom = 19.123
+grow_horizontal = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("2_w4tef")
+theme_override_font_sizes/font_size = 32
+text = "N/A"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="volume_sounds" type="ResourcePreloader" parent="."]
+resources = [PackedStringArray("volume_appear", "volume_change"), [ExtResource("2_s5ctp"), ExtResource("3_6m2cv")]]

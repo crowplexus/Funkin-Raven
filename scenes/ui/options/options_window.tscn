@@ -1,5 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://deo3obwvipfis"]
+[gd_scene load_steps=11 format=3 uid="uid://deo3obwvipfis"]
 
+[ext_resource type="Theme" uid="uid://dncfgelptpwv8" path="res://assets/themes/default_dark.tres" id="1_38ca0"]
 [ext_resource type="Script" path="res://scenes/ui/options/options_window.gd" id="1_gulft"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_mtl8v"]
 [ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/options/option_item.tscn" id="3_wjca4"]
@@ -7,14 +8,10 @@
 [ext_resource type="Script" path="res://scenes/ui/options/page_item.gd" id="5_4l7t0"]
 [ext_resource type="AudioStream" uid="uid://toqn7nqo322h" path="res://assets/audio/sfx/ui/volume_appear.ogg" id="6_beq18"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o27e5"]
-bg_color = Color(0, 0, 0, 0.572549)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0a26v"]
+draw_center = false
 
-[sub_resource type="LabelSettings" id="LabelSettings_43sds"]
-font = ExtResource("2_mtl8v")
-font_size = 32
-outline_size = 6
-outline_color = Color(0, 0, 0, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4ucog"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1s7ih"]
 bg_color = Color(0, 0, 0, 0.592157)
@@ -27,6 +24,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_38ca0")
 script = ExtResource("1_gulft")
 
 [node name="left_panel" type="Panel" parent="."]
@@ -51,6 +49,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="gameplay" parent="left_panel/page_selector" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -71,6 +70,7 @@ offset_right = 0.639893
 offset_bottom = 0.23999
 grow_horizontal = 2
 mouse_filter = 1
+metadata/_edit_lock_ = true
 
 [node name="gameplay" type="VBoxContainer" parent="pages"]
 layout_mode = 2
@@ -252,13 +252,13 @@ variable = "show_timer"
 [node name="selector" type="Label" parent="pages"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
 anchor_right = 1.0
-offset_top = 116.0
-offset_bottom = 166.0
+anchor_bottom = 0.1
 grow_horizontal = 2
 theme_override_fonts/font = ExtResource("2_mtl8v")
 theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_0a26v")
 text = ">                                      <"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -273,9 +273,8 @@ offset_top = 8.35992
 offset_bottom = -0.160095
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/normal = SubResource("StyleBoxFlat_o27e5")
+theme_override_font_sizes/font_size = 28
 text = "This option will do things to your game that have never been done before, honestly you should just get ready for it, it's kinda amazing."
-label_settings = SubResource("LabelSettings_43sds")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -292,10 +291,12 @@ offset_right = -10.0
 offset_bottom = -673.16
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_fonts/font = ExtResource("2_mtl8v")
 theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4ucog")
 text = "Press F1 for Help"
 horizontal_alignment = 2
 

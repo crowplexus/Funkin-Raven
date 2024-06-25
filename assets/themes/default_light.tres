@@ -1,0 +1,17 @@
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://dr08poooy685e"]
+
+[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="1_qtjeb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tqgls"]
+bg_color = Color(0.6, 0.6, 0.6, 0.705882)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v6vb2"]
+bg_color = Color(0.85, 0.85, 0.85, 0.705882)
+
+[resource]
+resource_name = "\"Light\" - by crowplexus"
+default_font = ExtResource("1_qtjeb")
+Label/colors/font_color = Color(0.15, 0.15, 0.15, 1)
+Label/colors/font_outline_color = Color(1, 1, 1, 1)
+Label/styles/normal = SubResource("StyleBoxFlat_tqgls")
+Panel/styles/panel = SubResource("StyleBoxFlat_v6vb2")

@@ -180,6 +180,13 @@ func play_metro(ibeat: int) -> void:
 	metronome_sfx.play(0.0)
 
 
+func reload_theme(theme_str: String) -> void:
+	match theme_str.to_snake_case():
+		"funky": theme = load("res://assets/themes/funkin_style.tres")
+		"light": theme = load("res://assets/themes/default_light.tres")
+		_: theme = load("res://assets/themes/default_dark.tres")
+
+
 func leave() -> void:
 	if get_tree().paused:
 		get_tree().paused = false

@@ -81,6 +81,7 @@ corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 
 [resource]
+resource_name = "\"Funky\" - by what.is.a.git"
 default_font = ExtResource("1_nu4mv")
 Button/colors/font_color = Color(1, 1, 1, 1)
 Button/colors/font_outline_color = Color(0.0431373, 0.0196078, 0.0666667, 1)

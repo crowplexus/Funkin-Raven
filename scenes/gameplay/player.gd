@@ -249,6 +249,7 @@ func note_hit_tap(note: Note) -> void:
 	if note.hold_length > 0.0:
 		note.moving = false
 
+
 	match note.hit_flag:
 		1:
 			if is_instance_valid(note.object) and note.object.has_method("hit_behaviour"):

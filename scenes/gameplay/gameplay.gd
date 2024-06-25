@@ -315,7 +315,6 @@ func miss_fly_over(note: Note) -> void:
 
 
 func leave() -> void:
-	Conductor.active = false
 	Conductor.reset() # reset rate
 	Conductor.rate = 1.0
 

@@ -1,9 +1,8 @@
 @tool extends Control
 class_name OptionItem
 
-@onready var color_rect: ColorRect = $"color_rect"
-@onready var preference_label: Label = $"preference_label"
 @onready var window: Control = $"../../../"
+@onready var preference_label: Label = $"preference_label"
 
 ## The option's display name in the options window.
 @export var option_name: StringName = "Unknown":

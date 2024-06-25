@@ -87,8 +87,8 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 	var fake_bpm: float = 0.0
 	var fake_crotchet: float = 0.0
 	var time_change_id: int = 0
-	var steps_per_beat: int = 4
-	var beats_per_bar: int = 4
+	var _steps_per_beat: int = 4
+	var _beats_per_bar: int = 4
 
 	match chart_version:
 		"vanilla", "base":
@@ -101,8 +101,8 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 
 			if fake_bpm != chart.time_changes[time_change_id].bpm:
 				fake_bpm = chart.time_changes[time_change_id].bpm
-				steps_per_beat = chart.time_changes[time_change_id].signature_num
-				beats_per_bar = chart.time_changes[time_change_id].signature_den
+				_steps_per_beat = chart.time_changes[time_change_id].signature_num
+				_beats_per_bar = chart.time_changes[time_change_id].signature_den
 				fake_crotchet = (60.0 / fake_bpm)
 
 			if "scrollSpeed" in jsonf and real_difficulty in jsonf["scrollSpeed"]:
@@ -149,8 +149,8 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 
 			if fake_bpm != chart.time_changes[time_change_id].bpm:
 				fake_bpm = chart.time_changes[time_change_id].bpm
-				steps_per_beat = chart.time_changes[time_change_id].signature_num
-				beats_per_bar = chart.time_changes[time_change_id].signature_den
+				_steps_per_beat = chart.time_changes[time_change_id].signature_num
+				_beats_per_bar = chart.time_changes[time_change_id].signature_den
 				fake_crotchet = (60.0 / fake_bpm)
 
 			# load notes from the old format
@@ -214,7 +214,7 @@ static func request(song: StringName, difficulty: Dictionary = { "file": "normal
 						chart.time_changes.append(bpm_change)
 
 					time_change_id = clampi(time_change_id + 1, 0, chart.time_changes.size())
-					bar_timer += fake_crotchet * beats_per_bar
+					bar_timer += fake_crotchet * _beats_per_bar
 
 	chart.notes.sort_custom(func(a: Note, b: Note):
 		return a.time < b.time)

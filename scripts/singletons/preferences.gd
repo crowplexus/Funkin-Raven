@@ -3,8 +3,12 @@ extends Node
 signal prefs_saved()
 signal prefs_loaded()
 
+#region Internal
+
 const _SAVE_FILE: = "user://raven_prefs.cfg"
 var _file: ConfigFile = ConfigFile.new()
+
+#endregion
 
 #region Gameplay Options
 
@@ -92,7 +96,6 @@ var countdown_mode: int = 0
 	set(new_locale):
 		language = new_locale
 		TranslationServer.set_locale(new_locale)
-
 ## Define how the status bar should display information.
 @export_enum("Full:0", "No Score:1", "Only Score:2")
 var status_display_mode: int = 0
@@ -101,6 +104,26 @@ var status_display_mode: int = 0
 var hud_style: int = 0
 
 #endregion
+
+#region Other
+
+var master_volume: float = 1.0:
+	set(new_vol):
+		master_volume = clampf(new_vol, 0.0, 1.0)
+		AudioServer.set_bus_volume_db(0, linear_to_db(master_volume))
+
+var bgm_volume: float = 1.0:
+	set(new_vol):
+		bgm_volume = clampf(new_vol, 0.0, 1.0)
+		AudioServer.set_bus_volume_db(1, linear_to_db(bgm_volume))
+
+var sfx_volume: float = 1.0:
+	set(new_vol):
+		sfx_volume = clampf(new_vol, 0.0, 1.0)
+		AudioServer.set_bus_volume_db(2, linear_to_db(sfx_volume))
+
+#endregion
+
 #region Functions
 
 func _ready() -> void:
