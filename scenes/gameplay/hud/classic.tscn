@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bi000h6yu2ng7"]
+[gd_scene load_steps=9 format=3 uid="uid://bi000h6yu2ng7"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/hud/classic.gd" id="1_fryib"]
 [ext_resource type="Texture2D" uid="uid://dld56rmrbxk8f" path="res://assets/sprites/ui/normal/healthBar.png" id="2_kekhx"]
@@ -6,6 +6,40 @@
 [ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="4_i4s7x"]
 [ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="5_u7t57"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="6_1ah54"]
+
+[sub_resource type="Animation" id="Animation_p4qav"]
+resource_name = "bump"
+length = 0.416671
+step = 0.0416667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("player2:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0416667, 0.166667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1.2, 1.2), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("player1:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0416667, 0.166667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1.2, 1.2), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_td5os"]
+_data = {
+"bump": SubResource("Animation_p4qav")
+}
 
 [node name="classic" type="Control"]
 layout_mode = 3
@@ -36,20 +70,27 @@ texture_progress = ExtResource("2_kekhx")
 tint_under = Color(1, 0, 0, 1)
 tint_progress = Color(0.333333, 1, 0, 1)
 script = ExtResource("3_iy8im")
-icons = [null, null]
+icons = [NodePath("player2"), NodePath("player1")]
 
 [node name="player2" type="Sprite2D" parent="health_bar"]
 position = Vector2(299, -8)
+scale = Vector2(1.2, 1.2)
 texture = ExtResource("4_i4s7x")
 offset = Vector2(-50, 0)
 hframes = 2
 
 [node name="player1" type="Sprite2D" parent="health_bar"]
 position = Vector2(303, 5)
+scale = Vector2(1.2, 1.2)
 texture = ExtResource("5_u7t57")
 offset = Vector2(50, 0)
 flip_h = true
 hframes = 2
+
+[node name="animation_player" type="AnimationPlayer" parent="health_bar"]
+libraries = {
+"": SubResource("AnimationLibrary_td5os")
+}
 
 [node name="status_label" type="Label" parent="."]
 layout_mode = 1

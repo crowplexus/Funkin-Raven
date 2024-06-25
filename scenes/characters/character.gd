@@ -80,6 +80,9 @@ func dance(force: bool = false, force_idle: int = -1) -> void:
 	animation_context = 0
 
 
-func sing(column: int, force: bool = false) -> void:
-	play_animation(sing_list[column], force)
+func sing(column: int, force: bool = false, is_hold: bool = false) -> void:
+	var to_play: StringName = sing_list[column]
+	if is_hold and animation_player.has_animation(to_play + "hold"):
+		to_play += "hold"
+	play_animation(to_play, force)
 	animation_context = 1

@@ -80,14 +80,14 @@ func update_volume_bar(quiet: bool = false) -> void:
 
 
 func get_bus_volume(idx: int) -> float:
-	match _cur_bus:
+	match idx:
 		1: return Preferences.bgm_volume
 		2: return Preferences.sfx_volume
 		_: return Preferences.master_volume
 
 
 func set_bus_volume(idx: int, vol: float) -> void:
-	match _cur_bus:
+	match idx:
 		0: Preferences.master_volume = vol
 		1: Preferences.bgm_volume = vol
 		2: Preferences.sfx_volume = vol

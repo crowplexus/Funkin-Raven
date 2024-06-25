@@ -10,6 +10,9 @@ var _template_combos: Array[Sprite2D] = []
 
 
 func _ready() -> void:
+	pass
+
+func preload_combo() -> void:
 	judgment_sprite = Sprite2D.new()
 	judgment_sprite.texture = skin.judgment_row
 	judgment_sprite.texture_filter = skin.judgment_sprite_filter

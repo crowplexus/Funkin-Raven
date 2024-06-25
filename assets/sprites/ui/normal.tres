@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UISkin" load_steps=12 format=3 uid="uid://b6xv638dwdh64"]
+
+[ext_resource type="Texture2D" uid="uid://cgg74hdqie207" path="res://assets/sprites/ui/normal/combo.png" id="1_lw4pk"]
+[ext_resource type="AudioStream" uid="uid://7vxf7mhk812m" path="res://assets/audio/sfx/gameplay/intro3.ogg" id="2_qe0ml"]
+[ext_resource type="AudioStream" uid="uid://b5warf22r27ia" path="res://assets/audio/sfx/gameplay/intro2.ogg" id="3_mb710"]
+[ext_resource type="AudioStream" uid="uid://budt1uknot4d3" path="res://assets/audio/sfx/gameplay/intro1.ogg" id="4_duglg"]
+[ext_resource type="AudioStream" uid="uid://bs6557x28j0le" path="res://assets/audio/sfx/gameplay/introGo.ogg" id="5_5c0uo"]
+[ext_resource type="Texture2D" uid="uid://dd87wgxdwo82p" path="res://assets/sprites/ui/normal/prepare.png" id="6_xkd1e"]
+[ext_resource type="Texture2D" uid="uid://c1kcj3yhw4mxy" path="res://assets/sprites/ui/normal/ready.png" id="7_tul2r"]
+[ext_resource type="Texture2D" uid="uid://dv2pheqscnepe" path="res://assets/sprites/ui/normal/set.png" id="8_sdisn"]
+[ext_resource type="Texture2D" uid="uid://bftbew86tagc8" path="res://assets/sprites/ui/normal/go.png" id="9_3hc0w"]
+[ext_resource type="Texture2D" uid="uid://5u40shy36q27" path="res://assets/sprites/ui/normal/judgments.png" id="10_5lu7j"]
+[ext_resource type="Script" path="res://scripts/ui_skin.gd" id="11_peklx"]
+
+[resource]
+script = ExtResource("11_peklx")
+countdown_sprites = Array[Texture2D]([ExtResource("6_xkd1e"), ExtResource("7_tul2r"), ExtResource("8_sdisn"), ExtResource("9_3hc0w")])
+countdown_sounds = Array[AudioStream]([ExtResource("2_qe0ml"), ExtResource("3_mb710"), ExtResource("4_duglg"), ExtResource("5_5c0uo")])
+judgment_row = ExtResource("10_5lu7j")
+combo_row = ExtResource("1_lw4pk")
+countdown_sprite_filter = 2
+judgment_sprite_filter = 2
+combo_num_sprite_filter = 2
+countdown_sprite_scale = Vector2(1, 1)
+judgment_sprite_scale = Vector2(0.65, 0.65)
+combo_num_sprite_scale = Vector2(0.45, 0.45)

@@ -51,4 +51,4 @@ func _init() -> void:
 
 
 func save() -> void:
-	var date: = Time.get_datetime_string_from_system(true, true)
+	var _date: = Time.get_datetime_string_from_system(true, true)

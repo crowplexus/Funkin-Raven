@@ -4,7 +4,7 @@ extends TextureProgressBar
 @export var bop_interval: int = 1
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if icons.is_empty():
 		return
 	for icon: CanvasItem in icons:

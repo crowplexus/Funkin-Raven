@@ -1,10 +1,7 @@
 extends Node2D
 
-@export var skin: UISkin
-
 #region Scene Nodes
 
-var camera: Camera2D
 @onready var ui_layer: CanvasLayer = $"hud"
 @onready var combo_group: Control = $"hud/combo_group"
 @onready var note_cluster: Node2D = $"hud/note_cluster"
@@ -13,7 +10,9 @@ var camera: Camera2D
 #endregion
 #region Local Variables
 
+var skin: UISkin
 var stage: StageBG
+var camera: Camera2D
 var current_hud: Control
 var health_bar: Control
 var music: AudioStreamPlayer
@@ -30,11 +29,18 @@ func _ready() -> void:
 	if not is_instance_valid(Chart.global):
 		Chart.global = Chart.request("test", SongItem.DEFAULT_DIFFICULTY_SET[1])
 
-	note_cluster.note_queue = Chart.global.notes.duplicate()
-	note_cluster._ready()
+	# set up user interface skin
+	skin = Chart.global.song_info.ui_skin
+	combo_group.set_deferred("skin", Chart.global.song_info.ui_skin)
+	combo_group.call_deferred("preload_combo")
+
+	# kill the original hud
 	$"hud/default".free()
 	$"stage".free()
-
+	# set up the note cluster
+	note_cluster.note_queue = Chart.global.notes.duplicate()
+	note_cluster._ready()
+	# set up the actual HUD
 	match Preferences.hud_style:
 		1: load_hud(Globals.DEFAULT_HUD)
 		2: load_hud(load("res://scenes/gameplay/hud/kade.tscn"))

@@ -59,7 +59,7 @@ func _exit_tree() -> void:
 
 func _process(delta: float) -> void:
 	if is_instance_valid(selected_pref):
-		if selector.position.y != selected_pref.position.y:
+		if selector.position.y != selected_pref.position.y + _display_ypos:
 			selector.position.y = lerpf(selected_pref.position.y + _display_ypos,
 				selector.position.y, exp(-delta * 32))
 
@@ -69,7 +69,7 @@ func _process(delta: float) -> void:
 
 	if is_instance_valid(active_page):
 		if active_page.position.y != _display_ypos:
-			active_page.position.y = lerpf(active_page.position.y, _display_ypos, exp(-delta * 64))
+			active_page.position.y = lerpf(_display_ypos, active_page.position.y, exp(-delta * 32))
 
 
 func _unhandled_input(e: InputEvent) -> void:
@@ -129,7 +129,7 @@ func update_selection(new: int = 0) -> void:
 	# original scrolling code by @srthero278 / @srtpro278.
 	if page_size > 8 and active_page.size.y >= page_list.size.y:
 		_display_ypos = (
-			((page_list.size.y - active_page.size.y) - page_size + 33)
+			((page_list.size.y - active_page.size.y) - page_size + 5)
 			* ((selected_pref.position.y - selected_pref.size.y + selected_pref.size.y)
 			/ page_list.size.y)
 		)

@@ -29,7 +29,7 @@ var playfield_spot: float:
 func on_note_hit(hit_result: Note.HitResult, is_tap: bool) -> void:
 	if not is_instance_valid(hit_result.data):
 		return
-	chars_sing(hit_result.data.column, is_tap or Conductor.istep % 1 == 0)
+	chars_sing(hit_result.data.column, is_tap, hit_result.data.update_hold)
 
 
 func reset_scroll_mods() -> void:
@@ -116,12 +116,12 @@ func chars_dance(force: bool = false, force_idle: int = -1) -> void:
 		character.dance(force, force_idle)
 
 
-func chars_sing(column: int = 0, force: bool = false, cooldown_delay: float = 0.0) -> void:
+func chars_sing(column: int = 0, force: bool = false, is_hold: bool = false, cooldown_delay: float = 0.0) -> void:
 	# putting faith in godot's looping :pray:
 	for personaje: Character in connected_characters:
 		if personaje.animation_context != 2:
 			var sing_column: int = column % personaje.sing_list.size()
-			personaje.sing(sing_column, force)
+			personaje.sing(sing_column, force, is_hold)
 			personaje.idle_cooldown = (12 * Conductor.semiquaver) + cooldown_delay
 
 #endregion

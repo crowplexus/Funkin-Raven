@@ -12,6 +12,7 @@ const OPTIONS_WINDOW: PackedScene = preload("res://scenes/ui/options/options_win
 
 const DEFAULT_HUD: PackedScene = preload("res://scenes/gameplay/hud/default.tscn")
 const DEFAULT_STAGE: PackedScene = preload("res://scenes/backgrounds/mainStage.tscn")
+const DEFAULT_SKIN: UISkin = preload("res://assets/sprites/ui/normal.tres")
 
 var ENGINE_VERSION: String:
 	get: return ProjectSettings.get_setting("application/config/version")

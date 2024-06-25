@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bjhgsn2eb2e1h"]
+[gd_scene load_steps=20 format=3 uid="uid://bjhgsn2eb2e1h"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/gameplay.gd" id="1_gfupu"]
 [ext_resource type="Texture2D" uid="uid://dd87wgxdwo82p" path="res://assets/sprites/ui/normal/prepare.png" id="2_4pdat"]
@@ -19,19 +19,6 @@
 [ext_resource type="PackedScene" uid="uid://bc1se7ekgu1ux" path="res://scenes/gameplay/hud/combo_group.tscn" id="17_3r26l"]
 [ext_resource type="PackedScene" uid="uid://bcn0ldilqlnur" path="res://scenes/gameplay/event_machine.tscn" id="18_7d1c2"]
 
-[sub_resource type="Resource" id="Resource_mec6n"]
-script = ExtResource("6_3188v")
-countdown_sprites = Array[Texture2D]([ExtResource("2_4pdat"), ExtResource("3_o8crc"), ExtResource("4_eciqc"), ExtResource("5_p7f61")])
-countdown_sounds = Array[AudioStream]([ExtResource("2_dh4m4"), ExtResource("3_6nhsi"), ExtResource("4_sfn3r"), ExtResource("5_m5tro")])
-judgment_row = ExtResource("11_hk4xw")
-combo_row = ExtResource("2_qmvd3")
-countdown_sprite_filter = 2
-judgment_sprite_filter = 2
-combo_num_sprite_filter = 2
-countdown_sprite_scale = Vector2(1, 1)
-judgment_sprite_scale = Vector2(0.65, 0.65)
-combo_num_sprite_scale = Vector2(0.45, 0.45)
-
 [sub_resource type="Resource" id="Resource_uhmp4"]
 script = ExtResource("6_3188v")
 countdown_sprites = Array[Texture2D]([ExtResource("2_4pdat"), ExtResource("3_o8crc"), ExtResource("4_eciqc"), ExtResource("5_p7f61")])
@@ -47,7 +34,6 @@ combo_num_sprite_scale = Vector2(0.45, 0.45)
 
 [node name="gameplay" type="Node2D"]
 script = ExtResource("1_gfupu")
-skin = SubResource("Resource_mec6n")
 
 [node name="stage" parent="." instance=ExtResource("2_k2qad")]
 

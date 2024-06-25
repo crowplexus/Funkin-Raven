@@ -40,6 +40,8 @@ const DEFAULT_NOTEFIELD_CONFIG: Array[Dictionary] = [
 @export var name: StringName = "???"
 ## Folder Name for the song, usually provided when loading the chart.
 var folder: StringName = "test"
+## Song UI Style, changes certain elements in the UI, for example judgments and combo
+@export var ui_skin: UISkin = Globals.DEFAULT_SKIN
 ## Difficulty Name for the song, usually provided when loading the chart.[br]
 ## [code]file is which *data* file to load in the file system[/code][br]
 ## [code]target[/code] is which difficulty within the data file to load[br]
