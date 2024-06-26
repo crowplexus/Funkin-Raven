@@ -213,7 +213,7 @@ func init_music() -> void:
 
 	if is_instance_valid(music):
 		Conductor.length = music.stream.get_length()
-	else:
+	elif not note_cluster.note_queue.is_empty():
 		Conductor.length = note_cluster.note_queue.back().time
 
 

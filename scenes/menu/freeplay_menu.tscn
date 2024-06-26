@@ -1,13 +1,21 @@
-[gd_scene load_steps=6 format=3 uid="uid://2wkbyp2gb0gu"]
+[gd_scene load_steps=9 format=3 uid="uid://2wkbyp2gb0gu"]
 
 [ext_resource type="Script" path="res://scenes/menu/freeplay_menu.gd" id="1_mwt6o"]
 [ext_resource type="Texture2D" uid="uid://mr31twd36rpw" path="res://assets/sprites/menu/menuDesat.png" id="2_a718r"]
 [ext_resource type="Resource" uid="uid://llhw2mb1u7hu" path="res://assets/funkin_bundle.tres" id="2_m5145"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="3_r3f4j"]
+[ext_resource type="Script" path="res://scenes/ui/alphabet.gd" id="5_h6t7p"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vwtvu"]
+bg_color = Color(0, 0, 0, 0.392157)
 
 [sub_resource type="LabelSettings" id="LabelSettings_r764n"]
 font = ExtResource("3_r3f4j")
 font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_1e7pw"]
+font = ExtResource("3_r3f4j")
+font_size = 24
 
 [node name="freeplay_menu" type="Node2D"]
 script = ExtResource("1_mwt6o")
@@ -29,34 +37,57 @@ offset_bottom = 720.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="song_container" type="VBoxContainer" parent="ui"]
-layout_mode = 0
-offset_left = 410.0
-offset_right = 870.0
-offset_bottom = 720.0
+[node name="song_container" type="Control" parent="ui"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
-alignment = 1
 
-[node name="random" type="Label" parent="ui/song_container"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 32
+[node name="random" type="Control" parent="ui/song_container"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 50.0
+offset_top = -40.0
+offset_right = 50.0
+offset_bottom = 40.0
+grow_vertical = 2
+script = ExtResource("5_h6t7p")
 text = "Random"
-label_settings = SubResource("LabelSettings_r764n")
-horizontal_alignment = 1
-vertical_alignment = 1
+is_menu = true
+origin = Vector2(120, 280)
 
-[node name="difficulty_text" type="Label" parent="ui"]
+[node name="score_text" type="Label" parent="ui"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.847
-anchor_right = 0.98
-anchor_bottom = 0.04
-offset_left = -0.160034
-offset_right = 0.599976
-offset_bottom = 0.199999
+anchor_left = 0.702
+anchor_right = 1.0
+anchor_bottom = 0.085
+offset_left = 1.43994
+offset_bottom = -0.200001
 grow_horizontal = 0
 theme_override_font_sizes/font_size = 32
-text = "Kepi Cuti"
+theme_override_styles/normal = SubResource("StyleBoxFlat_vwtvu")
+text = "TOP SCORE: 000000000"
 label_settings = SubResource("LabelSettings_r764n")
+horizontal_alignment = 1
+
+[node name="difficulty_text" type="Label" parent="ui/score_text"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.541
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -0.000999451
+grow_horizontal = 2
+grow_vertical = 0
+text = "< DIFFICULTY>"
+label_settings = SubResource("LabelSettings_1e7pw")
 horizontal_alignment = 1
 vertical_alignment = 1

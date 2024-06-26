@@ -1,7 +1,8 @@
 extends Node2D
 
-@onready var song_list: VBoxContainer = $"ui/song_container"
-@onready var diff_label: Label = $"ui/difficulty_text"
+@onready var bg: Sprite2D = $"background"
+@onready var song_list: Control = $"ui/song_container"
+@onready var diff_label: Label = $"ui/score_text/difficulty_text"
 
 @export var item_idle_opacity: float = 0.6
 @export var item_selected_opacity: float = 1.0
@@ -12,8 +13,9 @@ var current_item: CanvasItem
 var current_difficulty: Dictionary
 var current_selection: int = 1
 var current_alternative: int = 1
-var _transitioning: bool = false
 var music_fade_twn: Tween
+var _transitioning: bool = false
+
 
 func _ready() -> void:
 	play_bgm_check(Globals.MENU_MUSIC)
@@ -65,9 +67,14 @@ func _unhandled_input(e: InputEvent) -> void:
 func update_selection(new_sel: int = 0) -> void:
 	if is_instance_valid(current_item):
 		current_item.modulate.a = item_idle_opacity
+
 	current_selection = wrapi(current_selection + new_sel, 0, song_list.get_child_count())
 	current_item = song_list.get_child(current_selection)
 	current_item.modulate.a = item_selected_opacity
+	if new_sel != 0: SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
+
+	for thingy: Alphabet in song_list.get_children():
+		thingy.menu_target = thingy.get_index() - current_selection
 
 	# i have to tell my brain to stop hardcoding @crowplexus
 	var menu_bgm_name: = Globals.MENU_MUSIC.resource_path.get_file().get_basename()
@@ -84,6 +91,7 @@ func update_selection(new_sel: int = 0) -> void:
 func update_alternative(new_alt: int = 0) -> void:
 	current_alternative = wrapi(current_alternative + new_alt, 0, songs[current_selection - 1].difficulties.size())
 	current_difficulty = songs[current_selection - 1].difficulties[current_alternative]
+	if new_alt != 0: SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
 	diff_label.text = current_difficulty.display_name
 	if current_difficulty.size() > 1:
 		diff_label.text = "< %s > " % current_difficulty.display_name
@@ -96,12 +104,22 @@ func generate_songs() -> void:
 			continue
 		item.free()
 
+	var ouch: int = 0
 	for song: SongItem in songs:
-		var new_item: Label = song_list.get_child(0).duplicate()
-		new_item.name = song.display_name.to_snake_case()
+		var new_item: Alphabet = song_list.get_child(0).duplicate()
+		#new_item.name = song.display_name.to_snake_case()
+		new_item.position.y += new_item.y_per_roll * ouch
 		new_item.modulate.a = item_idle_opacity
 		new_item.text = song.display_name
+		new_item.menu_target = ouch + 1
 		song_list.add_child(new_item)
+
+		var icon: Sprite2D = Sprite2D.new()
+		icon.texture = song.icon
+		icon.global_position.x = new_item.glyphs_pos.x + 60
+		icon.hframes = 2
+		new_item.add_child(icon)
+		ouch += 1
 
 	update_selection()
 	update_alternative()

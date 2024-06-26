@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://beqtdkv78aili"]
+
+[ext_resource type="Script" path="res://scenes/ui/alphabet.gd" id="1_wp05m"]
+
+[node name="test_alphabet" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_wp05m")
+text = "testing"

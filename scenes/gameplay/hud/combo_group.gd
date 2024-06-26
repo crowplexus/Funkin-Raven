@@ -2,15 +2,11 @@ extends Control
 
 @export var skin: UISkin
 
-var judgment_sprite: Sprite2D
-
 var _judge_tween: Tween
+var judgment_sprite: Sprite2D
 var _combo_tweens: Array[Tween] = []
 var _template_combos: Array[Sprite2D] = []
 
-
-func _ready() -> void:
-	pass
 
 func preload_combo() -> void:
 	judgment_sprite = Sprite2D.new()
@@ -120,26 +116,25 @@ func pop_up_combo(hit_result: Note.HitResult, is_tap: bool) -> void:
 		.set_delay(0.6 * Conductor.crotchet)
 
 
-func show_combo_temporary(hit_result: Note.HitResult, is_tap: bool) -> void:
-	if not is_tap or hit_result.judgment == null or hit_result.judgment.is_empty():
-		return
-
-	var _hit_colour: Color = Color.DIM_GRAY
-	if "color" in hit_result.judgment:
-		_hit_colour = hit_result.judgment.color
-
-	#hit_result_label.text = (str(hit_result.judgment.name) +
-	#	"\nTiming: %sms" % snappedf(hit_result.hit_time, 0.001) +
-	#	"\nCombo: %s" % hit_result.player.combo)
-	#hit_result_label.modulate = hit_colour
+#func show_combo_temporary(hit_result: Note.HitResult, is_tap: bool) -> void:
+#	if not is_tap or hit_result.judgment == null or hit_result.judgment.is_empty():
+#		return
 #
-	#if is_instance_valid(combo_tween):
-	#	combo_tween.kill()
-
-	#combo_tween = create_tween().set_ease(Tween.EASE_OUT)
-	#combo_tween.bind_node(hit_result_label)
-	#combo_tween.tween_property(hit_result_label, "modulate:a", 0.0, 0.5 * Conductor.crotchet) \
-	#.set_delay(0.5 * Conductor.crotchet)
+#	var _hit_colour: Color = Color.DIM_GRAY
+#	if "color" in hit_result.judgment:
+#		_hit_colour = hit_result.judgment.color
+#
+#	hit_result_label.text = (str(hit_result.judgment.name) +
+#		"\nTiming: %sms" % snappedf(hit_result.hit_time, 0.001) +
+#		"\nCombo: %s" % hit_result.player.combo)
+#	hit_result_label.modulate = hit_colour
+#	if is_instance_valid(combo_tween):
+#		combo_tween.kill()
+#
+#	combo_tween = create_tween().set_ease(Tween.EASE_OUT)
+#	combo_tween.bind_node(hit_result_label)
+#	combo_tween.tween_property(hit_result_label, "modulate:a", 0.0, 0.5 * Conductor.crotchet) \
+#	.set_delay(0.5 * Conductor.crotchet)
 
 
 func precache_combo_number(i: int) -> Sprite2D:

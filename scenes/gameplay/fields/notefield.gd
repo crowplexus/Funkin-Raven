@@ -64,7 +64,7 @@ func reset_scroll_mods() -> void:
 func make_playable(new_player: Player = null) -> void:
 	if new_player == null:
 		new_player = Player.new()
-	print_debug("adding player ", get_index() + 1, " is bot? ", new_player.botplay)
+	#print_debug("adding player ", get_index() + 1, " is bot? ", new_player.botplay)
 	player = new_player
 	add_child(player)
 

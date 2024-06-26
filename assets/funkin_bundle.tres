@@ -1,8 +1,10 @@
-[gd_resource type="Resource" script_class="Bundle" load_steps=12 format=3 uid="uid://llhw2mb1u7hu"]
+[gd_resource type="Resource" script_class="Bundle" load_steps=14 format=3 uid="uid://llhw2mb1u7hu"]
 
 [ext_resource type="Script" path="res://scripts/content/bundle.gd" id="1_45q1f"]
 [ext_resource type="Script" path="res://scripts/content/level_item.gd" id="1_g28nu"]
 [ext_resource type="Script" path="res://scripts/content/song_item.gd" id="2_l0nbh"]
+[ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="2_slkfv"]
+[ext_resource type="Texture2D" uid="uid://bdr1unvoxolpe" path="res://assets/sprites/characters/icons/darnell.png" id="4_axatp"]
 
 [sub_resource type="Resource" id="Resource_vtydj"]
 script = ExtResource("2_l0nbh")
@@ -30,6 +32,7 @@ difficulties = Array[Dictionary]([{
 "target": "nightmare",
 "variation": "erect"
 }])
+icon = ExtResource("2_slkfv")
 
 [sub_resource type="Resource" id="Resource_f5vmx"]
 script = ExtResource("2_l0nbh")
@@ -57,6 +60,7 @@ difficulties = Array[Dictionary]([{
 "target": "nightmare",
 "variation": "erect"
 }])
+icon = ExtResource("2_slkfv")
 
 [sub_resource type="Resource" id="Resource_3k0kd"]
 script = ExtResource("2_l0nbh")
@@ -84,6 +88,7 @@ difficulties = Array[Dictionary]([{
 "target": "nightmare",
 "variation": "erect"
 }])
+icon = ExtResource("2_slkfv")
 
 [sub_resource type="Resource" id="Resource_k8l10"]
 script = ExtResource("1_g28nu")
@@ -108,6 +113,7 @@ difficulties = Array[Dictionary]([{
 "file": "hard",
 "variation": ""
 }])
+icon = ExtResource("4_axatp")
 
 [sub_resource type="Resource" id="Resource_mniut"]
 script = ExtResource("2_l0nbh")
@@ -126,6 +132,7 @@ difficulties = Array[Dictionary]([{
 "file": "hard",
 "variation": ""
 }])
+icon = ExtResource("4_axatp")
 
 [sub_resource type="Resource" id="Resource_vhikq"]
 script = ExtResource("2_l0nbh")
@@ -144,6 +151,7 @@ difficulties = Array[Dictionary]([{
 "file": "hard",
 "variation": ""
 }])
+icon = ExtResource("4_axatp")
 
 [sub_resource type="Resource" id="Resource_tyja2"]
 script = ExtResource("1_g28nu")
