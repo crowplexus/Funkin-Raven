@@ -245,16 +245,28 @@ func convert_event(event: Dictionary, bpm: float) -> ChartEvent:
 		"FocusCamera":
 			match event.v:
 				_:
+					e.values = {
+						"char": -1,
+						"ease": "CLASSIC",
+						"x": 0.0, "y": 0.0,
+						"duration": 4.0
+					}
 					if event.v is int or event.v is float:
-						e.values = { "char": event.v }
+						e.values.char = event.v
 					elif event.v is Dictionary:
-						e.values = event.v
-					if "char" in e.values:
-						var lol = e.values.char
-						if lol is String: lol = lol.to_int()
-						e.values.char = int(lol + 1)
-					if not "ease" in e.values:
-						e.values.ease = "CLASSIC"
+						e.values.merge(event.v)
+		"ZoomCamera":
+			e.values = {
+				"zoom": 1.0,
+				"duration": 4.0,
+				"mode": "stage",
+				"ease": "linear"
+			}
+			if event.v is int or event.v is float:
+				e.values.zoom = event.v
+			elif event.v is Dictionary:
+				e.values.merge(event.v)
+
 		_:
 			e.values = event.v
 	return e

@@ -3,6 +3,7 @@ extends Node2D
 @onready var sprites: Node2D = $"sprites"
 @onready var logo_animation: AnimationPlayer = $"sprites/logo/animation_player"
 @onready var enter_sprite: AnimatedSprite2D = $"sprites/enter_sprite"
+@onready var thingy: Alphabet = $"text_thingy"
 
 var _enter_animation_backwards: bool = false
 var _enter_animation: Callable = func() -> void:
@@ -20,6 +21,9 @@ var _transitioning: bool = false
 func _ready() -> void:
 	RenderingServer.set_default_clear_color(Color.BLACK)
 	await RenderingServer.frame_post_draw
+
+	thingy.text = ""
+	thingy.visible = true
 
 	enter_sprite.play("ENTER IDLE")
 	enter_sprite.animation_finished.connect(_enter_animation)
@@ -64,15 +68,28 @@ func on_ibeat_reached(ibeat: int) -> void:
 		return
 
 	match ibeat:
+		1: thingy.text = "a Game by\n"
+		3: thingy.text += "the Funkin' Crew Inc."
+		4: thingy.text = ""
+		5: thingy.text = "a Fan-remake..."
+		7: thingy.text += "\nby crowplexus"
+		8: thingy.text = ""
+		9: thingy.text = "swagshit"
+		11: thingy.text += "\nmoneymoney"
+		12: thingy.text = ""
+		13: thingy.text = "Friday"
+		14: thingy.text += "\nNight"
+		15: thingy.text += "\nFunkin'"
 		16: skip_intro(Color.WHITE, 1.0 if Preferences.flashing else 0.0)
 
 
 func skip_intro(flash_colour: Color = Color.WHITE, flash_duration: float = 4.0) -> void:
 	_intro_skipped = true
+	thingy.visible = false
+	thingy.text = ""
 
 	if flash_duration > 0.0:
 		$"flash".modulate = flash_colour
 		create_tween().set_ease(Tween.EASE_OUT).bind_node($"flash") \
 		.tween_property($"flash", "modulate:a", 0.0, flash_duration)
-
 	sprites.visible = true

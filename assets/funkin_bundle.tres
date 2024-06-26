@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="Bundle" load_steps=14 format=3 uid="uid://llhw2mb1u7hu"]
+[gd_resource type="Resource" script_class="Bundle" load_steps=20 format=3 uid="uid://llhw2mb1u7hu"]
 
 [ext_resource type="Script" path="res://scripts/content/bundle.gd" id="1_45q1f"]
 [ext_resource type="Script" path="res://scripts/content/level_item.gd" id="1_g28nu"]
 [ext_resource type="Script" path="res://scripts/content/song_item.gd" id="2_l0nbh"]
 [ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="2_slkfv"]
 [ext_resource type="Texture2D" uid="uid://bdr1unvoxolpe" path="res://assets/sprites/characters/icons/darnell.png" id="4_axatp"]
+[ext_resource type="Texture2D" uid="uid://dwoqa1jp6p2fb" path="res://assets/sprites/menu/story_menu/titles/week7.png" id="4_dn0i2"]
+[ext_resource type="Texture2D" uid="uid://bovylrgha3jcl" path="res://assets/sprites/characters/icons/tankman.png" id="6_mnnku"]
 
 [sub_resource type="Resource" id="Resource_vtydj"]
 script = ExtResource("2_l0nbh")
@@ -96,6 +98,70 @@ level_name = "DADDY DEAREST"
 clear_color = Color(0.976471, 0.811765, 0.317647, 1)
 song_list = Array[ExtResource("2_l0nbh")]([SubResource("Resource_vtydj"), SubResource("Resource_f5vmx"), SubResource("Resource_3k0kd")])
 
+[sub_resource type="Resource" id="Resource_kyihy"]
+script = ExtResource("2_l0nbh")
+display_name = &"Ugh"
+folder_name = &"ugh"
+difficulties = Array[Dictionary]([{
+"display_name": "Easy",
+"file": "easy",
+"variation": ""
+}, {
+"display_name": "Normal",
+"file": "normal",
+"variation": ""
+}, {
+"display_name": "Hard",
+"file": "hard",
+"variation": ""
+}])
+icon = ExtResource("6_mnnku")
+
+[sub_resource type="Resource" id="Resource_nf7al"]
+script = ExtResource("2_l0nbh")
+display_name = &"Guns"
+folder_name = &"guns"
+difficulties = Array[Dictionary]([{
+"display_name": "Easy",
+"file": "easy",
+"variation": ""
+}, {
+"display_name": "Normal",
+"file": "normal",
+"variation": ""
+}, {
+"display_name": "Hard",
+"file": "hard",
+"variation": ""
+}])
+icon = ExtResource("6_mnnku")
+
+[sub_resource type="Resource" id="Resource_tuun6"]
+script = ExtResource("2_l0nbh")
+display_name = &"Stress"
+folder_name = &"stress"
+difficulties = Array[Dictionary]([{
+"display_name": "Easy",
+"file": "easy",
+"variation": ""
+}, {
+"display_name": "Normal",
+"file": "normal",
+"variation": ""
+}, {
+"display_name": "Hard",
+"file": "hard",
+"variation": ""
+}])
+icon = ExtResource("6_mnnku")
+
+[sub_resource type="Resource" id="Resource_6vdap"]
+script = ExtResource("1_g28nu")
+level_name = "TANKMAN FT. JOHNNYUTAH"
+clear_color = Color(0.976471, 0.811765, 0.317647, 1)
+level_title = ExtResource("4_dn0i2")
+song_list = Array[ExtResource("2_l0nbh")]([SubResource("Resource_kyihy"), SubResource("Resource_nf7al"), SubResource("Resource_tuun6")])
+
 [sub_resource type="Resource" id="Resource_lnh5v"]
 script = ExtResource("2_l0nbh")
 display_name = &"Darnell"
@@ -161,5 +227,5 @@ song_list = Array[ExtResource("2_l0nbh")]([SubResource("Resource_lnh5v"), SubRes
 
 [resource]
 script = ExtResource("1_45q1f")
-level_list = Array[ExtResource("1_g28nu")]([SubResource("Resource_k8l10"), SubResource("Resource_tyja2")])
+level_list = Array[ExtResource("1_g28nu")]([SubResource("Resource_k8l10"), SubResource("Resource_6vdap"), SubResource("Resource_tyja2")])
 song_list = Array[ExtResource("2_l0nbh")]([])

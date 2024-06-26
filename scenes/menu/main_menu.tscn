@@ -1,11 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://b2qg7hhhd1v77"]
+[gd_scene load_steps=9 format=3 uid="uid://b2qg7hhhd1v77"]
 
 [ext_resource type="Script" path="res://scenes/menu/main_menu.gd" id="1_kimiu"]
 [ext_resource type="Script" path="res://addons/parallax_node/parallax_node.gd" id="2_jqgkp"]
 [ext_resource type="SpriteFrames" uid="uid://8uyxiccrhvg8" path="res://assets/sprites/menu/main_menu/storymode.res" id="2_r675o"]
 [ext_resource type="SpriteFrames" uid="uid://46g705hpywip" path="res://assets/sprites/menu/main_menu/freeplay.res" id="3_e8ncv"]
 [ext_resource type="Texture2D" uid="uid://mr31twd36rpw" path="res://assets/sprites/menu/menuDesat.png" id="3_fvkic"]
-[ext_resource type="SpriteFrames" uid="uid://fckvhpuka0k7" path="res://assets/sprites/menu/main_menu/merch.res" id="4_6ax7c"]
 [ext_resource type="SpriteFrames" uid="uid://brblhon7tpue4" path="res://assets/sprites/menu/main_menu/options.res" id="5_sgcfp"]
 [ext_resource type="SpriteFrames" uid="uid://btcmpgfn4ea6w" path="res://assets/sprites/menu/main_menu/credits.res" id="6_rh7rp"]
 [ext_resource type="Texture2D" uid="uid://bxd45qsmhmle4" path="res://assets/sprites/menu/menuBG.png" id="7_6pjit"]
@@ -49,26 +48,21 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="story" type="AnimatedSprite2D" parent="buttons"]
-position = Vector2(360, 149)
+position = Vector2(360, 165)
 sprite_frames = ExtResource("2_r675o")
 animation = &"idle"
 
 [node name="freeplay" type="AnimatedSprite2D" parent="buttons"]
-position = Vector2(360, 288)
+position = Vector2(360, 312)
 sprite_frames = ExtResource("3_e8ncv")
 animation = &"idle"
 
 [node name="options" type="AnimatedSprite2D" parent="buttons"]
-position = Vector2(360, 430)
+position = Vector2(360, 462)
 sprite_frames = ExtResource("5_sgcfp")
 animation = &"idle"
 
-[node name="merch" type="AnimatedSprite2D" parent="buttons"]
-position = Vector2(360, 574)
-sprite_frames = ExtResource("4_6ax7c")
-animation = &"idle"
-
 [node name="credits" type="AnimatedSprite2D" parent="buttons"]
-position = Vector2(360, 718)
+position = Vector2(360, 614)
 sprite_frames = ExtResource("6_rh7rp")
 animation = &"idle"

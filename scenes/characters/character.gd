@@ -20,6 +20,8 @@ var animation_context: int = 0
 @export var camera_offset: Vector2 = Vector2.ZERO
 ## Character's health icon, displayed on the healthbar.
 @export var health_icon: Texture2D = preload("res://assets/sprites/characters/icons/face.png")
+## If the character is (normally) a player character.
+@export var is_player: bool = false
 
 @export_category("Animations")
 
@@ -33,6 +35,7 @@ var animation_context: int = 0
 var idle_cooldown: float = 0.0
 var _current_idle: int = 0
 var _previous_anim: StringName = ""
+var _faces_left: bool = false
 
 
 func _ready() -> void:
@@ -40,6 +43,9 @@ func _ready() -> void:
 		push_warning("Your character has no AnimationPlayer node attached to it, it will be unable to play animations.")
 	else:
 		Conductor.ibeat_reached.connect(try_dance)
+
+	if is_player and not _faces_left:
+		scale.x *= -1
 
 
 func _process(delta: float) -> void:

@@ -38,7 +38,7 @@ func update_selection(new_sel: int = 0) -> void:
 	current_item = buttons.get_child(current_selection)
 	if current_item is AnimatedSprite2D:
 		current_item.play("selected")
-	camera.position.y = current_item.position.y
+	camera.position.y = current_item.position.y * current_item.scale.y
 
 
 func confirm_selection():

@@ -248,6 +248,7 @@ func init_stage(path: NodePath) -> void:
 		var character: Character = load(char_path).instantiate()
 		character.global_position = marker.global_position
 		character.name = "player%s" % str(i + 1)
+		if i == 0: character._faces_left = true
 
 		var index: int = marker.get_index()
 		stage.remove_child(marker)

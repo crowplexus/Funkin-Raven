@@ -474,6 +474,7 @@ _data = {
 script = ExtResource("1_nvdx5")
 display_name = &"Boyfriend"
 health_icon = ExtResource("2_wdlpy")
+is_player = true
 
 [node name="sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_sdxu0")

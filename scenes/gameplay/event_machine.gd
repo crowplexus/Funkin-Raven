@@ -7,15 +7,18 @@ signal event_fired(id: int)
 
 @export var event_list: Array[ChartEvent] = []
 @export var current_event_id: int = 0
+var camera_tween_pos: Tween
+var camera_tween_zoom: Tween
 
 
 func call_event(id: int) -> void:
 	var e: ChartEvent = event_list[id]
 	match e.name:
-		"FocusCamera", "Change Camera Focus":
+		"FocusCamera":
 			var stage: StageBG = get_parent().stage
 			if not is_instance_valid(stage):
 				push_warning("(FocusCamera Event) - No stage available, a stage is needed in order to get characters from it in order to focus the camera on said character.")
+				return
 
 			var cam_pos: Vector2 = Vector2.ZERO
 			if "x" in e.values: cam_pos.x = float(e.values.x)
@@ -25,43 +28,76 @@ func call_event(id: int) -> void:
 			if is_instance_valid(c):
 				var duration: float = 4.0
 				match e.values.char:
-					_:
-						var t: Character = stage.get_node("player%s" % str(e.values.char)) as Character
-						if is_instance_valid(t) and is_instance_valid(c):
+					_ when int(e.values.char) != -1:
+						var t: = stage.get_node("player%s" % str(e.values.char+1))
+						if is_instance_valid(c) and is_instance_valid(t):
 							#print_debug("(FocusCamera) Focusing on %s" % t.display_name)
-							cam_pos += t.global_position + t.camera_offset
-							# center? temporary
+							var old_pos: Vector2 = cam_pos
+							cam_pos = t.global_position
+							if t is Character: cam_pos += t.camera_offset
+							cam_pos += old_pos
 
 				match e.values.ease:
 					"CLASSIC":
 						c.position_smoothing_enabled = true
+						c.global_position = cam_pos
 					"INSTANT":
 						c.position_smoothing_enabled = false
+						c.global_position = cam_pos
 					_:
+						if e.values.duration == 0:
+							c.position_smoothing_enabled = false
+							c.global_position = cam_pos
+						else:
+							c.position_smoothing_enabled = true
+							if is_instance_valid(camera_tween_pos):
+								camera_tween_pos.stop()
+							var easev: String = str(e.values.ease)
+							var dur_steps: float = Conductor.semiquaver * e.values.duration
+							var _easing: Tween.EaseType = convert_flixel_tween_ease(easev)
+							var _trans: Tween.TransitionType = convert_flixel_tween_trans(easev)
+							camera_tween_pos = create_tween().set_ease(_easing).set_trans(_trans)
+							camera_tween_pos.tween_property(c, "global_position", cam_pos, dur_steps)
 
-						var easev: String = str(e.values.ease)
-						var _step: float = Conductor.semiquaver * duration
-						var _easing: Tween.EaseType = convert_flixel_tween_ease(easev)
-						var _trans: Tween.TransitionType = convert_flixel_tween_trans(easev)
-						c.position_smoothing_enabled = true
-				c.global_position = cam_pos
+		"ZoomCamera":
+			var stage: StageBG = get_parent().stage
+			if not is_instance_valid(stage):
+				push_warning("(ZoomCamera Event) - No stage available, a stage is needed in order to get characters from it in order to zoom the camera.")
+				return
+
+			var c: Camera2D = get_viewport().get_camera_2d()
+			if is_instance_valid(c):
+				var duration: float = float(e.values.duration)
+				var target_zoom: float = e.values.zoom
+				match str(e.values.mode).to_lower():
+					_:
+						if str(e.values.mode) == "direct" or duration == 0.0:
+							stage.current_camera_zoom = c.zoom * target_zoom
+							c.zoom = stage.current_camera_zoom
+						else:
+							if is_instance_valid(camera_tween_zoom):
+								camera_tween_zoom.stop()
+							var easev: String = str(e.values.ease)
+							var dur_steps: float = Conductor.semiquaver * duration
+							var _easing: Tween.EaseType = convert_flixel_tween_ease(easev)
+							var _trans: Tween.TransitionType = convert_flixel_tween_trans(easev)
+							camera_tween_zoom = create_tween().set_ease(_easing).set_trans(_trans)
+							camera_tween_zoom.tween_property(stage, "current_camera_zoom", c.zoom * target_zoom, dur_steps)
 
 		"PlayAnimation":
 			var stage: StageBG = get_parent().stage
 			if not is_instance_valid(stage):
 				push_warning("(PlayAnimation Event) - No stage available, a stage is needed in order to get characters from it in order to make said character play an animation.")
+				return
 			if "target" in e.values:
 				var player: int = 0
 				match str(e.values.target).to_snake_case():
-					"bf", "boyfriend", "player1", "1", 1:
-						player = 1
-					"dad", "opponent", "enemy", "player2", "2":
-						player = 2
-					"gf", "girlfriend", "spectator", "crowd", "dj", "player3", "3":
-						player = 3
+					"bf", "boyfriend", "player1", "1": player = 1
+					"dad", "opponent", "enemy", "player2", "2": player = 2
+					"gf", "girlfriend", "spectator", "crowd", "dj", "player3", "3": player = 3
 
-				var t: Character = stage.get_node("player%s" % player) as Character
-				if is_instance_valid(t):
+				var t: = stage.get_node("player%s" % player)
+				if is_instance_valid(t) and t is Character:
 					t.play_animation(e.values.anim, "force" in e.values and e.values.force == true)
 					t.idle_cooldown = 0.8 * Conductor.semibreve
 					t.animation_context = 3

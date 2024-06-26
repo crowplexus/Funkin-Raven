@@ -1,0 +1,172 @@
+[gd_scene load_steps=19 format=3 uid="uid://c1bdpsmnikxma"]
+
+[ext_resource type="Script" path="res://scenes/backgrounds/tankmanBattlefield.gd" id="1_k5ge3"]
+[ext_resource type="Texture2D" uid="uid://ba88tpoweiexr" path="res://assets/sprites/week7/tankSky.png" id="2_otm03"]
+[ext_resource type="Script" path="res://addons/parallax_node/parallax_node.gd" id="3_wvf8h"]
+[ext_resource type="Texture2D" uid="uid://cmqsjdlgm5lcj" path="res://assets/sprites/week7/tankMountains.png" id="4_urvq7"]
+[ext_resource type="Texture2D" uid="uid://dxqnkc2xj8cu6" path="res://assets/sprites/week7/tankBuildings.png" id="5_mj13r"]
+[ext_resource type="Texture2D" uid="uid://b8chrw1qfltma" path="res://assets/sprites/week7/tankRuins.png" id="6_fo5xf"]
+[ext_resource type="Texture2D" uid="uid://bksdg8lkjbxl3" path="res://assets/sprites/week7/tankClouds.png" id="7_3eeqc"]
+[ext_resource type="SpriteFrames" uid="uid://bhdmg0awqpsvp" path="res://assets/sprites/week7/smokeLeft.res" id="8_hbkac"]
+[ext_resource type="SpriteFrames" uid="uid://dctira02223pm" path="res://assets/sprites/week7/smokeRight.res" id="9_58mes"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/week7/tankWatchtower.res" id="10_p5wdw"]
+[ext_resource type="SpriteFrames" uid="uid://hdetcxo57at4" path="res://assets/sprites/week7/tankRolling.res" id="11_gu2o1"]
+[ext_resource type="Texture2D" uid="uid://4olajmb6lte8" path="res://assets/sprites/week7/tankGround.png" id="12_6r81j"]
+[ext_resource type="SpriteFrames" uid="uid://d02epob83q0m5" path="res://assets/sprites/week7/tank0.res" id="13_1ltub"]
+[ext_resource type="SpriteFrames" uid="uid://b2j0jwmgnhxci" path="res://assets/sprites/week7/tank2.res" id="14_b27t2"]
+[ext_resource type="SpriteFrames" uid="uid://cuyls5h64ubq3" path="res://assets/sprites/week7/tank3.res" id="15_cmbs8"]
+[ext_resource type="SpriteFrames" uid="uid://de2j03xcd24jk" path="res://assets/sprites/week7/tank4.res" id="16_64mre"]
+[ext_resource type="SpriteFrames" uid="uid://b2x82a1dh7k8g" path="res://assets/sprites/week7/tank5.res" id="17_cu3ws"]
+[ext_resource type="SpriteFrames" uid="uid://jbj08xp3fa04" path="res://assets/sprites/week7/tank1.res" id="18_y26s0"]
+
+[node name="tankman_battlefield" type="Node2D"]
+position = Vector2(0, 1)
+script = ExtResource("1_k5ge3")
+
+[node name="camera_2d" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+zoom = Vector2(0.8, 0.8)
+limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 3.0
+
+[node name="solid" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -628.0
+offset_top = -446.0
+offset_right = 1964.0
+offset_bottom = 1012.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.890196, 0.635294, 0.427451, 1)
+
+[node name="tank_sky" type="Sprite2D" parent="."]
+position = Vector2(670.124, 139.499)
+scale = Vector2(1.44388, 1.44388)
+texture = ExtResource("2_otm03")
+
+[node name="mountains" type="Node2D" parent="."]
+position = Vector2(0, 64)
+script = ExtResource("3_wvf8h")
+parallax_factor = Vector2(0.2, 0.2)
+
+[node name="tank_mountains" type="Sprite2D" parent="mountains"]
+position = Vector2(636, 568)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("4_urvq7")
+
+[node name="buildings" type="Node2D" parent="."]
+script = ExtResource("3_wvf8h")
+parallax_factor = Vector2(0.3, 0.3)
+
+[node name="tank_buildings" type="Sprite2D" parent="buildings"]
+position = Vector2(596, 588)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("5_mj13r")
+
+[node name="ruins" type="Node2D" parent="."]
+script = ExtResource("3_wvf8h")
+parallax_factor = Vector2(0.35, 0.35)
+
+[node name="tank_ruins" type="Sprite2D" parent="ruins"]
+position = Vector2(568, 616)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("6_fo5xf")
+
+[node name="clouds" type="Node2D" parent="."]
+script = ExtResource("3_wvf8h")
+parallax_factor = Vector2(0.4, 0.4)
+
+[node name="tank_clouds" type="Sprite2D" parent="clouds"]
+position = Vector2(530, 316)
+texture = ExtResource("7_3eeqc")
+
+[node name="smoke" type="Node2D" parent="."]
+script = ExtResource("3_wvf8h")
+parallax_factor = Vector2(0.4, 0.4)
+
+[node name="left" type="AnimatedSprite2D" parent="smoke"]
+position = Vector2(-85, 414)
+sprite_frames = ExtResource("8_hbkac")
+animation = &"SmokeBlurLeft instance 1"
+frame_progress = 0.390615
+
+[node name="right" type="AnimatedSprite2D" parent="smoke"]
+position = Vector2(1145, 294)
+sprite_frames = ExtResource("9_58mes")
+animation = &"SmokeRight instance 1"
+frame_progress = 0.938799
+
+[node name="rolling" type="Node2D" parent="."]
+script = ExtResource("3_wvf8h")
+
+[node name="tank_rolling" type="AnimatedSprite2D" parent="rolling"]
+position = Vector2(16, 528)
+sprite_frames = ExtResource("11_gu2o1")
+animation = &"BG tank w lighting instance 1"
+frame_progress = 0.644736
+
+[node name="watchtower" type="Node2D" parent="."]
+script = ExtResource("3_wvf8h")
+parallax_factor = Vector2(0.5, 0.5)
+
+[node name="tank_watchtower" type="AnimatedSprite2D" parent="watchtower"]
+position = Vector2(182, 312)
+sprite_frames = ExtResource("10_p5wdw")
+animation = &"watchtower gradient color instance 1"
+
+[node name="ground" type="Node2D" parent="."]
+script = ExtResource("3_wvf8h")
+
+[node name="tank_ground" type="Sprite2D" parent="ground"]
+position = Vector2(519.667, 474.5)
+scale = Vector2(1.24722, 1.24722)
+texture = ExtResource("12_6r81j")
+
+[node name="player3" type="Marker2D" parent="."]
+position = Vector2(588, 426)
+gizmo_extents = 100.0
+
+[node name="player1" type="Marker2D" parent="."]
+position = Vector2(946, 544)
+gizmo_extents = 100.0
+
+[node name="player2" type="Marker2D" parent="."]
+position = Vector2(212, 460)
+gizmo_extents = 100.0
+
+[node name="audience" type="Node2D" parent="."]
+script = ExtResource("3_wvf8h")
+parallax_factor = Vector2(1.5, 1.5)
+
+[node name="guy0" type="AnimatedSprite2D" parent="audience"]
+position = Vector2(-200, 922)
+sprite_frames = ExtResource("13_1ltub")
+animation = &"fg tankhead far right instance 1"
+
+[node name="guy2" type="AnimatedSprite2D" parent="audience"]
+position = Vector2(1098, 972)
+sprite_frames = ExtResource("14_b27t2")
+animation = &"foreground man 3 instance 1"
+
+[node name="guy4" type="AnimatedSprite2D" parent="audience"]
+position = Vector2(176, 990)
+sprite_frames = ExtResource("16_64mre")
+animation = &"fg tankman bobbin 3 instance 1"
+
+[node name="guy3" type="AnimatedSprite2D" parent="audience"]
+position = Vector2(188, 1084)
+sprite_frames = ExtResource("15_cmbs8")
+animation = &"fg tankhead 4 instance 1"
+
+[node name="guy5" type="AnimatedSprite2D" parent="audience"]
+position = Vector2(1368, 950)
+sprite_frames = ExtResource("17_cu3ws")
+animation = &"fg tankhead far right instance 1"
+
+[node name="guy1" type="AnimatedSprite2D" parent="audience"]
+position = Vector2(728, 1100)
+sprite_frames = ExtResource("18_y26s0")
+animation = &"fg tankhead 5 instance 1"
