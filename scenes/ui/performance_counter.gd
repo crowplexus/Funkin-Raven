@@ -7,8 +7,8 @@ extends CanvasLayer
 @onready var update_timer: Timer = $"update_timer"
 
 var _cur_bus: int = 0
+var _display_state: int = 0
 var _game_muted: bool = false
-var _debug_display: bool = false
 var _update_delay: float = 1.0
 var _volume_bar_tween: Tween
 
@@ -26,7 +26,7 @@ func _ready() -> void:
 
 func update_text() -> void:
 	perf_label.text = ""
-	if _debug_display:
+	if _display_state == 1:
 		perf_label.text += "			- Performance -\n"
 
 	perf_label.text += "[font_size=18]%s[/font_size] FPS" % Performance.get_monitor(Performance.TIME_FPS)
@@ -34,7 +34,7 @@ func update_text() -> void:
 		perf_label.text += "\n[font_size=18]%s[/font_size] RAM\n" % [
 			String.humanize_size(int(Performance.get_monitor(Performance.MEMORY_STATIC)))]
 
-	if _debug_display:
+	if _display_state == 1:
 		perf_label.text += "\n			- Conductor -\n"
 		perf_label.text += "\n[font_size=15]%s[/font_size]" % Conductor.to_string()
 

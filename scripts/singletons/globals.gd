@@ -18,16 +18,11 @@ var ENGINE_VERSION: String:
 	get: return ProjectSettings.get_setting("application/config/version")
 
 var special_keybinds: Dictionary = {
-	KEY_F1: func():
-		Conductor.rate -= 0.01
-		print_debug(Conductor.rate),
-	KEY_F2: func():
-		Conductor.rate += 0.01
-		print_debug(Conductor.rate),
 	KEY_F3: func():
-		PerformanceCounter._debug_display = not PerformanceCounter._debug_display
+		PerformanceCounter._display_state = wrapi(PerformanceCounter._display_state + 1, 0, 3)
+		PerformanceCounter.visible = PerformanceCounter._display_state < 2
 		var conductor_delta: float = 0.8 * Conductor.semiquaver
-		PerformanceCounter._update_delay = 1.0 if not PerformanceCounter._debug_display else conductor_delta
+		PerformanceCounter._update_delay = 1.0 if PerformanceCounter._display_state != 1 else conductor_delta
 		PerformanceCounter.update_text(),
 	KEY_F5: func():
 		Globals.reset_scene(true),
