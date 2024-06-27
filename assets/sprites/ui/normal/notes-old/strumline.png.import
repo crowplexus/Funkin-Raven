@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://buu0fnca1lx3r"
-path="res://.godot/imported/strumline.png-8ea7b735ea21df807bd5e5b25d215aa6.ctex"
+path="res://.godot/imported/strumline.png-636e6469231da5ec886fdbd456b175d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/normal/strumline.png"
-dest_files=["res://.godot/imported/strumline.png-8ea7b735ea21df807bd5e5b25d215aa6.ctex"]
+source_file="res://assets/sprites/ui/normal/notes-old/strumline.png"
+dest_files=["res://.godot/imported/strumline.png-636e6469231da5ec886fdbd456b175d9.ctex"]
 
 [params]
 

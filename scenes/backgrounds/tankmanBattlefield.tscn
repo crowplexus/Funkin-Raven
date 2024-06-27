@@ -24,7 +24,7 @@ position = Vector2(0, 1)
 script = ExtResource("1_k5ge3")
 
 [node name="camera_2d" type="Camera2D" parent="."]
-position = Vector2(640, 360)
+position = Vector2(648, 360)
 zoom = Vector2(0.8, 0.8)
 limit_smoothed = true
 position_smoothing_enabled = true
@@ -48,7 +48,7 @@ scale = Vector2(1.44388, 1.44388)
 texture = ExtResource("2_otm03")
 
 [node name="mountains" type="Node2D" parent="."]
-position = Vector2(0, 64)
+position = Vector2(8, 64)
 script = ExtResource("3_wvf8h")
 parallax_factor = Vector2(0.2, 0.2)
 
@@ -62,7 +62,7 @@ script = ExtResource("3_wvf8h")
 parallax_factor = Vector2(0.3, 0.3)
 
 [node name="tank_buildings" type="Sprite2D" parent="buildings"]
-position = Vector2(596, 588)
+position = Vector2(604, 588)
 scale = Vector2(1.1, 1.1)
 texture = ExtResource("5_mj13r")
 
@@ -71,7 +71,7 @@ script = ExtResource("3_wvf8h")
 parallax_factor = Vector2(0.35, 0.35)
 
 [node name="tank_ruins" type="Sprite2D" parent="ruins"]
-position = Vector2(568, 616)
+position = Vector2(576, 616)
 scale = Vector2(1.1, 1.1)
 texture = ExtResource("6_fo5xf")
 
@@ -80,7 +80,7 @@ script = ExtResource("3_wvf8h")
 parallax_factor = Vector2(0.4, 0.4)
 
 [node name="tank_clouds" type="Sprite2D" parent="clouds"]
-position = Vector2(530, 316)
+position = Vector2(538, 316)
 texture = ExtResource("7_3eeqc")
 
 [node name="smoke" type="Node2D" parent="."]
@@ -103,7 +103,7 @@ frame_progress = 0.938799
 script = ExtResource("3_wvf8h")
 
 [node name="tank_rolling" type="AnimatedSprite2D" parent="rolling"]
-position = Vector2(16, 528)
+position = Vector2(24, 528)
 sprite_frames = ExtResource("11_gu2o1")
 animation = &"BG tank w lighting instance 1"
 frame_progress = 0.644736
@@ -126,15 +126,15 @@ scale = Vector2(1.24722, 1.24722)
 texture = ExtResource("12_6r81j")
 
 [node name="player3" type="Marker2D" parent="."]
-position = Vector2(588, 426)
+position = Vector2(596, 426)
 gizmo_extents = 100.0
 
 [node name="player1" type="Marker2D" parent="."]
-position = Vector2(946, 544)
+position = Vector2(954, 544)
 gizmo_extents = 100.0
 
 [node name="player2" type="Marker2D" parent="."]
-position = Vector2(212, 460)
+position = Vector2(220, 460)
 gizmo_extents = 100.0
 
 [node name="audience" type="Node2D" parent="."]
@@ -142,31 +142,31 @@ script = ExtResource("3_wvf8h")
 parallax_factor = Vector2(1.5, 1.5)
 
 [node name="guy0" type="AnimatedSprite2D" parent="audience"]
-position = Vector2(-200, 922)
+position = Vector2(-192, 922)
 sprite_frames = ExtResource("13_1ltub")
 animation = &"fg tankhead far right instance 1"
 
 [node name="guy2" type="AnimatedSprite2D" parent="audience"]
-position = Vector2(1098, 972)
+position = Vector2(1106, 972)
 sprite_frames = ExtResource("14_b27t2")
 animation = &"foreground man 3 instance 1"
 
 [node name="guy4" type="AnimatedSprite2D" parent="audience"]
-position = Vector2(176, 990)
+position = Vector2(184, 990)
 sprite_frames = ExtResource("16_64mre")
 animation = &"fg tankman bobbin 3 instance 1"
 
 [node name="guy3" type="AnimatedSprite2D" parent="audience"]
-position = Vector2(188, 1084)
+position = Vector2(196, 1084)
 sprite_frames = ExtResource("15_cmbs8")
 animation = &"fg tankhead 4 instance 1"
 
 [node name="guy5" type="AnimatedSprite2D" parent="audience"]
-position = Vector2(1368, 950)
+position = Vector2(1376, 950)
 sprite_frames = ExtResource("17_cu3ws")
 animation = &"fg tankhead far right instance 1"
 
 [node name="guy1" type="AnimatedSprite2D" parent="audience"]
-position = Vector2(728, 1100)
+position = Vector2(736, 1100)
 sprite_frames = ExtResource("18_y26s0")
 animation = &"fg tankhead 5 instance 1"

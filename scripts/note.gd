@@ -94,4 +94,21 @@ var finished: bool = false
 static func sort_by_time(first: Note, next: Note) -> int:
 	return first.time < next.time
 
+
+static func get_quant(beat: float) -> int:
+	var quants: Array[int] = [4,8,12,16,20,24,32,48,64,96,192]
+	var row: int = Conductor.beat_to_row(beat)
+	for qua: int in quants:
+		if row % (Conductor.rows_per_bar / qua) == 0:
+			return quants.find(qua)
+	return 0
+
+static func get_colour(time: float, column: int = 0) -> Color:
+	match Preferences.note_colouring_mode:
+		1:
+			var beat_time: float = Conductor.time_to_beat(time)
+			return Preferences.note_colours[1][Note.get_quant(beat_time)]
+		_:
+			return Preferences.note_colours[0][column]
+
 #endregion

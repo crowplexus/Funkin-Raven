@@ -47,6 +47,10 @@ var crotchet: float = 0.0 # Beat
 var semiquaver: float = 0.0 # Step
 var semibreve: float = 0.0 # Bar
 
+var rows_per_beat: int = 48
+var rows_per_bar: int:
+	get: return rows_per_beat * beats_per_bar
+
 var steps_per_beat: int = 4
 var beats_per_bar: int = 4
 
@@ -130,17 +134,21 @@ func time_change_from_vanilla(tc: Dictionary) -> Dictionary:
 func sort_time_changes(changes_to_sort: Array[Dictionary] = []) -> void:
 	if changes_to_sort.is_empty():
 		changes_to_sort = Conductor.time_changes
-
 	changes_to_sort.sort_custom(func(a: Dictionary, b: Dictionary):
 		return a.time_stamp < b.time_stamp)
 
 ## Utility function to apply a given time change.
 func apply_time_change(tc: Dictionary) -> void:
-	# TODO: more
-	#if "bpm" in tc: Conductor.bpm = tc.bpm
 	Conductor.current_time_change = time_changes.find(tc)
 	print_debug("time change applied, current time change is ", Conductor.current_time_change)
 	print_debug("bpm applied from time change, current bpm is ", Conductor.bpm)
+
+#stolen from TE thank you nebula
+func beat_to_row(beat: float) -> int:
+	return round(beat * Conductor.rows_per_beat)
+
+func row_to_beat(row: int) -> float:
+	return row / Conductor.rows_per_beat
 
 ## Converts beat time to seconds.
 func beat_to_time(ctime: float, cbpm: float = -1) -> float:

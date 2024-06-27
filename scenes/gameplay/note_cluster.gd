@@ -88,6 +88,7 @@ func spawn_note(id: int) -> void:
 		var kind: StringName = "normal"
 		if note.kind in NOTE_KIND_OBJECTS:
 			kind = note.kind
+
 		note.object = NOTE_KIND_OBJECTS[kind].instantiate()
 		note.object.name = note.kind + str(get_child_count())
 		note.object.position.y = INF

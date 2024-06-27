@@ -26,11 +26,10 @@ func call_event(id: int) -> void:
 
 			var c: Camera2D = get_viewport().get_camera_2d()
 			if is_instance_valid(c):
-				var duration: float = 4.0
 				match e.values.char:
 					_ when int(e.values.char) != -1:
 						var t: = stage.get_node("player%s" % str(e.values.char+1))
-						if is_instance_valid(c) and is_instance_valid(t):
+						if is_instance_valid(t):
 							#print_debug("(FocusCamera) Focusing on %s" % t.display_name)
 							var old_pos: Vector2 = cam_pos
 							cam_pos = t.global_position

@@ -1,10 +1,10 @@
 extends Control
 class_name NoteField
 
-@onready var receptors: Control = $"receptors"
-
 @export var connected_characters: Array[Character] = []
 @export var scroll_mods: PackedVector2Array = []
+
+@export var receptors: Array[CanvasItem] = []
 @export var player: Player = null
 @export var key_count: int = 4
 
@@ -24,10 +24,11 @@ var playfield_spot: float:
 		#global_position.x *= absf(scale.x)
 		playfield_spot = new_warp
 
+
 #region Player
 
 func on_note_hit(hit_result: Note.HitResult, is_tap: bool) -> void:
-	if not is_instance_valid(hit_result.data):
+	if not is_instance_valid(hit_result) or not is_instance_valid(hit_result.data):
 		return
 	chars_sing(hit_result.data.column, is_tap, hit_result.data.update_hold)
 
@@ -42,13 +43,12 @@ func reset_scroll_mods() -> void:
 
 	for i: int in key_count:
 		#if receptors.get_child_count() < i:
-		#	var mmmm: = receptors.get_child(i % receptors.get_child_count())
+		#	var mmmm: = receptors[i % receptors.size()]
 		#	var copy: = mmmm.duplicate()
 		#	copy.position.x += 160 * i
 		#	copy.name = str(i)
 		#	receptors.add_child(copy)
-
-		var receptor: CanvasItem = receptors.get_child(i % receptors.get_child_count())
+		var receptor: CanvasItem = receptors[i % receptors.size()]
 		if not is_instance_valid(receptor):
 			continue
 
@@ -70,29 +70,29 @@ func make_playable(new_player: Player = null) -> void:
 
 
 func get_receptor(column: int) -> CanvasItem:
-	if column < 0 or column > receptors.get_child_count():
+	if column < 0 or column > receptors.size():
 		column = 0
-	return receptors.get_child(column)
+	return receptors[column]
 
 #endregion
 #region Animations
 
 func play_static(key: int) -> void:
-	var receptor: = receptors.get_child(key)
+	var receptor: = receptors[key]
 	receptor.frame = 0
-	receptor.play("%s static" % key)
+	receptor.play("static")
 
 
 func play_ghost(key: int) -> void:
-	var receptor: = receptors.get_child(key)
+	var receptor: = receptors[key]
 	receptor.frame = 0
-	receptor.play("%s press" % key)
+	receptor.play("press")
 
 
 func play_glow(key: int) -> void:
-	var receptor: = receptors.get_child(key)
+	var receptor: = receptors[key]
 	receptor.frame = 0
-	receptor.play("%s confirm" % key)
+	receptor.play("confirm")
 
 
 func botplay_receptor(note: Note) -> void:
@@ -102,7 +102,6 @@ func botplay_receptor(note: Note) -> void:
 	var anim_timer: Timer = animation_timers[note.column]
 	if is_instance_valid(anim_timer):
 		anim_timer.stop()
-
 		anim_timer.start((0.2 * Conductor.crotchet) + note.hold_length)
 		play_glow.call_deferred(note.column)
 		await anim_timer.timeout

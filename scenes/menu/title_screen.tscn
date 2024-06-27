@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://bhe3se8c1irju"]
+[gd_scene load_steps=8 format=3 uid="uid://bhe3se8c1irju"]
 
 [ext_resource type="Script" path="res://scenes/menu/title_screen.gd" id="1_8wfl2"]
 [ext_resource type="SpriteFrames" uid="uid://6invu4iq7kki" path="res://assets/sprites/menu/title_screen/enter.res" id="3_2acdi"]
 [ext_resource type="Texture2D" uid="uid://jufk7v0jpi4l" path="res://assets/sprites/menu/title_screen/titlelogo.svg" id="3_3yfj3"]
 [ext_resource type="Script" path="res://scenes/ui/alphabet.gd" id="4_57wvf"]
+[ext_resource type="Texture2D" uid="uid://btrnpm6kh43ij" path="res://assets/sprites/menu/title_screen/crow.jpg" id="4_xfs5w"]
 
 [sub_resource type="Animation" id="Animation_vx10e"]
 resource_name = "bump"
@@ -48,6 +49,12 @@ position = Vector2(605, 616)
 sprite_frames = ExtResource("3_2acdi")
 animation = &"ENTER IDLE"
 
+[node name="crow" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(640, 528)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("4_xfs5w")
+
 [node name="text_thingy" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 4
@@ -72,3 +79,4 @@ offset_right = 1280.0
 offset_bottom = 720.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_lock_ = true

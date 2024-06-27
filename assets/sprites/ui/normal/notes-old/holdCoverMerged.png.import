@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mxy8k0kv1y6v"
-path="res://.godot/imported/splashes.png-ad6acb60069dee26cd5237138c11f15f.ctex"
+uid="uid://cuj1y4khoofx"
+path="res://.godot/imported/holdCoverMerged.png-b93bfb2246a489c96b62f2660603645f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/normal/splashes.png"
-dest_files=["res://.godot/imported/splashes.png-ad6acb60069dee26cd5237138c11f15f.ctex"]
+source_file="res://assets/sprites/ui/normal/notes-old/holdCoverMerged.png"
+dest_files=["res://.godot/imported/holdCoverMerged.png-b93bfb2246a489c96b62f2660603645f.ctex"]
 
 [params]
 

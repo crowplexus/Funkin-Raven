@@ -12,6 +12,7 @@ camera = NodePath("camera_2d")
 [node name="camera_2d" type="Camera2D" parent="."]
 position = Vector2(640, 360)
 zoom = Vector2(0.8, 0.8)
+limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 3.0
 

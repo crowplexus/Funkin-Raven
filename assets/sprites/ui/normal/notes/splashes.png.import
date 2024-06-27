@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0e0hs348mdly"
-path="res://.godot/imported/holds.png-abebd6697cbdc2b01dd660a5432c3dd5.ctex"
+uid="uid://dikuy8mb7mjqj"
+path="res://.godot/imported/splashes.png-d6c5d8dbd2eea6d510f1ccd1fd11a51e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/normal/holds.png"
-dest_files=["res://.godot/imported/holds.png-abebd6697cbdc2b01dd660a5432c3dd5.ctex"]
+source_file="res://assets/sprites/ui/normal/notes/splashes.png"
+dest_files=["res://.godot/imported/splashes.png-d6c5d8dbd2eea6d510f1ccd1fd11a51e.ctex"]
 
 [params]
 

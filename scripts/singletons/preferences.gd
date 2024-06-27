@@ -83,14 +83,22 @@ var coloured_combo: int = 2
 ## Dictates how [code]coloured_combo[/code] should colour the judgments and/or combo
 @export_enum("Judgment:0", "Clear Flag:1")
 var combo_colour_mode: int = 1
-## How should the countdown's speed behave when ticking?
-@export_enum("BPM based:0", "User defined:1")
-var countdown_mode: int = 0
-## How fast the countdown ticks down, measured in steps[br]
-## The higher the number, the slower it gets.
-@export var countdown_speed: int = 5:
-	set(new_speed):
-		countdown_speed = clampi(new_speed, 1, 10)
+## Define your note colours.
+@export var note_colours: Array = [
+	[ # columns
+		Color("#C24B99"), Color("#00FFFF"),
+		Color("#12FA05"), Color("#F9393F")
+	],
+	[ # quants
+		Color.RED, Color.BLUE, Color.PURPLE,
+		Color.ORANGE, Color.MAROON, Color.LIME,
+		Color.SPRING_GREEN, Color.DARK_GRAY,
+		Color.INDIAN_RED, Color.NAVY_BLUE, Color.SLATE_GRAY
+	]
+]
+## Define what note colours to show during gameplay.
+@export_enum("Column:0", "Quantized:1")
+var note_colouring_mode: int = 0
 ## Language used in the menus and user interface.
 @export var language: String = "en_AU":
 	set(new_locale):

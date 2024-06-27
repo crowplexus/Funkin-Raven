@@ -1,6 +1,7 @@
 extends Node2D
 
 @onready var sprites: Node2D = $"sprites"
+@onready var crow_sprite: Sprite2D = $"crow"
 @onready var logo_animation: AnimationPlayer = $"sprites/logo/animation_player"
 @onready var enter_sprite: AnimatedSprite2D = $"sprites/enter_sprite"
 @onready var thingy: Alphabet = $"text_thingy"
@@ -72,8 +73,12 @@ func on_ibeat_reached(ibeat: int) -> void:
 		3: thingy.text += "the Funkin' Crew Inc."
 		4: thingy.text = ""
 		5: thingy.text = "a Fan-remake..."
-		7: thingy.text += "\nby crowplexus"
-		8: thingy.text = ""
+		7:
+			thingy.text += "\nby crowplexus"
+			crow_sprite.visible = true
+		8:
+			crow_sprite.visible = false
+			thingy.text = ""
 		9: thingy.text = "swagshit"
 		11: thingy.text += "\nmoneymoney"
 		12: thingy.text = ""
