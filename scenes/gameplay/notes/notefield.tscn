@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dab600stg4bxl"]
 
-[ext_resource type="Script" path="res://scenes/gameplay/fields/notefield.gd" id="1_bd6jx"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/ui/normal/notes/strumline.res" id="2_brvy6"]
+[ext_resource type="Script" path="res://scenes/gameplay/notes/notefield.gd" id="1_bd6jx"]
+[ext_resource type="SpriteFrames" uid="uid://ct58h45og8cx6" path="res://assets/sprites/noteskins/fnf/strumline.res" id="2_gcum3"]
 
 [node name="notefield" type="Control" node_paths=PackedStringArray("receptors")]
 layout_mode = 3
@@ -11,30 +11,27 @@ receptors = [NodePath("0"), NodePath("1"), NodePath("2"), NodePath("3")]
 
 [node name="0" type="AnimatedSprite2D" parent="."]
 use_parent_material = true
-rotation = -1.5708
 scale = Vector2(0.5, 0.5)
-sprite_frames = ExtResource("2_brvy6")
-animation = &"static"
+sprite_frames = ExtResource("2_gcum3")
+animation = &"0 static"
 
 [node name="1" type="AnimatedSprite2D" parent="."]
 use_parent_material = true
 position = Vector2(80, 0)
-rotation = -3.14159
 scale = Vector2(0.5, 0.5)
-sprite_frames = ExtResource("2_brvy6")
-animation = &"static"
+sprite_frames = ExtResource("2_gcum3")
+animation = &"1 static"
 
 [node name="2" type="AnimatedSprite2D" parent="."]
 use_parent_material = true
 position = Vector2(160, 0)
 scale = Vector2(0.5, 0.5)
-sprite_frames = ExtResource("2_brvy6")
-animation = &"static"
+sprite_frames = ExtResource("2_gcum3")
+animation = &"2 static"
 
 [node name="3" type="AnimatedSprite2D" parent="."]
 use_parent_material = true
 position = Vector2(240, 0)
-rotation = 1.5708
 scale = Vector2(0.5, 0.5)
-sprite_frames = ExtResource("2_brvy6")
-animation = &"static"
+sprite_frames = ExtResource("2_gcum3")
+animation = &"3 static"

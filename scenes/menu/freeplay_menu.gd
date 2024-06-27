@@ -2,6 +2,7 @@ extends Node2D
 
 @onready var bg: Sprite2D = $"background"
 @onready var song_list: Control = $"ui/song_container"
+@onready var score_label: Label = $"ui/score_text"
 @onready var diff_label: Label = $"ui/score_text/difficulty_text"
 
 @export var item_idle_opacity: float = 0.6
@@ -14,22 +15,18 @@ var current_difficulty: Dictionary
 var current_selection: int = 1
 var current_alternative: int = 1
 var music_fade_twn: Tween
-var _transitioning: bool = false
 
 
 func _ready() -> void:
 	play_bgm_check(Globals.MENU_MUSIC)
 	$"ui/song_container/random".modulate.a = item_idle_opacity
-	songs = bundle.get_all_songs()
+	if bundle: songs = bundle.get_all_songs()
 	generate_songs()
 
 
 func _unhandled_input(e: InputEvent) -> void:
 	# prevents a bug with moving the mouse which would change selections nonstop
 	if e is InputEventMouseMotion:
-		return
-
-	if _transitioning == true:
 		return
 
 	var ud: int = int(Input.get_axis("ui_up", "ui_down"))
@@ -41,7 +38,7 @@ func _unhandled_input(e: InputEvent) -> void:
 	if lr: update_alternative(lr)
 
 	if Input.is_action_just_pressed("ui_cancel"):
-		_transitioning = true
+		Globals.set_node_inputs(self, false)
 		# stupid check to stop random bgm when its playing
 		if SoundBoard.current_bgm != Globals.MENU_MUSIC.resource_path.get_file().get_basename():
 			play_bgm_check(Globals.MENU_MUSIC, true)
@@ -49,7 +46,7 @@ func _unhandled_input(e: InputEvent) -> void:
 		Globals.change_scene(load("res://scenes/menu/main_menu.tscn"))
 
 	if Input.is_action_just_pressed("ui_accept"):
-		_transitioning = true
+		Globals.set_node_inputs(self, false)
 		if current_selection == 0:
 			current_selection = randi_range(1, song_list.get_child_count())
 			update_selection()
@@ -65,6 +62,8 @@ func _unhandled_input(e: InputEvent) -> void:
 
 
 func update_selection(new_sel: int = 0) -> void:
+	if song_list.get_child_count() == 0:
+		return
 	if is_instance_valid(current_item):
 		current_item.modulate.a = item_idle_opacity
 
@@ -89,6 +88,8 @@ func update_selection(new_sel: int = 0) -> void:
 
 
 func update_alternative(new_alt: int = 0) -> void:
+	if song_list.get_child_count() == 0:
+		return
 	current_alternative = wrapi(current_alternative + new_alt, 0, songs[current_selection - 1].difficulties.size())
 	current_difficulty = songs[current_selection - 1].difficulties[current_alternative]
 	if new_alt != 0: SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
@@ -99,6 +100,17 @@ func update_alternative(new_alt: int = 0) -> void:
 
 
 func generate_songs() -> void:
+	if not bundle or songs.is_empty():
+		song_list.get_child(0).free()
+		score_label.visible = false
+		var error_notice: Alphabet = Alphabet.new()
+		error_notice.size = get_viewport_rect().size
+		error_notice.horizontal_alignment = 1
+		error_notice.vertical_alignment = 1
+		error_notice.text = "No songs found"
+		add_child(error_notice)
+		return
+
 	for item: Control in song_list.get_children():
 		if item.get_index() == 0:
 			continue

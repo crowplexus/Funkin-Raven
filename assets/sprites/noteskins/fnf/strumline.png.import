@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dikuy8mb7mjqj"
-path="res://.godot/imported/splashes.png-d6c5d8dbd2eea6d510f1ccd1fd11a51e.ctex"
+uid="uid://buu0fnca1lx3r"
+path="res://.godot/imported/strumline.png-a3fcb515cf033dfc35f516ee3541cbe5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/normal/notes/splashes.png"
-dest_files=["res://.godot/imported/splashes.png-d6c5d8dbd2eea6d510f1ccd1fd11a51e.ctex"]
+source_file="res://assets/sprites/noteskins/fnf/strumline.png"
+dest_files=["res://.godot/imported/strumline.png-a3fcb515cf033dfc35f516ee3541cbe5.ctex"]
 
 [params]
 

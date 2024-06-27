@@ -7,7 +7,6 @@ extends Node2D
 
 var current_item: CanvasItem
 var current_selection: int = 0
-var _transitioning: bool = false
 
 
 func _ready() -> void:
@@ -20,10 +19,6 @@ func _unhandled_input(e: InputEvent) -> void:
 	# prevents a bug with moving the mouse which would change selections nonstop
 	if e is InputEventMouseMotion:
 		return
-
-	if _transitioning == true:
-		return
-
 	var ud: int = int(Input.get_axis("ui_up", "ui_down"))
 	if ud: update_selection(ud)
 	if Input.is_action_just_pressed("ui_accept"):
@@ -43,7 +38,6 @@ func update_selection(new_sel: int = 0) -> void:
 
 func confirm_selection():
 	bye_bye_buttons()
-	_transitioning = true
 	SoundBoard.play_sfx(Globals.MENU_CONFIRM_SFX)
 	if Preferences.flashing:
 		Globals.begin_flicker(magenta, 1.1, 0.15, false)
@@ -51,25 +45,27 @@ func confirm_selection():
 	await get_tree().create_timer(1.0).timeout
 	match current_item.name:
 		"story":
+			Globals.set_node_inputs(self, false)
 			Globals.change_scene(load("res://scenes/menu/story_menu.tscn"))
 		"freeplay":
+			Globals.set_node_inputs(self, false)
 			Globals.change_scene(load("res://scenes/menu/freeplay_menu.tscn"))
 		"options":
 			var ow: Control = Globals.get_options_window()
+			ow.close_callback = func() -> void:
+				if get_tree().paused:
+					get_tree().paused = false
 			PerformanceCounter.add_child(ow)
 			current_item.self_modulate.a = 1.0
 			get_tree().paused = true
-			_transitioning = false
 			bye_bye_buttons(true)
 		"merch":
 			OS.shell_open("https://needlejuicerecords.com/pages/friday-night-funkin")
 			current_item.self_modulate.a = 1.0
-			_transitioning = false
 			bye_bye_buttons(true)
 		_:
 			push_warning("button pressed was ", current_item.name, " but there is no action defined for it")
 			current_item.self_modulate.a = 1.0
-			_transitioning = false
 			bye_bye_buttons(true)
 
 

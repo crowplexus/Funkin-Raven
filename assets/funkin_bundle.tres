@@ -227,5 +227,6 @@ song_list = Array[ExtResource("2_l0nbh")]([SubResource("Resource_lnh5v"), SubRes
 
 [resource]
 script = ExtResource("1_45q1f")
+name = &"Friday Night Funkin\'"
 level_list = Array[ExtResource("1_g28nu")]([SubResource("Resource_k8l10"), SubResource("Resource_6vdap"), SubResource("Resource_tyja2")])
 song_list = Array[ExtResource("2_l0nbh")]([])

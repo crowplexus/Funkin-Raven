@@ -99,16 +99,12 @@ func _process(delta: float) -> void:
 		health_bar.value = lerpf(health_bar.value, health_deluxe, exp(-delta * 96))
 
 
-func _unhandled_key_input(e: InputEvent) -> void:
-	if e.is_pressed():
-		match e.keycode:
-			KEY_ESCAPE:
-				get_tree().change_scene_to_packed(load("res://scenes/menu/freeplay_menu.tscn"))
-			KEY_ENTER:
-				if not get_tree().paused:
-					var ow: Control = Globals.get_options_window()
-					get_tree().paused = true
-					PerformanceCounter.add_child(ow)
+func _unhandled_input(_e: InputEvent) -> void:
+	if Input.is_action_just_pressed("ui_pause") and is_processing_unhandled_input():
+		var pause_menu: Control = load("res://scenes/ui/pause_menu.tscn").instantiate()
+		pause_menu.z_index = 100
+		get_tree().paused = true
+		ui_layer.add_child(pause_menu)
 
 
 func _exit_tree() -> void:

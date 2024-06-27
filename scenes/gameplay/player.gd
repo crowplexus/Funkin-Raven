@@ -2,9 +2,8 @@ extends Node2D
 ## Handles Player Input, Scoring, and your taxes.
 class_name Player
 
-#region Scoring
+#region Editor Variables
 
-	# scoring values #
 @export var stats: PlayerStats
 ## Your current health value, starts at max_health / 2.
 @export var health: int = 0: # this is set on the _ready() function
@@ -47,7 +46,7 @@ func _process(delta: float) -> void:
 
 			if my_note.moving and (my_note.time - Conductor.time) < -0.3:
 				my_note.hit_flag = -1
-				if (my_note.time - Conductor.time) < -(0.3 + my_note.hold_length - 0.5):
+				if (my_note.time - Conductor.time) < -(0.3 + my_note.hold_progress - 0.5):
 					if is_instance_valid(my_note.object):
 						my_note.object.call_deferred("miss_behaviour", my_note.column)
 					apply_miss(my_note.column)
@@ -59,7 +58,7 @@ func _process(delta: float) -> void:
 				if is_instance_valid(my_note.notefield):
 					my_note.notefield.botplay_receptor(my_note)
 					my_note.notefield.on_note_hit(_latest_hit_result, true)
-				if my_note.hold_length > 0.0:
+				if my_note.hold_progress > 0.0:
 					my_note.update_hold = true
 					my_note.moving = false
 					if Conductor.ibeat % 1 == 0 and is_instance_valid(my_note.notefield):
@@ -94,11 +93,11 @@ func _unhandled_key_input(e: InputEvent) -> void:
 			if tap.time < Conductor.time: tap.hit_timing = 2
 			else: tap.hit_timing = 1
 
-			if tap.hold_length > 0.0:
-				tap.trip_timer = 1.5 * tap.hold_length
+			if tap.hold_progress > 0.0:
+				tap.trip_timer = 1.5 * tap.hold_progress
 
 			note_hit_tap(tap)
-			if tap.hold_length > 0.0:
+			if tap.hold_progress > 0.0:
 				hold_note_queue.append(tap)
 			tap.notefield.on_note_hit(_latest_hit_result, true)
 			# play animation in receptor
@@ -133,21 +132,21 @@ func manage_hit_queue(delta: float) -> void:
 				2: # botplay
 					if Conductor.ibeat % 1 == 0 and is_instance_valid(hold.notefield):
 						hold.notefield.play_glow(hold.column)
-		if hold.hold_length <= 0.0:
+		if hold.hold_progress <= 0.0:
 			hold_note_queue.erase(hold)
 		update_hold_note(hold)
 
 
 ## Handles hold note input.
 func hold_note_input(hold: Note, delta: float = 0.0) -> void:
-	if hold.dropped or hold.hold_length == 0.0:
+	if hold.dropped or hold.hold_progress == 0.0:
 		return
 
 	if is_instance_valid(hold.receptor) and is_instance_valid(hold.object):
 		hold.object.position.y = hold.receptor.global_position.y
 	if hold.column <= held_buttons.size():
 		hold.update_hold = true
-		if hold.hold_length > 0.01:
+		if hold.hold_progress > 0.01:
 			if held_buttons[hold.column] == false:
 				hold.trip_timer -= 0.1
 				if is_instance_valid(hold.object):
@@ -173,17 +172,16 @@ func hold_note_input(hold: Note, delta: float = 0.0) -> void:
 ## Updates a hold note's size and objects.
 func update_hold_note(note: Note, delta: float = 0.0) -> void:
 	if delta == 0.0: delta = get_process_delta_time()
-
 	var rel_time: float = note.time - Conductor.time
 	if note.update_hold:
 		if note.hit_timing == 2 and rel_time < 0.0:
-			note.hold_length += rel_time
+			note.hold_progress += rel_time
 			note.hit_timing = 0
 		var nscale: float = note.object.scale.x if is_instance_valid(note.object) else 0.7
-		note.hold_length -= delta / absf(nscale)
+		note.hold_progress -= delta / absf(nscale)
 		if is_instance_valid(note.object) and  note.object.has_method("update_hold_size"):
 			note.object.call_deferred("update_hold_size")
-	if note.hold_length <= 0.0:
+	if note.hold_progress <= 0.0:
 		finish_note(note)
 
 ## Queues a note as finished, used for input.
@@ -193,7 +191,7 @@ func finish_note(note: Note) -> void:
 	if is_instance_valid(note.object):
 		note.object.call_deferred("finish")
 		await RenderingServer.frame_pre_draw # wait next frame
-	if note.hold_length <= 0.0:
+	if note.hold_progress <= 0.0:
 		note.update_hold = false
 	if is_instance_valid(note.object):
 		note.object.free()
@@ -208,9 +206,8 @@ func note_hit_tap(note: Note) -> void:
 
 	var hit_result: Note.HitResult = send_hit_result(note, true)
 	_latest_hit_result = hit_result
-	if note.hold_length > 0.0:
+	if note.hold_progress > 0.0:
 		note.moving = false
-
 	match note.hit_flag:
 		1:
 			if is_instance_valid(hit_result):
@@ -221,8 +218,7 @@ func note_hit_tap(note: Note) -> void:
 					note.object.modulate.a = 0.4
 					note.object.modulate.v = 3.0
 					combo_break.emit(note)
-
-	if note.hold_length <= 0.0:
+	if note.hold_progress <= 0.0:
 		finish_note(note)
 
 ## Note hit function for hold notes[br]
@@ -230,9 +226,9 @@ func note_hit_tap(note: Note) -> void:
 func note_hit_hold(note: Note) -> void:
 	stats.score = stats.score + 15
 	if is_instance_valid(_latest_hit_result):
-		if Conductor.ibeat % 2 == 0 or note.hold_length <= 0.0:
+		if Conductor.ibeat % 2 == 0 or note.hold_progress <= 0.0:
 			note_hit.emit(_latest_hit_result, false)
-		if note.hold_length <= 0.0:
+		if note.hold_progress <= 0.0:
 			_latest_hit_result.unreference()
 			#hold_note_queue.erase(note)
 
@@ -312,7 +308,7 @@ func apply_miss(column: int = 0) -> void:
 	else:
 		stats.combo -= 1
 
-	stats.misses += 1
 	health -= 3
+	stats.misses += 1
 	note_miss.emit(column)
 #endregion

@@ -45,6 +45,20 @@ func _ready() -> void:
 		Conductor.ibeat_reached.connect(try_dance)
 
 	if is_player and not _faces_left:
+		var left_idx: int = 0
+		var right_idx: int = 0
+		# swap left and right sprites
+		# this is duuuuuuuuuuuuuuuumb
+		for sing_anim: String in sing_list:
+			if sing_anim.to_lower().ends_with("left") or sing_anim.to_lower() == "left":
+				left_idx = sing_list.find(sing_anim)
+			if sing_anim.to_lower().ends_with("right") or sing_anim.to_lower() == "right":
+				right_idx = sing_list.find(sing_anim)
+
+		var old_sl: = sing_list.duplicate()
+		sing_list[left_idx] = old_sl[right_idx]
+		sing_list[right_idx] = old_sl[left_idx]
+		old_sl.clear()
 		scale.x *= -1
 
 
@@ -86,9 +100,9 @@ func dance(force: bool = false, force_idle: int = -1) -> void:
 	animation_context = 0
 
 
-func sing(column: int, force: bool = false, is_hold: bool = false) -> void:
+func sing(column: int, force: bool = false, suffix: String = "") -> void:
 	var to_play: StringName = sing_list[column]
-	if is_hold and animation_player.has_animation(to_play + "hold"):
-		to_play += "hold"
+	if not suffix.is_empty() and animation_player.has_animation(to_play + suffix):
+		to_play += suffix
 	play_animation(to_play, force)
 	animation_context = 1

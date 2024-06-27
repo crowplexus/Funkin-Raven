@@ -5,8 +5,8 @@ class_name NoteField
 @export var scroll_mods: PackedVector2Array = []
 
 @export var receptors: Array[CanvasItem] = []
-@export var player: Player = null
 @export var key_count: int = 4
+@export var player: Player
 
 var animation_timers: Array[Timer] = []
 ## Warps the notefield to either the Left (0) side of the screen
@@ -30,7 +30,13 @@ var playfield_spot: float:
 func on_note_hit(hit_result: Note.HitResult, is_tap: bool) -> void:
 	if not is_instance_valid(hit_result) or not is_instance_valid(hit_result.data):
 		return
-	chars_sing(hit_result.data.column, is_tap, hit_result.data.update_hold)
+	var suffix: String = ""
+	match hit_result.data.kind:
+		"altanim", "altAnim", "Alt Animation": suffix = "-alt"
+		_: suffix = ""
+	if hit_result.data.hold_length > 0.0:
+		suffix += "-hold"
+	chars_sing(-1, hit_result.data.column, is_tap, suffix)
 
 
 func reset_scroll_mods() -> void:
@@ -42,12 +48,14 @@ func reset_scroll_mods() -> void:
 	animation_timers.fill(Timer.new())
 
 	for i: int in key_count:
-		#if receptors.get_child_count() < i:
-		#	var mmmm: = receptors[i % receptors.size()]
-		#	var copy: = mmmm.duplicate()
-		#	copy.position.x += 160 * i
-		#	copy.name = str(i)
-		#	receptors.add_child(copy)
+		if i > receptors.size():
+			var mmmm: = receptors[i % receptors.size()]
+			var copy: = mmmm.duplicate()
+			copy.position.x += 160 * i
+			copy.name = str(i)
+			add_child(copy)
+			receptors.append(copy)
+
 		var receptor: CanvasItem = receptors[i % receptors.size()]
 		if not is_instance_valid(receptor):
 			continue
@@ -69,6 +77,7 @@ func make_playable(new_player: Player = null) -> void:
 	add_child(player)
 
 
+## Safer way to get a receptor over doing receptors[column]
 func get_receptor(column: int) -> CanvasItem:
 	if column < 0 or column > receptors.size():
 		column = 0
@@ -80,19 +89,19 @@ func get_receptor(column: int) -> CanvasItem:
 func play_static(key: int) -> void:
 	var receptor: = receptors[key]
 	receptor.frame = 0
-	receptor.play("static")
+	receptor.play("%s static" % key)
 
 
 func play_ghost(key: int) -> void:
 	var receptor: = receptors[key]
 	receptor.frame = 0
-	receptor.play("press")
+	receptor.play("%s press" % key)
 
 
 func play_glow(key: int) -> void:
 	var receptor: = receptors[key]
 	receptor.frame = 0
-	receptor.play("confirm")
+	receptor.play("%s confirm" % key)
 
 
 func botplay_receptor(note: Note) -> void:
@@ -115,12 +124,17 @@ func chars_dance(force: bool = false, force_idle: int = -1) -> void:
 		character.dance(force, force_idle)
 
 
-func chars_sing(column: int = 0, force: bool = false, is_hold: bool = false, cooldown_delay: float = 0.0) -> void:
+func chars_sing(id: int = -1, column: int = 0, force: bool = false, suffix: String = "", cooldown_delay: float = 0.0) -> void:
+	if id > -1 and id <= connected_characters.size():
+		var sing_column: int = column % connected_characters[id].sing_list.size()
+		connected_characters[id].sing(sing_column, force, suffix)
+		connected_characters[id].idle_cooldown = (12 * Conductor.semiquaver) + cooldown_delay
+		return
 	# putting faith in godot's looping :pray:
-	for personaje: Character in connected_characters:
+	if id == -1: for personaje: Character in connected_characters:
 		if personaje.animation_context != 2:
 			var sing_column: int = column % personaje.sing_list.size()
-			personaje.sing(sing_column, force, is_hold)
+			personaje.sing(sing_column, force, suffix)
 			personaje.idle_cooldown = (12 * Conductor.semiquaver) + cooldown_delay
 
 #endregion

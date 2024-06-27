@@ -57,15 +57,12 @@ texture = ExtResource("4_xfs5w")
 
 [node name="text_thingy" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = 213.0
+anchors_preset = 0
 offset_right = 1280.0
-offset_bottom = 720.0
-grow_vertical = 2
+offset_bottom = 450.0
 script = ExtResource("4_57wvf")
-alignment = 1
+horizontal_alignment = 1
+vertical_alignment = 1
 y_per_roll = 60
 text = "a game by
 my dog :)"

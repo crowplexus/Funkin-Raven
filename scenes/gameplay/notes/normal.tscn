@@ -1,55 +1,36 @@
-[gd_scene load_steps=7 format=3 uid="uid://c3mcxybk6adsd"]
+[gd_scene load_steps=5 format=3 uid="uid://c3mcxybk6adsd"]
 
-[ext_resource type="Shader" path="res://assets/shaders/colour_mask_red.gdshader" id="1_ca36i"]
 [ext_resource type="Script" path="res://scenes/gameplay/notes/normal.gd" id="1_vxqwi"]
-[ext_resource type="SpriteFrames" uid="uid://df5d7l8hrjmfn" path="res://assets/sprites/ui/normal/notes/notes.res" id="2_dqfyw"]
-[ext_resource type="SpriteFrames" path="res://assets/sprites/ui/normal/notes/splashes.res" id="3_1ryk6"]
-[ext_resource type="SpriteFrames" uid="uid://21i18jods0e" path="res://assets/sprites/ui/normal/notes/holdCover.res" id="4_hchp8"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_yc7bn"]
-resource_local_to_scene = true
-shader = ExtResource("1_ca36i")
-shader_parameter/colour = null
-shader_parameter/active = true
+[ext_resource type="Texture2D" uid="uid://dl3kkxdsldfgd" path="res://assets/sprites/noteskins/fnf/notes.png" id="2_its7j"]
+[ext_resource type="SpriteFrames" uid="uid://cb0ugm5kr53r6" path="res://assets/sprites/noteskins/fnf/splashes.res" id="3_l75vs"]
+[ext_resource type="SpriteFrames" uid="uid://53yvc1fwh4e6" path="res://assets/sprites/noteskins/fnf/holdCoverMerged.res" id="4_2fse6"]
 
 [node name="normal" type="Node2D"]
-material = SubResource("ShaderMaterial_yc7bn")
 script = ExtResource("1_vxqwi")
 
-[node name="tap" type="AnimatedSprite2D" parent="."]
-use_parent_material = true
-scale = Vector2(0.7, 0.7)
-sprite_frames = ExtResource("2_dqfyw")
-animation = &"arrow"
+[node name="tap" type="Sprite2D" parent="."]
+texture = ExtResource("2_its7j")
+hframes = 4
 
 [node name="splash" type="AnimatedSprite2D" parent="."]
 visible = false
 use_parent_material = true
-sprite_frames = ExtResource("3_1ryk6")
-animation = &"note impact 1"
+sprite_frames = ExtResource("3_l75vs")
+animation = &"splash0 1"
 
 [node name="hold_container" type="Control" parent="."]
 modulate = Color(1, 1, 1, 0.6)
 use_parent_material = true
+clip_contents = true
 layout_mode = 3
 anchors_preset = 0
-offset_left = -73.0
-offset_right = 50.0
-offset_bottom = 470.0
-scale = Vector2(0.7, 0.7)
-
-[node name="hold" type="TextureRect" parent="hold_container"]
-clip_contents = true
-layout_mode = 0
-offset_left = 81.5714
-offset_right = 131.571
-offset_bottom = 266.0
-expand_mode = 1
-stretch_mode = 1
+offset_left = -30.0
+offset_right = 70.0
+offset_bottom = 700.0
 
 [node name="cover" type="AnimatedSprite2D" parent="."]
 visible = false
 use_parent_material = true
-sprite_frames = ExtResource("4_hchp8")
-animation = &"begin"
+sprite_frames = ExtResource("4_2fse6")
+animation = &"begin0"
 offset = Vector2(-10, 50)

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/gameplay/gameplay.gd" id="1_gfupu"]
 [ext_resource type="Texture2D" uid="uid://dd87wgxdwo82p" path="res://assets/sprites/ui/normal/prepare.png" id="2_4pdat"]
-[ext_resource type="PackedScene" uid="uid://dab600stg4bxl" path="res://scenes/gameplay/fields/notefield.tscn" id="2_6wcp1"]
+[ext_resource type="PackedScene" uid="uid://dab600stg4bxl" path="res://scenes/gameplay/notes/notefield.tscn" id="2_6wcp1"]
 [ext_resource type="AudioStream" uid="uid://7vxf7mhk812m" path="res://assets/audio/sfx/gameplay/intro3.ogg" id="2_dh4m4"]
 [ext_resource type="PackedScene" uid="uid://dxm24padis8xt" path="res://scenes/backgrounds/mainStage.tscn" id="2_k2qad"]
 [ext_resource type="Texture2D" uid="uid://cgg74hdqie207" path="res://assets/sprites/ui/normal/combo.png" id="2_qmvd3"]
@@ -56,10 +56,14 @@ scale = Vector2(1.5, 1.5)
 [node name="1" parent="hud/fields" instance=ExtResource("2_6wcp1")]
 offset_left = 500.0
 offset_right = 500.0
+scroll_mods = null
+key_count = null
 
 [node name="2" parent="hud/fields" instance=ExtResource("2_6wcp1")]
 offset_left = 100.0
 offset_right = 100.0
+scroll_mods = null
+key_count = null
 
 [node name="note_cluster" type="Node2D" parent="hud" node_paths=PackedStringArray("connected_fields")]
 process_thread_group = 2

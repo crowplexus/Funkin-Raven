@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c0e0hs348mdly"
-path="res://.godot/imported/holds.png-1fd9552e4d79f9051da737600618bcde.ctex"
+path="res://.godot/imported/holds.png-cd772c7cd66151860e73cbe449a3bc75.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/normal/notes-old/holds.png"
-dest_files=["res://.godot/imported/holds.png-1fd9552e4d79f9051da737600618bcde.ctex"]
+source_file="res://assets/sprites/noteskins/fnf/holds.png"
+dest_files=["res://.godot/imported/holds.png-cd772c7cd66151860e73cbe449a3bc75.ctex"]
 
 [params]
 

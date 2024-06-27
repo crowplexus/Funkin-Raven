@@ -4,14 +4,14 @@ class_name StageBG
 @export var camera: Camera2D
 @export var camera_beat_interval: int = 4
 
-var starting_camera_zoom: Vector2 = Vector2.ONE
+var initial_camera_zoom: Vector2 = Vector2.ONE
 var current_camera_zoom: Vector2 = Vector2.ONE
 
 
 func _ready() -> void:
 	if is_instance_valid(camera):
 		current_camera_zoom = camera.zoom
-		starting_camera_zoom = camera.zoom
+		initial_camera_zoom = camera.zoom
 		Conductor.ibeat_reached.connect(on_ibeat_reached)
 
 
@@ -35,4 +35,4 @@ func on_ibeat_reached(ibeat: int) -> void:
 
 
 func reset_camera_zoom() -> void:
-	current_camera_zoom = starting_camera_zoom
+	current_camera_zoom = initial_camera_zoom

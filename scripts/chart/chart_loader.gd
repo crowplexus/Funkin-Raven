@@ -12,7 +12,6 @@ static var global: Chart
 @export var events: Array[ChartEvent] = []
 @export var time_changes: Array[Dictionary] = []
 @export var song_info: SongInfo = SongInfo.new()
-@export var key_counts: PackedInt32Array = [4, 4]
 @export var note_speed: float = 1.0
 
 

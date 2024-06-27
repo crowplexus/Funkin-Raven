@@ -8,11 +8,15 @@ class_name Alphabet
 @export var lowercase_suffix: String = ""
 
 @export_enum("Left:0", "Center:1", "Right:2")
-var alignment: int = 0:
+var horizontal_alignment: int = 0:
 	set(new_align):
-		alignment = new_align
-		set_alignment(new_align)
-
+		horizontal_alignment = new_align
+		set_horizontal_alignment(new_align)
+@export_enum("Top:0", "Center:1", "Bottom:2")
+var vertical_alignment: int = 0:
+	set(new_align):
+		vertical_alignment = new_align
+		set_vertical_alignment(new_align)
 @export var x_per_space: int = 60
 @export var y_per_roll: int = 80
 
@@ -75,13 +79,15 @@ func gen_glyphs(new_text: String) -> void:
 			glyph.sprite_frames = texture
 			glyph.position = pos
 			glyph.play(glyph_animation)
-			pos.x += tex.get_width() * scale.x
-			#pos.y += tex.get_height() * scale.y
-			line.size += Vector2(tex.get_width(), tex.get_height())
+			pos.x += tex.get_width()
+			#pos.y += tex.get_height()
+			#line.size += Vector2(tex.get_width(), tex.get_height())
+			line.size.x += tex.get_width()
 			line.add_child(glyph)
 	add_child(line)
 	glyphs_pos = pos
-	set_alignment(alignment)
+	set_horizontal_alignment(horizontal_alignment)
+	set_vertical_alignment  (vertical_alignment)
 
 
 func clear_glyphs() -> void:
@@ -89,13 +95,22 @@ func clear_glyphs() -> void:
 		i.queue_free()
 
 
-func set_alignment(id: int) -> void:
+func set_horizontal_alignment(id: int) -> void:
 	for line: Control in get_children():
 		match id:
-			0: line.position = Vector2.ZERO
+			0: line.position.x = 0.0
 			1: line.position.x = (size.x - line.size.x) * 0.5
 			2: line.position.x = (size.x - line.size.x)
+		line.position.y *= line.scale.x * scale.x
 
+
+func set_vertical_alignment(id: int) -> void:
+	for line: Control in get_children():
+		match id:
+			0: line.position.y = 0.0
+			1: line.position.y = (size.y - line.size.y) * 0.5
+			2: line.position.y = (size.y - line.size.y)
+		line.position.y *= line.scale.y * scale.y
 
 func get_animation(character: String) -> String:
 	match character:

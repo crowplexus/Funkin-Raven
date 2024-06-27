@@ -15,6 +15,8 @@ func _ready() -> void:
 	current_note = 0
 	if not note_queue.is_empty():
 		Conductor.fstep_reached.connect(try_spawning)
+	for nd: Note in note_queue:
+		nd.reset()
 
 
 func _exit_tree() -> void:
@@ -82,6 +84,7 @@ func spawn_note(id: int) -> void:
 			note.notefield = field
 			if note.column < field.key_count:
 				note.scroll = field.scroll_mods[note.column]
+
 	# technically the note already spawned so
 	note_incoming.emit(note)
 	if not is_instance_valid(note.object):
@@ -94,7 +97,9 @@ func spawn_note(id: int) -> void:
 		note.object.position.y = INF
 	# spawn object
 	if is_instance_valid(note.notefield):
-		note.object.visible = note.receptor.visible and note.notefield.visible
+		if not note.object.top_level:
+			note.object.visible = note.receptor.visible and note.notefield.visible
+			note.object.scale = note.receptor.get_global_transform().get_scale()
 	note.object.set("note", note)
 	add_child(note.object)
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ehrsp0h12efe"
-path="res://.godot/imported/holdCover.png-6860598c1d91c05186e9f82c3c10fdc3.ctex"
+uid="uid://cp4cgiodroheq"
+path="res://.godot/imported/notes.png-70f80faf8e3085ab0cc45e0b8b5d74ce.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/ui/normal/notes/holdCover.png"
-dest_files=["res://.godot/imported/holdCover.png-6860598c1d91c05186e9f82c3c10fdc3.ctex"]
+source_file="res://assets/sprites/noteskins/quants/notes.png"
+dest_files=["res://.godot/imported/notes.png-70f80faf8e3085ab0cc45e0b8b5d74ce.ctex"]
 
 [params]
 

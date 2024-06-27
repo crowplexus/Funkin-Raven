@@ -16,7 +16,6 @@ var _enter_animation: Callable = func() -> void:
 		_enter_animation_backwards = not _enter_animation_backwards
 
 var _intro_skipped: bool = false
-var _transitioning: bool = false
 
 
 func _ready() -> void:
@@ -46,11 +45,11 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		if not _intro_skipped:
 			skip_intro(Color.WHITE, 1.0 if Preferences.flashing else 0.0)
-		elif not _transitioning:
+		else:
+			Globals.set_node_inputs(self, false)
 			if Preferences.flashing:
 				enter_sprite.play("ENTER PRESSED")
 			SoundBoard.play_sfx(Globals.MENU_CONFIRM_SFX)
-			_transitioning = true
 			await get_tree().create_timer(1.0).timeout
 			Globals.change_scene(load("res://scenes/menu/main_menu.tscn"))
 

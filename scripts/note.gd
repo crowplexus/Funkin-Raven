@@ -57,12 +57,13 @@ var dropped: bool = false
 var trip_timer: float = 0.0
 
 #endregion
-#region SVs data
+#region SV Data
 
 ## The note's initial position, used for offsetting.
 @export var initial_pos: Vector2 = Vector2.ZERO
 ## Note's [bold]visual[/bold] time, used when positioning.
 @export var visual_time: float = 0.0
+@export var hold_progress: float = 0.0
 ## How fast the note's object scrolls through the screen.
 @export var speed: float = 1.0
 
@@ -76,7 +77,6 @@ var real_speed: float:
 		return scroll_speed
 
 #endregion
-
 #region Updating
 ## Debug Mode forces certain behaviour functions for notes to disable
 var debug_mode: bool = false
@@ -89,6 +89,18 @@ var finished: bool = false
 
 #endregion
 #region Other Utility Functions
+
+func reset(in_debug: bool = false) -> void:
+	moving = true
+	dropped = false
+	update_hold = false
+	debug_mode = in_debug
+	hold_progress = hold_length
+	visual_time = time
+	trip_timer = 0.0
+	hit_timing = 0
+	hit_flag = 0
+	finished = false
 
 ## Sorts Data by using two Note objects, use with arrays.
 static func sort_by_time(first: Note, next: Note) -> int:
@@ -103,12 +115,20 @@ static func get_quant(beat: float) -> int:
 			return quants.find(qua)
 	return 0
 
-static func get_colour(time: float, column: int = 0) -> Color:
+
+static func get_colour(secs: float, note_column: int = 0) -> Color:
 	match Preferences.note_colouring_mode:
 		1:
-			var beat_time: float = Conductor.time_to_beat(time)
+			var beat_time: float = Conductor.time_to_beat(secs)
 			return Preferences.note_colours[1][Note.get_quant(beat_time)]
 		_:
-			return Preferences.note_colours[0][column]
+			return Preferences.note_colours[0][note_column]
+
+
+static func make_dummy_hold() -> TextureRect:
+	var hold: TextureRect = TextureRect.new()
+	hold.stretch_mode = TextureRect.STRETCH_TILE
+	#hold.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	return hold
 
 #endregion

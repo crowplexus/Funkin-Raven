@@ -67,8 +67,8 @@ func parse_base(song: StringName, difficulty: Dictionary = {}) -> Chart:
 
 		var swag_note: Note = make_note(note, chart.song_info.notefields[player].key_count)
 		swag_note.speed = chart.note_speed
-		swag_note.visual_time = swag_note.time
 		swag_note.player = player
+		swag_note.reset()
 		chart.notes.append(swag_note)
 
 	if "events" in data:
@@ -171,9 +171,9 @@ func parse_legacy(song: StringName, difficulty: Dictionary = {}) -> Chart:
 					"l": float(note[2]), # Sustain Length
 					"k": note_kind, # Kind
 				}, nf.key_count)
-				swag_note.visual_time = swag_note.time
 				swag_note.speed = chart.note_speed
 				swag_note.player = player
+				swag_note.reset()
 				chart.notes.append(swag_note)
 
 			var focus_camera: ChartEvent = ChartEvent.new()
@@ -181,6 +181,8 @@ func parse_legacy(song: StringName, difficulty: Dictionary = {}) -> Chart:
 			focus_camera.values = {
 				"char": int(not bar["mustHitSection"]) + 1,
 				"ease": "CLASSIC",
+				"x": 0.0, "y": 0.0,
+				"duration": 4.0
 			}
 			focus_camera.name = "FocusCamera"
 			chart.events.append(focus_camera)
@@ -253,8 +255,10 @@ func convert_event(event: Dictionary, bpm: float) -> ChartEvent:
 					}
 					if event.v is int or event.v is float:
 						e.values.char = event.v
+					if event.v is String:
+						e.values.char
 					elif event.v is Dictionary:
-						e.values.merge(event.v)
+						e.values.merge(event.v, true)
 		"ZoomCamera":
 			e.values = {
 				"zoom": 1.0,
@@ -265,7 +269,7 @@ func convert_event(event: Dictionary, bpm: float) -> ChartEvent:
 			if event.v is int or event.v is float:
 				e.values.zoom = event.v
 			elif event.v is Dictionary:
-				e.values.merge(event.v)
+				e.values.merge(event.v, true)
 
 		_:
 			e.values = event.v

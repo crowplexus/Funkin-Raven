@@ -3,6 +3,7 @@ extends Resource
 ## and song data that is going to be used for providing content to the game.
 class_name Bundle
 
+@export var name: StringName
 @export var level_list: Array[LevelItem] = []
 @export var song_list: Array[SongItem] = []
 

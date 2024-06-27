@@ -18,12 +18,12 @@ var ENGINE_VERSION: String:
 	get: return ProjectSettings.get_setting("application/config/version")
 
 var special_keybinds: Dictionary = {
-	#KEY_F1: func():
-	#	Conductor.rate -= 0.01
-	#	print_debug(Conductor.rate),
-	#KEY_F2: func():
-	#	Conductor.rate += 0.01
-	#	print_debug(Conductor.rate),
+	KEY_F1: func():
+		Conductor.rate -= 0.01
+		print_debug(Conductor.rate),
+	KEY_F2: func():
+		Conductor.rate += 0.01
+		print_debug(Conductor.rate),
 	KEY_F3: func():
 		PerformanceCounter._debug_display = not PerformanceCounter._debug_display
 		var conductor_delta: float = 0.8 * Conductor.semiquaver
@@ -68,6 +68,13 @@ func get_options_window() -> Control:
 	ow.process_mode = Node.PROCESS_MODE_ALWAYS
 	ow.z_index = 100
 	return ow
+
+## Handy function to enable / disable all input functions for a node.
+func set_node_inputs(node: Node, enable: bool) -> void:
+	node.set_process_input(enable)
+	node.set_process_shortcut_input(enable)
+	node.set_process_unhandled_input(enable)
+	node.set_process_unhandled_key_input(enable)
 
 #endregion
 #region Text

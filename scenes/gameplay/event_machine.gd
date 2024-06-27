@@ -1,6 +1,6 @@
 extends Node
 ## Event Hook for gameplay,
-## This simply executes nearby events during gameplay;
+## This simply executes nearby events during gameplay.
 class_name EventMachine
 
 signal event_fired(id: int)
@@ -9,6 +9,31 @@ signal event_fired(id: int)
 @export var current_event_id: int = 0
 var camera_tween_pos: Tween
 var camera_tween_zoom: Tween
+
+
+func _ready() -> void:
+	if is_instance_valid(Chart.global):
+		event_list = Chart.global.events.duplicate()
+	if not event_list.is_empty():
+		for ev: ChartEvent in event_list:
+			ev.fired = false
+		Conductor.fstep_reached.connect(event_step)
+
+
+func _exit_tree() -> void:
+	if Conductor.fstep_reached.is_connected(event_step):
+		Conductor.fstep_reached.disconnect(event_step)
+
+
+func event_step(fstep: float) -> void:
+	# return if it's at the end of the list
+	if event_list.size() <= current_event_id:
+		return
+	var event: ChartEvent = event_list[current_event_id]
+	var estep: float = (event.step + event.delay)
+	if fstep >= estep and not event.fired:
+		call_event(current_event_id)
+		current_event_id += 1
 
 
 func call_event(id: int) -> void:
@@ -67,21 +92,21 @@ func call_event(id: int) -> void:
 			var c: Camera2D = get_viewport().get_camera_2d()
 			if is_instance_valid(c):
 				var duration: float = float(e.values.duration)
-				var target_zoom: float = e.values.zoom
-				match str(e.values.mode).to_lower():
+				var target_zoom: Vector2 = Vector2(e.values.zoom, e.values.zoom)
+				if str(e.values.mode) != "direct":
+					target_zoom *= stage.initial_camera_zoom
+				match str(e.values.ease):
+					"INSTANT":
+						stage.current_camera_zoom = target_zoom
 					_:
-						if str(e.values.mode) == "direct" or duration == 0.0:
-							stage.current_camera_zoom = c.zoom * target_zoom
-							c.zoom = stage.current_camera_zoom
-						else:
-							if is_instance_valid(camera_tween_zoom):
-								camera_tween_zoom.stop()
-							var easev: String = str(e.values.ease)
-							var dur_steps: float = Conductor.semiquaver * duration
-							var _easing: Tween.EaseType = convert_flixel_tween_ease(easev)
-							var _trans: Tween.TransitionType = convert_flixel_tween_trans(easev)
-							camera_tween_zoom = create_tween().set_ease(_easing).set_trans(_trans)
-							camera_tween_zoom.tween_property(stage, "current_camera_zoom", c.zoom * target_zoom, dur_steps)
+						if is_instance_valid(camera_tween_zoom):
+							camera_tween_zoom.stop()
+						var easev: String = str(e.values.ease)
+						var dur_steps: float = Conductor.semiquaver * duration
+						var _easing: Tween.EaseType = convert_flixel_tween_ease(easev)
+						var _trans: Tween.TransitionType = convert_flixel_tween_trans(easev)
+						camera_tween_zoom = create_tween().set_ease(_easing).set_trans(_trans)
+						camera_tween_zoom.tween_property(stage, "current_camera_zoom", c.zoom * target_zoom, dur_steps)
 
 		"PlayAnimation":
 			var stage: StageBG = get_parent().stage
@@ -105,29 +130,6 @@ func call_event(id: int) -> void:
 			e.custom_func.call()
 	e.fired = true
 	event_fired.emit(id)
-
-
-func _ready() -> void:
-	if is_instance_valid(Chart.global):
-		event_list = Chart.global.events.duplicate()
-	if not event_list.is_empty():
-		Conductor.fstep_reached.connect(event_step)
-
-
-func _exit_tree() -> void:
-	if Conductor.fstep_reached.is_connected(event_step):
-		Conductor.fstep_reached.disconnect(event_step)
-
-
-func event_step(fstep: float) -> void:
-	# return if it's at the end of the list
-	if event_list.size() <= current_event_id:
-		return
-	var event: ChartEvent = event_list[current_event_id]
-	var estep: float = (event.step + event.delay)
-	if fstep >= estep and not event.fired:
-		call_event(current_event_id)
-		current_event_id += 1
 
 
 func convert_flixel_tween_ease(v: String) -> Tween.EaseType:

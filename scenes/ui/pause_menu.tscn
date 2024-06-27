@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3 uid="uid://cpymos35w1j40"]
+
+[ext_resource type="Script" path="res://scenes/ui/pause_menu.gd" id="1_hi67e"]
+[ext_resource type="Script" path="res://scenes/ui/alphabet.gd" id="2_o05s8"]
+[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="3_6ep5t"]
+
+[node name="pause_menu" type="Control"]
+process_mode = 3
+top_level = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hi67e")
+
+[node name="back" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0.313726)
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
+
+[node name="options" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+script = ExtResource("2_o05s8")
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "Resume
+Restart
+Options 
+Exit"
+
+[node name="level_label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.319
+anchor_right = 0.644
+anchor_bottom = 0.361
+offset_left = -0.320007
+offset_top = 16.0
+offset_right = -0.320068
+offset_bottom = 0.0799866
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_6ep5t")
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+autowrap_mode = 2
+metadata/_edit_lock_ = true

@@ -27,6 +27,8 @@ var selected_pref: OptionItem
 var current_selection: int = 0
 ## Disables scrolling if you are changing a preference.
 var changing_preference: bool = false
+## Function ran when closing the window.
+var close_callback: Callable
 
 var _display_ypos: float = 0.0
 var _just_started: bool = true # bandaid
@@ -188,7 +190,6 @@ func reload_theme(theme_str: String) -> void:
 
 
 func leave() -> void:
-	if get_tree().paused:
-		get_tree().paused = false
-	await RenderingServer.frame_pre_draw
-	self.queue_free()
+	if close_callback: close_callback.call()
+	await RenderingServer.frame_post_draw
+	free()

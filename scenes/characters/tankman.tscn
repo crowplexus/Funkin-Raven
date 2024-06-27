@@ -1,8 +1,49 @@
-[gd_scene load_steps=11 format=3 uid="uid://cw8uujgvkyssq"]
+[gd_scene load_steps=13 format=3 uid="uid://cw8uujgvkyssq"]
 
-[ext_resource type="Script" path="res://scenes/characters/character.gd" id="1_0xagg"]
+[ext_resource type="Script" path="res://scenes/characters/tankman.gd" id="1_3nes3"]
 [ext_resource type="Texture2D" uid="uid://bovylrgha3jcl" path="res://assets/sprites/characters/icons/tankman.png" id="2_7sbbq"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/characters/newgrounds/tankmanCaptain.res" id="3_gvshb"]
+
+[sub_resource type="Animation" id="Animation_hya7q"]
+resource_name = "RESET"
+length = 0.541671
+step = 0.0416667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.541667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0, 13]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:animation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Tankman Idle Dance instance 1"]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:offset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
 
 [sub_resource type="Animation" id="Animation_o51ni"]
 resource_name = "idle"
@@ -45,6 +86,88 @@ tracks/2/keys = {
 "values": [Vector2(0, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_q74lq"]
+resource_name = "singDOWN"
+length = 0.375004
+step = 0.0416667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.375),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0, 9]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:animation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Tankman DOWN note instance 1"]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:offset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 50)]
+}
+
+[sub_resource type="Animation" id="Animation_kwcy8"]
+resource_name = "singDOWN-alt"
+length = 2.54167
+step = 0.0416667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2.54167),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0, 61]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:animation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"PRETTY GOOD tankman instance 1"]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:offset")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-50, -10)]
+}
+
 [sub_resource type="Animation" id="Animation_yt0xu"]
 resource_name = "singLEFT"
 length = 0.291671
@@ -84,47 +207,6 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(-40, 7)]
-}
-
-[sub_resource type="Animation" id="Animation_hya7q"]
-resource_name = "RESET"
-length = 0.541671
-step = 0.0416667
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = false
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.541667),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0, 13]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:animation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Tankman Idle Dance instance 1"]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:offset")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_b3dff"]
@@ -209,9 +291,9 @@ tracks/2/keys = {
 "values": [Vector2(5, -30)]
 }
 
-[sub_resource type="Animation" id="Animation_q74lq"]
-resource_name = "singDOWN"
-length = 0.375004
+[sub_resource type="Animation" id="Animation_lie22"]
+resource_name = "singUP-alt"
+length = 0.625005
 step = 0.0416667
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -220,10 +302,10 @@ tracks/0/path = NodePath(".:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = false
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.375),
+"times": PackedFloat32Array(0, 0.625),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [0, 9]
+"values": [0, 15]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -235,7 +317,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [&"Tankman DOWN note instance 1"]
+"values": [&"TANKMAN UGH instance 1"]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -247,7 +329,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, 50)]
+"values": [Vector2(0, 3)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_1eksv"]
@@ -255,16 +337,25 @@ _data = {
 "RESET": SubResource("Animation_hya7q"),
 "idle": SubResource("Animation_o51ni"),
 "singDOWN": SubResource("Animation_q74lq"),
+"singDOWN-alt": SubResource("Animation_kwcy8"),
 "singLEFT": SubResource("Animation_yt0xu"),
 "singRIGHT": SubResource("Animation_b3dff"),
-"singUP": SubResource("Animation_aifk7")
+"singUP": SubResource("Animation_aifk7"),
+"singUP-alt": SubResource("Animation_lie22")
 }
 
 [node name="tankman" type="Node2D"]
-script = ExtResource("1_0xagg")
+script = ExtResource("1_3nes3")
 display_name = &"Tankman"
+animation_suffix = null
+animation_context = null
+sing_duration = null
+camera_offset = null
 health_icon = ExtResource("2_7sbbq")
 is_player = true
+idle_list = null
+sing_list = null
+dance_interval = null
 
 [node name="sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("3_gvshb")
