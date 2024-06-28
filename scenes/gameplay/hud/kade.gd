@@ -17,7 +17,7 @@ func _ready() -> void:
 			status_label.position.y = 140
 			time_bar.position.y = get_viewport_rect().size.y * 0.96
 
-	if is_instance_valid(Chart.global):
+	if Chart.global:
 		_song_name = Chart.global.song_info.name
 	$"watermark".text = "%s - FR v%s" % [ _song_name, Globals.ENGINE_VERSION ]
 	time_bar.visible = Preferences.show_timer
@@ -33,7 +33,7 @@ func _exit_tree() -> void:
 
 func setup_healthbar() -> void:
 	var stage: StageBG = get_tree().current_scene.get("stage")
-	if is_instance_valid(stage):
+	if stage:
 		# very messy icon stuff
 		if stage.has_node("player2") and stage.get_node("player2") is Character:
 			health_bar.get_child(0).texture = stage.get_node("player2").health_icon
@@ -61,7 +61,7 @@ func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 	var grade_str: String = "("+grade+") "
 	grade_str += get_ke_grade(snappedf(hit_result.player.stats.accuracy, 0.01))
 
-	var text: String = "Score: %s | Combo Breaks: %s | Accuracy: %s%%" % [
+	var text: String = "Score:%s | Combo Breaks:%s | Accuracy:%s%%" % [
 		hit_result.player.stats.score, ke_cbs,
 		str(snappedf(hit_result.player.stats.accuracy, 0.01)),
 	]

@@ -59,7 +59,7 @@ func check_value() -> void:
 
 
 func reset_preference_label() -> void:
-	if is_instance_valid(preference_label):
+	if preference_label:
 		var final_text: String = option_name
 		# display value name in there too #
 		if option_type < 3:

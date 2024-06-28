@@ -35,7 +35,7 @@ func _ready() -> void:
 	back.modulate.a = 0.0
 	create_tween().set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_SINE) \
 	.tween_property(back, "modulate:a", 0.6, 0.4)
-	if is_instance_valid(music):
+	if music:
 		SoundBoard.play_bgm(music, 0.0, 1.0, true)
 		SoundBoard.bgm_player.seek(randf_range(0.01, music.get_length() * 0.5))
 		SoundBoard.fade_bgm(0.01, 0.7, 8.0)

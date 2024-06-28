@@ -78,9 +78,9 @@ func _exit_tree() -> void:
 func play_animation(anim: StringName, force: bool = false, force_frame: int = 0) -> void:
 	if force or _previous_anim != anim:
 		sprite.frame = force_frame
-		if is_instance_valid(animation_player):
+		if animation_player:
 			animation_player.seek(0.0)
-	if is_instance_valid(animation_player):
+	if animation_player:
 		animation_player.play(anim)
 		#print_debug("i am ",display_name,"and i'm playing animation ",anim)
 	_previous_anim = anim

@@ -21,7 +21,7 @@ func _exit_tree() -> void:
 
 func setup_healthbar() -> void:
 	var stage: StageBG = get_tree().current_scene.get("stage")
-	if is_instance_valid(stage):
+	if stage:
 		# very messy icon stuff
 		if stage.has_node("player2") and stage.get_node("player2") is Character:
 			health_bar.get_child(0).texture = stage.get_node("player2").health_icon

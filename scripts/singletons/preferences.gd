@@ -1,6 +1,6 @@
 extends Node
 
-signal prefs_saved()
+signal prefs_saved(pref: String)
 signal prefs_loaded()
 
 #region Internal
@@ -30,6 +30,8 @@ var scroll_direction: int = 0
 		beat_offset = clampf(snappedf(new, 0.001), 0, 500)
 ## Centers your notes and hides the enemy's.
 @export var centered_playfield: bool = false
+## Allows you to press keys while there's no notes to hit.
+@export var ghost_tapping: bool = true
 ## Defines how scroll speed behaves in-game.
 @export_enum("Chart based:0", "Multiplicative:1", "Constant:2")
 var scroll_speed_behaviour: int = 0
@@ -60,12 +62,15 @@ var playfield_side: int = 0:
 @export_enum("Capped", "Unlimited", "VSync")
 var framerate_mode: String = "Capped":
 	set(new_mode):
-		if new_mode == "VSync":
-			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ADAPTIVE)
-		else:
-			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-			if new_mode == "Unlimited":
-				Engine.max_fps = 0
+		match new_mode:
+			"Capped":
+				Engine.max_fps = framerate_cap
+			"VSync":
+				DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ADAPTIVE)
+			_:
+				DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+				if new_mode == "Unlimited":
+					Engine.max_fps = 0
 		framerate_mode = new_mode
 ## Defines how hold notes should be layered.
 @export_enum("Above Notes:0", "Behind Notes:1")
@@ -153,16 +158,17 @@ func init_keybinds() -> void:
 
 
 func save_prefs() -> void:
-	var _e: Error = _file.load(_SAVE_FILE)
-	var _props: Array[Dictionary] = get_vars()
-	for prop: Variant in _props:
-		#print_debug(prop.name)
-		if prop.name.begins_with("_"):
-			continue
-		_file.set_value("Preferences", prop.name, get(prop.name))
-	_file.save(_SAVE_FILE)
-	prefs_saved.emit()
-	#_file.unreference()
+	var e: Error = _file.load(_SAVE_FILE)
+	if e == OK:
+		var _props: Array[Dictionary] = get_vars()
+		for prop: Variant in _props:
+			#print_debug(prop.name)
+			if prop.name.begins_with("_"):
+				continue
+			_file.set_value("Preferences", prop.name, get(prop.name))
+		_file.save(_SAVE_FILE)
+		prefs_saved.emit("ALL")
+		#_file.unreference()
 
 
 func load_prefs() -> void:
@@ -170,7 +176,6 @@ func load_prefs() -> void:
 	if e != OK:
 		save_prefs()
 		await prefs_saved
-
 	var _props: Array[Dictionary] = get_vars()
 	for prop: Variant in _props:
 		if prop.name.begins_with("_"):
@@ -179,10 +184,17 @@ func load_prefs() -> void:
 			_file.set_value("Preferences", prop.name, get(prop.name))
 		else:
 			set(prop.name, _file.get_value("Preferences", prop.name, get(prop.name)))
-
 	prefs_loaded.emit()
 	#_file.unreference()
 
+
+func save_pref(pref: String, value: Variant) -> void:
+	var e: Error = _file.load(_SAVE_FILE)
+	if e == OK:
+		_file.set_value("Preferences", pref, value)
+		_file.save(_SAVE_FILE)
+		prefs_saved.emit(pref)
+		#_file.unreference()
 
 func get_vars() -> Array[Dictionary]:
 	var _props: Array[Dictionary] = get_property_list()

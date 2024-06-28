@@ -12,5 +12,7 @@ func _exit_tree() -> void:
 
 
 func _unhandled_input(e: InputEvent) -> void:
+	if e is InputEventMouseMotion:
+		return
 	if Input.is_action_just_pressed("ui_cancel"):
 		Globals.change_scene(load("res://scenes/menu/main_menu.tscn"))

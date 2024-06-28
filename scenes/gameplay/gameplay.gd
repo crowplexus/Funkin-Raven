@@ -17,6 +17,7 @@ var current_hud: Control
 var health_bar: Control
 var music: AudioStreamPlayer
 var hud_beat_interval: int = 4
+var mutable_streams: Array[AudioStreamPlayer] = []
 var initial_ui_zoom: Vector2 = Vector2.ONE
 var _need_to_play_music: bool = true
 
@@ -94,7 +95,7 @@ func _process(delta: float) -> void:
 		)
 		center_ui_layer()
 
-	if is_instance_valid(health_bar) and is_instance_valid(get_player(Preferences.playfield_side)):
+	if health_bar and is_instance_valid(get_player(Preferences.playfield_side)):
 		var health_deluxe: float = get_player(Preferences.playfield_side).health
 		health_bar.value = lerpf(health_bar.value, health_deluxe, exp(-delta * 96))
 
@@ -112,7 +113,8 @@ func _exit_tree() -> void:
 	Conductor.ibeat_reached.disconnect(on_ibeat_reached)
 	for i: int in fields.get_child_count():
 		var field: NoteField = fields.get_child(i)
-		if is_instance_valid(field.player):
+		if field.player:
+			field.player.note_hit.disconnect(restore_vocals)
 			field.player.note_hit.disconnect(update_score_text)
 			field.player.note_hit.disconnect(combo_group.pop_up_judge)
 			field.player.note_hit.disconnect(combo_group.pop_up_combo)
@@ -165,6 +167,7 @@ func init_players(player_fields: Array = []) -> void:
 			#player.controls[j] += "_p%s" % str(i + 1)
 			player.held_buttons.append(false)
 
+		player.note_hit.connect(restore_vocals)
 		player.note_hit.connect(update_score_text)
 		player.note_hit.connect(combo_group.pop_up_judge)
 		player.note_hit.connect(combo_group.pop_up_combo)
@@ -188,7 +191,7 @@ func init_music() -> void:
 		return
 
 	var inst_stream: AudioStream = Chart.global.song_info.instrumental
-	if is_instance_valid(inst_stream):
+	if inst_stream:
 		music = AudioStreamPlayer.new()
 		music.name = inst_stream.resource_path.get_file().get_basename()
 		music.stream = inst_stream
@@ -207,7 +210,7 @@ func init_music() -> void:
 		#print_debug(vocals.name)
 		music.add_child(vocals)
 
-	if is_instance_valid(music):
+	if music:
 		Conductor.length = music.stream.get_length()
 	elif not note_cluster.note_queue.is_empty():
 		Conductor.length = note_cluster.note_queue.back().time
@@ -219,13 +222,13 @@ func init_stage(path: NodePath) -> void:
 		stage = Globals.DEFAULT_STAGE.instantiate()
 	else:
 		stage = load(String(path)).instantiate()
-		if is_instance_valid(stage.camera):
+		if stage.camera:
 			camera = stage.camera
 
 	add_child(stage)
 	move_child(stage, 0)
 
-	if not is_instance_valid(stage) or Chart.global.song_info.characters.is_empty():
+	if not stage or Chart.global.song_info.characters.is_empty():
 		push_warning("There are no characters in the chart metadata to load.")
 		return
 
@@ -251,7 +254,7 @@ func init_stage(path: NodePath) -> void:
 		stage.add_child(character)
 		stage.move_child(character, index)
 
-	if is_instance_valid(current_hud):
+	if current_hud:
 		current_hud.call_deferred("setup_healthbar")
 
 #endregion
@@ -284,12 +287,12 @@ func process_conductor(delta: float) -> void:
 	if _need_to_play_music:
 		Conductor.update(Conductor.time + delta)
 		if Conductor.time >= 0.0:
-			if is_instance_valid(music):
+			if music:
 				music.play(0.0)
 				for track: AudioStreamPlayer in music.get_children():
 					track.play(0.0)
 				_need_to_play_music = false
-	elif is_instance_valid(music) and music.playing:
+	elif music and music.playing:
 		Conductor.update(music.get_playback_position() + AudioServer.get_time_since_last_mix())
 
 
@@ -300,7 +303,7 @@ func on_ibeat_reached(ibeat: int) -> void:
 	if ibeat % hud_beat_interval == 0:
 		ui_layer.scale += Vector2(0.03, 0.03)
 
-	if is_instance_valid(music) and music.get_child_count() != 0:
+	if music and music.get_child_count() != 0:
 		for track: AudioStreamPlayer in music.get_children():
 			if (music.get_playback_position() - track.get_playback_position()) > 0.01:
 				resync_vocals()
@@ -309,13 +312,23 @@ func on_ibeat_reached(ibeat: int) -> void:
 ## missing notes by letting them fly above your notefield..
 func miss_fly_over(note: Note) -> void:
 	for field: NoteField in fields.get_children():
-		if note.player == field.get_index() and is_instance_valid(field.player):
+		if note.player == field.get_index() and field.player:
+			var vocal: int = note.player % music.get_child_count()
+			if music and music.get_child(vocal):
+				music.get_child(vocal).volume_db = linear_to_db(0.0)
 			#field.player.apply_miss(note.column)
-			var fake_result: = Note.HitResult.new()
-			fake_result.player = field.player
-			combo_group.pop_up_combo(fake_result, true)
-			update_score_text(fake_result, true)
-			fake_result.unreference()
+			combo_group.pop_up_combo(note, true)
+			update_score_text(note, true)
+			note.finished = true
+
+
+func restore_vocals(note: Note, _is_tap: bool) -> void:
+	if not note:
+		return
+	for field: NoteField in fields.get_children():
+		if note.player == field.get_index() and field.player and music:
+			var vocal: = music.get_child(note.player % music.get_child_count())
+			if vocal: vocal.volume_db = linear_to_db(1.0)
 
 
 func leave() -> void:
@@ -337,12 +350,11 @@ func center_ui_layer() -> void:
 	)
 
 
-func update_score_text(hit_result: Note.HitResult, is_tap: bool) -> void:
-	if not is_instance_valid(hit_result.player) or not is_instance_valid(current_hud):
+func update_score_text(note: Note, is_tap: bool) -> void:
+	if not current_hud or not note:
 		return
-
 	if current_hud.has_method("update_score_text"):
-		current_hud.callv("update_score_text", [hit_result, is_tap])
+		current_hud.callv("update_score_text", [note.hit_result, is_tap])
 
 #endregion
 #region Utils
@@ -365,7 +377,7 @@ func load_hud(hud_scene: PackedScene, set_as_main: bool = true) -> void:
 
 
 func unload_current_hud() -> void:
-	if is_instance_valid(current_hud):
+	if current_hud:
 		current_hud.queue_free()
 
 
@@ -376,13 +388,13 @@ func unload_hud(hud_name: NodePath) -> void:
 
 func get_player(player_id: int) -> Player:
 	for field: NoteField in fields.get_children():
-		if is_instance_valid(field.player) and player_id == field.get_index():
+		if field.player and player_id == field.get_index():
 			return field.player
 	return null
 
 # temporary until godot 4.3
 func resync_vocals() -> void:
-	if not is_instance_valid(music):
+	if not music:
 		return
 	for track: AudioStreamPlayer in music.get_children():
 		track.seek(music.get_playback_position())

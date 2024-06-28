@@ -11,9 +11,8 @@ var note: Note
 var tap: Variant
 var hold: TextureRect
 var tail: TextureRect
-
-var _covers: Array[AnimatedSprite2D] = []
 var column: int = 0
+var _displayed_covers: Array[CanvasItem] = []
 
 
 #region Sprite Creation
@@ -30,9 +29,9 @@ func _ready() -> void:
 
 	tap = $"tap"
 	tap.frame = column
-	if is_instance_valid(note.receptor) and not tap.top_level:
+	if note.receptor and not tap.top_level:
 		tap.rotation = note.receptor.rotation
-	if note.hold_length > 0.0:
+	if note.hold_progress > 0.0:
 		make_hold()
 
 
@@ -43,7 +42,7 @@ func make_hold() -> void:
 			move_child(hold_container, 0)
 	hold = Note.make_dummy_hold()
 	hold.texture = HOLD_FRAMES.get_frame_texture("%s hold" % column, 0)
-	hold.size.y = absf((400.0 * absf(note.real_speed)) * note.hold_length)
+	hold.size.y = absf((400.0 * absf(note.real_speed)) * note.hold_progress)
 	hold_container.add_child(hold)
 	tail = Note.make_dummy_hold()
 	var tail_tex: = HOLD_FRAMES.get_frame_texture("%s hold" % column, 1)
@@ -56,70 +55,78 @@ func make_hold() -> void:
 
 
 func display_splash() -> void:
-	if not is_instance_valid(note.receptor):
+	if not note.receptor:
 		return
-
 	var splash_item: = splash_spr.duplicate() as AnimatedSprite2D
-	splash_item.global_position = note.receptor.global_position
-	splash_item.modulate.a = 0.6
 	splash_item.top_level = true
+	splash_item.modulate.a = 0.6
 	splash_item.visible = true
 	note.receptor.add_child(splash_item)
+	splash_item.global_position = note.receptor.global_position
 	splash_item.play("splash%s %s" % [ column, randi_range(1, 2) ])
 	splash_item.animation_finished.connect(splash_item.queue_free)
 
 
 func display_cover() -> void:
-	if not is_instance_valid(note.receptor):
+	if not note.receptor:
 		return
 	var cover: = cover_spr.duplicate() as AnimatedSprite2D
-	cover.top_level = true
-	cover.visible = true
-	note.receptor.add_child(cover)
-	cover.global_position = note.receptor.global_position
-	cover.play("begin%s" % column)
 	cover.animation_finished.connect(func():
-		if cover.animation.begins_with("finish"):
-			cover.queue_free()
+		match cover.animation:
+			_ when cover.animation.begins_with("begin"):
+				cover.frame = 0
+				cover.play("progress%s" % column)
+			_ when cover.animation.begins_with("finish"):
+				cover.queue_free()
 	)
-	_covers.append(cover)
+	cover.visible = true
+	cover.top_level = true
+	add_child(cover)
+	_displayed_covers.append(cover)
+	cover.global_position = note.receptor.global_position
+	cover.frame = 0
+	cover.play("begin%s" % column)
 #endregion
 #region Behaviour
 
 func update_hold_size() -> void:
-	if not is_instance_valid(hold) or note.hold_length == 0.0:
+	if not hold or note.hold_progress == 0.0:
 		return
 	if note.update_hold and tap.visible:
 		tap.hide()
 	hold.size.y = (600.0 * absf(note.real_speed)) * note.hold_progress
 	#hold.size.y /= absf(self.scale.y)
-	if is_instance_valid(tail):
+	if tail:
 		tail.position.y = hold.position.y + hold.size.y
-	for cover in _covers:
-		if Conductor.ibeat % 1 == 0:
-			#print_debug("updating cover")
-			if cover.animation.begins_with("begin%s" % column):
-				await cover.animation_finished
-			cover.play("progress%s" % column, 0.9)
-
+	for cover: CanvasItem in _displayed_covers:
+		if note.hold_progress > 0.0:
+			cover.play("progress%s" % column)
 
 func finish() -> void:
-	if note.update_hold and Conductor.ibeat % 1 == 0:
-		for cover in _covers:
-			#print_debug("updating cover")
-			cover.play("finish%s" % column)
+	var valid: bool = note and note.hit_result and not note.hit_result.player.botplay
+	if valid and note.hold_progress <= 0.0 and not _displayed_covers.is_empty():
+		for cover: CanvasItem in _displayed_covers:
+			var dupe: = cover.duplicate()
+			note.receptor.add_child(dupe)
+			dupe.play("finish%s" % column)
+			dupe.animation_finished.connect(dupe.queue_free)
 
 
-func hit_behaviour(result: Note.HitResult) -> void:
-	if not is_instance_valid(result):
+func on_hit(hit_note: Note) -> void:
+	if not hit_note:
 		return
-	if result.judgment.splash and Preferences.note_splashes:
-		display_splash()
-		if not note.moving and result.data.hold_length > 0.0:
-			display_cover()
+	if hit_note.hit_result and hit_note.hit_result.judgment:
+		var result: Note.HitResult = hit_note.hit_result
+		if hit_note.moving: match result.judgment.name:
+			"perfect" when note.hold_progress > 0.0:
+				display_cover()
+			_ when result.player and not result.player.botplay and result.judgment.splash:
+				display_splash()
+				if hit_note.hold_progress > 0.0:
+					display_cover()
 
 
-func miss_behaviour(_column: int) -> void:
+func on_miss(_column: int) -> void:
 	modulate.a = 0.3
 
 #endregion

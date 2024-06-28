@@ -12,7 +12,7 @@ var camera_tween_zoom: Tween
 
 
 func _ready() -> void:
-	if is_instance_valid(Chart.global):
+	if Chart.global:
 		event_list = Chart.global.events.duplicate()
 	if not event_list.is_empty():
 		for ev: ChartEvent in event_list:
@@ -50,11 +50,11 @@ func call_event(id: int) -> void:
 			if "y" in e.values: cam_pos.y = float(e.values.y)
 
 			var c: Camera2D = get_viewport().get_camera_2d()
-			if is_instance_valid(c):
+			if c:
 				match e.values.char:
 					_ when int(e.values.char) != -1:
 						var t: = stage.get_node("player%s" % str(e.values.char+1))
-						if is_instance_valid(t):
+						if t:
 							#print_debug("(FocusCamera) Focusing on %s" % t.display_name)
 							var old_pos: Vector2 = cam_pos
 							cam_pos = t.global_position
@@ -74,7 +74,7 @@ func call_event(id: int) -> void:
 							c.global_position = cam_pos
 						else:
 							c.position_smoothing_enabled = true
-							if is_instance_valid(camera_tween_pos):
+							if camera_tween_pos:
 								camera_tween_pos.stop()
 							var easev: String = str(e.values.ease)
 							var dur_steps: float = Conductor.semiquaver * e.values.duration
@@ -90,17 +90,19 @@ func call_event(id: int) -> void:
 				return
 
 			var c: Camera2D = get_viewport().get_camera_2d()
-			if is_instance_valid(c):
+			if c:
 				var duration: float = float(e.values.duration)
 				var target_zoom: Vector2 = stage.initial_camera_zoom
 				var direct_mode: bool = str(e.values.mode) == "direct"
-				target_zoom = e.values.zoom * (1.0 if direct_mode else stage.initial_camera_zoom)
+				target_zoom = Vector2(e.values.zoom, e.values.zoom)
+				if not direct_mode:
+					target_zoom *= stage.initial_camera_zoom
 
 				match str(e.values.ease):
 					"INSTANT":
 						stage.current_camera_zoom = target_zoom
 					_:
-						if is_instance_valid(camera_tween_zoom):
+						if camera_tween_zoom:
 							camera_tween_zoom.stop()
 						var easev: String = str(e.values.ease)
 						var dur_steps: float = Conductor.semiquaver * duration
@@ -122,7 +124,7 @@ func call_event(id: int) -> void:
 					"gf", "girlfriend", "spectator", "crowd", "dj", "player3", "3": player = 3
 
 				var t: = stage.get_node("player%s" % player)
-				if is_instance_valid(t) and t is Character:
+				if t and t is Character:
 					t.play_animation(e.values.anim, "force" in e.values and e.values.force == true)
 					t.idle_cooldown = 0.8 * Conductor.semibreve
 					t.animation_context = 3

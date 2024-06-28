@@ -104,6 +104,7 @@ func on_ibeat_reached(ibeat: int) -> void:
 
 func skip_intro(flash_colour: Color = Color.WHITE, flash_duration: float = 4.0) -> void:
 	_intro_skipped = true
+	crow_sprite.visible = false
 	thingy.visible = false
 	thingy.text = ""
 

@@ -27,16 +27,16 @@ var playfield_spot: float:
 
 #region Player
 
-func on_note_hit(hit_result: Note.HitResult, is_tap: bool) -> void:
-	if not is_instance_valid(hit_result) or not is_instance_valid(hit_result.data):
+func on_note_hit(note: Note, is_tap: bool) -> void:
+	if not note:
 		return
 	var suffix: String = ""
-	match hit_result.data.kind:
+	match note.kind:
 		"altanim", "altAnim", "Alt Animation": suffix = "-alt"
 		_: suffix = ""
-	if hit_result.data.hold_length > 0.0:
+	if note.hold_length > 0.0:
 		suffix += "-hold"
-	chars_sing(-1, hit_result.data.column, is_tap, suffix)
+	chars_sing(-1, note.column, is_tap, suffix)
 
 
 func reset_scroll_mods() -> void:
@@ -109,7 +109,7 @@ func botplay_receptor(note: Note) -> void:
 		return
 
 	var anim_timer: Timer = animation_timers[note.column]
-	if is_instance_valid(anim_timer):
+	if anim_timer:
 		anim_timer.stop()
 		anim_timer.start((0.2 * Conductor.crotchet) + note.hold_length)
 		play_glow.call_deferred(note.column)

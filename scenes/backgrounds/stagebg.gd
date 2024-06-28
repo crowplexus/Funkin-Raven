@@ -9,7 +9,7 @@ var current_camera_zoom: Vector2 = Vector2.ONE
 
 
 func _ready() -> void:
-	if is_instance_valid(camera):
+	if camera:
 		current_camera_zoom = camera.zoom
 		initial_camera_zoom = camera.zoom
 		Conductor.ibeat_reached.connect(on_ibeat_reached)
@@ -17,7 +17,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	# reset camera zooming #
-	if is_instance_valid(camera) and camera.zoom != current_camera_zoom:
+	if camera and camera.zoom != current_camera_zoom:
 		camera.zoom = Vector2(
 			lerpf(current_camera_zoom.x, camera.zoom.x, exp(-delta * 5)),
 			lerpf(current_camera_zoom.y, camera.zoom.y, exp(-delta * 5))

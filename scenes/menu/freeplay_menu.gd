@@ -64,7 +64,7 @@ func _unhandled_input(e: InputEvent) -> void:
 func update_selection(new_sel: int = 0) -> void:
 	if song_list.get_child_count() == 0:
 		return
-	if is_instance_valid(current_item):
+	if current_item:
 		current_item.modulate.a = item_idle_opacity
 
 	current_selection = wrapi(current_selection + new_sel, 0, song_list.get_child_count())

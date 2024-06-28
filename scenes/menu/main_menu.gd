@@ -26,7 +26,7 @@ func _unhandled_input(e: InputEvent) -> void:
 
 
 func update_selection(new_sel: int = 0) -> void:
-	if is_instance_valid(current_item) and current_item is AnimatedSprite2D:
+	if current_item and current_item is AnimatedSprite2D:
 		current_item.play("idle")
 	current_selection = wrapi(current_selection + new_sel, 0, buttons.get_child_count())
 	if new_sel != 0: SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
@@ -37,13 +37,14 @@ func update_selection(new_sel: int = 0) -> void:
 
 
 func confirm_selection():
+	var item: CanvasItem = current_item
 	bye_bye_buttons()
 	SoundBoard.play_sfx(Globals.MENU_CONFIRM_SFX)
 	if Preferences.flashing:
 		Globals.begin_flicker(magenta, 1.1, 0.15, false)
-		Globals.begin_flicker(current_item, 1.0, 0.06, false)
+		Globals.begin_flicker(item, 1.0, 0.06, false)
 	await get_tree().create_timer(1.0).timeout
-	match current_item.name:
+	match item.name:
 		"story":
 			Globals.set_node_inputs(self, false)
 			Globals.change_scene(load("res://scenes/menu/story_menu.tscn"))
@@ -59,6 +60,9 @@ func confirm_selection():
 			current_item.self_modulate.a = 1.0
 			get_tree().paused = true
 			bye_bye_buttons(true)
+		#"credits":
+		#	Globals.set_node_inputs(self, false)
+		#	Globals.change_scene(load("res://scenes/ui/credits.tscn"))
 		"merch":
 			OS.shell_open("https://needlejuicerecords.com/pages/friday-night-funkin")
 			current_item.self_modulate.a = 1.0

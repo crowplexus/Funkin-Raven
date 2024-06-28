@@ -20,7 +20,7 @@ func _ready() -> void:
 	health_bar.modulate.a = 0.0
 	_hb_twn = create_tween().set_ease(Tween.EASE_IN).bind_node(health_bar)
 	_hb_twn.tween_property(health_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
-	if is_instance_valid(Chart.global):
+	if Chart.global:
 		_song_name = Chart.global.song_info.name
 	time_bar.visible = Preferences.show_timer
 	Conductor.ibeat_reached.connect(icon_thingy)
@@ -33,7 +33,7 @@ func _exit_tree() -> void:
 
 func setup_healthbar() -> void:
 	var stage: StageBG = get_tree().current_scene.get("stage")
-	if is_instance_valid(stage):
+	if stage:
 		# very messy icon stuff
 		if stage.has_node("player2") and stage.get_node("player2") is Character:
 			health_bar.get_child(0).texture = stage.get_node("player2").health_icon

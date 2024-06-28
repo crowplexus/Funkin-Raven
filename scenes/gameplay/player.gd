@@ -20,8 +20,8 @@ func _ready() -> void:
 
 #region Player Input
 
-signal note_hit(hit_result: Note.HitResult, is_tap: bool)
-signal botplay_hit(hit_result: Note.HitResult, is_tap: bool)
+signal note_hit(note: Note, is_tap: bool)
+signal botplay_hit(note: Note, is_tap: bool)
 signal note_fly_over(note: Note)
 signal combo_break(note: Note)
 signal note_miss(column: int)
@@ -35,7 +35,6 @@ var note_queue: Array[Note] = []
 var hold_note_queue: Array[Note] = []
 ## Buttons being held by the player, for hold note input checks.
 var held_buttons: Array[bool] = []
-var _latest_hit_result: Note.HitResult
 
 
 func _process(delta: float) -> void:
@@ -47,17 +46,19 @@ func _process(delta: float) -> void:
 			if my_note.moving and (my_note.time - Conductor.time) < -0.3:
 				my_note.hit_flag = -1
 				if (my_note.time - Conductor.time) < -(0.3 + my_note.hold_progress - 0.5):
-					if is_instance_valid(my_note.object):
-						my_note.object.call_deferred("miss_behaviour", my_note.column)
-					apply_miss(my_note.column)
+					if my_note.object and my_note.object.has_method("on_miss"):
+						my_note.object.call_deferred("on_miss", my_note.column)
+					my_note.hit_result = send_hit_result(my_note, true)
+					# not needed anymore since the above call forces a miss
+					#apply_miss(my_note.column)
 					note_fly_over.emit(my_note)
 					finish_note(my_note)
 
 			if botplay and my_note.time <= Conductor.time:
 				note_hit_tap(my_note)
-				if is_instance_valid(my_note.notefield):
+				if my_note.notefield:
 					my_note.notefield.botplay_receptor(my_note)
-					my_note.notefield.on_note_hit(_latest_hit_result, true)
+					my_note.notefield.on_note_hit(my_note, true)
 				if my_note.hold_progress > 0.0:
 					my_note.update_hold = true
 					my_note.moving = false
@@ -86,7 +87,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 		)
 		if input_notes.size() > 1:
 			input_notes.sort_custom(Note.sort_by_time)
-		if input_notes.is_empty():
+		if input_notes.is_empty() and $"../".has_method("play_ghost"):
 			$"../".call_deferred("play_ghost", key)
 		else:
 			var tap: Note = input_notes[0]
@@ -99,14 +100,16 @@ func _unhandled_key_input(e: InputEvent) -> void:
 			note_hit_tap(tap)
 			if tap.hold_progress > 0.0:
 				hold_note_queue.append(tap)
-			tap.notefield.on_note_hit(_latest_hit_result, true)
+			tap.notefield.on_note_hit(tap, true)
 			# play animation in receptor
-			$"../".call_deferred("play_glow", tap.column)
+			if $"../".has_method("play_glow"):
+				$"../".call_deferred("play_glow", tap.column)
 
 	elif Input.is_action_just_released(controls[key]):
-		# ghost tapping here
-		# also reset receptor animation
-		$"../".call_deferred("play_static", key)
+		if not Preferences.ghost_tapping:
+			apply_miss(key)
+		if $"../".has_method("play_static"):
+			$"../".call_deferred("play_static", key)
 
 ## Returns a column from 0 to [code]controls.size()[/code]
 ## Used by [code]_unhandled_key_input[/code] for knowing which note you are trying to hit.
@@ -141,31 +144,30 @@ func manage_hit_queue(delta: float) -> void:
 func hold_note_input(hold: Note, delta: float = 0.0) -> void:
 	if hold.dropped or hold.hold_progress == 0.0:
 		return
-
-	if is_instance_valid(hold.receptor) and is_instance_valid(hold.object):
+	if hold.receptor and hold.object:
 		hold.object.position.y = hold.receptor.global_position.y
 	if hold.column <= held_buttons.size():
 		hold.update_hold = true
 		if hold.hold_progress > 0.01:
 			if held_buttons[hold.column] == false:
 				hold.trip_timer -= 0.1
-				if is_instance_valid(hold.object):
+				if hold.object:
 					hold.object.modulate.a = lerpf(hold.object.modulate.a, 0.8, exp(-delta * 0.5))
 			else:
 				if Conductor.ibeat % 1 == 0:
 					note_hit_hold(hold)
-					if is_instance_valid(hold.notefield):
+					if hold.notefield:
 						hold.notefield.play_glow(hold.column)
-					hold.notefield.on_note_hit(_latest_hit_result, false)
+					hold.notefield.on_note_hit(hold, false)
 			if hold.trip_timer <= 0.0:
 				hold.update_hold = false
-				if is_instance_valid(hold.object):
+				if hold.object:
 					hold.object.call_deferred("miss_behaviour", hold.column)
 					hold.object.modulate.a = 0.3
 				apply_miss(hold.column)
 				hold.dropped = true
 				hold.moving = true
-				if is_instance_valid(hold.notefield):
+				if hold.notefield:
 					hold.notefield.play_static(hold.column)
 				hold_note_queue.erase(hold)
 
@@ -177,24 +179,24 @@ func update_hold_note(note: Note, delta: float = 0.0) -> void:
 		if note.hit_timing == 2 and rel_time < 0.0:
 			note.hold_progress += rel_time
 			note.hit_timing = 0
-		var nscale: float = note.object.scale.x if is_instance_valid(note.object) else 0.7
+		var nscale: float = note.object.scale.x if note.object else 0.7
 		note.hold_progress -= delta / absf(nscale)
-		if is_instance_valid(note.object) and  note.object.has_method("update_hold_size"):
+		if note.object and  note.object.has_method("update_hold_size"):
 			note.object.call_deferred("update_hold_size")
-	if note.hold_progress <= 0.0:
+	if note.hold_progress < 0.0:
 		finish_note(note)
 
 ## Queues a note as finished, used for input.
 func finish_note(note: Note) -> void:
 	note.finished = true
 	#note.moving = false
-	if is_instance_valid(note.object):
-		note.object.call_deferred("finish")
-		await RenderingServer.frame_pre_draw # wait next frame
-	if note.hold_progress <= 0.0:
+	if note.object:
+		if note.object.has_method("finish"):
+			note.object.call_deferred("finish")
+	if note.hold_progress < 0.0:
 		note.update_hold = false
-	if is_instance_valid(note.object):
-		note.object.free()
+	if note.object:
+		note.object.queue_free()
 	#if hit_note_queue.has(note):
 	#	hit_note_queue.erase(note)
 
@@ -204,20 +206,25 @@ func note_hit_tap(note: Note) -> void:
 	if note.hit_flag == 0:
 		note.hit_flag = 1 if not botplay else 2 # flag the note as hit
 
+	if stats.combo < 0:
+		stats.combo = 0
+
 	var hit_result: Note.HitResult = send_hit_result(note, true)
-	_latest_hit_result = hit_result
+	if not note.hit_result: note.hit_result = hit_result
+
+	if note.hit_flag != 0:
+		var combo_broke: bool = false
+		if note.hit_result.judgment and "combo_break" in note.hit_result.judgment:
+			combo_broke = note.hit_result.judgment.combo_break == true
+		if note.object:
+			if note.object.has_method("on_hit"):
+				note.object.callv("on_hit", [note])
+			if combo_broke:
+				note.object.modulate.a = 0.4
+				note.object.modulate.v = 3.0
+				combo_break.emit(note)
 	if note.hold_progress > 0.0:
 		note.moving = false
-	match note.hit_flag:
-		1:
-			if is_instance_valid(hit_result):
-				if is_instance_valid(note.object) and note.object.has_method("hit_behaviour"):
-					note.object.callv("hit_behaviour", [hit_result])
-				var combo_broke: bool = "combo_break" in hit_result.judgment and hit_result.judgment.combo_break
-				if is_instance_valid(note.object) and combo_broke:
-					note.object.modulate.a = 0.4
-					note.object.modulate.v = 3.0
-					combo_break.emit(note)
 	if note.hold_progress <= 0.0:
 		finish_note(note)
 
@@ -225,37 +232,34 @@ func note_hit_tap(note: Note) -> void:
 ## Increases score by 10 every frame when holding.
 func note_hit_hold(note: Note) -> void:
 	stats.score = stats.score + 15
-	if is_instance_valid(_latest_hit_result):
+	if note:
 		if Conductor.ibeat % 2 == 0 or note.hold_progress <= 0.0:
-			note_hit.emit(_latest_hit_result, false)
-		if note.hold_progress <= 0.0:
-			_latest_hit_result.unreference()
+			note_hit.emit(note, false)
+		if note.hit_result and note.hold_progress < 0.0:
+			note.hit_result.unreference()
 			#hold_note_queue.erase(note)
 
 
 ## Sends a hit result
 func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
-	if stats.combo < 0:
-		stats.combo = 0
-
-	if botplay:
-		var botplay_hit_result: = Note.HitResult.new()
-		botplay_hit_result.hit_time = (note.time - Conductor.time) * 1000.0
-		botplay_hit_result.judgment.merge(Scoring.JUDGMENTS.perfect)
-		botplay_hit_result.player = self
-		botplay_hit_result.data = note
-		botplay_hit.emit(botplay_hit_result, is_tap)
-		# caused a funny bug which made the combo popups play on botplay holds
-		#note_hit.emit(botplay_hit_result, is_tap)
-		_latest_hit_result = botplay_hit_result
-		return botplay_hit_result
-
 	var diff: float = note.time - Conductor.time
-	var judge: Dictionary = Scoring.judge_note(note, absf(diff * 1000.0))
+	if botplay:
+		var perfect: Dictionary = Scoring.JUDGMENTS.perfect.duplicate()
+		perfect.name = Scoring.JUDGMENTS.find_key(perfect)
+		perfect.frame = Scoring.JUDGMENTS.keys().find(perfect.name)
+		note.hit_result = Note.HitResult.make(self, diff * 1000.0, perfect)
+		botplay_hit.emit(note, is_tap)
+		# caused a funny bug which made the combo popups play on botplay holds
+		#note_hit.emit(note, is_tap)
+		return note.hit_result
+
+	var judge: Dictionary = Scoring.judge_note(note, absf(diff * 1000.0)).duplicate()
 	var judge_name: String = Scoring.JUDGMENTS.find_key(judge)
 	if judge_name == "miss":
 		apply_miss(note.column)
-		return _latest_hit_result
+		judge.name = judge_name
+		judge.frame = Scoring.JUDGMENTS.keys().find(judge_name)
+		return Note.HitResult.make(self, diff * 1000.0, judge)
 
 	if stats.combo > 1 and judge.combo_break == true:
 		stats.combo = 0
@@ -272,19 +276,15 @@ func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
 	hit_score.combo = stats.combo + 1
 	apply_score(hit_score)
 
-	var hit_result: = Note.HitResult.new()
-	hit_result.hit_time = diff * 1000.0
-	hit_result.judgment.merge(judge)
-	hit_result.judgment.name = judge_name
-	hit_result.judgment.frame = Scoring.JUDGMENTS.keys().find(judge_name)
-	hit_result.player = self
-	hit_result.data = note
-	note_hit.emit(hit_result, is_tap)
+	judge.name = judge_name
+	judge.frame = Scoring.JUDGMENTS.keys().find(judge_name)
+	note.hit_result = Note.HitResult.make(self, diff * 1000.0, judge)
+	note_hit.emit(note, is_tap)
 	#await RenderingServer.frame_post_draw
 	#hit_result.unreference()
-	return hit_result
+	return note.hit_result
 
-## increases score values and accuracy if provided.[br]
+## Increases score values and accuracy if provided.[br]
 ## NOTE: please copy [code]Scoring.TEMPLATE_HIT_SCORE[/code]
 ## and modify its values when using this
 func apply_score(score_struct: Dictionary) -> void:
@@ -299,7 +299,7 @@ func apply_score(score_struct: Dictionary) -> void:
 	if "combo" in score_struct:
 		stats.combo = score_struct.combo
 
-## increases misses and breaks combo if needed
+## Increases misses and breaks combo if needed
 func apply_miss(column: int = 0) -> void:
 	if column < 0: column = 0
 	if stats.combo > 1:
@@ -307,8 +307,8 @@ func apply_miss(column: int = 0) -> void:
 		stats.breaks += 1
 	else:
 		stats.combo -= 1
-
 	health -= 3
 	stats.misses += 1
 	note_miss.emit(column)
+
 #endregion

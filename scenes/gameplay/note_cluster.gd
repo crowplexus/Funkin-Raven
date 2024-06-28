@@ -40,9 +40,9 @@ func move_note_objects(_delta: float) -> void:
 		var rel_time: float = note.visual_time - Conductor.time
 		var note_scale: float = 0.7
 
-		if is_instance_valid(note.object) and note.moving:
+		if note.object and note.moving:
 			var real_position: Vector2 = Vector2.ZERO
-			if is_instance_valid(note.notefield):
+			if note.receptor:
 				real_position = note.receptor.global_position
 
 			note.object.global_position = note.initial_pos + real_position
@@ -80,7 +80,7 @@ func spawn_note(id: int) -> void:
 	var note: Note = note_queue[id] as Note
 	if note.player <= connected_fields.size():
 		var field: = connected_fields[note.player]
-		if is_instance_valid(field):
+		if field:
 			note.notefield = field
 			if note.column < field.key_count:
 				note.scroll = field.scroll_mods[note.column]
@@ -96,10 +96,9 @@ func spawn_note(id: int) -> void:
 		note.object.name = note.kind + str(get_child_count())
 		note.object.position.y = INF
 	# spawn object
-	if is_instance_valid(note.notefield):
-		if not note.object.top_level:
-			note.object.visible = note.receptor.visible and note.notefield.visible
-			note.object.scale = note.receptor.get_global_transform().get_scale()
+	if note.object and note.receptor and not note.object.top_level:
+		note.object.visible = note.receptor.visible and note.notefield.visible
+		note.object.scale = note.receptor.get_global_transform().get_scale()
 	note.object.set("note", note)
 	add_child(note.object)
 

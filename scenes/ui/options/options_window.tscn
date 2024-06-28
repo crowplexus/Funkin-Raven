@@ -31,14 +31,14 @@ script = ExtResource("1_gulft")
 clip_contents = true
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.04
+anchor_left = 0.009
 anchor_top = 0.089
-anchor_right = 0.262
-anchor_bottom = 0.379
-offset_left = -0.200005
-offset_top = -0.0800018
-offset_right = 0.639954
-offset_bottom = 0.119995
+anchor_right = 0.184
+anchor_bottom = 0.64
+offset_left = -0.52
+offset_top = 43.92
+offset_right = -0.52002
+offset_bottom = -7.80002
 mouse_filter = 1
 
 [node name="page_selector" type="VBoxContainer" parent="left_panel"]
@@ -64,19 +64,19 @@ anchor_left = 0.262
 anchor_top = 0.089
 anchor_right = 0.887
 anchor_bottom = 0.783
-offset_left = 0.639954
-offset_top = -0.0800018
-offset_right = 0.639893
-offset_bottom = 0.23999
+offset_left = -95.36
+offset_top = -8.08
+offset_right = 0.640015
+offset_bottom = -7.76001
 grow_horizontal = 2
 mouse_filter = 1
-metadata/_edit_lock_ = true
 
 [node name="gameplay" type="VBoxContainer" parent="pages"]
 layout_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
 alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="scroll_direction" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -139,6 +139,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="note0_keybind" parent="pages/keybinds" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -174,6 +175,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 alignment = 1
+metadata/_edit_lock_ = true
 
 [node name="framerate" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -266,11 +268,14 @@ vertical_alignment = 1
 [node name="descriptor" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.837
-anchor_right = 1.0
-anchor_bottom = 0.978
-offset_top = 8.35992
-offset_bottom = -0.160095
+anchor_left = 0.185
+anchor_top = 0.812
+anchor_right = 0.891
+anchor_bottom = 0.956
+offset_left = 0.199997
+offset_top = 0.359985
+offset_right = 0.52002
+offset_bottom = -0.320007
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 28

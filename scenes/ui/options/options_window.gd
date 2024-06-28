@@ -17,7 +17,7 @@ extends Control
 ## [READ-ONLY] gives you the maximum amount of items in the current page.
 @onready var page_size: int:
 	get:
-		if is_instance_valid(active_page):
+		if active_page:
 			return active_page.get_child_count()
 		return 0
 
@@ -60,7 +60,7 @@ func _exit_tree() -> void:
 
 
 func _process(delta: float) -> void:
-	if is_instance_valid(selected_pref):
+	if selected_pref:
 		if selector.position.y != selected_pref.position.y + _display_ypos:
 			selector.position.y = lerpf(selected_pref.position.y + _display_ypos,
 				selector.position.y, exp(-delta * 32))
@@ -69,7 +69,7 @@ func _process(delta: float) -> void:
 			"note_offset":
 				Conductor.update(SoundBoard.get_bgm_pos() + AudioServer.get_time_since_last_mix())
 
-	if is_instance_valid(active_page):
+	if active_page:
 		if active_page.position.y != _display_ypos:
 			active_page.position.y = lerpf(_display_ypos, active_page.position.y, exp(-delta * 32))
 
@@ -119,7 +119,7 @@ func stop_changing_pref() -> void:
 
 
 func update_selection(new: int = 0) -> void:
-	if is_instance_valid(selected_pref):
+	if selected_pref:
 		selected_pref.modulate.a = 0.6
 	current_selection = wrapi(current_selection + new, 0, page_size)
 	selected_pref = active_page.get_child(current_selection)
@@ -140,7 +140,7 @@ func update_selection(new: int = 0) -> void:
 func update_page(new_page: int = 0, page_override: int = -1) -> void:
 	var current_page: int = all_pages.find(active_page)
 	if page_override > -1: current_page = page_override
-	if is_instance_valid(active_page):
+	if active_page:
 		active_page.hide()
 
 	current_page = wrapi(current_page + new_page, 0, all_pages.size())

@@ -34,9 +34,11 @@ func recreate_popup_tween() -> Tween:
 	return e
 
 
-func pop_up_judge(hit_result: Note.HitResult, is_tap: bool) -> void:
-	if not is_tap or not hit_result.judgment.visible:
+func pop_up_judge(note: Note, is_tap: bool) -> void:
+	if not note or not is_tap or not note.hit_result.judgment.visible:
 		return
+
+	var hit_result: Note.HitResult = note.hit_result
 
 	judgment_sprite.frame = hit_result.judgment.frame - 1
 	judgment_sprite.position = self.size * 0.5
@@ -55,7 +57,7 @@ func pop_up_judge(hit_result: Note.HitResult, is_tap: bool) -> void:
 	judgment_sprite.position.y -= 80
 	judgment_sprite.scale *= 1.1
 
-	if is_instance_valid(_judge_tween):
+	if _judge_tween:
 		_judge_tween.stop()
 
 	_judge_tween = recreate_popup_tween()
@@ -65,12 +67,13 @@ func pop_up_judge(hit_result: Note.HitResult, is_tap: bool) -> void:
 	.set_ease(Tween.EASE_IN_OUT).set_delay(0.6 * Conductor.crotchet)
 
 
-func pop_up_combo(hit_result: Note.HitResult, is_tap: bool) -> void:
-	if not is_tap:
+func pop_up_combo(note: Note, is_tap: bool) -> void:
+	if not note or not is_tap:
 		return
 
-	var count: int = hit_result.player.stats.combo
+	var hit_result: Note.HitResult = note.hit_result
 
+	var count: int = hit_result.player.stats.combo
 	var konbo_janai: bool = sign(count) == -1
 	var combo_colour: Color = Color.WHITE
 	if not konbo_janai:
@@ -108,7 +111,7 @@ func pop_up_combo(hit_result: Note.HitResult, is_tap: bool) -> void:
 
 		num_score.frame = frame
 
-		if is_instance_valid(_combo_tweens[i]):
+		if _combo_tweens[i]:
 			_combo_tweens[i].kill()
 
 		_combo_tweens[i] = recreate_popup_tween()
@@ -129,7 +132,7 @@ func pop_up_combo(hit_result: Note.HitResult, is_tap: bool) -> void:
 #		"\nTiming: %sms" % snappedf(hit_result.hit_time, 0.001) +
 #		"\nCombo: %s" % hit_result.player.combo)
 #	hit_result_label.modulate = hit_colour
-#	if is_instance_valid(combo_tween):
+#	if combo_tween:
 #		combo_tween.kill()
 #
 #	combo_tween = create_tween().set_ease(Tween.EASE_OUT)

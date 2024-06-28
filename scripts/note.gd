@@ -5,17 +5,23 @@ class_name Note
 ## Hit Result event, created when hitting notes
 class HitResult extends RefCounted:
 	var player: Player
-	var judgment: Dictionary
+	var judgment: Dictionary = Scoring.JUDGMENTS.miss.duplicate()
 	var hit_time: float
-	var data: Note
+
+	static func make(p: Player, ht: float, j: Dictionary) -> Note.HitResult:
+		var hit_result: = Note.HitResult.new()
+		hit_result.judgment.merge(j, true)
+		hit_result.hit_time = ht
+		hit_result.player = p
+		return hit_result
 
 
 var object: CanvasItem
 var notefield: NoteField
 var receptor: CanvasItem:
 	get:
-		if is_instance_valid(notefield):
-			return notefield.get_receptor(column)
+		if notefield and not notefield.receptors.is_empty():
+			return notefield.receptors[column]
 		return null
 
 #region Spawn Data
@@ -50,6 +56,8 @@ var hit_flag: int = 0
 ## 1 being early, 2 being late.
 @export_enum("Undefined:0", "Early:1", "Late:2")
 var hit_timing: int = 0
+## Hit result assigned to the note after hitting it.
+var hit_result: Note.HitResult
 
 ## If the note's hold was dropped from input.
 var dropped: bool = false
@@ -93,14 +101,16 @@ var finished: bool = false
 func reset(in_debug: bool = false) -> void:
 	moving = true
 	dropped = false
+	finished = false
 	update_hold = false
 	debug_mode = in_debug
 	hold_progress = hold_length
+	if hit_result:
+		hit_result.unreference()
 	visual_time = time
 	trip_timer = 0.0
 	hit_timing = 0
 	hit_flag = 0
-	finished = false
 
 ## Sorts Data by using two Note objects, use with arrays.
 static func sort_by_time(first: Note, next: Note) -> int:

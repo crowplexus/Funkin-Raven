@@ -35,12 +35,12 @@ func fade_bgm(from: float = 0.001, to: float = 0.7, duration_to: float = 4.0) ->
 
 
 func cancel_bgm_fade_tween() -> void:
-	if is_instance_valid(bgm_fade_twn):
+	if bgm_fade_twn:
 		bgm_fade_twn.stop()
 
 
 func play_sfx(sound: AudioStream, volume: float = 0.7, pitch_scale: float = 1.0) -> void:
-	if not is_instance_valid(sound):
+	if not sound:
 		return
 
 	var sfx: = AudioStreamPlayer.new()

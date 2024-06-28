@@ -74,10 +74,10 @@ func get_options_window() -> Control:
 
 ## Handy function to enable / disable all input functions for a node.
 func set_node_inputs(node: Node, enable: bool) -> void:
-	node.set_process_input(enable)
-	node.set_process_shortcut_input(enable)
-	node.set_process_unhandled_input(enable)
 	node.set_process_unhandled_key_input(enable)
+	node.set_process_unhandled_input(enable)
+	node.set_process_shortcut_input(enable)
+	node.set_process_input(enable)
 
 #endregion
 #region Text

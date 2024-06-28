@@ -61,7 +61,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 
 
 func update_volume_bar(quiet: bool = false) -> void:
-	if is_instance_valid(_volume_bar_tween):
+	if _volume_bar_tween:
 		_volume_bar_tween.stop()
 
 	if not quiet:
@@ -73,10 +73,31 @@ func update_volume_bar(quiet: bool = false) -> void:
 
 	volume_bar.modulate.a = 1.0
 	volume_bar.value = get_bus_volume(_cur_bus) * volume_bar.max_value
+	update_bus_label()
 
+	Preferences.save_pref(get_bus_pref(_cur_bus), get_bus_volume(_cur_bus))
 	_volume_bar_tween = create_tween().set_ease(Tween.EASE_OUT)
-	_volume_bar_tween.tween_property(volume_bar, "modulate:a", 0.0, 0.8) \
+	_volume_bar_tween.tween_property(volume_bar, "modulate:a", 0.0, 1.0) \
 	.set_delay(0.5)
+
+
+func update_bus(next: int = 0, quiet: bool = false) -> void:
+	_cur_bus = wrapi(_cur_bus + next, 0, AudioServer.bus_count)
+	update_volume_bar(quiet)
+
+
+func update_bus_label() -> void:
+	bus_label.text = "%s\nBus: %s\n[TAB]" % [
+		"%d%%" % [volume_bar.value],
+		AudioServer.get_bus_name(_cur_bus),
+	]
+
+
+func get_bus_pref(idx: int) -> String:
+	match idx:
+		1: return "bgm_volume"
+		2: return "sfx_volume"
+		_: return "master_volume"
 
 
 func get_bus_volume(idx: int) -> float:
@@ -93,7 +114,4 @@ func set_bus_volume(idx: int, vol: float) -> void:
 		2: Preferences.sfx_volume = vol
 
 
-func update_bus(next: int = 0, quiet: bool = false) -> void:
-	_cur_bus = wrapi(_cur_bus + next, 0, AudioServer.bus_count)
-	bus_label.text = AudioServer.get_bus_name(_cur_bus)
-	update_volume_bar(quiet)
+

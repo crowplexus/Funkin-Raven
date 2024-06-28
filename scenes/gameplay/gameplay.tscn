@@ -1,36 +1,12 @@
-[gd_scene load_steps=20 format=3 uid="uid://bjhgsn2eb2e1h"]
+[gd_scene load_steps=8 format=3 uid="uid://bjhgsn2eb2e1h"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/gameplay.gd" id="1_gfupu"]
-[ext_resource type="Texture2D" uid="uid://dd87wgxdwo82p" path="res://assets/sprites/ui/normal/prepare.png" id="2_4pdat"]
 [ext_resource type="PackedScene" uid="uid://dab600stg4bxl" path="res://scenes/gameplay/notes/notefield.tscn" id="2_6wcp1"]
-[ext_resource type="AudioStream" uid="uid://7vxf7mhk812m" path="res://assets/audio/sfx/gameplay/intro3.ogg" id="2_dh4m4"]
 [ext_resource type="PackedScene" uid="uid://dxm24padis8xt" path="res://scenes/backgrounds/mainStage.tscn" id="2_k2qad"]
-[ext_resource type="Texture2D" uid="uid://cgg74hdqie207" path="res://assets/sprites/ui/normal/combo.png" id="2_qmvd3"]
-[ext_resource type="AudioStream" uid="uid://b5warf22r27ia" path="res://assets/audio/sfx/gameplay/intro2.ogg" id="3_6nhsi"]
-[ext_resource type="Texture2D" uid="uid://c1kcj3yhw4mxy" path="res://assets/sprites/ui/normal/ready.png" id="3_o8crc"]
-[ext_resource type="Texture2D" uid="uid://dv2pheqscnepe" path="res://assets/sprites/ui/normal/set.png" id="4_eciqc"]
-[ext_resource type="AudioStream" uid="uid://budt1uknot4d3" path="res://assets/audio/sfx/gameplay/intro1.ogg" id="4_sfn3r"]
-[ext_resource type="AudioStream" uid="uid://bs6557x28j0le" path="res://assets/audio/sfx/gameplay/introGo.ogg" id="5_m5tro"]
-[ext_resource type="Texture2D" uid="uid://bftbew86tagc8" path="res://assets/sprites/ui/normal/go.png" id="5_p7f61"]
 [ext_resource type="Script" path="res://scenes/gameplay/note_cluster.gd" id="5_sb58y"]
-[ext_resource type="Script" path="res://scripts/ui_skin.gd" id="6_3188v"]
-[ext_resource type="Texture2D" uid="uid://5u40shy36q27" path="res://assets/sprites/ui/normal/judgments.png" id="11_hk4xw"]
 [ext_resource type="PackedScene" uid="uid://yruwyaxp0fdl" path="res://scenes/gameplay/hud/default.tscn" id="12_hchqv"]
 [ext_resource type="PackedScene" uid="uid://bc1se7ekgu1ux" path="res://scenes/gameplay/hud/combo_group.tscn" id="17_3r26l"]
 [ext_resource type="PackedScene" uid="uid://bcn0ldilqlnur" path="res://scenes/gameplay/event_machine.tscn" id="18_7d1c2"]
-
-[sub_resource type="Resource" id="Resource_uhmp4"]
-script = ExtResource("6_3188v")
-countdown_sprites = Array[Texture2D]([ExtResource("2_4pdat"), ExtResource("3_o8crc"), ExtResource("4_eciqc"), ExtResource("5_p7f61")])
-countdown_sounds = Array[AudioStream]([ExtResource("2_dh4m4"), ExtResource("3_6nhsi"), ExtResource("4_sfn3r"), ExtResource("5_m5tro")])
-judgment_row = ExtResource("11_hk4xw")
-combo_row = ExtResource("2_qmvd3")
-countdown_sprite_filter = 2
-judgment_sprite_filter = 2
-combo_num_sprite_filter = 2
-countdown_sprite_scale = Vector2(1, 1)
-judgment_sprite_scale = Vector2(0.65, 0.65)
-combo_num_sprite_scale = Vector2(0.45, 0.45)
 
 [node name="gameplay" type="Node2D"]
 script = ExtResource("1_gfupu")
@@ -44,7 +20,6 @@ script = ExtResource("1_gfupu")
 [node name="combo_group" parent="hud" instance=ExtResource("17_3r26l")]
 offset_top = 168.0
 offset_bottom = -304.0
-skin = SubResource("Resource_uhmp4")
 
 [node name="fields" type="Control" parent="hud"]
 layout_mode = 3
@@ -56,14 +31,10 @@ scale = Vector2(1.5, 1.5)
 [node name="1" parent="hud/fields" instance=ExtResource("2_6wcp1")]
 offset_left = 500.0
 offset_right = 500.0
-scroll_mods = null
-key_count = null
 
 [node name="2" parent="hud/fields" instance=ExtResource("2_6wcp1")]
 offset_left = 100.0
 offset_right = 100.0
-scroll_mods = null
-key_count = null
 
 [node name="note_cluster" type="Node2D" parent="hud" node_paths=PackedStringArray("connected_fields")]
 process_thread_group = 2
