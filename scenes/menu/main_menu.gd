@@ -55,7 +55,7 @@ func confirm_selection():
 			ow.close_callback = func() -> void:
 				if get_tree().paused:
 					get_tree().paused = false
-			PerformanceCounter.add_child(ow)
+			Transition.add_child(ow)
 			current_item.self_modulate.a = 1.0
 			get_tree().paused = true
 			bye_bye_buttons(true)

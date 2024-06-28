@@ -33,7 +33,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 text = "Resume
 Restart
-Options 
+Options
 Exit"
 
 [node name="level_label" type="Label" parent="."]

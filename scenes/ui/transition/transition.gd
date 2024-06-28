@@ -8,7 +8,6 @@ const ANIMATIONS: Dictionary = {
 
 
 func play_in(animation: String = "wipe", speed: float = 1.0) -> void:
-	get_tree().paused = true
 	if not animation in ANIMATIONS:
 		animation = "wipe" # default
 	var trans
@@ -20,11 +19,9 @@ func play_in(animation: String = "wipe", speed: float = 1.0) -> void:
 		trans = get_node(animation)
 	trans.start.call_deferred(false, speed)
 	await trans.finished
-	get_tree().paused = false
 
 
 func play_out(animation: String = "wipe", speed: float = 1.0) -> void:
-	get_tree().paused = true
 	if not animation in ANIMATIONS:
 		animation = "wipe" # default
 	var trans
@@ -36,4 +33,3 @@ func play_out(animation: String = "wipe", speed: float = 1.0) -> void:
 		trans = get_node(animation)
 	trans.start.call_deferred(true, speed)
 	await trans.finished
-	get_tree().paused = false

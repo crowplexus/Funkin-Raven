@@ -47,15 +47,23 @@ func _unhandled_key_input(e: InputEvent) -> void:
 #region Scenes
 
 func change_scene(scene: PackedScene, skip_transition: bool = false) -> void:
-	if not skip_transition: await Transition.play_in()
+	if not skip_transition:
+		get_tree().paused = true
+		await Transition.play_in()
 	get_tree().change_scene_to_packed(scene)
-	if not skip_transition: await Transition.play_out()
+	if not skip_transition:
+		await Transition.play_out()
+		get_tree().paused = false
 
 
 func reset_scene(skip_transition: bool = false) -> void:
-	if not skip_transition: await Transition.play_in("fade")
+	if not skip_transition:
+		get_tree().paused = true
+		await Transition.play_in("fade")
 	get_tree().reload_current_scene()
-	if not skip_transition: await Transition.play_out("fade")
+	if not skip_transition:
+		await Transition.play_out("fade")
+		get_tree().paused = false
 
 
 func get_options_window() -> Control:
