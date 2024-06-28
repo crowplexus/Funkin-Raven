@@ -92,7 +92,7 @@ static func parse_json_notefield_conf(config: Dictionary, id: int) -> Dictionary
 	if "name" in config: nfg.name = config.name
 	if "spot" in config: nfg.spot = config.spot
 	if "characters" in config: nfg.characters = config.characters
-	if "keyCount" in config: nfg.key_count = config["keyCount"]
+	if "keyCount" in config: nfg.key_count = int(config["keyCount"])
 	if "visible" in config: nfg.visible = config.visible
 	if "scale" in config:
 		if config.scale is float:

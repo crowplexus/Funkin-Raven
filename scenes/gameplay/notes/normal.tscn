@@ -21,7 +21,6 @@ animation = &"splash0 1"
 [node name="hold_container" type="Control" parent="."]
 modulate = Color(1, 1, 1, 0.6)
 use_parent_material = true
-clip_contents = true
 layout_mode = 3
 anchors_preset = 0
 offset_left = -30.0

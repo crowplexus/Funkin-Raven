@@ -48,10 +48,10 @@ func reset_scroll_mods() -> void:
 	animation_timers.fill(Timer.new())
 
 	for i: int in key_count:
-		if i > receptors.size():
+		if receptors.size() < key_count:
 			var mmmm: = receptors[i % receptors.size()]
 			var copy: = mmmm.duplicate()
-			copy.position.x += 160 * i
+			copy.position.x = receptors.back().position.x + (i * 160)
 			copy.name = str(i)
 			add_child(copy)
 			receptors.append(copy)

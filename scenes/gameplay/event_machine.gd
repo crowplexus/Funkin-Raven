@@ -92,9 +92,10 @@ func call_event(id: int) -> void:
 			var c: Camera2D = get_viewport().get_camera_2d()
 			if is_instance_valid(c):
 				var duration: float = float(e.values.duration)
-				var target_zoom: Vector2 = Vector2(e.values.zoom, e.values.zoom)
-				if str(e.values.mode) != "direct":
-					target_zoom *= stage.initial_camera_zoom
+				var target_zoom: Vector2 = stage.initial_camera_zoom
+				var direct_mode: bool = str(e.values.mode) == "direct"
+				target_zoom = e.values.zoom * (1.0 if direct_mode else stage.initial_camera_zoom)
+
 				match str(e.values.ease):
 					"INSTANT":
 						stage.current_camera_zoom = target_zoom
@@ -106,7 +107,7 @@ func call_event(id: int) -> void:
 						var _easing: Tween.EaseType = convert_flixel_tween_ease(easev)
 						var _trans: Tween.TransitionType = convert_flixel_tween_trans(easev)
 						camera_tween_zoom = create_tween().set_ease(_easing).set_trans(_trans)
-						camera_tween_zoom.tween_property(stage, "current_camera_zoom", c.zoom * target_zoom, dur_steps)
+						camera_tween_zoom.tween_property(stage, "current_camera_zoom", target_zoom, dur_steps)
 
 		"PlayAnimation":
 			var stage: StageBG = get_parent().stage
