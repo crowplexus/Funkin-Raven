@@ -103,6 +103,17 @@ func format_to_time(value: float) -> String:
 		formatter = ("%2d:%02d:02d" % [hours, minutes, seconds])
 	return formatter
 
+func get_weekday_string() -> String:
+	var weekday: Time.Weekday = Time.get_date_dict_from_system().weekday
+	match weekday:
+		0: return "Sunday"
+		1: return "Monday"
+		2: return "Tuesday"
+		3: return "Wednesday"
+		4: return "Thursday"
+		5: return "Friday"
+		_: return "Unknown"
+
 func float_to_hours(value: float) -> int: return int(value / 3600.0)
 func float_to_minute(value: float) -> int: return int(value / 60) % 60
 func float_to_seconds(value: float) -> float: return fmod(value, 60)

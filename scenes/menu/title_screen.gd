@@ -16,11 +16,23 @@ var _enter_animation: Callable = func() -> void:
 		_enter_animation_backwards = not _enter_animation_backwards
 
 var _intro_skipped: bool = false
+# i was gonna do a resource but ehhh
+# pretty much everyone is just gonna replace this when modding anyway
+var _intro_texts: Array = [
+	["fnf", "but woke"],
+	#["swagshit", "moneymoney"],
+	["shoutouts to", "psych engine"],
+	["love and hugs", "from brazil"],
+	["why godot?", "why not!"],
+]
+var _cur_rando: PackedStringArray = ["swagshit", "moneymoney"]
 
 
 func _ready() -> void:
 	RenderingServer.set_default_clear_color(Color.BLACK)
 	await RenderingServer.frame_post_draw
+
+	_cur_rando = _intro_texts.pick_random()
 
 	thingy.text = ""
 	thingy.visible = true
@@ -78,8 +90,11 @@ func on_ibeat_reached(ibeat: int) -> void:
 		8:
 			crow_sprite.visible = false
 			thingy.text = ""
-		9: thingy.text = "swagshit"
-		11: thingy.text += "\nmoneymoney"
+		9: thingy.text = _cur_rando[0]
+		11:
+			thingy.text += "\n" + _cur_rando[1]
+			if thingy.text.to_lower().contains("psych"):
+				SoundBoard.play_sfx(load("res://assets/audio/sfx/psych.ogg"))
 		12: thingy.text = ""
 		13: thingy.text = "Friday"
 		14: thingy.text += "\nNight"

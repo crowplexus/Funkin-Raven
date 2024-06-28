@@ -175,14 +175,6 @@ grow_vertical = 2
 mouse_filter = 2
 alignment = 1
 
-[node name="note_colouring_mode" parent="pages/visuals" instance=ExtResource("3_wjca4")]
-layout_mode = 2
-option_name = &"Note Colouring Mode"
-description = "Define what note colours to show during gameplay."
-variable = "note_colouring_mode"
-option_type = 2
-display_names = Array[StringName]([&"Column", &"Quantized"])
-
 [node name="framerate" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Framerate Cap"

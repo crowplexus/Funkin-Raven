@@ -255,8 +255,6 @@ func convert_event(event: Dictionary, bpm: float) -> ChartEvent:
 					}
 					if event.v is int or event.v is float:
 						e.values.char = event.v
-					if event.v is String:
-						e.values.char
 					elif event.v is Dictionary:
 						e.values.merge(event.v, true)
 		"ZoomCamera":

@@ -50,7 +50,7 @@ func pop_up_judge(hit_result: Note.HitResult, is_tap: bool) -> void:
 					judgment_sprite.modulate.v = 1.2
 			1:
 				judgment_sprite.modulate = Scoring.get_clear_flag_color(
-					Scoring.get_clear_flag(hit_result.player.jhit_regis))
+					Scoring.get_clear_flag(hit_result.player.stats.hit_registry))
 	judgment_sprite.position.y -= 80
 	judgment_sprite.scale *= 1.1
 

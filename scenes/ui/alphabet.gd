@@ -123,6 +123,8 @@ func get_animation(character: String) -> String:
 		"%": return "percent"
 		"/": return "slash"
 		"&": return "and"
+		"!": return "exclamation mark"
+		"?": return "question mark"
 		_:
 			if allowed_letters.find(character.to_lower()) != -1:
 				if character != character.to_lower():
