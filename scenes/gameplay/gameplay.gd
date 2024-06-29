@@ -20,20 +20,28 @@ var hud_beat_interval: int = 4
 var mutable_streams: Array[AudioStreamPlayer] = []
 var initial_ui_zoom: Vector2 = Vector2.ONE
 var _need_to_play_music: bool = true
+var modchart_pack: ModchartPack
 
 #endregion
 #region Node2D Functions
 
 func _ready() -> void:
 	Conductor.set_time(-(Conductor.crotchet * 5))
-
 	if not is_instance_valid(Chart.global):
 		Chart.global = Chart.request("test", SongItem.DEFAULT_DIFFICULTY_SET[1])
-
 	# set up user interface skin
 	skin = Chart.global.song_info.ui_skin
 	combo_group.set_deferred("skin", Chart.global.song_info.ui_skin)
 	combo_group.call_deferred("preload_combo")
+	# make a modchart pack
+	modchart_pack = ModchartPack.pack_from_folders([
+		"res://assets/scripts",
+		"res://assets/scripts/songs/%s" % Chart.global.song_info.folder,
+	])
+	modchart_pack.name = "modcharts"
+	add_child(modchart_pack)
+
+	modchart_pack.call_mod_method("_on_ready", [self])
 
 	# kill the original hud
 	$"hud/default".free()
@@ -56,13 +64,11 @@ func _ready() -> void:
 			# "The Great Punishment" "Curious Cat", "Metamorphosis":
 			#	load_hud(load("res://scenes/gameplay/hud/codename.tscn"))
 			_:
-				load_hud(Globals.DEFAULT_HUD)
+				var hud_script: int = modchart_pack.call_mod_method("_set_hud", [self])
+				if hud_script != ModchartPack.CallableRequest.STOP:
+					load_hud(Globals.DEFAULT_HUD)
 
-	var np: NodePath = "res://scenes/backgrounds/%s.tscn" % [
-		Chart.global.song_info.background]
-	#print_debug("trying to create stage")
-	init_stage(np)
-
+	init_stage("res://scenes/backgrounds/%s.tscn" % [Chart.global.song_info.background])
 	init_music()
 	init_fields()
 	init_players(fields.get_children())
@@ -70,23 +76,29 @@ func _ready() -> void:
 	initial_ui_zoom = ui_layer.scale
 
 	# Connect Signals
+	Conductor.istep_reached.connect(on_istep_reached)
 	Conductor.ibeat_reached.connect(on_ibeat_reached)
+	Conductor.ibar_reached.connect(on_ibar_reached)
 	Conductor.ibeat_reached.connect(start_countdown)
 
 
 func start_countdown(beat: int) -> void:
-	match beat:
-		# display_countdown(sound_id, sprite_id)
-		-4: display_countdown(0)
-		-3: display_countdown(1)
-		-2: display_countdown(2)
-		-1: display_countdown(3)
-
+	var countdown_script: int = modchart_pack.call_mod_method("_on_countdown", [self, beat])
+	if countdown_script != ModchartPack.CallableRequest.STOP:
+		match beat:
+			# display_countdown(sound_id, sprite_id)
+			-4: display_countdown(0)
+			-3: display_countdown(1)
+			-2: display_countdown(2)
+			-1: display_countdown(3)
 	if beat == 0 and Conductor.ibeat_reached.is_connected(start_countdown):
 		Conductor.ibeat_reached.disconnect(start_countdown)
 
 
 func _process(delta: float) -> void:
+	var process_script: int = modchart_pack.call_mod_method("_on_process", [self, delta])
+	if process_script == ModchartPack.CallableRequest.STOP:
+		return
 	process_conductor(delta)
 	if ui_layer.scale != initial_ui_zoom:
 		ui_layer.scale = Vector2(
@@ -94,23 +106,36 @@ func _process(delta: float) -> void:
 			lerpf(initial_ui_zoom.y, ui_layer.scale.y, exp(-delta * 5))
 		)
 		center_ui_layer()
+	if get_player(Preferences.playfield_side):
+		update_healthbar(delta)
+	modchart_pack.call_mod_method("_post_process", [self, delta])
 
-	if health_bar and is_instance_valid(get_player(Preferences.playfield_side)):
-		var health_deluxe: float = get_player(Preferences.playfield_side).health
-		health_bar.value = lerpf(health_bar.value, health_deluxe, exp(-delta * 96))
 
+func update_healthbar(delta: float) -> void:
+	if not health_bar:
+		return
+	var health_deluxe: float = get_player(Preferences.playfield_side).health
+	health_bar.value = lerpf(health_bar.value, health_deluxe, exp(-delta * 96))
 
 func _unhandled_input(_e: InputEvent) -> void:
+	var input_script: int = modchart_pack.call_mod_method("_on_unhandled_input", [self, _e])
 	if Input.is_action_just_pressed("ui_pause") and is_processing_unhandled_input():
-		var pause_menu: Control = load("res://scenes/ui/pause_menu.tscn").instantiate()
-		pause_menu.z_index = 100
-		get_tree().paused = true
-		ui_layer.add_child(pause_menu)
+		var pause_script: int = modchart_pack.call_mod_method("_on_pause", [self, _e])
+		if pause_script != ModchartPack.CallableRequest.STOP:
+			var pause_menu: Control = load("res://scenes/ui/pause/pause_menu.tscn").instantiate()
+			pause_menu.z_index = 100
+			get_tree().paused = true
+			ui_layer.add_child(pause_menu)
 
 
 func _exit_tree() -> void:
-	Conductor.reset()
+	var exit_script: int = modchart_pack.call_mod_method("_on_exit_tree", [self])
+	if exit_script == ModchartPack.CallableRequest.STOP:
+		return
+	Conductor.istep_reached.disconnect(on_istep_reached)
 	Conductor.ibeat_reached.disconnect(on_ibeat_reached)
+	Conductor.ibar_reached.disconnect(on_ibar_reached)
+	Conductor.reset()
 	for i: int in fields.get_child_count():
 		var field: NoteField = fields.get_child(i)
 		if field.player:
@@ -296,17 +321,30 @@ func process_conductor(delta: float) -> void:
 		Conductor.update(music.get_playback_position() + AudioServer.get_time_since_last_mix())
 
 
+func on_istep_reached(istep: int) -> void:
+	var step_script: int = modchart_pack.call_mod_method("_on_istep_reached", [self, istep])
+	#if step_script == ModchartPack.CallableRequest.STOP:
+	#	return
+
+
 func on_ibeat_reached(ibeat: int) -> void:
 	if ibeat < 0:
 		return
 
-	if ibeat % hud_beat_interval == 0:
-		ui_layer.scale += Vector2(0.03, 0.03)
+	var beat_script: int = modchart_pack.call_mod_method("_on_ibeat_reached", [self, ibeat])
+	if beat_script != ModchartPack.CallableRequest.STOP:
+		if ibeat % hud_beat_interval == 0:
+			ui_layer.scale += Vector2(0.03, 0.03)
+		if music and music.get_child_count() != 0:
+			for track: AudioStreamPlayer in music.get_children():
+				if (music.get_playback_position() - track.get_playback_position()) > 0.01:
+					resync_vocals()
 
-	if music and music.get_child_count() != 0:
-		for track: AudioStreamPlayer in music.get_children():
-			if (music.get_playback_position() - track.get_playback_position()) > 0.01:
-				resync_vocals()
+
+func on_ibar_reached(ibar: int) -> void:
+	var bar_script: int = modchart_pack.call_mod_method("_on_ibar_reached", [self, ibar])
+	#if bar_script == ModchartPack.CallableRequest.STOP:
+	#	return
 
 ## Connected to [code]player.note_fly_over[/code] to handle
 ## missing notes by letting them fly above your notefield..
@@ -334,7 +372,6 @@ func restore_vocals(note: Note, _is_tap: bool) -> void:
 func leave() -> void:
 	Conductor.reset() # reset rate
 	Conductor.rate = 1.0
-
 	# TODO: for levels, i need a playlist
 	# and then we just switch to the next song
 	# this is fine for now
@@ -371,19 +408,25 @@ func load_hud(hud_scene: PackedScene, set_as_main: bool = true) -> void:
 	ui_layer.move_child(instance, 2)
 	if set_as_main:
 		current_hud = instance
-		if instance.get("health_bar") != null:
+		if instance.get("health_bar"):
 			health_bar = instance.health_bar
 			health_bar.set_player(Preferences.playfield_side)
+
+	modchart_pack.call_mod_method("_on_hud_loaded", [self, hud_name])
 
 
 func unload_current_hud() -> void:
 	if current_hud:
-		current_hud.queue_free()
+		unload_hud(current_hud.get_path())
 
 
 func unload_hud(hud_name: NodePath) -> void:
 	if ui_layer.has_node(hud_name):
-		ui_layer.get_node(hud_name).queue_free()
+		var old_hud: = ui_layer.get_node(hud_name)
+		if old_hud.get("health_bar") and old_hud.health_bar == health_bar:
+			health_bar = null
+		old_hud.queue_free()
+	modchart_pack.call_mod_method("_on_hud_unloaded", [self, hud_name])
 
 
 func get_player(player_id: int) -> Player:

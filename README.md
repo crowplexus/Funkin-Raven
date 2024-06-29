@@ -3,7 +3,7 @@
 
 ---
 
-A personal remake of Friday Night Funkin'
+My personal remake of Friday Night Funkin'
 
 made with the Godot Game Engine.
 
@@ -22,7 +22,7 @@ Work in Progress.
 
 - User Interface
 	- [x] Gameplay UI
-	- [ ] Menu UI **(currently partial)**
+	- [ ] Menu UI **(partial)**
 
 - Notes
 	- [x] Tap Notes
@@ -31,7 +31,7 @@ Work in Progress.
 	- [ ] Mines
 
 - Menus
-	- [ ] Title
+	- [x] Title
 	- [x] Main
 	- [ ] Story
 	- [ ] Freeplay

@@ -1,0 +1,120 @@
+[gd_scene load_steps=9 format=3 uid="uid://cpissvm1xmp8t"]
+
+[ext_resource type="Script" path="res://scenes/ui/pause/pause_menu_pixel.gd" id="1_8p7ny"]
+[ext_resource type="Script" path="res://scenes/ui/alphabet.gd" id="2_2mkfu"]
+[ext_resource type="FontFile" uid="uid://c77e5cxmxdsux" path="res://assets/fonts/pixel.otf" id="2_dawqb"]
+[ext_resource type="AudioStream" uid="uid://dyrxwbktgud77" path="res://assets/audio/bgm/pixel/LunchboxScary.ogg" id="2_nksxn"]
+
+[sub_resource type="Gradient" id="Gradient_tdn2v"]
+colors = PackedColorArray(0.901961, 0.45098, 0.45098, 0.117647, 0.901961, 0.45098, 0.45098, 0.117647)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_s7xej"]
+gradient = SubResource("Gradient_tdn2v")
+width = 1280
+height = 720
+fill = 1
+fill_to = Vector2(1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_pmyeb"]
+font = ExtResource("2_dawqb")
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_h74bm"]
+font = ExtResource("2_dawqb")
+font_size = 24
+
+[node name="pause_menu_pixel" type="Control"]
+process_mode = 3
+top_level = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8p7ny")
+music = ExtResource("2_nksxn")
+
+[node name="back" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0.313726)
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 1)
+metadata/_edit_lock_ = true
+
+[node name="red" type="Sprite2D" parent="back"]
+position = Vector2(640, 360)
+texture = SubResource("GradientTexture2D_s7xej")
+
+[node name="boxy_box" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 320.0
+offset_top = 70.0
+offset_right = 960.0
+offset_bottom = 646.0
+color = Color(0, 0, 0, 1)
+
+[node name="options" type="Label" parent="boxy_box"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Resume 
+Restart
+Options
+Exit"
+label_settings = SubResource("LabelSettings_pmyeb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="selector" type="Label" parent="boxy_box"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.335
+anchor_right = 0.75
+anchor_bottom = 0.675
+offset_top = -2.96001
+offset_right = -3.05176e-05
+offset_bottom = 0.199982
+grow_horizontal = 2
+text = "> <"
+label_settings = SubResource("LabelSettings_pmyeb")
+horizontal_alignment = 3
+
+[node name="level_label" type="Label" parent="boxy_box"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.012
+anchor_top = 0.74
+anchor_right = 0.992
+anchor_bottom = 0.991
+offset_left = 0.32
+offset_top = -0.23999
+offset_right = 0.119995
+offset_bottom = 0.18396
+grow_horizontal = 2
+grow_vertical = 2
+text = "Song: N/A
+Difficulty: N/A
+Fails: N/A"
+label_settings = SubResource("LabelSettings_h74bm")
+vertical_alignment = 2
+autowrap_mode = 2
+
+[node name="options" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+script = ExtResource("2_2mkfu")
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "Resume
+Restart
+Options
+Exit"

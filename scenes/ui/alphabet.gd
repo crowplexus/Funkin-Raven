@@ -95,13 +95,16 @@ func clear_glyphs() -> void:
 		i.queue_free()
 
 
+func get_line_count() -> int:
+	return get_child_count()
+
 func set_horizontal_alignment(id: int) -> void:
 	for line: Control in get_children():
 		match id:
 			0: line.position.x = 0.0
 			1: line.position.x = (size.x - line.size.x) * 0.5
 			2: line.position.x = (size.x - line.size.x)
-		line.position.y *= line.scale.x * scale.x
+		line.position.y *= scale.x * line.scale.x
 
 
 func set_vertical_alignment(id: int) -> void:
@@ -110,7 +113,8 @@ func set_vertical_alignment(id: int) -> void:
 			0: line.position.y = 0.0
 			1: line.position.y = (size.y - line.size.y) * 0.5
 			2: line.position.y = (size.y - line.size.y)
-		line.position.y *= line.scale.y * scale.y
+		line.position.y *= scale.y * line.scale.y
+
 
 func get_animation(character: String) -> String:
 	match character:
