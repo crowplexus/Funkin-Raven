@@ -11,12 +11,7 @@ var _song_name: StringName = ""
 
 
 func _ready() -> void:
-	match Preferences.scroll_direction:
-		1:
-			health_bar.position.y = 90
-			status_label.position.y = 140
-			time_bar.position.y = get_viewport_rect().size.y * 0.96
-
+	reset_positions()
 	if Chart.global:
 		_song_name = Chart.global.song_info.name
 	$"watermark".text = "%s - FR v%s" % [ _song_name, Globals.ENGINE_VERSION ]
@@ -24,6 +19,18 @@ func _ready() -> void:
 	time_label.text = _song_name
 	time_bar.value = 0.0
 	Conductor.ibeat_reached.connect(icon_thingy)
+
+
+func reset_positions() -> void:
+	match Preferences.scroll_direction:
+		0:
+			time_bar.position.y = 5
+			health_bar.position.y = 645
+			status_label.position.y = 704
+		1:
+			health_bar.position.y = 90
+			status_label.position.y = 140
+			time_bar.position.y = size.y * 0.96
 
 
 func _exit_tree() -> void:

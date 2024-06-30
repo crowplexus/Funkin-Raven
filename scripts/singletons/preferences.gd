@@ -27,11 +27,13 @@ var scroll_direction: int = 0
 ## Recommended if you use bluetooth headphones.
 @export var beat_offset: float = 0.0:
 	set(new):
-		beat_offset = clampf(snappedf(new, 0.001), 0, 500)
+		beat_offset = clampf(snappedf(new, 0.001), -500, 500)
 ## Centers your notes and hides the enemy's.
 @export var centered_playfield: bool = false
 ## Allows you to press keys while there's no notes to hit.
 @export var ghost_tapping: bool = true
+## Enables a new 5th judgement greater than "Sick!"
+@export var use_epics: bool = true
 ## Defines how scroll speed behaves in-game.
 @export_enum("Chart based:0", "Multiplicative:1", "Constant:2")
 var scroll_speed_behaviour: int = 0
@@ -51,6 +53,11 @@ var playfield_side: int = 0:
 
 #endregion
 #region Visual Options
+
+## Define the size of the notes on-screen.
+@export var receptor_size: float = 1.0:
+	set(new_size):
+		receptor_size = clampf(snappedf(new_size, 0.001), 0.5, 2.0)
 
 ## Define here your frames per second limit.
 @export var framerate_cap: int = 60:
@@ -76,7 +83,8 @@ var framerate_mode: String = "Capped":
 @export_enum("Above Notes:0", "Behind Notes:1")
 var hold_layer: int = 1
 ## Enables a firework effect when hitting judgements that allow it.
-@export var note_splashes: bool = true
+@export_enum("Disabled:0", "On Player:1", "All Notefields:2")
+var note_splashes: int = 2
 ## Enables certain flashing effects in menus and gameplay[br]
 ## Please disable this if you are sensitive to those.
 @export var flashing: bool = true

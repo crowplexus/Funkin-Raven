@@ -58,11 +58,9 @@ func display_splash() -> void:
 	if not note.receptor:
 		return
 	var splash_item: = splash_spr.duplicate() as AnimatedSprite2D
-	splash_item.top_level = true
 	splash_item.modulate.a = 0.6
 	splash_item.visible = true
 	note.receptor.add_child(splash_item)
-	splash_item.global_position = note.receptor.global_position
 	splash_item.play("splash%s %s" % [ column, randi_range(1, 2) ])
 	splash_item.animation_finished.connect(splash_item.queue_free)
 
@@ -80,10 +78,8 @@ func display_cover() -> void:
 				cover.queue_free()
 	)
 	cover.visible = true
-	cover.top_level = true
 	add_child(cover)
 	_displayed_covers.append(cover)
-	cover.global_position = note.receptor.global_position
 	cover.frame = 0
 	cover.play("begin%s" % column)
 #endregion
@@ -103,7 +99,7 @@ func update_hold_size() -> void:
 			cover.play("progress%s" % column)
 
 func finish() -> void:
-	var valid: bool = note and note.hit_result and not note.hit_result.player.botplay
+	var valid: bool = note and note.hit_result #and not note.hit_result.player.botplay
 	if valid and note.hold_progress <= 0.0 and not _displayed_covers.is_empty():
 		for cover: CanvasItem in _displayed_covers:
 			var dupe: = cover.duplicate()
@@ -115,15 +111,24 @@ func finish() -> void:
 func on_hit(hit_note: Note) -> void:
 	if not hit_note:
 		return
+
 	if hit_note.hit_result and hit_note.hit_result.judgment:
 		var result: Note.HitResult = hit_note.hit_result
-		if hit_note.moving: match result.judgment.name:
-			"perfect" when note.hold_progress > 0.0:
-				display_cover()
-			_ when result.player and not result.player.botplay and result.judgment.splash:
-				display_splash()
-				if hit_note.hold_progress > 0.0:
+		if hit_note.moving:
+			var splash: bool = result.judgment.splash
+			if splash == true: match Preferences.note_splashes:
+				0: splash = false
+				1: splash = result.player and not result.player.botplay
+				2: splash = is_instance_valid(result.player)
+
+			match result.judgment.name:
+				"perfect" when note.hold_progress > 0.0:
+					if splash: display_splash()
 					display_cover()
+				_ when splash:
+					display_splash()
+					if hit_note.hold_progress > 0.0:
+						display_cover()
 
 
 func on_miss(_column: int) -> void:

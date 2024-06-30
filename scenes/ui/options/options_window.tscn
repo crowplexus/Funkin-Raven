@@ -86,6 +86,18 @@ variable = "scroll_direction"
 option_type = 2
 display_names = Array[StringName]([&"Up", &"Down"])
 
+[node name="ghost_tapping" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Ghost Tapping"
+description = "Allows you to press keys while there's no notes to hit."
+variable = "ghost_tapping"
+
+[node name="use_epics" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Use Epics"
+description = "Enables a new 5th judgement greater than \"Sick!\""
+variable = "use_epics"
+
 [node name="beat_offset" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Beat Offset"
@@ -204,6 +216,16 @@ layout_mode = 2
 option_name = &"Note Splashes"
 description = "Enables a firework effect when hitting judgements that allow it."
 variable = "note_splashes"
+option_type = 2
+display_names = Array[StringName]([&"Disabled", &"Player-only", &"Every Player"])
+
+[node name="receptor_size" parent="pages/visuals" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Receptor Size"
+description = "Define the size of the notes on-screen."
+variable = "receptor_size"
+option_type = 1
+steps = 0.1
 
 [node name="hud_style" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2

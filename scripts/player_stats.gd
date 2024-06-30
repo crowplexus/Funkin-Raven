@@ -34,8 +34,8 @@ class_name PlayerStats
 
 
 func _to_string() -> String:
-	var status: String = "[Score]: %s • [Combo Breaks]: %s • [Accuracy]: %s%%" % [
-		score, breaks, snappedf(accuracy, 0.01),
+	var status: String = "Score: %s - Accuracy: %s%% - Combo Breaks: %s" % [
+		score, snappedf(accuracy, 0.01), breaks,
 	]
 	# crazy frog.
 	if breaks < 10:

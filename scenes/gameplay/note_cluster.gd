@@ -34,15 +34,15 @@ func _process(delta: float) -> void:
 
 func move_note_objects(_delta: float) -> void:
 	for note: Note in note_queue:
-		if not is_instance_valid(note) or note.finished:
+		if not note or note.finished:
 			continue
 
 		var rel_time: float = note.visual_time - Conductor.time
 		var note_scale: float = 0.7
 
-		if note.object and note.moving:
+		if is_instance_valid(note.object) and note.moving:
 			var real_position: Vector2 = Vector2.ZERO
-			if note.receptor:
+			if note.notefield and note.receptor:
 				real_position = note.receptor.global_position
 
 			note.object.global_position = note.initial_pos + real_position
@@ -61,7 +61,7 @@ func try_spawning(_fstep: float) -> void:
 func spawn_notes() -> void:
 	while current_note < note_queue.size():
 		var ct: float = note_queue[current_note].time
-		var relative: float = absf(ct - Conductor.time + (Preferences.beat_offset * 0.001))
+		var relative: float = absf(ct - Conductor.time)
 		var spawn_delay: float = 0.9 * note_queue[current_note].real_speed
 		if note_queue[current_note].real_speed < 1.0:
 			spawn_delay = 0.9 / note_queue[current_note].real_speed

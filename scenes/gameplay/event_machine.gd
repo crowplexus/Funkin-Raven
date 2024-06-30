@@ -122,7 +122,6 @@ func call_event(id: int) -> void:
 					"bf", "boyfriend", "player1", "1": player = 1
 					"dad", "opponent", "enemy", "player2", "2": player = 2
 					"gf", "girlfriend", "spectator", "crowd", "dj", "player3", "3": player = 3
-
 				var t: = stage.get_node("player%s" % player)
 				if t and t is Character:
 					t.play_animation(e.values.anim, "force" in e.values and e.values.force == true)

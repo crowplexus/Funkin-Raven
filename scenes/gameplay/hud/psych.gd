@@ -11,16 +11,23 @@ var _tb_twn: Tween
 
 
 func _ready() -> void:
-	match Preferences.scroll_direction:
-		1:
-			health_bar.position.y = 80
-			status_label.position.y = 115
-			time_bar.position.y = size.y - 34
-
+	reset_positions()
 	time_bar.modulate.a = 0.0
 	_tb_twn = create_tween().set_ease(Tween.EASE_IN).bind_node(health_bar)
 	_tb_twn.tween_property(time_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
 	time_bar.visible = Preferences.show_timer
+
+
+func reset_positions() -> void:
+	match Preferences.scroll_direction:
+		0:
+			health_bar.position.y = 645
+			status_label.position.y = 678
+			time_bar.position.y = 19
+		1:
+			health_bar.position.y = 80
+			status_label.position.y = 115
+			time_bar.position.y = size.y - 34
 
 
 func setup_healthbar() -> void:

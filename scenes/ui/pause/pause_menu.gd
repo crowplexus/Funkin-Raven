@@ -17,8 +17,25 @@ var options: Array[Callable] = [
 	func() -> void:
 		var ow: Control = Globals.OPTIONS_WINDOW.instantiate()
 		Globals.set_node_inputs(self, false)
+		var old_scroll: int = Preferences.scroll_direction
+		var old_rscale: float = Preferences.receptor_size
+		var old_center: bool = Preferences.centered_playfield
 		ow.close_callback = func():
 			Globals.set_node_inputs(self, true)
+			var receptors_changed: bool = (old_scroll != Preferences.scroll_direction
+				or old_rscale != Preferences.receptor_size
+				or old_center != Preferences.centered_playfield)
+			var scene: Node = get_tree().current_scene
+			if scene.name == "gameplay":
+				if receptors_changed:
+					for nf: NoteField in scene.fields.get_children():
+						nf.scroll_mods.fill(Vector2(1.0, -1.0 if Preferences.scroll_direction == 1 else 1.0))
+						nf.scale = Vector2(Preferences.receptor_size, Preferences.receptor_size)
+						nf.check_centered()
+						nf.reset_scrolls()
+					if scene.get("current_hud") != null:
+						scene.current_hud.call_deferred("reset_positions")
+
 		add_child(ow),
 	func() -> void:
 		SoundBoard.stop_bgm()

@@ -18,23 +18,38 @@ script = ExtResource("1_gfupu")
 [node name="default" parent="hud" instance=ExtResource("12_hchqv")]
 
 [node name="combo_group" parent="hud" instance=ExtResource("17_3r26l")]
-offset_top = 168.0
-offset_bottom = -304.0
+modulate = Color(1, 1, 1, 0.745098)
+offset_left = 550.0
+offset_top = 200.0
+offset_right = -450.0
+offset_bottom = -270.0
+scale = Vector2(0.8, 0.8)
 
 [node name="fields" type="Control" parent="hud"]
 layout_mode = 3
-anchors_preset = 0
-offset_top = 120.0
-offset_bottom = 120.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -426.7
+offset_bottom = -240.0
+grow_horizontal = 2
+grow_vertical = 2
 scale = Vector2(1.5, 1.5)
+metadata/_edit_lock_ = true
 
 [node name="1" parent="hud/fields" instance=ExtResource("2_6wcp1")]
-offset_left = 500.0
-offset_right = 500.0
+layout_mode = 0
+offset_left = 510.0
+offset_top = 80.0
+offset_right = 510.0
+offset_bottom = 80.0
 
 [node name="2" parent="hud/fields" instance=ExtResource("2_6wcp1")]
-offset_left = 100.0
-offset_right = 100.0
+layout_mode = 0
+offset_left = 90.0
+offset_top = 80.0
+offset_right = 90.0
+offset_bottom = 80.0
 
 [node name="note_cluster" type="Node2D" parent="hud" node_paths=PackedStringArray("connected_fields")]
 process_thread_group = 2

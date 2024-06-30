@@ -9,7 +9,9 @@ const TEMPLATE_HIT_SCORE: Dictionary = {
 	"combo": 0,
 }
 
-const RAVEN_MAX_SCORE: int = 500
+const DOIDO_MIN_SCORE: int = 0.0
+const DOIDO_MAX_SCORE: int = 500
+const DOIDO_SCORE_SLOPE: float = 5.0
 const HIT_THRESHOLD: float = 200.0
 
 const JUDGMENTS: Dictionary = {
@@ -64,8 +66,13 @@ const JUDGMENTS: Dictionary = {
 	},
 }
 
-static func get_raven_score(_x: float) -> int:
-	return RAVEN_MAX_SCORE
+static func get_doido_score(x: float) -> int:
+	# https://github.com/DiogoTVV/FNF-Doido-Engine-3
+	# https://github.com/DiogoTVV/FNF-Doido-Engine-3
+	# https://github.com/DiogoTVV/FNF-Doido-Engine-3
+	# THANKS DIOGO!!!!!! PLEASE CHECK OUT HIS PROJECT :3
+	var score: int = remap(x, DOIDO_MIN_SCORE, DOIDO_MAX_SCORE, JUDGMENTS.shit.threshold, DOIDO_SCORE_SLOPE)
+	return clampi(score, DOIDO_MIN_SCORE, DOIDO_MAX_SCORE)
 
 
 static func get_wife_score(max_millis: float, version: int = 3, ts: float = -1.0) -> float:
@@ -120,7 +127,7 @@ static func get_clear_flag(hit_reg: Dictionary) -> String:
 		if hit_reg.good < 10: return JUDGMENTS.good.clear.single
 		else: return JUDGMENTS.good.clear.full
 	elif hit_reg.sick > 0:
-		if hit_reg.sick < 10: return JUDGMENTS.sick.clear.single
+		if hit_reg.sick < 10 and Preferences.use_epics: return JUDGMENTS.sick.clear.single
 		else: return JUDGMENTS.sick.clear.full
 	elif hit_reg.epic > 0:
 		return JUDGMENTS.epic.clear.full
@@ -160,7 +167,7 @@ static func judge_time(millisecond_time: float) -> Dictionary:
 		# -- example --
 		# _ when millisecond_time <= JUDGEMENTS.my_custom_judge.threshold:
 		#	return JUDGMENTS.my_custom_judge
-		_ when millisecond_time <= JUDGMENTS.epic.threshold:
+		_ when millisecond_time <= JUDGMENTS.epic.threshold and Preferences.use_epics:
 			return JUDGMENTS.epic
 		_ when millisecond_time <= JUDGMENTS.sick.threshold:
 			return JUDGMENTS.sick

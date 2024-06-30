@@ -231,7 +231,7 @@ func note_hit_tap(note: Note) -> void:
 ## Note hit function for hold notes[br]
 ## Increases score by 10 every frame when holding.
 func note_hit_hold(note: Note) -> void:
-	stats.score = stats.score + 15
+	#stats.score = stats.score + 15
 	if note:
 		if Conductor.ibeat % 2 == 0 or note.hold_progress <= 0.0:
 			note_hit.emit(note, false)
@@ -255,11 +255,14 @@ func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
 
 	var judge: Dictionary = Scoring.judge_note(note, absf(diff * 1000.0)).duplicate()
 	var judge_name: String = Scoring.JUDGMENTS.find_key(judge)
-	if judge_name == "miss":
-		apply_miss(note.column)
-		judge.name = judge_name
-		judge.frame = Scoring.JUDGMENTS.keys().find(judge_name)
-		return Note.HitResult.make(self, diff * 1000.0, judge)
+	match judge_name:
+		"sick" when not Preferences.use_epics:
+			judge.accuracy = 100.0
+		"miss":
+			apply_miss(note.column)
+			judge.name = judge_name
+			judge.frame = Scoring.JUDGMENTS.keys().find(judge_name)
+			return Note.HitResult.make(self, diff * 1000.0, judge)
 
 	if stats.combo > 1 and judge.combo_break == true:
 		stats.combo = 0
@@ -271,7 +274,7 @@ func send_hit_result(note: Note, is_tap: bool = true) -> Note.HitResult:
 	var hit_score: = Scoring.TEMPLATE_HIT_SCORE.duplicate()
 	hit_score.health = health + 3
 	hit_score.accuracy = stats.accuracy_threshold + judge.accuracy
-	hit_score.score = stats.score + Scoring.get_raven_score(1)
+	hit_score.score = stats.score + Scoring.get_doido_score(diff * 1000.0)
 	hit_score.total_notes_hit = stats.total_notes_hit + 1
 	hit_score.combo = stats.combo + 1
 	apply_score(hit_score)

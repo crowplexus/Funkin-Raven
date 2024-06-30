@@ -13,10 +13,7 @@ var _song_name: StringName = ""
 
 
 func _ready() -> void:
-	match Preferences.scroll_direction:
-		1:
-			health_bar.position.y = 100
-			status_label.position.y = 135
+	reset_positions()
 	health_bar.modulate.a = 0.0
 	_hb_twn = create_tween().set_ease(Tween.EASE_IN).bind_node(health_bar)
 	_hb_twn.tween_property(health_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
@@ -25,6 +22,15 @@ func _ready() -> void:
 	time_bar.visible = Preferences.show_timer
 	Conductor.ibeat_reached.connect(icon_thingy)
 
+
+func reset_positions() -> void:
+	match Preferences.scroll_direction:
+		0:
+			health_bar.position.y = 645
+			status_label.position.y = 680
+		1:
+			health_bar.position.y = 100
+			status_label.position.y = 135
 
 func _exit_tree() -> void:
 	if Conductor.ibeat_reached.is_connected(icon_thingy):

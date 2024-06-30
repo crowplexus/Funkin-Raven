@@ -20,8 +20,8 @@ var object: CanvasItem
 var notefield: NoteField
 var receptor: CanvasItem:
 	get:
-		if notefield and not notefield.receptors.is_empty():
-			return notefield.receptors[column]
+		if is_instance_valid(notefield):
+			return notefield.get_receptor(column)
 		return null
 
 #region Spawn Data

@@ -172,8 +172,10 @@ func init_fields() -> void:
 		Chart.global.song_info.configure_notefield(new_nf, config)
 
 	for nf: NoteField in fields.get_children():
+		nf.scale = Vector2(Preferences.receptor_size, Preferences.receptor_size)
 		note_cluster.call_deferred("connect_notefield", nf)
-		nf.reset_scroll_mods()
+		nf.reset_receptors()
+		nf.reset_scrolls()
 
 
 func init_players(player_fields: Array = []) -> void:
@@ -199,13 +201,6 @@ func init_players(player_fields: Array = []) -> void:
 		player.note_fly_over.connect(miss_fly_over)
 		# send hit result so the score text updates
 		player.botplay = i != Preferences.playfield_side
-		if Preferences.centered_playfield:
-			# stupid check
-			if (Preferences.playfield_side != -1 and player.botplay == false
-				or Preferences.playfield_side == -1 and i == 0):
-				field.playfield_spot = 0.5
-			else:
-				field.visible = false
 		field.make_playable(player)
 
 
@@ -309,8 +304,9 @@ func display_countdown(snd_progress: int, spr_progress: int = -0) -> void:
 
 
 func process_conductor(delta: float) -> void:
+	var offset: float = (Preferences.beat_offset * 0.001)
 	if _need_to_play_music:
-		Conductor.update(Conductor.time + delta)
+		Conductor.update((Conductor.time) + delta)
 		if Conductor.time >= 0.0:
 			if music:
 				music.play(0.0)
@@ -318,7 +314,8 @@ func process_conductor(delta: float) -> void:
 					track.play(0.0)
 				_need_to_play_music = false
 	elif music and music.playing:
-		Conductor.update(music.get_playback_position() + AudioServer.get_time_since_last_mix())
+		var time: float = music.get_playback_position() + AudioServer.get_time_since_last_mix()
+		Conductor.update(time + offset)
 
 
 func on_istep_reached(istep: int) -> void:

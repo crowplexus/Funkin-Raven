@@ -7,12 +7,18 @@ extends Control
 
 
 func _ready() -> void:
+	reset_positions()
+	Conductor.ibeat_reached.connect(icon_thingy)
+
+
+func reset_positions() -> void:
 	match Preferences.scroll_direction:
+		0:
+			health_bar.position.y = 678
+			status_label.position.y = 110
 		1:
 			health_bar.position.y = 80
 			status_label.position.y = 110
-	Conductor.ibeat_reached.connect(icon_thingy)
-
 
 func _exit_tree() -> void:
 	if Conductor.ibeat_reached.is_connected(icon_thingy):

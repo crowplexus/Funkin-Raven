@@ -14,16 +14,15 @@ var animation_timers: Array[Timer] = []
 var playfield_spot: float:
 	set(new_warp):
 		match new_warp:
-			0.0: global_position.x = get_viewport_rect().size.x * 0.1
-			0.5: global_position.x = get_viewport_rect().size.x * 0.36
-			1.0: global_position.x = get_viewport_rect().size.x * 0.6
-		if scale.x >= 1.0:
-			global_position.x /= scale.x
-		else:
-			global_position.x *= scale.x
-		#global_position.x *= absf(scale.x)
+			0.0: position.x = 90
+			0.5: position.x = 300
+			1.0: position.x = 530
+		# TODO: better calculations for this case
+		var parent_scale: Vector2 = Vector2.ONE
+		if get_parent(): parent_scale = get_parent().scale
+		position.x -= (scale.x/parent_scale.x)
 		playfield_spot = new_warp
-
+var _og_spot: float = 0.0
 
 #region Player
 
@@ -39,14 +38,12 @@ func on_note_hit(note: Note, is_tap: bool) -> void:
 	chars_sing(-1, note.column, is_tap, suffix)
 
 
-func reset_scroll_mods() -> void:
-	var mod_pos: Vector2 = Vector2(1.0, 1.0)
-	match Preferences.scroll_direction:
-		1: mod_pos = Vector2(1.0, -1.0)
-
+func reset_receptors() -> void:
+	_og_spot = playfield_spot
+	scroll_mods.resize(key_count)
+	scroll_mods.fill(Vector2(1.0, -1.0 if Preferences.scroll_direction == 1 else 1.0))
 	animation_timers.resize(key_count)
 	animation_timers.fill(Timer.new())
-
 	for i: int in key_count:
 		if receptors.size() < key_count:
 			var mmmm: = receptors[i % receptors.size()]
@@ -55,18 +52,25 @@ func reset_scroll_mods() -> void:
 			copy.name = str(i)
 			add_child(copy)
 			receptors.append(copy)
-
 		var receptor: CanvasItem = receptors[i % receptors.size()]
 		if not is_instance_valid(receptor):
 			continue
+		if not animation_timers[i].get_parent():
+			receptor.add_child(animation_timers[i])
 
-		animation_timers.fill(Timer.new())
-		receptor.add_child(animation_timers[i])
-		scroll_mods.append(mod_pos)
 
-		match mod_pos:
-			Vector2(1.0, -1.0):
-				receptor.position.y = 330
+func reset_scrolls(vs: PackedVector2Array = []) -> void:
+	if not vs or vs.is_empty(): vs = scroll_mods
+	for i: int in key_count:
+		var receptor: CanvasItem = receptors[i % receptors.size()]
+		if not is_instance_valid(receptor):
+			continue
+		match vs[receptor.get_index()].y:
+			1.0: receptor.position.y = 0.0
+			-1.0:
+				receptor.position.y = 650
+				receptor.position.y *= (receptor.scale.y / scale.y)
+		#receptor.position.y *= receptor.scale.y
 
 
 func make_playable(new_player: Player = null) -> void:
@@ -75,7 +79,18 @@ func make_playable(new_player: Player = null) -> void:
 	#print_debug("adding player ", get_index() + 1, " is bot? ", new_player.botplay)
 	player = new_player
 	add_child(player)
+	check_centered()
 
+
+func check_centered() -> void:
+	if is_instance_valid(player):
+		var is_player: bool = Preferences.playfield_side == get_index()
+		if Preferences.centered_playfield == true:
+			playfield_spot = 0.5
+			visible = Preferences.centered_playfield and is_player
+		else:
+			playfield_spot = _og_spot
+			visible = true
 
 ## Safer way to get a receptor over doing receptors[column]
 func get_receptor(column: int) -> CanvasItem:
