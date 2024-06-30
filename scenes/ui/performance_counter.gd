@@ -8,7 +8,8 @@ extends CanvasLayer
 
 var _cur_bus: int = 0
 var _display_state: int = 0
-var _game_muted: bool = false
+var _game_muted: bool = false:
+	set(mute): AudioServer.set_bus_mute(_cur_bus, mute)
 var _update_delay: float = 1.0
 var _volume_bar_tween: Tween
 
@@ -42,12 +43,16 @@ func update_text() -> void:
 func _unhandled_key_input(e: InputEvent) -> void:
 	if e.pressed: match e.keycode:
 		KEY_EQUAL:
+			if _game_muted:
+				_game_muted = false
 			if volume_bar.modulate.a == 0.0:
 				update_volume_bar()
 				return
 			set_bus_volume(_cur_bus, get_bus_volume(_cur_bus) + 0.05)
 			update_volume_bar()
 		KEY_MINUS:
+			if _game_muted:
+				_game_muted = false
 			if volume_bar.modulate.a == 0.0:
 				update_volume_bar()
 				return
@@ -55,7 +60,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 			update_volume_bar()
 		KEY_0:
 			_game_muted = not _game_muted
-			AudioServer.set_bus_mute(_cur_bus, _game_muted)
+			update_volume_bar()
 		KEY_TAB when volume_bar.modulate.a > 0.0:
 			update_bus(1, true)
 
@@ -87,9 +92,10 @@ func update_bus(next: int = 0, quiet: bool = false) -> void:
 
 
 func update_bus_label() -> void:
-	bus_label.text = "%s\nBus: %s\n[TAB]" % [
+	bus_label.text = "%s\nBus: %s%s\n[TAB]" % [
 		"%d%%" % [volume_bar.value],
 		AudioServer.get_bus_name(_cur_bus),
+		"(MUTE)" if _game_muted else "",
 	]
 
 

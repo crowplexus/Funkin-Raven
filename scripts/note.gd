@@ -112,6 +112,13 @@ func reset(in_debug: bool = false) -> void:
 	hit_timing = 0
 	hit_flag = 0
 
+
+func reset_scroll(_scroll: Vector2 = Vector2.ONE) -> void:
+	scroll = _scroll
+	if is_instance_valid(object) and object.has_method("reset_scroll"):
+		object.call_deferred("reset_scroll", scroll)
+
+
 ## Sorts Data by using two Note objects, use with arrays.
 static func sort_by_time(first: Note, next: Note) -> int:
 	return first.time < next.time

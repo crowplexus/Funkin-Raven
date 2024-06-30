@@ -28,11 +28,22 @@ var options: Array[Callable] = [
 			var scene: Node = get_tree().current_scene
 			if scene.name == "gameplay":
 				if receptors_changed:
+
 					for nf: NoteField in scene.fields.get_children():
-						nf.scroll_mods.fill(Vector2(1.0, -1.0 if Preferences.scroll_direction == 1 else 1.0))
-						nf.scale = Vector2(Preferences.receptor_size, Preferences.receptor_size)
-						nf.check_centered()
-						nf.reset_scrolls()
+						if old_rscale != Preferences.receptor_size:
+							nf.scale = Vector2(Preferences.receptor_size, Preferences.receptor_size)
+						if old_center != Preferences.centered_playfield:
+							nf.check_centered()
+						if old_scroll != Preferences.scroll_direction:
+							nf.scroll_mods.fill(Vector2(1.0, -1.0 if Preferences.scroll_direction == 1 else 1.0))
+							nf.reset_scrolls()
+
+					if old_scroll != Preferences.scroll_direction:
+						for note: Note in scene.note_cluster.note_queue:
+							if is_instance_valid(note.notefield):
+								var key_c: int = note.notefield.key_count
+								note.reset_scroll(note.notefield.scroll_mods[note.column % key_c])
+
 					if scene.get("current_hud") != null:
 						scene.current_hud.call_deferred("reset_positions")
 

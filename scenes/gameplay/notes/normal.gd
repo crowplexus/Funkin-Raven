@@ -37,9 +37,9 @@ func _ready() -> void:
 
 func make_hold() -> void:
 	if not note.debug_mode:
-		hold_container.scale *= note.scroll
-		if Preferences.hold_layer == 1:
-			move_child(hold_container, 0)
+		reset_scroll(note.scroll)
+	if Preferences.hold_layer == 1:
+		move_child(hold_container, 0)
 	hold = Note.make_dummy_hold()
 	hold.texture = HOLD_FRAMES.get_frame_texture("%s hold" % column, 0)
 	hold.size.y = absf((400.0 * absf(note.real_speed)) * note.hold_progress)
@@ -52,6 +52,11 @@ func make_hold() -> void:
 	tail.name = "tail"
 	hold_container.add_child(tail)
 	update_hold_size()
+
+
+func reset_scroll(scroll: Vector2) -> void:
+	if hold_container:
+		hold_container.scale *= scroll
 
 
 func display_splash() -> void:
@@ -89,6 +94,8 @@ func update_hold_size() -> void:
 	if not hold or note.hold_progress == 0.0:
 		return
 	if note.update_hold and tap.visible:
+		if Preferences.hold_layer == 1:
+			hold_container.z_index = -1
 		tap.hide()
 	hold.size.y = (600.0 * absf(note.real_speed)) * note.hold_progress
 	#hold.size.y /= absf(self.scale.y)

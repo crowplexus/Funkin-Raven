@@ -82,8 +82,8 @@ func spawn_note(id: int) -> void:
 		var field: = connected_fields[note.player]
 		if field:
 			note.notefield = field
-			if note.column < field.key_count:
-				note.scroll = field.scroll_mods[note.column]
+			var mod: Vector2 = note.notefield.scroll_mods[note.column % note.notefield.key_count]
+			note.reset_scroll(mod)
 
 	# technically the note already spawned so
 	note_incoming.emit(note)
@@ -91,7 +91,6 @@ func spawn_note(id: int) -> void:
 		var kind: StringName = "normal"
 		if note.kind in NOTE_KIND_OBJECTS:
 			kind = note.kind
-
 		note.object = NOTE_KIND_OBJECTS[kind].instantiate()
 		note.object.name = note.kind + str(get_child_count())
 		note.object.position.y = INF
