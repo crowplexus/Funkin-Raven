@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dab600stg4bxl" path="res://scenes/gameplay/notes/notefield.tscn" id="2_6wcp1"]
 [ext_resource type="PackedScene" uid="uid://dxm24padis8xt" path="res://scenes/backgrounds/mainStage.tscn" id="2_k2qad"]
 [ext_resource type="Script" path="res://scenes/gameplay/note_cluster.gd" id="5_sb58y"]
-[ext_resource type="PackedScene" uid="uid://yruwyaxp0fdl" path="res://scenes/gameplay/hud/default.tscn" id="12_hchqv"]
+[ext_resource type="PackedScene" uid="uid://yruwyaxp0fdl" path="res://scenes/gameplay/hud/raven.tscn" id="12_hchqv"]
 [ext_resource type="PackedScene" uid="uid://bc1se7ekgu1ux" path="res://scenes/gameplay/hud/combo_group.tscn" id="17_3r26l"]
 [ext_resource type="PackedScene" uid="uid://bcn0ldilqlnur" path="res://scenes/gameplay/event_machine.tscn" id="18_7d1c2"]
 

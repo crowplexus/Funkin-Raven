@@ -9,7 +9,7 @@ const TEMPLATE_HIT_SCORE: Dictionary = {
 	"combo": 0,
 }
 
-const DOIDO_MIN_SCORE: int = 0.0
+const DOIDO_MIN_SCORE: int = 0
 const DOIDO_MAX_SCORE: int = 500
 const DOIDO_SCORE_SLOPE: float = 5.0
 const HIT_THRESHOLD: float = 200.0
@@ -71,8 +71,8 @@ static func get_doido_score(x: float) -> int:
 	# https://github.com/DiogoTVV/FNF-Doido-Engine-3
 	# https://github.com/DiogoTVV/FNF-Doido-Engine-3
 	# THANKS DIOGO!!!!!! PLEASE CHECK OUT HIS PROJECT :3
-	var score: int = remap(x, DOIDO_MIN_SCORE, DOIDO_MAX_SCORE, JUDGMENTS.shit.threshold, DOIDO_SCORE_SLOPE)
-	return clampi(score, DOIDO_MIN_SCORE, DOIDO_MAX_SCORE)
+	var score: float = remap(x, DOIDO_MIN_SCORE, DOIDO_MAX_SCORE, JUDGMENTS.shit.threshold, DOIDO_SCORE_SLOPE)
+	return clampi(floori(score), DOIDO_MIN_SCORE, DOIDO_MAX_SCORE)
 
 
 static func get_wife_score(max_millis: float, version: int = 3, ts: float = -1.0) -> float:

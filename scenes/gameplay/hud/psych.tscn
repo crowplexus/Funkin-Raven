@@ -1,8 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://dblq8osh4gcru"]
+[gd_scene load_steps=11 format=3 uid="uid://dblq8osh4gcru"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/hud/psych.gd" id="1_uin6h"]
 [ext_resource type="Texture2D" uid="uid://dld56rmrbxk8f" path="res://assets/sprites/ui/normal/healthBar.png" id="2_qdudh"]
-[ext_resource type="Script" path="res://scenes/ui/health_bar.gd" id="3_nslve"]
 [ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="4_4icqr"]
 [ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="5_khj4r"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="6_m6r0g"]
@@ -62,7 +61,7 @@ font_size = 32
 outline_size = 6
 outline_color = Color(0, 0, 0, 1)
 
-[node name="psych" type="Control"]
+[node name="psych" type="Control" node_paths=PackedStringArray("health_bar_icons")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -70,8 +69,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uin6h")
+health_bar_icons = [NodePath("health_bar/player2"), NodePath("health_bar/player1")]
 
-[node name="health_bar" type="TextureProgressBar" parent="." node_paths=PackedStringArray("icons")]
+[node name="health_bar" type="TextureProgressBar" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -90,8 +90,6 @@ texture_under = ExtResource("2_qdudh")
 texture_progress = ExtResource("2_qdudh")
 tint_under = Color(1, 0, 0, 1)
 tint_progress = Color(0.333333, 1, 0, 1)
-script = ExtResource("3_nslve")
-icons = [NodePath("player2"), NodePath("player1")]
 
 [node name="player2" type="Sprite2D" parent="health_bar"]
 position = Vector2(299, -8)

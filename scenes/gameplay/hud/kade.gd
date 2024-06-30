@@ -7,6 +7,8 @@ extends Control
 @onready var icon_animation: AnimationPlayer = $"health_bar/animation_player"
 
 @export var icon_bump_interval: int = 1
+@export var health_bar_icons: Array[CanvasItem] = []
+
 var _song_name: StringName = ""
 
 
@@ -49,6 +51,8 @@ func setup_healthbar() -> void:
 
 
 func _process(_delta: float) -> void:
+	if not health_bar_icons.is_empty():
+		move_icons()
 	if time_bar.visible and Conductor.time >= 0.0:
 		update_time_bar()
 
@@ -83,10 +87,28 @@ func update_time_bar() -> void:
 	time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
 
 
+func move_icons() -> void:
+	for icon: CanvasItem in health_bar_icons:
+		var lr_axis: int = -1 if health_bar.fill_mode == ProgressBar.FILL_BEGIN_TO_END else 1
+		var icon_health: float = health_bar.value if icon.flip_h else 100 - health_bar.value
+		if lr_axis == -1:
+			icon_health = 100 - health_bar.value if icon.flip_h else health_bar.value
+		var hb_offset: float = 0.0 if lr_axis == -1 else health_bar.size.x
+		icon.frame = 1 if icon_health < 20 else 0
+		icon.position.x = -(health_bar.value * health_bar.size.x / 100) + hb_offset
+		icon.position.x *= lr_axis
+
+
 func icon_thingy(ibeat: int) -> void:
 	if ibeat % icon_bump_interval == 0:
 		icon_animation.seek(0.0)
 		icon_animation.play("bump")
+
+
+func set_player(player: int) -> void:
+	match player:
+		0: health_bar.fill_mode = ProgressBar.FILL_END_TO_BEGIN
+		1: health_bar.fill_mode = ProgressBar.FILL_BEGIN_TO_END
 
 
 func get_ke_grade(acc: float):

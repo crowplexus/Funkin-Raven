@@ -3,7 +3,9 @@ extends Control
 @onready var health_bar: TextureProgressBar = $"health_bar"
 @onready var icon_animation: AnimationPlayer = $"health_bar/animation_player"
 @onready var status_label: Label = $"status_label"
+
 @export var icon_bump_interval: int = 1
+@export var health_bar_icons: Array[CanvasItem] = []
 
 
 func _ready() -> void:
@@ -19,6 +21,12 @@ func reset_positions() -> void:
 		1:
 			health_bar.position.y = 80
 			status_label.position.y = 110
+
+
+func _process(_delta: float) -> void:
+	if not health_bar_icons.is_empty():
+		move_icons()
+
 
 func _exit_tree() -> void:
 	if Conductor.ibeat_reached.is_connected(icon_thingy):
@@ -42,7 +50,25 @@ func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 	status_label.text = "Score:%s" % hit_result.player.stats.score
 
 
+func move_icons() -> void:
+	for icon: CanvasItem in health_bar_icons:
+		var lr_axis: int = -1 if health_bar.fill_mode == ProgressBar.FILL_BEGIN_TO_END else 1
+		var icon_health: float = health_bar.value if icon.flip_h else 100 - health_bar.value
+		if lr_axis == -1:
+			icon_health = 100 - health_bar.value if icon.flip_h else health_bar.value
+		var hb_offset: float = 0.0 if lr_axis == -1 else health_bar.size.x
+		icon.frame = 1 if icon_health < 20 else 0
+		icon.position.x = -(health_bar.value * health_bar.size.x / 100) + hb_offset
+		icon.position.x *= lr_axis
+
+
 func icon_thingy(ibeat: int) -> void:
 	if ibeat % icon_bump_interval == 0:
 		icon_animation.seek(0.0)
 		icon_animation.play("bump")
+
+
+func set_player(player: int) -> void:
+	match player:
+		0: health_bar.fill_mode = ProgressBar.FILL_END_TO_BEGIN
+		1: health_bar.fill_mode = ProgressBar.FILL_BEGIN_TO_END

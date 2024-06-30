@@ -57,7 +57,7 @@ var playfield_side: int = 0:
 ## Define the size of the notes on-screen.
 @export var receptor_size: float = 1.0:
 	set(new_size):
-		receptor_size = clampf(snappedf(new_size, 0.001), 0.5, 2.0)
+		receptor_size = clampf(snappedf(new_size, 0.001), 0.5, 1.0)
 
 ## Define here your frames per second limit.
 @export var framerate_cap: int = 60:

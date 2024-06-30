@@ -118,7 +118,7 @@ func update_healthbar(delta: float) -> void:
 	health_bar.value = lerpf(health_bar.value, health_deluxe, exp(-delta * 96))
 
 func _unhandled_input(_e: InputEvent) -> void:
-	var input_script: int = modchart_pack.call_mod_method("_on_unhandled_input", [self, _e])
+	modchart_pack.call_mod_method("_on_unhandled_input", [self, _e])
 	if Input.is_action_just_pressed("ui_pause") and is_processing_unhandled_input():
 		var pause_script: int = modchart_pack.call_mod_method("_on_pause", [self, _e])
 		if pause_script != ModchartPack.CallableRequest.STOP:
@@ -319,7 +319,7 @@ func process_conductor(delta: float) -> void:
 
 
 func on_istep_reached(istep: int) -> void:
-	var step_script: int = modchart_pack.call_mod_method("_on_istep_reached", [self, istep])
+	var _step_script: int = modchart_pack.call_mod_method("_on_istep_reached", [self, istep])
 	#if step_script == ModchartPack.CallableRequest.STOP:
 	#	return
 
@@ -339,7 +339,7 @@ func on_ibeat_reached(ibeat: int) -> void:
 
 
 func on_ibar_reached(ibar: int) -> void:
-	var bar_script: int = modchart_pack.call_mod_method("_on_ibar_reached", [self, ibar])
+	var _bar_script: int = modchart_pack.call_mod_method("_on_ibar_reached", [self, ibar])
 	#if bar_script == ModchartPack.CallableRequest.STOP:
 	#	return
 
@@ -407,7 +407,8 @@ func load_hud(hud_scene: PackedScene, set_as_main: bool = true) -> void:
 		current_hud = instance
 		if instance.get("health_bar"):
 			health_bar = instance.health_bar
-			health_bar.set_player(Preferences.playfield_side)
+			if instance.has_method("set_player"):
+				instance.call_deferred("set_player", Preferences.playfield_side)
 
 	modchart_pack.call_mod_method("_on_hud_loaded", [self, hud_name])
 
