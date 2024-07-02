@@ -7,6 +7,7 @@ extends Node2D
 @onready var event_mach: EventMachine = $"event_machine"
 @export var fields: Array[NoteField] = []
 @export var note_cluster: Node2D
+
 #endregion
 #region Local Variables
 
@@ -18,7 +19,6 @@ var health_bar: Control
 var music: AudioStreamPlayer
 var hud_beat_interval: int = 4
 var modchart_pack: ModchartPack
-var mutable_streams: Array[AudioStreamPlayer] = []
 var initial_ui_zoom: Vector2 = Vector2.ONE
 var _need_to_play_music: bool = true
 var _interrupt_time: bool = false
@@ -89,18 +89,6 @@ func _ready() -> void:
 	Conductor.ibeat_reached.connect(start_countdown)
 
 
-func start_countdown(beat: int) -> void:
-	var countdown_script: int = modchart_pack.call_mod_method("_on_countdown", [self, beat])
-	if countdown_script != ModchartPack.CallableRequest.STOP:
-		match beat:
-			# display_countdown(sound_id, sprite_id)
-			-4: display_countdown(0)
-			-3: display_countdown(1)
-			-2: display_countdown(2)
-			-1: display_countdown(3)
-	if beat == 0 and Conductor.ibeat_reached.is_connected(start_countdown):
-		Conductor.ibeat_reached.disconnect(start_countdown)
-
 func _process(delta: float) -> void:
 	var process_script: int = modchart_pack.call_mod_method("_on_process", [self, delta])
 	if process_script == ModchartPack.CallableRequest.STOP:
@@ -118,12 +106,6 @@ func _process(delta: float) -> void:
 	modchart_pack.call_mod_method("_post_process", [self, delta])
 
 
-func update_healthbar(delta: float) -> void:
-	if not health_bar:
-		return
-	var health_deluxe: float = get_player(Preferences.playfield_side).health
-	health_bar.value = lerpf(health_bar.value, health_deluxe, exp(-delta * 96))
-
 func _unhandled_input(_e: InputEvent) -> void:
 	modchart_pack.call_mod_method("_on_unhandled_input", [self, _e])
 	if Input.is_action_just_pressed("ui_pause") and is_processing_unhandled_input():
@@ -133,6 +115,7 @@ func _unhandled_input(_e: InputEvent) -> void:
 			pause_menu.z_index = 100
 			get_tree().paused = true
 			ui_layer.add_child(pause_menu)
+
 
 func _exit_tree() -> void:
 	var exit_script: int = modchart_pack.call_mod_method("_on_exit_tree", [self])
@@ -154,6 +137,7 @@ func _exit_tree() -> void:
 #endregions
 #region Gameplay Setup
 
+## Searches for any dialogue files in the song's folder, then plays the dialogue back.
 func init_dialogue() -> void:
 	var folder: String = "res://assets/songs/%s/dialogue.tres" % Chart.global.song_info.folder
 	#if not Preferences.cursing:
@@ -177,7 +161,7 @@ func init_dialogue() -> void:
 			_has_dialogue = false
 		convo_file.unreference()
 
-
+## Searches for notefield configurations in the chart file, then configures each notefield accordingly.
 func init_fields() -> void:
 	if not is_instance_valid(Chart.global):
 		return
@@ -209,8 +193,8 @@ func init_fields() -> void:
 		nf.reset_receptors()
 		nf.reset_scrolls()
 
-
-func init_players(player_fields: Array) -> void:
+## Initialises all the players in the given notefield array.
+func init_players(player_fields: Array[NoteField]) -> void:
 	for i: int in player_fields.size():
 		if not player_fields[i] is NoteField:
 			continue
@@ -233,7 +217,8 @@ func init_players(player_fields: Array) -> void:
 		# send hit result so the score text updates
 		field.make_playable(player)
 
-
+## Initialises the actual music to be played back[br]
+## NOTE: if no music ever gets loaded, the game will keep running, just with no music!
 func init_music() -> void:
 	# SETUP MUSIC (temporary) #
 
@@ -265,7 +250,7 @@ func init_music() -> void:
 	elif not note_cluster.note_queue.is_empty():
 		Conductor.length = note_cluster.note_queue.back().time
 
-
+## Initialises the background/stage, along with any characters in the chart file.
 func init_stage(path: NodePath) -> void:
 	if not ResourceLoader.exists(path):
 		push_warning("Stage path ", path, " is inexistant or inaccessible, loading default stage...")
@@ -310,8 +295,19 @@ func init_stage(path: NodePath) -> void:
 #endregion
 #region Gameplay Loop
 
-func display_countdown(snd_progress: int, spr_progress: int = -0) -> void:
-	if is_same(spr_progress, -0):
+## Begins the countdown sequence, can be started at any moment.
+func start_countdown(beat: int) -> void:
+	var countdown_script: int = modchart_pack.call_mod_method("_on_countdown", [self, beat])
+	if countdown_script != ModchartPack.CallableRequest.STOP:
+		if beat < 0:
+			# display_countdown(sound_id, sprite_id)
+			display_countdown(beat+4)
+	if beat >= 0 and Conductor.ibeat_reached.is_connected(start_countdown):
+		Conductor.ibeat_reached.disconnect(start_countdown)
+
+## Displays the countdown sprites, and plays the countdown sound
+func display_countdown(snd_progress: int, spr_progress: int = -NAN) -> void:
+	if spr_progress == -NAN:
 		spr_progress = snd_progress
 
 	if spr_progress > -1 and spr_progress <= skin.countdown_sprites.size():
@@ -332,7 +328,7 @@ func display_countdown(snd_progress: int, spr_progress: int = -0) -> void:
 	if snd_progress > -1 and snd_progress <= skin.countdown_sounds.size():
 		SoundBoard.play_sfx(skin.countdown_sounds[snd_progress])
 
-
+## Updates the conductor to the music time.
 func process_conductor(delta: float) -> void:
 	var offset: float = (Preferences.beat_offset * 0.001)
 	if _need_to_play_music:
@@ -347,13 +343,13 @@ func process_conductor(delta: float) -> void:
 		var time: float = music.get_playback_position() + AudioServer.get_time_since_last_mix()
 		Conductor.update(time + offset)
 
-
+## Func ran once every a song step.
 func on_istep_reached(istep: int) -> void:
 	var _step_script: int = modchart_pack.call_mod_method("_on_istep_reached", [self, istep])
 	#if step_script == ModchartPack.CallableRequest.STOP:
 	#	return
 
-
+## Func ran once every song beat.
 func on_ibeat_reached(ibeat: int) -> void:
 	if ibeat < 0:
 		return
@@ -367,7 +363,7 @@ func on_ibeat_reached(ibeat: int) -> void:
 				if (music.get_playback_position() - track.get_playback_position()) > 0.01:
 					resync_vocals()
 
-
+## Func ran once every song bar.
 func on_ibar_reached(ibar: int) -> void:
 	var _bar_script: int = modchart_pack.call_mod_method("_on_ibar_reached", [self, ibar])
 	#if bar_script == ModchartPack.CallableRequest.STOP:
@@ -386,7 +382,7 @@ func miss_fly_over(note: Note) -> void:
 			update_score_text(note, true)
 			note.finished = true
 
-
+## Restores the vocals of a player whose the [code]note[/code] belongs to.
 func restore_vocals(note: Note, _is_tap: bool) -> void:
 	if not note:
 		return
@@ -395,9 +391,10 @@ func restore_vocals(note: Note, _is_tap: bool) -> void:
 			var vocal: = music.get_child(note.player % music.get_child_count())
 			if vocal: vocal.volume_db = linear_to_db(1.0)
 
-
+## Finishes the gameplay session, resets important Conductor values.
 func leave() -> void:
-	Conductor.reset() # reset rate
+	_interrupt_time = true
+	Conductor.reset()
 	Conductor.rate = 1.0
 	# TODO: for levels, i need a playlist
 	# and then we just switch to the next song
@@ -407,22 +404,37 @@ func leave() -> void:
 #endregion
 #region HUD Elements
 
+## Centers the HUD elements to the screen, used when the HUD zooms in.[br]
+## author: swordcube
 func center_ui_layer() -> void:
 	ui_layer.offset = Vector2(
 		(get_viewport_rect().size.x * -0.5) * (ui_layer.scale.x - 1.0),
 		(get_viewport_rect().size.y * -0.5) * (ui_layer.scale.y - 1.0)
 	)
 
-
+## Updates the HUD's score text whenever needed.
 func update_score_text(note: Note, is_tap: bool) -> void:
 	if not current_hud or not note:
 		return
 	if current_hud.has_method("update_score_text"):
 		current_hud.callv("update_score_text", [note.hit_result, is_tap])
 
+## Updates the HUD's healthbar needed.
+func update_healthbar(delta: float) -> void:
+	if not health_bar:
+		return
+	var health_deluxe: float = get_player(Preferences.playfield_side).health
+	var new_value: float = lerpf(health_bar.value, health_deluxe, exp(-delta * 96))
+	# custom lerp
+	if current_hud and current_hud.has_method("get_health"):
+		var custom_health = current_hud.call_deferred("get_health", health_deluxe)
+		if custom_health is float: new_value = custom_health
+	health_bar.value = new_value
+
 #endregion
 #region Utils
 
+## Loads the main Heads-up Display on-screen, which often contains player statistics and health.
 func load_hud(hud_scene: PackedScene, set_as_main: bool = true) -> void:
 	var hud_name: StringName = hud_scene.resource_path.get_file().get_basename()
 	if ui_layer.has_node(NodePath(hud_name)):
@@ -442,12 +454,12 @@ func load_hud(hud_scene: PackedScene, set_as_main: bool = true) -> void:
 
 	modchart_pack.call_mod_method("_on_hud_loaded", [self, hud_name])
 
-
+## Unloads the current heads-up display.
 func unload_current_hud() -> void:
 	if current_hud:
 		unload_hud(current_hud.get_path())
 
-
+## Unloads a specified heads-up display, please give this function a node path.
 func unload_hud(hud_name: NodePath) -> void:
 	if ui_layer.has_node(hud_name):
 		var old_hud: = ui_layer.get_node(hud_name)
@@ -456,7 +468,7 @@ func unload_hud(hud_name: NodePath) -> void:
 		old_hud.queue_free()
 	modchart_pack.call_mod_method("_on_hud_unloaded", [self, hud_name])
 
-
+## Returns an instance of a player on a notefield.
 func get_player(player_id: int) -> Player:
 	for field: NoteField in fields:
 		if field.player and player_id == field.get_index():
@@ -464,9 +476,11 @@ func get_player(player_id: int) -> Player:
 	return null
 
 # temporary until godot 4.3
+## Resyncs the vocals to music time.
 func resync_vocals() -> void:
 	if not music:
 		return
 	for track: AudioStreamPlayer in music.get_children():
 		track.seek(music.get_playback_position())
+
 #endregion
