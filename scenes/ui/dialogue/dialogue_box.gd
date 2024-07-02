@@ -121,7 +121,7 @@ func finish_conversation() -> void:
 	#current_line.text = ""
 	finish_line()
 	if animation.has_animation("close"):
-		animation.play("finish")
+		animation.play("close")
 		await animation.animation_finished
 		conversation_finished.emit()
 		queue_free()
