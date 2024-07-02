@@ -11,7 +11,7 @@ const DEFAULT_STAR_COUNT: int = -1
 ## Default Notefield configuration.
 const DEFAULT_NOTEFIELD_CONFIG: Array[Dictionary] = [
 	{
-		"name": "1", # custom name
+		"name": "player1_notefield", # custom name
 		"spot": 1.0, # right
 		"characters": ["player1"], # node names e.g: player1, player2
 		"key_count": 4,
@@ -19,7 +19,7 @@ const DEFAULT_NOTEFIELD_CONFIG: Array[Dictionary] = [
 		"scale": Vector2.ONE,
 	},
 	{
-		"name": "2",
+		"name": "player2_notefield",
 		"spot": 0.0, # left
 		"characters": ["player2"],
 		"key_count": 4,

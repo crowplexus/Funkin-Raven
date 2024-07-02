@@ -8,8 +8,10 @@
 [ext_resource type="PackedScene" uid="uid://bc1se7ekgu1ux" path="res://scenes/gameplay/hud/combo_group.tscn" id="17_3r26l"]
 [ext_resource type="PackedScene" uid="uid://bcn0ldilqlnur" path="res://scenes/gameplay/event_machine.tscn" id="18_7d1c2"]
 
-[node name="gameplay" type="Node2D"]
+[node name="gameplay" type="Node2D" node_paths=PackedStringArray("fields", "note_cluster")]
 script = ExtResource("1_gfupu")
+fields = [NodePath("hud/player1_notefield"), NodePath("hud/player2_notefield")]
+note_cluster = NodePath("hud/note_cluster")
 
 [node name="stage" parent="." instance=ExtResource("2_k2qad")]
 
@@ -25,37 +27,23 @@ offset_right = -450.0
 offset_bottom = -270.0
 scale = Vector2(0.8, 0.8)
 
-[node name="fields" type="Control" parent="hud"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -426.7
-offset_bottom = -240.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(1.5, 1.5)
-metadata/_edit_lock_ = true
+[node name="player1_notefield" parent="hud" instance=ExtResource("2_6wcp1")]
+offset_left = 765.0
+offset_top = 120.0
+offset_right = 765.0
+offset_bottom = 120.0
 
-[node name="1" parent="hud/fields" instance=ExtResource("2_6wcp1")]
-layout_mode = 0
-offset_left = 510.0
-offset_top = 80.0
-offset_right = 510.0
-offset_bottom = 80.0
-
-[node name="2" parent="hud/fields" instance=ExtResource("2_6wcp1")]
-layout_mode = 0
-offset_left = 90.0
-offset_top = 80.0
-offset_right = 90.0
-offset_bottom = 80.0
+[node name="player2_notefield" parent="hud" instance=ExtResource("2_6wcp1")]
+offset_left = 135.0
+offset_top = 120.0
+offset_right = 135.0
+offset_bottom = 120.0
 
 [node name="note_cluster" type="Node2D" parent="hud" node_paths=PackedStringArray("connected_fields")]
 process_thread_group = 2
 process_thread_group_order = 1
 process_thread_messages = 1
 script = ExtResource("5_sb58y")
-connected_fields = [NodePath("../fields/1"), NodePath("../fields/2")]
+connected_fields = [NodePath("../player1_notefield"), NodePath("../player2_notefield")]
 
 [node name="event_machine" parent="." instance=ExtResource("18_7d1c2")]

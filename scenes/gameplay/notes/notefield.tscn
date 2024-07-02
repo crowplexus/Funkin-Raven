@@ -11,27 +11,27 @@ receptors = [NodePath("0"), NodePath("1"), NodePath("2"), NodePath("3")]
 
 [node name="0" type="AnimatedSprite2D" parent="."]
 use_parent_material = true
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.7, 0.7)
 sprite_frames = ExtResource("2_gcum3")
 animation = &"0 static"
 
 [node name="1" type="AnimatedSprite2D" parent="."]
 use_parent_material = true
-position = Vector2(80, 0)
-scale = Vector2(0.5, 0.5)
+position = Vector2(112, 0)
+scale = Vector2(0.7, 0.7)
 sprite_frames = ExtResource("2_gcum3")
 animation = &"1 static"
 
 [node name="2" type="AnimatedSprite2D" parent="."]
 use_parent_material = true
-position = Vector2(160, 0)
-scale = Vector2(0.5, 0.5)
+position = Vector2(224, 0)
+scale = Vector2(0.7, 0.7)
 sprite_frames = ExtResource("2_gcum3")
 animation = &"2 static"
 
 [node name="3" type="AnimatedSprite2D" parent="."]
 use_parent_material = true
-position = Vector2(240, 0)
-scale = Vector2(0.5, 0.5)
+position = Vector2(336, 0)
+scale = Vector2(0.7, 0.7)
 sprite_frames = ExtResource("2_gcum3")
 animation = &"3 static"

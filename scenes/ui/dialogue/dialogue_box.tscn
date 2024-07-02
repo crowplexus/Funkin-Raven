@@ -1,0 +1,104 @@
+[gd_scene load_steps=10 format=3 uid="uid://r33j2t7te6ga"]
+
+[ext_resource type="Script" path="res://scenes/ui/dialogue/dialogue_box.gd" id="1_0dgok"]
+[ext_resource type="FontFile" uid="uid://c77e5cxmxdsux" path="res://assets/fonts/pixel.otf" id="1_b18fa"]
+[ext_resource type="Script" path="res://scenes/ui/dialogue/dialogue_line.gd" id="2_4o5ys"]
+[ext_resource type="AudioStream" uid="uid://cvc1h2jywuur1" path="res://assets/audio/sfx/dialogue/pixelText.ogg" id="2_glvk7"]
+
+[sub_resource type="Resource" id="Resource_14726"]
+script = ExtResource("2_4o5ys")
+text = "				MY WISHLIST:
+write good code (never happening)
+
+for people to be more gentle with one another
+
+for the world to be a better place to live (probably not happening)
+
+for me to stop being negative
+
+for me to finish this god damn engine
+
+for me to find happiness again"
+blips = Array[AudioStream]([ExtResource("2_glvk7")])
+speed = 30.0
+
+[sub_resource type="Gradient" id="Gradient_l2upr"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ag42t"]
+gradient = SubResource("Gradient_l2upr")
+
+[sub_resource type="Animation" id="Animation_h47by"]
+resource_name = "open"
+length = 0.50001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("texture_rect:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(0, 1), Vector2(0.1, 1), Vector2(0.2, 1), Vector2(0.3, 1), Vector2(0.5, 1), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kdtkk"]
+_data = {
+"open": SubResource("Animation_h47by")
+}
+
+[node name="dialogue_box" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_0dgok")
+lines = Array[ExtResource("2_4o5ys")]([SubResource("Resource_14726")])
+
+[node name="texture_rect" type="TextureRect" parent="."]
+clip_contents = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.129
+anchor_top = 0.618
+anchor_right = 0.871
+anchor_bottom = 0.91
+offset_left = -0.12001
+offset_top = 0.039978
+offset_right = 0.119873
+offset_bottom = -0.200012
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_ag42t")
+
+[node name="text_writer" type="RichTextLabel" parent="texture_rect"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.023
+anchor_top = 0.105
+anchor_right = 0.978
+anchor_bottom = 0.924
+offset_left = 0.149998
+offset_top = -1.05
+offset_right = -0.100037
+offset_bottom = -0.0400085
+theme_override_fonts/normal_font = ExtResource("1_b18fa")
+theme_override_font_sizes/normal_font_size = 28
+bbcode_enabled = true
+scroll_active = false
+scroll_following = true
+
+[node name="blip_player" type="AudioStreamPlayer" parent="."]
+max_polyphony = 10000
+bus = &"SFX"
+
+[node name="animation_player" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_kdtkk")
+}

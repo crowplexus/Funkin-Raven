@@ -2,7 +2,7 @@ extends Control
 class_name NoteField
 
 @export var connected_characters: Array[Character] = []
-@export var scroll_mods: PackedVector2Array = []
+@export var scroll_mods: Array[Vector2] = []
 
 @export var receptors: Array[CanvasItem] = []
 @export var key_count: int = 4
@@ -14,9 +14,9 @@ var animation_timers: Array[Timer] = []
 var playfield_spot: float:
 	set(new_warp):
 		match new_warp:
-			0.0: position.x = 90
-			0.5: position.x = 300
-			1.0: position.x = 530
+			0.0: position.x = get_viewport_rect().size.x * 0.1
+			0.5: position.x = get_viewport_rect().size.x * 0.5
+			1.0: position.x = get_viewport_rect().size.x * 0.6
 		# TODO: better calculations for this case
 		var parent_scale: Vector2 = Vector2.ONE
 		if get_parent(): parent_scale = get_parent().scale
@@ -68,8 +68,8 @@ func reset_scrolls(vs: PackedVector2Array = []) -> void:
 		match vs[receptor.get_index()].y:
 			1.0: receptor.position.y = 0.0
 			-1.0:
-				receptor.position.y = 650
-				receptor.position.y *= (receptor.scale.y / scale.y)
+				receptor.position.y = 500#/receptor.scale.y
+				#receptor.position.y /= (2.0 * receptor.scale.y)
 		#receptor.position.y *= receptor.scale.y
 
 

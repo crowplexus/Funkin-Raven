@@ -163,7 +163,7 @@ func parse_legacy(song: StringName, difficulty: Dictionary = {}) -> Chart:
 				var nf: Dictionary = chart.song_info.notefields[player]
 				if int(note[1]) % (nf.key_count * 2) >= nf.key_count:
 					player = int(bar["mustHitSection"])
-				nf = chart.song_info.notefields[player]
+					nf = chart.song_info.notefields[player]
 
 				var swag_note: Note = make_note({
 					"t": float(note[0]), # Time

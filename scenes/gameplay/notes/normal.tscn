@@ -18,6 +18,13 @@ use_parent_material = true
 sprite_frames = ExtResource("3_l75vs")
 animation = &"splash0 1"
 
+[node name="cover" type="AnimatedSprite2D" parent="."]
+visible = false
+use_parent_material = true
+sprite_frames = ExtResource("4_2fse6")
+animation = &"begin0"
+offset = Vector2(-10, 50)
+
 [node name="hold_container" type="Control" parent="."]
 modulate = Color(1, 1, 1, 0.6)
 use_parent_material = true
@@ -26,10 +33,3 @@ anchors_preset = 0
 offset_left = -30.0
 offset_right = 70.0
 offset_bottom = 700.0
-
-[node name="cover" type="AnimatedSprite2D" parent="."]
-visible = false
-use_parent_material = true
-sprite_frames = ExtResource("4_2fse6")
-animation = &"begin0"
-offset = Vector2(-10, 50)

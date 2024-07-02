@@ -94,8 +94,6 @@ func update_hold_size() -> void:
 	if not hold or note.hold_progress == 0.0:
 		return
 	if note.update_hold and tap.visible:
-		if Preferences.hold_layer == 1:
-			hold_container.z_index = -1
 		tap.hide()
 	hold.size.y = (600.0 * absf(note.real_speed)) * note.hold_progress
 	#hold.size.y /= absf(self.scale.y)

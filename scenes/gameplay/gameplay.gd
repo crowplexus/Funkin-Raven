@@ -4,9 +4,9 @@ extends Node2D
 
 @onready var ui_layer: CanvasLayer = $"hud"
 @onready var combo_group: Control = $"hud/combo_group"
-@onready var note_cluster: Node2D = $"hud/note_cluster"
 @onready var event_mach: EventMachine = $"event_machine"
-@onready var fields: Control = $"hud/fields"
+@export var fields: Array[NoteField] = []
+@export var note_cluster: Node2D
 #endregion
 #region Local Variables
 
@@ -71,7 +71,7 @@ func _ready() -> void:
 	init_stage("res://scenes/backgrounds/%s.tscn" % [Chart.global.song_info.background])
 	init_music()
 	init_fields()
-	init_players(fields.get_children())
+	init_players(fields)
 
 	initial_ui_zoom = ui_layer.scale
 
@@ -136,8 +136,8 @@ func _exit_tree() -> void:
 	Conductor.ibeat_reached.disconnect(on_ibeat_reached)
 	Conductor.ibar_reached.disconnect(on_ibar_reached)
 	Conductor.reset()
-	for i: int in fields.get_child_count():
-		var field: NoteField = fields.get_child(i)
+	for i: int in fields.size():
+		var field: NoteField = fields[i]
 		if field.player:
 			field.player.note_hit.disconnect(restore_vocals)
 			field.player.note_hit.disconnect(update_score_text)
@@ -156,11 +156,13 @@ func init_fields() -> void:
 	for i: int in nf_config.size():
 		var new_nf: NoteField
 		var config: Dictionary = nf_config[i]
-		if i < fields.get_child_count():
-			new_nf = fields.get_child(i)
+		if i < fields.size():
+			new_nf = fields[i]
 		else:
-			new_nf = fields.get_child(0).duplicate()
-			fields.add_child(new_nf)
+			new_nf = load("res://scenes/gameplay/notes/notefield.tscn").instantiate()
+			ui_layer.add_child(new_nf)
+			ui_layer.move_child(new_nf, note_cluster.get_index() - 1)
+			fields.append(new_nf)
 
 		# characters #
 		if "characters" in config and is_instance_valid(stage):
@@ -168,27 +170,26 @@ func init_fields() -> void:
 				if stage.has_node(character) and stage.get_node(character) is Character:
 					new_nf.connected_characters.append(stage.get_node(character))
 		if not "name" in config or config.name.is_empty():
-			new_nf.name = &"%s" % str(new_nf.get_index()+1)
+			new_nf.name = &"player%s_notefield" % str(new_nf.get_index()+1)
 		Chart.global.song_info.configure_notefield(new_nf, config)
 
-	for nf: NoteField in fields.get_children():
+	for nf: NoteField in fields:
 		nf.scale = Vector2(Preferences.receptor_size, Preferences.receptor_size)
 		note_cluster.call_deferred("connect_notefield", nf)
 		nf.reset_receptors()
 		nf.reset_scrolls()
 
 
-func init_players(player_fields: Array = []) -> void:
+func init_players(player_fields: Array) -> void:
 	for i: int in player_fields.size():
 		if not player_fields[i] is NoteField:
 			continue
-
 		var field: NoteField = player_fields[i]
 		var player: Player = Player.new()
 		player.stats = PlayerStats.new()
 		player.note_queue = note_cluster.note_queue.filter(func(note: Note):
-			return note.player == field.get_index())
-
+			return note.player == i)
+		player.botplay = i != Preferences.playfield_side
 		for j: int in player.controls.size():
 			# TODO ↓
 			#player.controls[j] += "_p%s" % str(i + 1)
@@ -200,7 +201,6 @@ func init_players(player_fields: Array = []) -> void:
 		player.note_hit.connect(combo_group.pop_up_combo)
 		player.note_fly_over.connect(miss_fly_over)
 		# send hit result so the score text updates
-		player.botplay = i != Preferences.playfield_side
 		field.make_playable(player)
 
 
@@ -346,7 +346,7 @@ func on_ibar_reached(ibar: int) -> void:
 ## Connected to [code]player.note_fly_over[/code] to handle
 ## missing notes by letting them fly above your notefield..
 func miss_fly_over(note: Note) -> void:
-	for field: NoteField in fields.get_children():
+	for field: NoteField in fields:
 		if note.player == field.get_index() and field.player:
 			var vocal: int = note.player % music.get_child_count()
 			if music and music.get_child(vocal):
@@ -360,7 +360,7 @@ func miss_fly_over(note: Note) -> void:
 func restore_vocals(note: Note, _is_tap: bool) -> void:
 	if not note:
 		return
-	for field: NoteField in fields.get_children():
+	for field: NoteField in fields:
 		if note.player == field.get_index() and field.player and music:
 			var vocal: = music.get_child(note.player % music.get_child_count())
 			if vocal: vocal.volume_db = linear_to_db(1.0)
@@ -428,7 +428,7 @@ func unload_hud(hud_name: NodePath) -> void:
 
 
 func get_player(player_id: int) -> Player:
-	for field: NoteField in fields.get_children():
+	for field: NoteField in fields:
 		if field.player and player_id == field.get_index():
 			return field.player
 	return null

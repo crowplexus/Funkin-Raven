@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxwcry2mq0ns8"]
+
+[sub_resource type="GDScript" id="GDScript_vobj1"]
+script/source = "extends Control
+class_name DialogueActor
+## Signal emitted every time a actor's expression changes.
+signal expr_changed(new_expr: String, _old_expr: String)
+## Array with sound streams to be played when dialogue is being written.
+@export var blips: Array[AudioStream] = []
+## Expression the actor currently has, or has by default.[br]
+## You can use this to change sprite animations and such.
+@export var expression: String = \"default\"
+func change_expression(next_expression: String = \"default\") -> void:
+	expr_changed.emit(next_expression, expression)
+	expression = next_expression
+func play_blip() -> void:
+	pass
+"
+
+[node name="dialogue_actor" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_vobj1")

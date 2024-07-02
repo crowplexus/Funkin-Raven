@@ -94,7 +94,6 @@ func try_dance(beat: int) -> void: # i hate this <3 @crowplexus
 func dance(force: bool = false, force_idle: int = -1) -> void:
 	if force_idle > -1 and force_idle < idle_list.size():
 		_current_idle = force_idle
-
 	play_animation(idle_list[_current_idle], force)
 	_current_idle = wrapi(_current_idle + 1, 0, idle_list.size())
 	animation_context = 0

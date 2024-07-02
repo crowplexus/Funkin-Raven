@@ -66,7 +66,7 @@ func spawn_notes() -> void:
 		if note_queue[current_note].real_speed < 1.0:
 			spawn_delay = 0.9 / note_queue[current_note].real_speed
 
-		if (relative) > spawn_delay:
+		if relative > spawn_delay:
 			break
 
 		spawn_note(current_note)
