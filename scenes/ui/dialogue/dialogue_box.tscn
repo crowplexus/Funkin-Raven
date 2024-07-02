@@ -1,33 +1,14 @@
-[gd_scene load_steps=10 format=3 uid="uid://r33j2t7te6ga"]
+[gd_scene load_steps=7 format=3 uid="uid://r33j2t7te6ga"]
 
 [ext_resource type="Script" path="res://scenes/ui/dialogue/dialogue_box.gd" id="1_0dgok"]
 [ext_resource type="FontFile" uid="uid://c77e5cxmxdsux" path="res://assets/fonts/pixel.otf" id="1_b18fa"]
-[ext_resource type="Script" path="res://scenes/ui/dialogue/dialogue_line.gd" id="2_4o5ys"]
-[ext_resource type="AudioStream" uid="uid://cvc1h2jywuur1" path="res://assets/audio/sfx/dialogue/pixelText.ogg" id="2_glvk7"]
 
-[sub_resource type="Resource" id="Resource_14726"]
-script = ExtResource("2_4o5ys")
-text = "				MY WISHLIST:
-write good code (never happening)
-
-for people to be more gentle with one another
-
-for the world to be a better place to live (probably not happening)
-
-for me to stop being negative
-
-for me to finish this god damn engine
-
-for me to find happiness again"
-blips = Array[AudioStream]([ExtResource("2_glvk7")])
-speed = 30.0
-
-[sub_resource type="Gradient" id="Gradient_l2upr"]
+[sub_resource type="Gradient" id="Gradient_vs40m"]
 offsets = PackedFloat32Array(0)
 colors = PackedColorArray(0, 0, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_ag42t"]
-gradient = SubResource("Gradient_l2upr")
+gradient = SubResource("Gradient_vs40m")
 
 [sub_resource type="Animation" id="Animation_h47by"]
 resource_name = "open"
@@ -44,13 +25,25 @@ tracks/0/keys = {
 "update": 1,
 "values": [Vector2(0, 1), Vector2(0.1, 1), Vector2(0.2, 1), Vector2(0.3, 1), Vector2(0.5, 1), Vector2(1, 1)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("bg:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0.392157), Color(1, 1, 1, 1)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_kdtkk"]
 _data = {
 "open": SubResource("Animation_h47by")
 }
 
-[node name="dialogue_box" type="Control"]
+[node name="dialogue_box" type="Control" node_paths=PackedStringArray("writer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -59,7 +52,14 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_0dgok")
-lines = Array[ExtResource("2_4o5ys")]([SubResource("Resource_14726")])
+writer = NodePath("texture_rect/text_writer")
+
+[node name="bg" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 0.176471)
 
 [node name="texture_rect" type="TextureRect" parent="."]
 clip_contents = true
@@ -75,6 +75,7 @@ offset_right = 0.119873
 offset_bottom = -0.200012
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(1e-05, 1)
 texture = SubResource("GradientTexture1D_ag42t")
 
 [node name="text_writer" type="RichTextLabel" parent="texture_rect"]

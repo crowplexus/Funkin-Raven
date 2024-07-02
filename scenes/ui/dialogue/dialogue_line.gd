@@ -10,6 +10,8 @@ class_name DialogueLine
 @export var blips: Array[AudioStream] = []
 ## Speed of the writer when writing this line.
 @export var speed: float = 30.0
+func _to_string() -> String:
+	return "(DialogueLine): \"%s\" - Speed: %s" % [ text, speed ]
 ## Since normally lines of text contain bbcode (e.g: [code][color=ColourName]text[/color][/code]),[br]
 ## this function returns the text with no bbcode tags included.
 func get_pure_text() -> String:

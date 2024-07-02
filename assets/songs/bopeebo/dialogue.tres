@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="Conversation" load_steps=6 format=3 uid="uid://3wdyl8f7ayg3"]
+
+[ext_resource type="PackedScene" uid="uid://r33j2t7te6ga" path="res://scenes/ui/dialogue/dialogue_box.tscn" id="1_h0gco"]
+[ext_resource type="Script" path="res://scenes/ui/dialogue/conversation.gd" id="2_md3f6"]
+[ext_resource type="Script" path="res://scenes/ui/dialogue/dialogue_line.gd" id="4_ra2jb"]
+
+[sub_resource type="Resource" id="Resource_0rp5n"]
+script = ExtResource("4_ra2jb")
+text = "dialogue."
+blips = Array[AudioStream]([])
+speed = 30.0
+
+[sub_resource type="Resource" id="Resource_hqe7j"]
+script = ExtResource("4_ra2jb")
+text = "that's CRAZY
+
+which btw did you know
+
+text can scroll on this?
+
+yeah it's pretty cool
+
+press up or down to scroll the text
+
+!!!!!!!"
+blips = Array[AudioStream]([])
+speed = 30.0
+
+[resource]
+script = ExtResource("2_md3f6")
+box = ExtResource("1_h0gco")
+lines = Array[ExtResource("4_ra2jb")]([SubResource("Resource_0rp5n"), SubResource("Resource_hqe7j")])

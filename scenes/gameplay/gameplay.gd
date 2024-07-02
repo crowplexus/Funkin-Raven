@@ -17,10 +17,12 @@ var current_hud: Control
 var health_bar: Control
 var music: AudioStreamPlayer
 var hud_beat_interval: int = 4
+var modchart_pack: ModchartPack
 var mutable_streams: Array[AudioStreamPlayer] = []
 var initial_ui_zoom: Vector2 = Vector2.ONE
 var _need_to_play_music: bool = true
-var modchart_pack: ModchartPack
+var _interrupt_time: bool = false
+var _has_dialogue: bool = false
 
 #endregion
 #region Node2D Functions
@@ -72,8 +74,13 @@ func _ready() -> void:
 	init_music()
 	init_fields()
 	init_players(fields)
+	init_dialogue()
 
 	initial_ui_zoom = ui_layer.scale
+
+	if _has_dialogue == true:
+		Globals.set_node_inputs(self, false)
+		_interrupt_time = true
 
 	# Connect Signals
 	Conductor.istep_reached.connect(on_istep_reached)
@@ -94,12 +101,12 @@ func start_countdown(beat: int) -> void:
 	if beat == 0 and Conductor.ibeat_reached.is_connected(start_countdown):
 		Conductor.ibeat_reached.disconnect(start_countdown)
 
-
 func _process(delta: float) -> void:
 	var process_script: int = modchart_pack.call_mod_method("_on_process", [self, delta])
 	if process_script == ModchartPack.CallableRequest.STOP:
 		return
-	process_conductor(delta)
+	if not _interrupt_time:
+		process_conductor(delta)
 	if ui_layer.scale != initial_ui_zoom:
 		ui_layer.scale = Vector2(
 			lerpf(initial_ui_zoom.x, ui_layer.scale.x, exp(-delta * 5)),
@@ -127,7 +134,6 @@ func _unhandled_input(_e: InputEvent) -> void:
 			get_tree().paused = true
 			ui_layer.add_child(pause_menu)
 
-
 func _exit_tree() -> void:
 	var exit_script: int = modchart_pack.call_mod_method("_on_exit_tree", [self])
 	if exit_script == ModchartPack.CallableRequest.STOP:
@@ -147,6 +153,30 @@ func _exit_tree() -> void:
 
 #endregions
 #region Gameplay Setup
+
+func init_dialogue() -> void:
+	var folder: String = "res://assets/songs/%s/dialogue.tres" % Chart.global.song_info.folder
+	#if not Preferences.cursing:
+	#	folder = folder.replace(folder.get_file(), "dialogue_censored.tres")
+	_has_dialogue = ResourceLoader.exists(folder)
+	if _has_dialogue:
+		var convo_file: Conversation = load(folder)
+		var convo_box: DialogueBox = convo_file.box.instantiate()
+		if convo_box is DialogueBox:
+			convo_box.lines = convo_file.lines
+			convo_box.conversation_finished.connect(func():
+				if _interrupt_time == true:
+					_interrupt_time = false
+				await get_tree().create_timer(0.01).timeout
+				Globals.set_node_inputs(self, true)
+			)
+			print_debug(convo_box.lines)
+			ui_layer.add_child(convo_box)
+		else:
+			push_warning("Something is wrong with your dialogue box, does it extend the DialogueBox class?")
+			_has_dialogue = false
+		convo_file.unreference()
+
 
 func init_fields() -> void:
 	if not is_instance_valid(Chart.global):

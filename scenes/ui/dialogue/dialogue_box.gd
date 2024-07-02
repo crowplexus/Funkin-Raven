@@ -1,15 +1,15 @@
 extends Control
 class_name DialogueBox
 
-signal line_advanced(next_line: int, previous_line: int, was_immediate: bool)
-signal line_skipped(line_id: int)
+signal conversation_finished()
+signal line_advanced(next_line: int, line_count: int, was_immediate: bool)
+signal line_skipped(line_id: int, line_count: int)
 
-@onready var writer: RichTextLabel = $"texture_rect/text_writer"
+@export var writer: RichTextLabel
 @onready var blip_player: AudioStreamPlayer = $"blip_player"
 @onready var animation: AnimationPlayer = $"animation_player"
-@onready var box_sprite: = $"texture_rect"
 ## Lines of dialogue to be written.
-@export var lines: Array[DialogueLine] = []
+var lines: Array[DialogueLine] = []
 ## Current displayed line.
 var current_line: DialogueLine:
 	get: return lines[current_line_id]
@@ -18,27 +18,30 @@ var current_line_id: int = 0
 var _line_progress: Tween
 var _prev_line_count: int = 0
 var _line_finished: bool = false
-var _animation_finished: bool = false
 var _scroll_pointer: int = 0
+var _is_ready: bool = false
 
 
 func _ready() -> void:
 	finish_line()
-	box_sprite.scale.x = 0.0
 	#advance line, this is to display the first line of dialogue
 	#advance(0, true)
-	await get_tree().create_timer(0.1).timeout
-	animation.play("open")
-	animation.animation_finished.connect(func(s: StringName):
-		match s:
-			"open":
-				_animation_finished = true
-				advance()
-	)
+	await get_tree().create_timer(0.01).timeout
+	if animation.has_animation("open"):
+		animation.play("open")
+		animation.animation_finished.connect(func(s: StringName):
+			match s:
+				"open":
+					_is_ready = true
+					advance()
+		)
+	else:
+		_is_ready = true
+		advance()
 
 
 func _process(_delta: float) -> void:
-	if not _line_finished and _prev_line_count < writer.visible_characters:
+	if current_line and not _line_finished and _prev_line_count < writer.visible_characters:
 		# dont play the blip if the next line is empty
 		var true_text: String = current_line.text[_prev_line_count].dedent().replace("\\n", "\n")
 		if not true_text.is_empty() and not true_text == "\n":
@@ -49,7 +52,7 @@ func _process(_delta: float) -> void:
 
 
 func _unhandled_key_input(event):
-	if event and event.pressed and _animation_finished:
+	if event and event.pressed and _is_ready:
 		if event.is_action("ui_accept"):
 			if _line_finished: advance(1)
 			else: skip()
@@ -64,18 +67,23 @@ func _unhandled_key_input(event):
 
 
 func skip() -> void:
-	if writer.visible_characters < current_line.text.length():
+	if current_line and writer.visible_characters < current_line.text.length():
 		if is_instance_valid(_line_progress):
 			_line_progress.stop()
 		finish_line()
 		snap_pointer_to_end()
 		writer.scroll_to_line(_scroll_pointer)
-		line_skipped.emit(current_line_id)
+		line_skipped.emit(current_line_id, lines.size())
 
 
 func advance(new: int = 0, immediate: bool = false) -> void:
-	line_advanced.emit(current_line_id + new, current_line_id, immediate)
-	current_line_id = wrapi(current_line_id + new, 0, lines.size())
+	var next: int = current_line_id + new
+	if lines.size() < (next+1):
+		finish_conversation()
+		return
+
+	current_line_id = clampi(next, 0, lines.size())
+	line_advanced.emit(current_line_id, lines.size(), immediate)
 	_line_finished = false
 	if immediate == true:
 		writer.text = current_line.text
@@ -95,7 +103,7 @@ func advance(new: int = 0, immediate: bool = false) -> void:
 
 ## Snaps the position of the scroll pointer to the end of the text field.
 func snap_pointer_to_end() -> void:
-	_scroll_pointer = writer.text.replace("\\n", "\n").count("\n")
+	_scroll_pointer = writer.get_line_count()
 	update_scroll_pointer()
 
 ## Forces the line to be finished regardless of whether it's still being written or not
@@ -107,11 +115,27 @@ func finish_line() -> void:
 	snap_pointer_to_end()
 
 
+## Forces the dialogue sequence to end.
+func finish_conversation() -> void:
+	# can't do this because the last line of text will be lost.
+	#current_line.text = ""
+	finish_line()
+	if animation.has_animation("close"):
+		animation.play("finish")
+		await animation.animation_finished
+		conversation_finished.emit()
+		queue_free()
+	else:
+		conversation_finished.emit()
+		queue_free()
+
+
 func update_scroll_pointer(new: int = 0) -> void:
-	var lbs: int = writer.text.replace("\\n", "\n").count("\n")
-	_scroll_pointer = clampi(_scroll_pointer + new, 0, lbs - 1)
+	var lbs: int = writer.get_line_count() - 4
+	if writer.is_ready(): _scroll_pointer = clampi(_scroll_pointer + new, 0, lbs)
 
 
 func play_dialogue_sound() -> void:
-	blip_player.stream = current_line.blips.pick_random()
-	blip_player.play()
+	if not current_line.blips.is_empty():
+		blip_player.stream = current_line.blips.pick_random()
+		blip_player.play(0.0)
