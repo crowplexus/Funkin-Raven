@@ -306,8 +306,8 @@ func start_countdown(beat: int) -> void:
 		Conductor.ibeat_reached.disconnect(start_countdown)
 
 ## Displays the countdown sprites, and plays the countdown sound
-func display_countdown(snd_progress: int, spr_progress: int = -NAN) -> void:
-	if spr_progress == -NAN:
+func display_countdown(snd_progress: int, spr_progress: int = -60000) -> void:
+	if spr_progress == -60000:
 		spr_progress = snd_progress
 
 	if spr_progress > -1 and spr_progress <= skin.countdown_sprites.size():
