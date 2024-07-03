@@ -312,6 +312,12 @@ variable = "combo_colour_mode"
 option_type = 2
 display_names = Array[StringName]([&"Judgment", &"Clear Flag"])
 
+[node name="always_display_combo" parent="pages/visuals" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Always Display Combo"
+description = "Instead of making combo numbers fade, they will be kept on-screen"
+variable = "always_display_combo"
+
 [node name="note_splashes" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Note Splashes"

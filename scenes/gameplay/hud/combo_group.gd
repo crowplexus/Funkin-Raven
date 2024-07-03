@@ -113,11 +113,11 @@ func pop_up_combo(note: Note, is_tap: bool) -> void:
 
 		if _combo_tweens[i]:
 			_combo_tweens[i].kill()
-
 		_combo_tweens[i] = recreate_popup_tween()
 		_combo_tweens[i].tween_property(num_score, "scale", skin.combo_num_sprite_scale, 0.4 * Conductor.crotchet)
-		_combo_tweens[i].tween_property(num_score, "modulate:a", 0.0, 1.2 * Conductor.crotchet) \
-		.set_delay(0.6 * Conductor.crotchet)
+		if not Preferences.always_display_combo:
+			_combo_tweens[i].tween_property(num_score, "modulate:a", 0.0, 1.2 * Conductor.crotchet) \
+			.set_delay(0.6 * Conductor.crotchet)
 
 
 #func show_combo_temporary(hit_result: Note.HitResult, is_tap: bool) -> void:

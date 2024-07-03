@@ -101,6 +101,8 @@ var coloured_combo: int = 2
 ## Dictates how [code]coloured_combo[/code] should colour the judgments and/or combo
 @export_enum("Judgment:0", "Clear Flag:1")
 var combo_colour_mode: int = 1
+## Instead of making combo numbers fade, they will be kept on-screen.
+@export var always_display_combo: bool = true
 ## Define your note colours.
 @export var note_colours: Array = [
 	[ # columns
