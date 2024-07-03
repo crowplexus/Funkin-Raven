@@ -114,5 +114,5 @@ func _on_gui_input(e: InputEvent) -> void:
 			window.selector.modulate = Color.GREEN if window.changing_preference else Color.WHITE
 
 		elif not window.changing_preference:
-			window.current_selection = self.get_index()
+			window.current_selection = window.page_options.find(self)
 			window.update_selection()

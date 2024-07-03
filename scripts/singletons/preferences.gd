@@ -18,6 +18,11 @@ var _file: ConfigFile = ConfigFile.new()
 	"note1": [	"S",	"Down"	],
 	"note2": [	"W",	"Up"	],
 	"note3": [	"D",	"Right"	],
+
+	"ui_left": [	"A",	"Left"	],
+	"ui_down": [	"S",	"Down"	],
+	"ui_up"  : [	"W",	"Up"	],
+	"ui_right": [	"D",	"Right"	],
 }
 ## Defines which direction the notes will scroll to.
 @export_enum("Up:0", "Down:1")
@@ -117,9 +122,6 @@ var note_colouring_mode: int = 0
 	set(new_locale):
 		language = new_locale
 		TranslationServer.set_locale(new_locale)
-## Define how the status bar should display information.
-@export_enum("Full:0", "No Score:1", "Only Score:2")
-var status_display_mode: int = 0
 ## Choose a HUD Style.
 @export_enum("Song-specific:0", "Raven:1", "Kade:2", "Psych:3", "Classic:4")
 var hud_style: int = 0
@@ -188,10 +190,17 @@ func load_prefs() -> void:
 	for prop: Variant in _props:
 		if prop.name.begins_with("_"):
 			continue
-		if not _file.has_section_key("Preferences", prop.name):
-			_file.set_value("Preferences", prop.name, get(prop.name))
-		else:
-			set(prop.name, _file.get_value("Preferences", prop.name, get(prop.name)))
+		match prop.name:
+			"keybinds": # prevent crash with older saves
+				if not _file.has_section_key("Preferences", prop.name):
+					_file.set_value("Preferences", prop.name, get(prop.name))
+				else:
+					Preferences.keybinds.merge(_file.get_value("Preferences", prop.name, get(prop.name)), true)
+			_:
+				if not _file.has_section_key("Preferences", prop.name):
+					_file.set_value("Preferences", prop.name, get(prop.name))
+				else:
+					set(prop.name, _file.get_value("Preferences", prop.name, get(prop.name)))
 	prefs_loaded.emit()
 	#_file.unreference()
 

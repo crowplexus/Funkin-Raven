@@ -7,6 +7,7 @@ extends Control
 @onready var metronome_sfx: AudioStreamPlayer = $"metronome"
 @onready var option_descriptor: Label = $"descriptor"
 @onready var selector: = $"pages/selector"
+## [READ-ONLY] gives you all pages in the page list as nodes.
 @onready var all_pages: Array:
 	get:
 		if not is_instance_valid(page_list):
@@ -14,13 +15,14 @@ extends Control
 		return page_list.get_children().filter(func(node):
 			return node is VBoxContainer
 		)
-## [READ-ONLY] gives you the maximum amount of items in the current page.
-@onready var page_size: int:
+## [READ-ONLY] gives you all the options in the active page.
+@onready var page_options: Array:
 	get:
-		if active_page:
-			return active_page.get_child_count()
-		return 0
-
+		var arr: Array = []
+		if not is_instance_valid(active_page):
+			return arr
+		arr.append_array(active_page.get_children().filter(func(ci: CanvasItem): return ci is OptionItem))
+		return arr
 ## Current selected preference box.
 var selected_pref: OptionItem
 ## Current selected item.
@@ -119,21 +121,19 @@ func stop_changing_pref() -> void:
 
 
 func update_selection(new: int = 0) -> void:
-	if selected_pref:
-		selected_pref.modulate.a = 0.6
-	current_selection = wrapi(current_selection + new, 0, page_size)
-	selected_pref = active_page.get_child(current_selection)
+	if selected_pref: selected_pref.modulate.a = 0.6
+	current_selection = wrapi(current_selection + new, 0, page_options.size())
+	selected_pref = page_options[current_selection]
 	if new != 0: SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
 	selected_pref.modulate.a = 1.0
 	reload_description()
 
 	_display_ypos = 0.0
 	# original scrolling code by @srthero278 / @srtpro278.
-	if page_size > 8 and active_page.size.y >= page_list.size.y:
+	if active_page.size.y > page_list.size.y:
 		_display_ypos = (
-			((page_list.size.y - active_page.size.y) - page_size + 5)
-			* ((selected_pref.position.y - selected_pref.size.y + selected_pref.size.y)
-			/ page_list.size.y)
+			((page_list.size.y - active_page.size.y) - active_page.get_child_count())
+			* ((selected_pref.position.y - selected_pref.size.y) / page_list.size.y)
 		)
 
 

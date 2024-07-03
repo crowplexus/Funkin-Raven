@@ -75,7 +75,6 @@ offset_right = 0.119873
 offset_bottom = -0.200012
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(1e-05, 1)
 texture = SubResource("GradientTexture1D_ag42t")
 
 [node name="text_writer" type="RichTextLabel" parent="texture_rect"]

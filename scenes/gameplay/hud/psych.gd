@@ -73,10 +73,7 @@ func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 		hit_result.player.stats.score, hit_result.player.stats.misses,
 		get_rating(acc) + acc_str,
 	]
-	match Preferences.status_display_mode:
-		1: status_label.text = text.substr(text.find("|") + 1, text.length())
-		2: status_label.text = text.substr(0, text.find(" | "))
-		_: status_label.text = text
+	status_label.text = text
 
 
 func update_time_bar() -> void:

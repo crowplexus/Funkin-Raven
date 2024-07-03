@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://deo3obwvipfis"]
+[gd_scene load_steps=12 format=3 uid="uid://deo3obwvipfis"]
 
 [ext_resource type="Theme" uid="uid://dncfgelptpwv8" path="res://assets/themes/default_dark.tres" id="1_38ca0"]
 [ext_resource type="Script" path="res://scenes/ui/options/options_window.gd" id="1_gulft"]
@@ -7,6 +7,11 @@
 [ext_resource type="Script" path="res://scenes/ui/options/keybind_option.gd" id="4_awyi8"]
 [ext_resource type="Script" path="res://scenes/ui/options/page_item.gd" id="5_4l7t0"]
 [ext_resource type="AudioStream" uid="uid://toqn7nqo322h" path="res://assets/audio/sfx/volume_appear.ogg" id="6_beq18"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_668iw"]
+font = ExtResource("2_mtl8v")
+font_size = 24
+font_color = Color(0.6, 0.6, 0.6, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0a26v"]
 draw_center = false
@@ -78,6 +83,14 @@ anchor_bottom = 1.0
 alignment = 1
 metadata/_edit_lock_ = true
 
+[node name="notes" type="Label" parent="pages/gameplay"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Notes"
+label_settings = SubResource("LabelSettings_668iw")
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="scroll_direction" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Scroll Direction"
@@ -85,29 +98,6 @@ description = "Defines which direction the notes will scroll to."
 variable = "scroll_direction"
 option_type = 2
 display_names = Array[StringName]([&"Up", &"Down"])
-
-[node name="ghost_tapping" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
-layout_mode = 2
-option_name = &"Ghost Tapping"
-description = "Allows you to press keys while there's no notes to hit."
-variable = "ghost_tapping"
-
-[node name="use_epics" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
-layout_mode = 2
-option_name = &"Use Epics"
-description = "Enables a new 5th judgement greater than \"Sick!\""
-variable = "use_epics"
-
-[node name="beat_offset" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
-layout_mode = 2
-option_name = &"Beat Offset"
-name_display = "@ms"
-description = "Changes how early or late the Conductor is offset to, this will also make it so notes spawn earlier/later than usual,
-Recommended if you use bluetooth headphones."
-variable = "beat_offset"
-option_type = 1
-steps = 0.1
-speed = 16.0
 
 [node name="centered_playfield" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -132,6 +122,20 @@ variable = "scroll_speed"
 option_type = 1
 steps = 0.01
 
+[node name="input" type="Label" parent="pages/gameplay"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Input"
+label_settings = SubResource("LabelSettings_668iw")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="use_epics" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Use Epics"
+description = "Enables a new 5th judgement greater than \"Sick!\""
+variable = "use_epics"
+
 [node name="playfield_side" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"PlayField Side"
@@ -140,6 +144,23 @@ NOTE: None will make the game enter Botplay Mode."
 variable = "playfield_side"
 option_type = 2
 display_names = Array[StringName]([&"Right", &"Left", &"None"])
+
+[node name="ghost_tapping" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Ghost Tapping"
+description = "Allows you to press keys while there's no notes to hit."
+variable = "ghost_tapping"
+
+[node name="beat_offset" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Beat Offset"
+name_display = "@ms"
+description = "Changes how early or late the Conductor is offset to, this will also make it so notes spawn earlier/later than usual,
+Recommended if you use bluetooth headphones."
+variable = "beat_offset"
+option_type = 1
+steps = 0.1
+speed = 16.0
 
 [node name="keybinds" type="VBoxContainer" parent="pages"]
 visible = false
@@ -152,6 +173,14 @@ grow_vertical = 2
 mouse_filter = 2
 alignment = 1
 metadata/_edit_lock_ = true
+
+[node name="notes" type="Label" parent="pages/keybinds"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Notes"
+label_settings = SubResource("LabelSettings_668iw")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="note0_keybind" parent="pages/keybinds" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -177,6 +206,38 @@ script = ExtResource("4_awyi8")
 option_name = &"Note Right Keybind"
 variable = "note3"
 
+[node name="ui" type="Label" parent="pages/keybinds"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "User Interface"
+label_settings = SubResource("LabelSettings_668iw")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ui_left_keybind" parent="pages/keybinds" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+script = ExtResource("4_awyi8")
+option_name = &"UI Left Keybind"
+variable = "ui_left"
+
+[node name="ui_down_keybind" parent="pages/keybinds" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+script = ExtResource("4_awyi8")
+option_name = &"UI Down Keybind"
+variable = "ui_down"
+
+[node name="ui_up_keybind" parent="pages/keybinds" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+script = ExtResource("4_awyi8")
+option_name = &"UI Up Keybind"
+variable = "ui_up"
+
+[node name="ui_right_keybind" parent="pages/keybinds" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+script = ExtResource("4_awyi8")
+option_name = &"UI Right Keybind"
+variable = "ui_right"
+
 [node name="visuals" type="VBoxContainer" parent="pages"]
 visible = false
 layout_mode = 1
@@ -188,6 +249,14 @@ grow_vertical = 2
 mouse_filter = 2
 alignment = 1
 metadata/_edit_lock_ = true
+
+[node name="graphics" type="Label" parent="pages/visuals"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Graphics"
+label_settings = SubResource("LabelSettings_668iw")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="framerate" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -211,21 +280,13 @@ description = "Enables certain flashing effects in menus and gameplay
 Please disable this if you are sensitive to those."
 variable = "flashing"
 
-[node name="note_splashes" parent="pages/visuals" instance=ExtResource("3_wjca4")]
+[node name="hud" type="Label" parent="pages/visuals"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-option_name = &"Note Splashes"
-description = "Enables a firework effect when hitting judgements that allow it."
-variable = "note_splashes"
-option_type = 2
-display_names = Array[StringName]([&"Disabled", &"Player-only", &"Every Player"])
-
-[node name="receptor_size" parent="pages/visuals" instance=ExtResource("3_wjca4")]
-layout_mode = 2
-option_name = &"Receptor Size"
-description = "Define the size of the notes on-screen."
-variable = "receptor_size"
-option_type = 1
-steps = 0.1
+text = "HUD"
+label_settings = SubResource("LabelSettings_668iw")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="hud_style" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -234,14 +295,6 @@ description = "Choose a HUD Style."
 variable = "hud_style"
 option_type = 2
 display_names = Array[StringName]([&"Song-specific", &"Raven", &"Kade", &"Psych", &"Classic"])
-
-[node name="status_display_mode" parent="pages/visuals" instance=ExtResource("3_wjca4")]
-layout_mode = 2
-option_name = &"Status Bar Display"
-description = "Define how the status bar should display information."
-variable = "status_display_mode"
-option_type = 2
-display_names = Array[StringName]([&"Full", &"No Score", &"Only Score"])
 
 [node name="coloured_combo" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -259,6 +312,14 @@ variable = "combo_colour_mode"
 option_type = 2
 display_names = Array[StringName]([&"Judgment", &"Clear Flag"])
 
+[node name="note_splashes" parent="pages/visuals" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Note Splashes"
+description = "Enables a firework effect when hitting judgements that allow it."
+variable = "note_splashes"
+option_type = 2
+display_names = Array[StringName]([&"Disabled", &"Player-only", &"Every Player"])
+
 [node name="hold_layer" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Hold Note Layer"
@@ -266,6 +327,14 @@ description = "Defines how hold notes should be layered."
 variable = "hold_layer"
 option_type = 2
 display_names = Array[StringName]([&"Above Notes", &"Behind Notes"])
+
+[node name="receptor_size" parent="pages/visuals" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Receptor Size"
+description = "Define the size of the notes on-screen."
+variable = "receptor_size"
+option_type = 1
+steps = 0.1
 
 [node name="show_timer" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
