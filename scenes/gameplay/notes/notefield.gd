@@ -15,7 +15,7 @@ var playfield_spot: float:
 	set(new_warp):
 		match new_warp:
 			0.0: position.x = get_viewport_rect().size.x * 0.1
-			0.5: position.x = get_viewport_rect().size.x * 0.5
+			0.5: position.x = get_viewport_rect().size.x * 0.37
 			1.0: position.x = get_viewport_rect().size.x * 0.6
 		# TODO: better calculations for this case
 		var parent_scale: Vector2 = Vector2.ONE
@@ -83,14 +83,15 @@ func make_playable(new_player: Player = null) -> void:
 
 
 func check_centered() -> void:
-	if is_instance_valid(player):
-		var is_player: bool = Preferences.playfield_side == get_index()
-		if Preferences.centered_playfield == true:
-			playfield_spot = 0.5
-			visible = Preferences.centered_playfield and is_player
-		else:
-			playfield_spot = _og_spot
-			visible = true
+	var is_player: bool = Preferences.playfield_side == get_index()
+	if Preferences.playfield_side == -1:
+		is_player = get_index() == 1
+	if Preferences.centered_playfield == true:
+		playfield_spot = 0.5
+		visible = Preferences.centered_playfield and is_player
+	else:
+		playfield_spot = _og_spot
+		visible = true
 
 ## Safer way to get a receptor over doing receptors[column]
 func get_receptor(column: int) -> CanvasItem:
