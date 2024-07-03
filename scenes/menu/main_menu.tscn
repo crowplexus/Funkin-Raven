@@ -51,18 +51,22 @@ mouse_filter = 2
 position = Vector2(360, 165)
 sprite_frames = ExtResource("2_r675o")
 animation = &"idle"
+metadata/unselectable = true
 
 [node name="freeplay" type="AnimatedSprite2D" parent="buttons"]
 position = Vector2(360, 312)
 sprite_frames = ExtResource("3_e8ncv")
 animation = &"idle"
+metadata/unselectable = false
 
 [node name="options" type="AnimatedSprite2D" parent="buttons"]
 position = Vector2(360, 462)
 sprite_frames = ExtResource("5_sgcfp")
 animation = &"idle"
+metadata/unselectable = false
 
 [node name="credits" type="AnimatedSprite2D" parent="buttons"]
 position = Vector2(360, 614)
 sprite_frames = ExtResource("6_rh7rp")
 animation = &"idle"
+metadata/unselectable = false

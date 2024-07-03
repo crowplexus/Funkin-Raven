@@ -10,9 +10,14 @@ var current_selection: int = 0
 
 
 func _ready() -> void:
+	for button: CanvasItem in buttons.get_children():
+		if is_unselectable(button):
+			button.modulate = Color.BLACK
 	if not SoundBoard.is_bgm_playing():
 		SoundBoard.play_bgm(Globals.MENU_MUSIC, 0.7)
 	update_selection()
+	if is_unselectable(current_item):
+		update_selection(1, false)
 
 
 func _unhandled_input(e: InputEvent) -> void:
@@ -20,23 +25,28 @@ func _unhandled_input(e: InputEvent) -> void:
 	if e is InputEventMouseMotion:
 		return
 	var ud: int = int(Input.get_axis("ui_up", "ui_down"))
-	if ud: update_selection(ud)
+	if ud:
+		update_selection(ud)
+		if is_unselectable(current_item):
+			update_selection(ud, false)
+
 	if Input.is_action_just_pressed("ui_accept"):
 		confirm_selection()
 
 
-func update_selection(new_sel: int = 0) -> void:
-	if current_item and current_item is AnimatedSprite2D:
+func update_selection(new_sel: int = 0, sound: bool = true) -> void:
+	if is_instance_valid(current_item) and current_item is AnimatedSprite2D:
 		current_item.play("idle")
 	current_selection = wrapi(current_selection + new_sel, 0, buttons.get_child_count())
-	if new_sel != 0: SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
 	current_item = buttons.get_child(current_selection)
+	if new_sel != 0 and sound:
+		SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
 	if current_item is AnimatedSprite2D:
 		current_item.play("selected")
 	camera.position.y = current_item.position.y * current_item.scale.y
 
 
-func confirm_selection():
+func confirm_selection() -> void:
 	var item: CanvasItem = current_item
 	bye_bye_buttons()
 	SoundBoard.play_sfx(Globals.MENU_CONFIRM_SFX)
@@ -80,3 +90,7 @@ func bye_bye_buttons(coming_back: bool = false) -> void:
 		if button != current_item:
 			create_tween().set_ease(Tween.EASE_OUT) \
 			.tween_property(button, "modulate:a", val, duration)
+
+
+func is_unselectable(item: CanvasItem) -> bool:
+	return item and item.has_meta("unselectable") and item.get_meta("unselectable") == true

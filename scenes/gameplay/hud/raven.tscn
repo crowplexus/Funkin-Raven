@@ -37,18 +37,17 @@ expand_margin_left = 2.0
 expand_margin_right = 2.0
 anti_aliasing = false
 
-[sub_resource type="Animation" id="Animation_r7lpl"]
+[sub_resource type="Animation" id="Animation_6fsbg"]
 resource_name = "bump"
-length = 0.80001
-loop_mode = 1
+length = 0.50001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("../health_bar2/player1:scale")
-tracks/0/interp = 1
+tracks/0/path = NodePath("player2:scale")
+tracks/0/interp = 2
 tracks/0/loop_wrap = false
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(1.1, 1.1), Vector2(1, 1)]
@@ -56,19 +55,19 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("../health_bar2/player2:scale")
-tracks/1/interp = 1
+tracks/1/path = NodePath("player1:scale")
+tracks/1/interp = 2
 tracks/1/loop_wrap = false
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.3),
+"times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(1.1, 1.1), Vector2(1, 1)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_5ymaa"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_l8q7b"]
 _data = {
-"bump": SubResource("Animation_r7lpl")
+"bump": SubResource("Animation_6fsbg")
 }
 
 [sub_resource type="LabelSettings" id="LabelSettings_daqce"]
@@ -107,23 +106,21 @@ fill_mode = 1
 show_percentage = false
 
 [node name="player2" type="Sprite2D" parent="health_bar"]
-position = Vector2(299, -8)
-rotation = 0.0196991
+position = Vector2(271, 0)
 texture = ExtResource("4_jkub1")
 offset = Vector2(-50, 0)
 hframes = 2
 
 [node name="player1" type="Sprite2D" parent="health_bar"]
-position = Vector2(303, 5)
+position = Vector2(271, 0)
 texture = ExtResource("5_veo88")
 offset = Vector2(50, 0)
 flip_h = true
 hframes = 2
 
 [node name="animation_player" type="AnimationPlayer" parent="health_bar"]
-root_node = NodePath("")
 libraries = {
-"": SubResource("AnimationLibrary_5ymaa")
+"": SubResource("AnimationLibrary_l8q7b")
 }
 
 [node name="status_label" type="Label" parent="."]

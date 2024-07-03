@@ -40,8 +40,8 @@ func _unhandled_input(e: InputEvent) -> void:
 	if Input.is_action_just_pressed("ui_cancel"):
 		Globals.set_node_inputs(self, false)
 		# stupid check to stop random bgm when its playing
-		if SoundBoard.current_bgm != Globals.MENU_MUSIC.resource_path.get_file().get_basename():
-			play_bgm_check(Globals.MENU_MUSIC, true)
+		#if SoundBoard.current_bgm != Globals.MENU_MUSIC.resource_path.get_file().get_basename():
+		#	play_bgm_check(Globals.MENU_MUSIC, true)
 		SoundBoard.play_sfx(Globals.MENU_CANCEL_SFX)
 		Globals.change_scene(load("res://scenes/menu/main_menu.tscn"))
 

@@ -34,6 +34,7 @@ func reset_positions() -> void:
 			status_label.position.y = 115
 			progress_label.position.y = 690
 
+
 func _exit_tree() -> void:
 	if Conductor.ibeat_reached.is_connected(icon_thingy):
 		Conductor.ibeat_reached.disconnect(icon_thingy)

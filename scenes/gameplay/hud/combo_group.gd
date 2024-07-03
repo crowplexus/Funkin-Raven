@@ -103,6 +103,9 @@ func pop_up_combo(note: Note, is_tap: bool) -> void:
 		num_score.position = self.size * 0.5
 		num_score.position.x += 45 * (i - offsetx)
 		num_score.modulate = combo_colour
+		if Preferences.always_display_combo and _template_combos.size() > _str_combo.length():
+			for ns: CanvasItem in _template_combos:
+				if ns.get_index() > i: ns.modulate.a = 0.0
 		num_score.scale *= 1.2
 
 		var frame: int = _str_combo[i].to_int() + 1
