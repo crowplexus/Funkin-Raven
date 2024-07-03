@@ -8,7 +8,8 @@ extends CanvasLayer
 
 var _cur_bus: int = 0
 var _display_state: int = 0
-var _game_muted: bool = false:
+var _game_muted: bool:
+	get: return AudioServer.is_bus_mute(_cur_bus)
 	set(mute): AudioServer.set_bus_mute(_cur_bus, mute)
 var _update_delay: float = 1.0
 var _volume_bar_tween: Tween
