@@ -96,6 +96,8 @@ func spawn_note(id: int) -> void:
 		note.object.position.y = INF
 	# spawn object
 	if note.object and note.receptor and not note.object.top_level:
+		var mod: float = note.notefield.modulate.a
+		note.object.modulate.a = mod
 		note.object.visible = note.receptor.visible and note.notefield.visible
 		note.object.scale = note.receptor.get_global_transform().get_scale()
 	note.object.set("note", note)

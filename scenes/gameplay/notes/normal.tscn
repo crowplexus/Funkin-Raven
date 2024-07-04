@@ -26,7 +26,7 @@ animation = &"begin0"
 offset = Vector2(-10, 50)
 
 [node name="hold_container" type="Control" parent="."]
-modulate = Color(1, 1, 1, 0.6)
+modulate = Color(1, 1, 1, 0.862745)
 use_parent_material = true
 layout_mode = 3
 anchors_preset = 0

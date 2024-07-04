@@ -53,7 +53,7 @@ var scroll_speed_behaviour: int = 0
 var playfield_side: int = 0:
 	set(new_side):
 		match new_side:
-			2: playfield_side = -1 # temporary
+			2: playfield_side = -1 # temporary, maybe.
 			_: playfield_side = new_side
 
 #endregion

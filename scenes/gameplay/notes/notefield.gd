@@ -23,6 +23,8 @@ var playfield_spot: float:
 		position.x -= (scale.x/parent_scale.x)
 		playfield_spot = new_warp
 var _og_spot: float = 0.0
+var _og_modu_a: float = 1.0
+var _og_vis: bool = true
 
 #region Player
 
@@ -40,10 +42,14 @@ func on_note_hit(note: Note, is_tap: bool) -> void:
 
 func reset_receptors() -> void:
 	_og_spot = playfield_spot
+	_og_modu_a = modulate.a
+	_og_vis = visible
+
 	scroll_mods.resize(key_count)
 	scroll_mods.fill(Vector2(1.0, -1.0 if Preferences.scroll_direction == 1 else 1.0))
 	animation_timers.resize(key_count)
 	animation_timers.fill(Timer.new())
+
 	for i: int in key_count:
 		if receptors.size() < key_count:
 			var mmmm: = receptors[i % receptors.size()]
@@ -59,16 +65,15 @@ func reset_receptors() -> void:
 			receptor.add_child(animation_timers[i])
 
 
-func reset_scrolls(vs: PackedVector2Array = []) -> void:
+func reset_scrolls(vs: Array[Vector2] = []) -> void:
 	if not vs or vs.is_empty(): vs = scroll_mods
 	for i: int in key_count:
 		var receptor: CanvasItem = receptors[i % receptors.size()]
 		if not is_instance_valid(receptor):
 			continue
-		match vs[receptor.get_index()].y:
-			1.0: receptor.position.y = 0.0
-			-1.0:
-				receptor.position.y = 500#/receptor.scale.y
+		match floori(vs[receptor.get_index()].y):
+			1: receptor.position.y = 0.0
+			-1: receptor.position.y = 500#/receptor.scale.y
 				#receptor.position.y /= (2.0 * receptor.scale.y)
 		#receptor.position.y *= receptor.scale.y
 
@@ -83,15 +88,21 @@ func make_playable(new_player: Player = null) -> void:
 
 
 func check_centered() -> void:
-	var is_player: bool = Preferences.playfield_side == get_index()
-	if Preferences.playfield_side == -1:
-		is_player = get_index() == 1
-	if Preferences.centered_playfield == true:
+	var is_player: bool = true
+	if player and player.botplay:
+		if Preferences.playfield_side == -1 and get_index() == 0:
+			is_player = true
+		else:
+			is_player = false
+	if Preferences.centered_playfield:
 		playfield_spot = 0.5
-		visible = Preferences.centered_playfield and is_player
+		visible = true
+		if not is_player:
+			modulate.a = 0.1
 	else:
 		playfield_spot = _og_spot
-		visible = true
+		modulate.a = _og_modu_a
+		visible = _og_vis
 
 ## Safer way to get a receptor over doing receptors[column]
 func get_receptor(column: int) -> CanvasItem:

@@ -154,7 +154,7 @@ func init_dialogue() -> void:
 				await get_tree().create_timer(0.01).timeout
 				Globals.set_node_inputs(self, true)
 			)
-			print_debug(convo_box.lines)
+			#print_debug(convo_box.lines)
 			ui_layer.add_child(convo_box)
 		else:
 			push_warning("Something is wrong with your dialogue box, does it extend the DialogueBox class?")
