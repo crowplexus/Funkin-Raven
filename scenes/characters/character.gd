@@ -19,7 +19,7 @@ var animation_context: int = 0
 ## Offset of the camera when focusing on the character.
 @export var camera_offset: Vector2 = Vector2.ZERO
 ## Character's health icon, displayed on the healthbar.
-@export var health_icon: Texture2D = preload("res://assets/sprites/characters/icons/face.png")
+@export var health_icon: HealthIcon
 ## If the character is (normally) a player character.
 @export var is_player: bool = false
 

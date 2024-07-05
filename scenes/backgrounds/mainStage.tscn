@@ -17,16 +17,18 @@ position_smoothing_enabled = true
 position_smoothing_speed = 3.0
 
 [node name="stageback" type="Sprite2D" parent="."]
-position = Vector2(605, 371)
+position = Vector2(673.571, 333.5)
+scale = Vector2(1.05357, 1.05357)
 texture = ExtResource("2_2ie5m")
 
 [node name="stagefront" type="Sprite2D" parent="."]
-position = Vector2(765, 851)
-scale = Vector2(0.9, 0.9)
+position = Vector2(656.195, 880.775)
+scale = Vector2(1.0025, 1.0025)
 texture = ExtResource("3_jr7cl")
 
 [node name="stagecurtains" type="Sprite2D" parent="."]
-position = Vector2(676, 415)
+position = Vector2(703.429, 400)
+scale = Vector2(1.02143, 1.02143)
 texture = ExtResource("4_2fn8c")
 
 [node name="player3" type="Marker2D" parent="."]
@@ -34,7 +36,7 @@ position = Vector2(662, 316)
 gizmo_extents = 160.0
 
 [node name="player2" type="Marker2D" parent="."]
-position = Vector2(358, 340)
+position = Vector2(326, 340)
 gizmo_extents = 160.0
 
 [node name="player1" type="Marker2D" parent="."]

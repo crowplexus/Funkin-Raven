@@ -56,7 +56,7 @@ func _unhandled_input(e: InputEvent) -> void:
 
 		SoundBoard.stop_bgm()
 		Chart.global = Chart.request(songs[current_selection - 1].folder_name, current_difficulty)
-		if Chart.global.song_info.name == "???":
+		if Chart.global.song_info.name == "<null>":
 			Chart.global.song_info.name = songs[current_selection - 1].display_name
 		Globals.change_scene(load("res://scenes/gameplay/gameplay.tscn"))
 
@@ -127,9 +127,12 @@ func generate_songs() -> void:
 		song_list.add_child(new_item)
 
 		var icon: Sprite2D = Sprite2D.new()
-		icon.texture = song.icon
+		icon.texture = song.icon.texture
 		icon.global_position.x = new_item.glyphs_pos.x + 60
-		icon.hframes = 2
+		icon.texture_filter = song.icon.filter
+		icon.hframes = song.icon.hframes
+		icon.vframes = song.icon.vframes
+		icon.scale = song.icon.scale
 		new_item.add_child(icon)
 		ouch += 1
 

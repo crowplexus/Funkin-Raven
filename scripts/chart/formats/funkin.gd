@@ -8,9 +8,8 @@ var diff: String = SongItem.DEFAULT_DIFFICULTY_SET[1].file
 
 #region Parsers
 
-func parse_base(song: StringName, difficulty: Dictionary = {}) -> Chart:
-	var chart: Chart = Chart.new()
-
+func parse_song_metadata(song: StringName, difficulty: Dictionary = {}) -> SongInfo:
+	var meta: SongInfo
 	for i: String in [
 		"res://assets/songs/%s/raven_meta_%s.tres" % [song, difficulty.variation],
 		"res://assets/songs/%s/%s_meta_%s.tres" % [song, song, difficulty.variation],
@@ -18,9 +17,17 @@ func parse_base(song: StringName, difficulty: Dictionary = {}) -> Chart:
 		"res://assets/songs/%s/%s_meta.tres" % [song, song],
 	]:
 		if ResourceLoader.exists(i):
-			chart.song_info = load(i) as SongInfo
+			meta = load(i) as SongInfo
 			break
+	if not is_instance_valid(meta):
+		meta = SongInfo.new()
+	return meta
 
+
+func parse_base(song: StringName, difficulty: Dictionary = {}) -> Chart:
+	var chart: Chart = Chart.new()
+
+	chart.song_info = parse_song_metadata(song, difficulty)
 	chart.song_info.folder = song
 	chart.song_info.difficulty = difficulty
 
@@ -83,16 +90,7 @@ func parse_base(song: StringName, difficulty: Dictionary = {}) -> Chart:
 func parse_legacy(song: StringName, difficulty: Dictionary = {}) -> Chart:
 	var chart: Chart = Chart.new()
 
-	for i: String in [
-		"res://assets/songs/%s/raven_meta_%s.tres" % [song, difficulty.variation],
-		"res://assets/songs/%s/%s_meta_%s.tres" % [song, song, difficulty.variation],
-		"res://assets/songs/%s/raven_meta.tres" % song,
-		"res://assets/songs/%s/%s_meta.tres" % [song, song],
-	]:
-		if ResourceLoader.exists(i):
-			chart.song_info = load(i) as SongInfo
-			break
-
+	chart.song_info = parse_song_metadata(song, difficulty)
 	chart.song_info.folder = song
 	chart.song_info.difficulty = difficulty
 
@@ -196,6 +194,12 @@ func parse_legacy(song: StringName, difficulty: Dictionary = {}) -> Chart:
 			_tcid = clampi(_tcid + 1, 0, chart.time_changes.size())
 			_bar_timer += _fake_crotchet * _beats_per_bar
 
+	if not chart.song_info.instrumental:
+		var fol: String = "res://assets/songs/%s/Inst.ogg" % song
+		if not ResourceLoader.exists(fol):
+			fol = fol.replace(song, "test")
+		chart.song_info.instrumental = load(fol)
+
 	finished.emit()
 	return chart
 
@@ -208,10 +212,10 @@ func convert_meta(chart: Chart, _meta: Dictionary) -> void:
 		for i: Dictionary in _meta["timeChanges"]:
 			chart.time_changes.append(Conductor.time_change_from_vanilla(i))
 	# convert some of its play data
-	if "songName" in _meta:
+	if "songName" in _meta and chart.song_info.name == "<null>":
 		chart.song_info.name = _meta["songName"]
 	if "playData" in _meta:
-		if "characters" in _meta["playData"]:
+		if "characters" in _meta["playData"] and chart.song_info.characters.is_empty():
 			var chars: Dictionary = _meta["playData"].characters
 			chart.song_info.characters = [chars.player, chars.opponent, chars.girlfriend]
 			if chart.song_info.characters.has("album"):
@@ -220,9 +224,9 @@ func convert_meta(chart: Chart, _meta: Dictionary) -> void:
 		#	song_info.difficulties = []
 		#	for diff: String in _meta["playData"].difficulties:
 		#		song_info.difficulties.append(StringName(diff))
-		if "stage" in _meta["playData"]:
+		if "stage" in _meta["playData"] and chart.song_info.background.is_empty():
 			chart.song_info.background = _meta["playData"].stage
-		if "ratings" in _meta["playData"]:
+		if "ratings" in _meta["playData"] and chart.song_info.stars.is_empty():
 			chart.song_info.stars = _meta["playData"].ratings
 
 

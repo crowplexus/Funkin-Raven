@@ -25,4 +25,4 @@ const DEFAULT_DIFFICULTY_SET: Array[Dictionary] = [
 ## Contains difficulties and (potentially) variations
 @export var difficulties: Array[Dictionary] = SongItem.DEFAULT_DIFFICULTY_SET
 ## Icon Texture that appears in the freeplay menu.
-@export var icon: Texture2D
+@export var icon: HealthIcon

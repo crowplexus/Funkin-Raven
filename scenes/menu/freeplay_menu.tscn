@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/menu/freeplay_menu.gd" id="1_mwt6o"]
 [ext_resource type="Texture2D" uid="uid://mr31twd36rpw" path="res://assets/sprites/menu/menuDesat.png" id="2_a718r"]
-[ext_resource type="Resource" uid="uid://llhw2mb1u7hu" path="res://assets/funkin_bundle.tres" id="2_m5145"]
+[ext_resource type="Resource" uid="uid://llhw2mb1u7hu" path="res://assets/default_levels.tres" id="2_m5145"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="3_r3f4j"]
 [ext_resource type="Script" path="res://scenes/ui/alphabet.gd" id="5_h6t7p"]
 

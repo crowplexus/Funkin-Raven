@@ -20,6 +20,7 @@ var music: AudioStreamPlayer
 var hud_beat_interval: int = 4
 var modchart_pack: ModchartPack
 var initial_ui_zoom: Vector2 = Vector2.ONE
+var _main_player: Player
 var _need_to_play_music: bool = true
 var _interrupt_time: bool = false
 var _has_dialogue: bool = false
@@ -101,7 +102,7 @@ func _process(delta: float) -> void:
 			lerpf(initial_ui_zoom.y, ui_layer.scale.y, exp(-delta * 5))
 		)
 		center_ui_layer()
-	if get_player(Preferences.playfield_side):
+	if is_instance_valid(_main_player):
 		update_healthbar(delta)
 	modchart_pack.call_mod_method("_post_process", [self, delta])
 
@@ -115,6 +116,7 @@ func _unhandled_input(_e: InputEvent) -> void:
 			pause_menu.z_index = 100
 			get_tree().paused = true
 			ui_layer.add_child(pause_menu)
+		resync_vocals()
 
 
 func _exit_tree() -> void:
@@ -216,6 +218,8 @@ func init_players(player_fields: Array[NoteField]) -> void:
 		player.note_fly_over.connect(miss_fly_over)
 		# send hit result so the score text updates
 		field.make_playable(player)
+		if not player.botplay:
+			_main_player = player
 
 ## Initialises the actual music to be played back[br]
 ## NOTE: if no music ever gets loaded, the game will keep running, just with no music!
@@ -423,10 +427,10 @@ func update_score_text(note: Note, is_tap: bool) -> void:
 func update_healthbar(delta: float) -> void:
 	if not health_bar:
 		return
-	var health_deluxe: float = get_player(Preferences.playfield_side).health
+	var health_deluxe: float = _main_player.health
 	var new_value: float = lerpf(health_bar.value, health_deluxe, exp(-delta * 96))
 	# custom lerp
-	if current_hud and current_hud.has_method("get_health"):
+	if is_instance_valid(current_hud) and current_hud.has_method("get_health"):
 		var custom_health = current_hud.call_deferred("get_health", health_deluxe)
 		if custom_health is float: new_value = custom_health
 	health_bar.value = new_value
@@ -468,19 +472,12 @@ func unload_hud(hud_name: NodePath) -> void:
 		old_hud.queue_free()
 	modchart_pack.call_mod_method("_on_hud_unloaded", [self, hud_name])
 
-## Returns an instance of a player on a notefield.
-func get_player(player_id: int) -> Player:
-	for field: NoteField in fields:
-		if field.player and player_id == field.get_index():
-			return field.player
-	return null
-
 # temporary until godot 4.3
 ## Resyncs the vocals to music time.
 func resync_vocals() -> void:
 	if not music:
 		return
 	for track: AudioStreamPlayer in music.get_children():
-		track.seek(music.get_playback_position())
+		track.seek(music.get_playback_position() + AudioServer.get_time_since_last_mix())
 
 #endregion

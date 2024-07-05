@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="SongInfo" load_steps=6 format=3 uid="uid://bhlnnfomovjgl"]
+
+[ext_resource type="Script" path="res://scripts/chart/song_info.gd" id="1_3hxjw"]
+[ext_resource type="AudioStream" uid="uid://cwo8wnrkvag7b" path="res://assets/songs/test/Inst.ogg" id="1_njsli"]
+[ext_resource type="Resource" uid="uid://b6xv638dwdh64" path="res://assets/sprites/ui/normal.tres" id="2_k48eg"]
+[ext_resource type="AudioStream" uid="uid://dd5hlv35axlap" path="res://assets/songs/test/Voices-bf.ogg" id="3_ugtrx"]
+[ext_resource type="AudioStream" uid="uid://bw72tfuckq7wv" path="res://assets/songs/test/Voices-bf-pixel.ogg" id="4_hyfw5"]
+
+[resource]
+script = ExtResource("1_3hxjw")
+name = &"Test"
+ui_skin = ExtResource("2_k48eg")
+notefields = Array[Dictionary]([{
+"characters": ["player1"],
+"key_count": 4,
+"name": "player1_notefield",
+"scale": Vector2(1, 1),
+"spot": 1.0,
+"visible": true
+}, {
+"characters": ["player2"],
+"key_count": 4,
+"name": "player2_notefield",
+"scale": Vector2(1, 1),
+"spot": 0.0,
+"visible": true
+}])
+credits = {
+"charter": "???",
+"composer": "???"
+}
+stars = {}
+background = &""
+characters = []
+instrumental = ExtResource("1_njsli")
+vocals = Array[AudioStream]([ExtResource("3_ugtrx"), ExtResource("4_hyfw5")])

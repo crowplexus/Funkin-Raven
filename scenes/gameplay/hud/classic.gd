@@ -37,10 +37,23 @@ func setup_healthbar() -> void:
 	var stage: StageBG = get_tree().current_scene.get("stage")
 	if stage:
 		# very messy icon stuff
+		var char_icons: Array[HealthIcon] = [null, null]
 		if stage.has_node("player2") and stage.get_node("player2") is Character:
-			health_bar.get_child(0).texture = stage.get_node("player2").health_icon
+			char_icons[0] = stage.get_node("player2").health_icon
 		if stage.has_node("player1") and stage.get_node("player1") is Character:
-			health_bar.get_child(1).texture = stage.get_node("player1").health_icon
+			char_icons[1] = stage.get_node("player1").health_icon
+		set_icons(char_icons)
+
+
+func set_icons(icons: Array[HealthIcon]) -> void:
+	for i: int in health_bar_icons.size():
+		var ico: Sprite2D = health_bar_icons[i]
+		if is_instance_valid(icons[i]):
+			ico.texture = icons[i].texture
+			ico.texture_filter = icons[i].filter
+			ico.hframes = icons[i].hframes
+			ico.vframes = icons[i].vframes
+			ico.scale = icons[i].scale
 
 
 func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
@@ -57,7 +70,7 @@ func move_icons() -> void:
 		if lr_axis == -1:
 			icon_health = 100 - health_bar.value if icon.flip_h else health_bar.value
 		var hb_offset: float = 0.0 if lr_axis == -1 else health_bar.size.x
-		icon.frame = 1 if icon_health < 20 else 0
+		icon.frame = 1 if icon_health < 20 and icon.hframes == 2 else 0
 		icon.position.x = -(health_bar.value * health_bar.size.x / 100) + hb_offset
 		icon.position.x *= lr_axis
 

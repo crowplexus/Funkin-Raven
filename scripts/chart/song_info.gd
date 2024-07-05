@@ -37,7 +37,7 @@ const DEFAULT_NOTEFIELD_CONFIG: Array[Dictionary] = [
 ]
 
 ## Display Name for the song.
-@export var name: StringName = "???"
+@export var name: StringName = "<null>"
 ## Folder Name for the song, usually provided when loading the chart.
 var folder: StringName = "test"
 ## Song UI Style, changes certain elements in the UI, for example judgments and combo
