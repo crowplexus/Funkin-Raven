@@ -37,7 +37,7 @@ const DEFAULT_NOTEFIELD_CONFIG: Array[Dictionary] = [
 ]
 
 ## Display Name for the song.
-@export var name: StringName = "<null>"
+@export var name: StringName = "<REPLACE>"
 ## Folder Name for the song, usually provided when loading the chart.
 var folder: StringName = "test"
 ## Song UI Style, changes certain elements in the UI, for example judgments and combo
@@ -54,12 +54,9 @@ var difficulty: Dictionary = {
 ## Notefield configuration for gameplay purposes.
 @export var notefields: Array[Dictionary] = DEFAULT_NOTEFIELD_CONFIG
 ## Dictionary with song credits, such as[br]
-## the composer of the song[br]
+## the artist who made the song[br]
 ## who mapped it, etc...
-@export var credits: Dictionary = {
-	"composer": "???",
-	"charter": "???",
-}
+@export var credits: Dictionary = { "artist": "???", "charter": "???", }
 ## Contains an integer representing how hard a
 ## song's mapping is, organized by difficulty.
 @export var stars: Dictionary = {}

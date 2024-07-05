@@ -1,4 +1,4 @@
-extends Node
+extends Resource
 class_name PlayerStats
 
 ## Score, 0 by default.
@@ -31,24 +31,40 @@ class_name PlayerStats
 @export var total_notes_hit: int = 0
 ## Contains judgments that you've hit.
 @export var hit_registry: Dictionary = {}
+## Date of when this stats resource was saved, changed whenever [code]register()[/code] is called.
+@export var registry_date: String = "UNKOWN-DATE UNKNOWN-TIME"
+## ID of the player who achieved the stats.
+@export var player_id: int = 0
+## Tells the game if the stats were saved with epics enabled.[br]
+## for sorting reasons.
+var had_epics: bool:
+	get: return hit_registry.has("epic") and hit_registry.epic > 0
+## Tells the game if the stats were obtained by cheating.
+var invalid: bool:
+	get: return hit_registry.has("perfect") and hit_registry.perfect > 0
 
 
 func _to_string() -> String:
 	var status: String = "Score: %s - Accuracy: %s%% - Combo Breaks: %s" % [
-		score, snappedf(accuracy, 0.01), breaks,
-	]
+		score, snappedf(accuracy, 0.01), breaks]
 	# crazy frog.
 	if breaks < 10:
 		var cf: String = Scoring.get_clear_flag(hit_registry)
 		if breaks > 0: cf = "SDCB"
-		if not cf.is_empty(): status += " (%s)" % cf
+		if not cf.is_empty(): status += " - (%s)" % cf
 	return status
 
 
 func _init() -> void:
 	for judge: String in Scoring.JUDGMENTS.keys():
+		if judge == "miss": continue
 		hit_registry[judge] = 0
 
+## Function use to register the date of when these stats were obtained[br]
+## Can be used with [code]ResourceSaver[/code] or [code]Highscore[/code]
+## for registering purposes.
+func register() -> PlayerStats:
+	registry_date = Time.get_datetime_string_from_system(false, true)
+	#ResourceSaver.save(self, "res://"+song_name+".tres", ResourceSaver.FLAG_OMIT_EDITOR_PROPERTIES)
+	return self
 
-func save() -> void:
-	var _date: = Time.get_datetime_string_from_system(true, true)

@@ -17,7 +17,7 @@ func _ready() -> void:
 	health_bar.modulate.a = 0.0
 	_hb_twn = create_tween().set_ease(Tween.EASE_IN).bind_node(health_bar)
 	_hb_twn.tween_property(health_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
-	if Chart.global:
+	if Chart.global and Chart.global.song_info:
 		_song_name = Chart.global.song_info.name
 	progress_label.visible = Preferences.show_timer
 	Conductor.ibeat_reached.connect(icon_thingy)
@@ -76,7 +76,13 @@ func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
 		return
 
 	var text: String = str(hit_result.player.stats)
+	var grade: String = get_grade(hit_result.player.stats.accuracy)
 	status_label.text = text
+	if not grade.is_empty():
+		if text.ends_with(")"):
+			status_label.text += " %s" % grade
+		else:
+			status_label.text += " - %s" % grade
 
 
 func update_time_bar() -> void:
@@ -110,3 +116,15 @@ func set_player(player: int) -> void:
 	match player:
 		0: health_bar.fill_mode = ProgressBar.FILL_END_TO_BEGIN
 		1: health_bar.fill_mode = ProgressBar.FILL_BEGIN_TO_END
+
+
+func get_grade(acc: float) -> String:
+	# based off of Arcaea and the base game
+	match acc:
+		_ when acc >= 100: return "PF" # Perfect
+		_ when acc >= 90: return "EX" # Excellent
+		_ when acc >= 80: return "GT" # Great
+		_ when acc >= 70: return "OK" # Okay
+		_ when acc >= 60: return "BD" # Bad
+		_ when acc >= 30: return "FL" # Fruity Loops, jk its Fail
+		_: return "N/A"

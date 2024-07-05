@@ -89,6 +89,7 @@ func _ready() -> void:
 
 	if _has_dialogue == true and not seen_cutscene:
 		Globals.set_node_inputs(self, false)
+		Globals.set_node_inputs(_main_player, false)
 		_interrupt_time = true
 
 	# Connect Signals
@@ -163,6 +164,7 @@ func init_dialogue() -> void:
 					_interrupt_time = false
 				await get_tree().create_timer(0.01).timeout
 				Globals.set_node_inputs(self, true)
+				Globals.set_node_inputs(_main_player, true)
 				seen_cutscene = true
 			)
 			#print_debug(convo_box.lines)
@@ -212,6 +214,7 @@ func init_players(player_fields: Array[NoteField]) -> void:
 		var field: NoteField = player_fields[i]
 		var player: Player = Player.new()
 		player.stats = PlayerStats.new()
+		player.stats.player_id = field.get_index()
 		player.note_queue = note_cluster.note_queue.filter(func(note: Note):
 			return note.player == i)
 		player.botplay = i != Preferences.playfield_side
@@ -410,6 +413,8 @@ func leave() -> void:
 	_interrupt_time = true
 	Conductor.reset()
 	Conductor.rate = 1.0
+	if Chart.global and Chart.global.song_info: # the chance of this being null is very unlikely, buuut....
+		Highscore.register(_main_player.stats, Chart.global.song_info.folder, Chart.global.song_info.difficulty)
 	# TODO: for levels, i need a playlist
 	# and then we just switch to the next song
 	# this is fine for now

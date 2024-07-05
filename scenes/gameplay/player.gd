@@ -161,9 +161,8 @@ func hold_note_input(hold: Note, delta: float = 0.0) -> void:
 					hold.notefield.on_note_hit(hold, false)
 			if hold.trip_timer <= 0.0:
 				hold.update_hold = false
-				if hold.object:
+				if hold.object and hold.object.has_method("miss_behaviour"):
 					hold.object.call_deferred("miss_behaviour", hold.column)
-					hold.object.modulate.a = 0.3
 				apply_miss(hold.column)
 				hold.dropped = true
 				hold.moving = true

@@ -8,7 +8,7 @@
 
 [resource]
 script = ExtResource("1_rqr5i")
-name = &"<null>"
+name = &"<REPLACE>"
 ui_skin = ExtResource("2_qjqbf")
 notefields = Array[Dictionary]([{
 "characters": ["player1"],
@@ -26,8 +26,8 @@ notefields = Array[Dictionary]([{
 "visible": true
 }])
 credits = {
-"charter": "???",
-"composer": "???"
+"artist": "???",
+"charter": "???"
 }
 stars = {}
 background = &""

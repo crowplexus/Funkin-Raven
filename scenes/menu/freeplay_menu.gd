@@ -12,6 +12,7 @@ var songs: Array[SongItem] = []
 
 var current_item: CanvasItem
 var current_difficulty: Dictionary
+var current_top: PlayerStats
 var current_selection: int = 1
 var current_alternative: int = 1
 var music_fade_twn: Tween
@@ -56,7 +57,7 @@ func _unhandled_input(e: InputEvent) -> void:
 
 		SoundBoard.stop_bgm()
 		Chart.global = Chart.request(songs[current_selection - 1].folder_name, current_difficulty)
-		if Chart.global.song_info.name == "<null>":
+		if Chart.global.song_info.name == "<REPLACE>":
 			Chart.global.song_info.name = songs[current_selection - 1].display_name
 		Globals.change_scene(load("res://scenes/gameplay/gameplay.tscn"))
 
@@ -93,10 +94,24 @@ func update_alternative(new_alt: int = 0) -> void:
 	current_alternative = wrapi(current_alternative + new_alt, 0, songs[current_selection - 1].difficulties.size())
 	current_difficulty = songs[current_selection - 1].difficulties[current_alternative]
 	if new_alt != 0: SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
-	diff_label.text = current_difficulty.display_name
 	if current_difficulty.size() > 1:
 		diff_label.text = "< %s > " % current_difficulty.display_name
+	else:
+		diff_label.text = current_difficulty.display_name
+	update_highscore()
 
+
+func update_highscore() -> void:
+	var song: = songs[current_selection - 1]
+	# this sucks, i know it sucks, it's the best way i found
+	if not Highscore.check_signature(Highscore.cached_hi):
+		Highscore.cached_hi = Highscore.open()
+	current_top = Highscore.get_hi(Highscore.cached_hi, song.folder_name, song.difficulties[current_alternative])
+	if is_instance_valid(current_top):
+		score_label.text = "TOP SCORE: " + str(current_top.score).pad_zeros(6)
+		score_label.text += "\nAccuracy: %s%%" % snappedf(current_top.accuracy, 0.01)
+	else:
+		score_label.text = "TOP SCORE: 000000\nAccuracy: N/A"
 
 
 func generate_songs() -> void:

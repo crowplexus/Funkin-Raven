@@ -16,6 +16,9 @@ const HIT_THRESHOLD: float = 200.0
 
 const JUDGMENTS: Dictionary = {
 	"perfect": {
+		## NOTE: this can only be hit by a bot,
+		## If you wanna use this, make sure to disable the
+		## cheating checks on [code]PlayerStats[/code]
 		"splash": true, "combo_break": false,
 		"accuracy": 100.0, "threshold": 5.0,
 		"color": Color("ff89c9"),
@@ -58,6 +61,7 @@ const JUDGMENTS: Dictionary = {
 		"visible": true,
 	},
 	"miss": {
+		# this is a fake judgement only used as placeholder
 		"splash": false, "combo_break": false,
 		"accuracy": 0.0, "threshold": HIT_THRESHOLD,
 		"color": Color.CRIMSON,

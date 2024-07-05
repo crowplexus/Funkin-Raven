@@ -16,6 +16,7 @@ texture = ExtResource("2_m4idt")
 filter = 2
 scale = Vector2(1, 1)
 hframes = 2
+vframes = 1
 
 [sub_resource type="Resource" id="Resource_vtydj"]
 script = ExtResource("3_pxe2e")
@@ -113,6 +114,7 @@ texture = ExtResource("5_m86h2")
 filter = 1
 scale = Vector2(1, 1)
 hframes = 1
+vframes = 1
 
 [sub_resource type="Resource" id="Resource_fqwfp"]
 script = ExtResource("3_pxe2e")
@@ -176,6 +178,7 @@ texture = ExtResource("6_eycsu")
 filter = 1
 scale = Vector2(1, 1)
 hframes = 1
+vframes = 1
 
 [sub_resource type="Resource" id="Resource_4hhlr"]
 script = ExtResource("3_pxe2e")
@@ -218,6 +221,7 @@ texture = ExtResource("8_erirn")
 filter = 1
 scale = Vector2(1, 1)
 hframes = 1
+vframes = 1
 
 [sub_resource type="Resource" id="Resource_5uh6v"]
 script = ExtResource("3_pxe2e")

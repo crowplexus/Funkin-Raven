@@ -47,9 +47,12 @@ func parse_base(song: StringName, difficulty: Dictionary = {}) -> Chart:
 	# new format, load metadata too.
 	var meta_path: String = path.replace("-chart", "-metadata")
 	if ResourceLoader.exists(meta_path):
-		var meta: Dictionary = JSON.parse_string(
-			FileAccess.open(meta_path, FileAccess.READ).get_as_text())
-		convert_meta(chart, meta)
+		var _meta: Dictionary = JSON.parse_string(FileAccess.open(meta_path, FileAccess.READ).get_as_text())
+		if "timeChanges" in _meta: # convert base game time changes
+			for i: Dictionary in _meta["timeChanges"]:
+				chart.time_changes.append(Conductor.time_change_from_vanilla(i))
+		chart.song_info = convert_meta(chart.song_info,_meta)
+		print_debug(chart.song_info)
 
 	if _fake_bpm != chart.time_changes[_tcid].bpm:
 		_fake_bpm = chart.time_changes[_tcid].bpm
@@ -206,28 +209,27 @@ func parse_legacy(song: StringName, difficulty: Dictionary = {}) -> Chart:
 #endregion
 #region Utils
 
-func convert_meta(chart: Chart, _meta: Dictionary) -> void:
-	# convert base game time changes
-	if "timeChanges" in _meta:
-		for i: Dictionary in _meta["timeChanges"]:
-			chart.time_changes.append(Conductor.time_change_from_vanilla(i))
-	# convert some of its play data
-	if "songName" in _meta and chart.song_info.name == "<null>":
-		chart.song_info.name = _meta["songName"]
+func convert_meta(sf: SongInfo, _meta: Dictionary) -> SongInfo:
+	if "songName" in _meta and sf.name == "<REPLACE>":
+		sf.name = _meta["songName"]
+	if "artist" in _meta: sf.credits.artist = _meta.artist
+	if "charter" in _meta: sf.credits.charter = _meta.charter
+	# convert some of base game's play data
 	if "playData" in _meta:
-		if "characters" in _meta["playData"] and chart.song_info.characters.is_empty():
+		if "characters" in _meta["playData"] and sf.characters.is_empty():
 			var chars: Dictionary = _meta["playData"].characters
-			chart.song_info.characters = [chars.player, chars.opponent, chars.girlfriend]
-			if chart.song_info.characters.has("album"):
-				chart.song_info.characters.remove_at(chart.song_info.characters.find("album"))
+			sf.characters = [chars.player, chars.opponent, chars.girlfriend]
+			if sf.characters.has("album"):
+				sf.characters.remove_at(sf.characters.find("album"))
 		#if "difficulties" in _meta["playData"]:
 		#	song_info.difficulties = []
 		#	for diff: String in _meta["playData"].difficulties:
 		#		song_info.difficulties.append(StringName(diff))
-		if "stage" in _meta["playData"] and chart.song_info.background.is_empty():
-			chart.song_info.background = _meta["playData"].stage
-		if "ratings" in _meta["playData"] and chart.song_info.stars.is_empty():
-			chart.song_info.stars = _meta["playData"].ratings
+		if "stage" in _meta["playData"] and sf.background.is_empty():
+			sf.background = _meta["playData"].stage
+		if "ratings" in _meta["playData"] and sf.stars.is_empty():
+			sf.stars = _meta["playData"].ratings
+	return sf
 
 
 func make_note(note_data: Dictionary, _key_amount: int = 4) -> Note:

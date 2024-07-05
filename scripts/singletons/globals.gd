@@ -36,6 +36,10 @@ var special_keybinds: Dictionary = {
 
 #region Node Funcs
 
+func _ready() -> void:
+	Highscore.cached_hi = Highscore.open()
+
+
 func _unhandled_key_input(e: InputEvent) -> void:
 	if e.is_pressed():
 		for k: Variant in special_keybinds:

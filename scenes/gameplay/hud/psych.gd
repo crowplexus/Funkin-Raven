@@ -18,6 +18,7 @@ func _ready() -> void:
 	_tb_twn = create_tween().set_ease(Tween.EASE_IN).bind_node(health_bar)
 	_tb_twn.tween_property(time_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
 	time_bar.visible = Preferences.show_timer
+	Conductor.ibeat_reached.connect(icon_thingy)
 
 
 func reset_positions() -> void:
