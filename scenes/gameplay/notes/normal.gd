@@ -91,14 +91,16 @@ func display_cover() -> void:
 #region Behaviour
 
 func update_hold_size() -> void:
-	if not hold or note.hold_progress == 0.0:
+	if not is_instance_valid(hold) or note.hold_progress == 0.0:
 		return
 	if note.update_hold and tap.visible:
 		tap.hide()
-	hold.size.y = (600.0 * absf(note.real_speed)) * note.hold_progress
+	var hold_calc: float = (600.0 * absf(note.real_speed)) * note.hold_progress
+	var tail_size: float = tail.size.y #- tail.texture.get_height()
+	hold.size.y = hold_calc - 0.01
+	hold_container.size = Vector2(hold.size.x, hold_calc + tail_size)
+	tail.position.y = (hold.position.y + hold.size.y)
 	#hold.size.y /= absf(self.scale.y)
-	if tail:
-		tail.position.y = hold.position.y + hold.size.y
 	for cover: CanvasItem in _displayed_covers:
 		if note.hold_progress > 0.0:
 			cover.play("progress%s" % column)

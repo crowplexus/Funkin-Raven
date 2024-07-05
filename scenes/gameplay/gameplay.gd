@@ -9,6 +9,14 @@ extends Node2D
 @export var note_cluster: Node2D
 
 #endregion
+
+#region Static Variables
+
+static var seen_cutscene: bool = false
+
+#endregion
+
+
 #region Local Variables
 
 var skin: UISkin
@@ -79,7 +87,7 @@ func _ready() -> void:
 
 	initial_ui_zoom = ui_layer.scale
 
-	if _has_dialogue == true:
+	if _has_dialogue == true and not seen_cutscene:
 		Globals.set_node_inputs(self, false)
 		_interrupt_time = true
 
@@ -144,7 +152,7 @@ func init_dialogue() -> void:
 	var folder: String = "res://assets/songs/%s/dialogue.tres" % Chart.global.song_info.folder
 	#if not Preferences.cursing:
 	#	folder = folder.replace(folder.get_file(), "dialogue_censored.tres")
-	_has_dialogue = ResourceLoader.exists(folder)
+	_has_dialogue = ResourceLoader.exists(folder) and not seen_cutscene
 	if _has_dialogue:
 		var convo_file: Conversation = load(folder)
 		var convo_box: DialogueBox = convo_file.box.instantiate()
@@ -155,6 +163,7 @@ func init_dialogue() -> void:
 					_interrupt_time = false
 				await get_tree().create_timer(0.01).timeout
 				Globals.set_node_inputs(self, true)
+				seen_cutscene = true
 			)
 			#print_debug(convo_box.lines)
 			ui_layer.add_child(convo_box)
@@ -397,6 +406,7 @@ func restore_vocals(note: Note, _is_tap: bool) -> void:
 
 ## Finishes the gameplay session, resets important Conductor values.
 func leave() -> void:
+	#seen_cutscene = false
 	_interrupt_time = true
 	Conductor.reset()
 	Conductor.rate = 1.0
