@@ -7,6 +7,7 @@ extends Node2D
 
 var current_item: CanvasItem
 var current_selection: int = 0
+var _done: bool = false
 
 
 func _ready() -> void:
@@ -22,14 +23,13 @@ func _ready() -> void:
 
 func _unhandled_input(e: InputEvent) -> void:
 	# prevents a bug with moving the mouse which would change selections nonstop
-	if e is InputEventMouseMotion:
+	if _done or e is InputEventMouseMotion:
 		return
 	var ud: int = int(Input.get_axis("ui_up", "ui_down"))
 	if ud:
 		update_selection(ud)
 		if is_unselectable(current_item):
 			update_selection(ud, false)
-
 	if Input.is_action_just_pressed("ui_accept"):
 		confirm_selection()
 
@@ -53,6 +53,8 @@ func confirm_selection() -> void:
 	if Preferences.flashing:
 		Globals.begin_flicker(magenta, 1.1, 0.15, false)
 		Globals.begin_flicker(item, 1.0, 0.06, false)
+	_done = true
+
 	await get_tree().create_timer(1.0).timeout
 	match item.name:
 		"story":
@@ -62,6 +64,7 @@ func confirm_selection() -> void:
 			Globals.set_node_inputs(self, false)
 			Globals.change_scene(load("res://scenes/menu/freeplay_menu.tscn"))
 		"options":
+			_done = false
 			var ow: Control = Globals.get_options_window()
 			ow.close_callback = func() -> void:
 				if get_tree().paused:
@@ -74,10 +77,12 @@ func confirm_selection() -> void:
 		#	Globals.set_node_inputs(self, false)
 		#	Globals.change_scene(load("res://scenes/ui/credits.tscn"))
 		"merch":
+			_done = false
 			OS.shell_open("https://needlejuicerecords.com/pages/friday-night-funkin")
 			current_item.self_modulate.a = 1.0
 			bye_bye_buttons(true)
 		_:
+			_done = false
 			push_warning("button pressed was ", current_item.name, " but there is no action defined for it")
 			current_item.self_modulate.a = 1.0
 			bye_bye_buttons(true)

@@ -161,7 +161,6 @@ func init_keybinds() -> void:
 	for action_name: String in keybinds:
 		if InputMap.has_action(action_name):
 			InputMap.action_erase_events(action_name)
-
 		for i: int in keybinds[action_name].size():
 			var _new_event: = InputEventKey.new()
 			var key: String = keybinds[action_name][i]

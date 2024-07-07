@@ -89,7 +89,6 @@ func _ready() -> void:
 
 	if _has_dialogue == true and not seen_cutscene:
 		Globals.set_node_inputs(self, false)
-		Globals.set_node_inputs(_main_player, false)
 		_interrupt_time = true
 
 	# Connect Signals
@@ -164,7 +163,6 @@ func init_dialogue() -> void:
 					_interrupt_time = false
 				await get_tree().create_timer(0.01).timeout
 				Globals.set_node_inputs(self, true)
-				Globals.set_node_inputs(_main_player, true)
 				seen_cutscene = true
 			)
 			#print_debug(convo_box.lines)
@@ -217,21 +215,21 @@ func init_players(player_fields: Array[NoteField]) -> void:
 		player.stats.player_id = field.get_index()
 		player.note_queue = note_cluster.note_queue.filter(func(note: Note):
 			return note.player == i)
-		player.botplay = i != Preferences.playfield_side
-		for j: int in player.controls.size():
-			# TODO ↓
-			#player.controls[j] += "_p%s" % str(i + 1)
-			player.held_buttons.append(false)
+		player.notefield = field
+		if i != Preferences.playfield_side:
+			player.botplay = true
 
 		player.note_hit.connect(restore_vocals)
 		player.note_hit.connect(update_score_text)
 		player.note_hit.connect(combo_group.pop_up_judge)
 		player.note_hit.connect(combo_group.pop_up_combo)
 		player.note_fly_over.connect(miss_fly_over)
-		# send hit result so the score text updates
-		field.make_playable(player)
+
+		field.player = player
 		if not player.botplay:
 			_main_player = player
+		field.check_centered()
+		field.add_child(player)
 
 ## Initialises the actual music to be played back[br]
 ## NOTE: if no music ever gets loaded, the game will keep running, just with no music!

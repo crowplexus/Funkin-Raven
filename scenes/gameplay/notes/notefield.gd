@@ -78,15 +78,6 @@ func reset_scrolls(vs: Array[Vector2] = []) -> void:
 		#receptor.position.y *= receptor.scale.y
 
 
-func make_playable(new_player: Player = null) -> void:
-	if new_player == null:
-		new_player = Player.new()
-	#print_debug("adding player ", get_index() + 1, " is bot? ", new_player.botplay)
-	player = new_player
-	add_child(player)
-	check_centered()
-
-
 func check_centered() -> void:
 	var is_player: bool = true
 	if player and player.botplay:

@@ -45,13 +45,6 @@ var receptor: CanvasItem:
 #endregion
 #region Input Data
 
-## Hit Flag, declares what landed a hit on a tap note.[br][br]
-## -1 - Missed.[br]
-## 0 - Nothing / No one[br]
-## 1 - a Player.[br]
-## 2 - a Bot, AI or CPU.
-@export_enum("Miss:-1", "None:0", "Player:1", "AI:2")
-var hit_flag: int = 0
 ## Tells if the note was hit earlier or later[br]
 ## 1 being early, 2 being late.
 @export_enum("Undefined:0", "Early:1", "Late:2")
@@ -110,7 +103,6 @@ func reset(in_debug: bool = false) -> void:
 	visual_time = time
 	trip_timer = 0.0
 	hit_timing = 0
-	hit_flag = 0
 
 
 func reset_scroll(_scroll: Vector2 = Vector2.ONE) -> void:

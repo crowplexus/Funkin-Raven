@@ -52,8 +52,8 @@ func _unhandled_input(e: InputEvent) -> void:
 			current_selection = randi_range(1, song_list.get_child_count())
 			update_selection()
 
-		SoundBoard.play_sfx(Globals.MENU_CONFIRM_SFX)
-		await get_tree().create_timer(1.0).timeout
+		#SoundBoard.play_sfx(Globals.MENU_CONFIRM_SFX)
+		#await get_tree().create_timer(1.0).timeout
 
 		SoundBoard.stop_bgm()
 		Chart.global = Chart.request(songs[current_selection - 1].folder_name, current_difficulty)
