@@ -51,6 +51,7 @@ func _ready() -> void:
 
 	update_page()
 	Conductor.ibeat_reached.connect(play_metro)
+	$"help_key".text += "\nTheme: " + theme.resource_name
 	# i hate this <3
 	await RenderingServer.frame_post_draw
 	_just_started = false

@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://deo3obwvipfis"]
 
-[ext_resource type="Theme" uid="uid://dncfgelptpwv8" path="res://assets/themes/default_dark.tres" id="1_38ca0"]
+[ext_resource type="Theme" uid="uid://bh3fs6l4n44y4" path="res://assets/themes/funkin_style.tres" id="1_dxeve"]
 [ext_resource type="Script" path="res://scenes/ui/options/options_window.gd" id="1_gulft"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_mtl8v"]
 [ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/options/option_item.tscn" id="3_wjca4"]
@@ -9,7 +9,6 @@
 [ext_resource type="AudioStream" uid="uid://toqn7nqo322h" path="res://assets/audio/sfx/volume_appear.ogg" id="6_beq18"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_668iw"]
-font = ExtResource("2_mtl8v")
 font_size = 24
 font_color = Color(0.6, 0.6, 0.6, 1)
 
@@ -29,7 +28,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_38ca0")
+theme = ExtResource("1_dxeve")
 script = ExtResource("1_gulft")
 
 [node name="left_panel" type="Panel" parent="."]
@@ -387,10 +386,10 @@ anchors_preset = -1
 anchor_top = 0.837
 anchor_right = 1.0
 anchor_bottom = 0.978
-offset_left = 1032.0
-offset_top = -593.64
-offset_right = -10.0
-offset_bottom = -673.16
+offset_left = 379.0
+offset_top = -602.64
+offset_right = -1.0
+offset_bottom = -665.16
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
