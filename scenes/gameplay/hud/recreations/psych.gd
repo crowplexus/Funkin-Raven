@@ -1,4 +1,4 @@
-extends Control
+extends GameHUD
 
 @onready var health_bar: TextureProgressBar = $"health_bar"
 @onready var time_bar: ProgressBar = $"timer"
@@ -11,7 +11,6 @@ extends Control
 
 var _tb_twn: Tween
 
-
 func _ready() -> void:
 	reset_positions()
 	time_bar.modulate.a = 0.0
@@ -20,23 +19,17 @@ func _ready() -> void:
 	time_bar.visible = Preferences.show_timer
 	Conductor.ibeat_reached.connect(icon_thingy)
 
-
-func reset_positions() -> void:
-	match Preferences.scroll_direction:
-		0:
-			health_bar.position.y = 645
-			status_label.position.y = 678
-			time_bar.position.y = 19
-		1:
-			health_bar.position.y = 80
-			status_label.position.y = 115
-			time_bar.position.y = size.y - 34
-
+func _process(_delta: float) -> void:
+	if not health_bar_icons.is_empty():
+		move_icons()
+	if time_bar.visible and Conductor.time >= 0.0:
+		update_time_bar()
 
 func _exit_tree() -> void:
 	if Conductor.ibeat_reached.is_connected(icon_thingy):
 		Conductor.ibeat_reached.disconnect(icon_thingy)
 
+#region Health and Icons
 
 func setup_healthbar() -> void:
 	var stage: StageBG = get_tree().current_scene.get("stage")
@@ -60,42 +53,6 @@ func set_icons(icons: Array[HealthIcon]) -> void:
 			ico.vframes = icons[i].vframes
 			ico.scale = icons[i].scale
 
-
-func _process(_delta: float) -> void:
-	if not health_bar_icons.is_empty():
-		move_icons()
-	if time_bar.visible and Conductor.time >= 0.0:
-		update_time_bar()
-
-
-func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
-	if hit_result.player.botplay == true:
-		status_label.text = "BOTPLAY"
-		return
-
-	var acc: float = snappedf(hit_result.player.stats.accuracy, 0.01)
-	# psych rating fc
-	var rating_fc: String = Scoring.get_clear_flag(hit_result.player.stats.hit_registry)
-	if hit_result.player.stats.misses > 0 and hit_result.player.stats.misses < 10:
-		rating_fc = "SDCB"
-	elif hit_result.player.stats.misses >= 10:
-		rating_fc = "Clear"
-
-	var acc_str: String = " (%s%%) - %s" % [ acc, rating_fc ]
-	var text: String = "Score: %s | Misses: %s | Rating: %s" % [
-		hit_result.player.stats.score, hit_result.player.stats.misses,
-		get_rating(acc) + acc_str,
-	]
-	status_label.text = text
-
-
-func update_time_bar() -> void:
-	time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
-	time_label.text = "%s" % [
-		Globals.format_to_time(Conductor.length - Conductor.time)
-	]
-
-
 func move_icons() -> void:
 	for icon: CanvasItem in health_bar_icons:
 		var lr_axis: int = -1 if health_bar.fill_mode == ProgressBar.FILL_BEGIN_TO_END else 1
@@ -113,12 +70,47 @@ func icon_thingy(ibeat: int) -> void:
 		icon_animation.seek(0.0)
 		icon_animation.play("bump")
 
-
 func set_player(player: int) -> void:
 	match player:
 		0: health_bar.fill_mode = ProgressBar.FILL_END_TO_BEGIN
 		1: health_bar.fill_mode = ProgressBar.FILL_BEGIN_TO_END
 
+#endregion
+
+func update_score_text(note: Note, _is_tap: bool) -> void:
+	if not note:
+		return
+	if note.hit_result.player.autoplay == true:
+		status_label.text = "BOTPLAY"
+		return
+
+	var acc: float = snappedf(note.hit_result.player.stats.accuracy, 0.01)
+	# psych rating fc
+	var rating_fc: String = Scoring.get_clear_flag(note.hit_result.player.stats.hit_registry)
+	if note.hit_result.player.stats.breaks >= 10:
+		rating_fc = "Clear"
+
+	var acc_str: String = " (%s%%) - %s" % [ acc, rating_fc ]
+	var text: String = "Score: %s | Combo Breaks: %s | Rating: %s" % [
+		note.hit_result.player.stats.score, note.hit_result.player.stats.misses,
+		get_rating(acc) + acc_str,
+	]
+	status_label.text = text
+
+func update_time_bar() -> void:
+	time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
+	time_label.text = "%s" % [ Globals.format_to_time(Conductor.length - Conductor.time) ]
+
+func reset_positions() -> void:
+	match Preferences.scroll_direction:
+		0:
+			health_bar.position.y = 645
+			status_label.position.y = 678
+			time_bar.position.y = 19
+		1:
+			health_bar.position.y = 80
+			status_label.position.y = 115
+			time_bar.position.y = size.y - 34
 
 func get_rating(acc: float):
 	match acc: # "use a for loop" this is literally faster and easier readable please st
@@ -133,7 +125,6 @@ func get_rating(acc: float):
 		_ when acc >= 30: return "Shit"
 		_ when acc <= 20: return "You Suck!"
 		_: return "?"
-
 
 func format_to_time(value: float) -> String:
 	var minutes: float = Globals.float_to_minute(value)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://clhixabbhsyog"]
 
-[ext_resource type="Script" path="res://scenes/gameplay/hud/kade.gd" id="1_b2qlu"]
+[ext_resource type="Script" path="res://scenes/gameplay/hud/recreations/kade.gd" id="1_b2qlu"]
 [ext_resource type="Texture2D" uid="uid://dld56rmrbxk8f" path="res://assets/sprites/ui/normal/healthBar.png" id="2_cmbio"]
 [ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="4_ckos5"]
 [ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="5_wleqm"]

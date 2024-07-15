@@ -1,14 +1,15 @@
 extends Node2D
+class_name NoteCluster
 
 signal note_incoming(note: Note)
 
 const NOTE_KIND_OBJECTS: Dictionary = {
 	"normal": preload("res://scenes/gameplay/notes/normal.tscn"),
 }
-
 @export var connected_fields: Array[NoteField] = []
 @export var note_queue: Array[Note] = []
 @export var current_note: int = 0
+var alive_queue: Array[Note] = []
 
 
 func _ready() -> void:
@@ -25,31 +26,16 @@ func _exit_tree() -> void:
 
 
 func _process(delta: float) -> void:
-	await RenderingServer.frame_post_draw
-	#if not note_queue.is_empty():
-	#	spawn_notes.call_deferred()
-	if get_child_count() != 0:
-		move_note_objects(delta)
+	#await RenderingServer.frame_post_draw
+	if not alive_queue.is_empty():
+		move_notes(delta)
 
 
-func move_note_objects(_delta: float) -> void:
-	for note: Note in note_queue:
-		if not note or note.finished:
-			continue
-
-		var rel_time: float = note.visual_time - Conductor.time
-		var note_scale: float = 0.7
-
-		if is_instance_valid(note.object) and note.moving:
-			var real_position: Vector2 = Vector2.ZERO
-			if note.notefield and note.receptor:
-				real_position = note.receptor.global_position
-
-			note.object.global_position = note.initial_pos + real_position
-			note.object.position.x *= note.scroll.x
-			#note.object.position.x = note.initial_position.x + (90 * note.object.scale.x) * note.column
-			note.object.position.y += rel_time * (400.0 * absf(note.real_speed)) / absf(note_scale) * note.scroll.y
-			#note.object.position *= note.scroll
+func move_notes(_delta: float) -> void:
+	for note: Note in alive_queue:
+		note.move()
+		if not note.moving:
+			alive_queue.erase(note)
 
 
 func try_spawning(_fstep: float) -> void:
@@ -101,7 +87,11 @@ func spawn_note(id: int) -> void:
 		note.object.visible = note.receptor.visible and note.notefield.visible
 		note.object.scale = note.receptor.get_global_transform().get_scale()
 	note.object.set("note", note)
+	#if note.notefield and note.notefield.note_group:
+	#	note.notefield.note_group.add_child(note.object)
+	#else:
 	add_child(note.object)
+	alive_queue.append(note)
 
 
 func connect_notefield(new_field: NoteField) -> void:

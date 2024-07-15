@@ -7,8 +7,7 @@ var judgment_sprite: Sprite2D
 var _combo_tweens: Array[Tween] = []
 var _template_combos: Array[Sprite2D] = []
 
-
-func preload_combo() -> void:
+func push_judgement() -> void:
 	judgment_sprite = Sprite2D.new()
 	judgment_sprite.texture = skin.judgment_row
 	judgment_sprite.texture_filter = skin.judgment_sprite_filter
@@ -18,14 +17,9 @@ func preload_combo() -> void:
 	judgment_sprite.vframes = 5
 	add_child(judgment_sprite)
 
-	# PRECACHE COMBO #
-
-	_combo_tweens = []
-	#for id: int in 3:
-	#	_template_combos.append(precache_combo_number(id))
-	#	_combo_tweens.append(null)
-	#add_child(_template_combo)
-
+func push_combo(digits: int = 0) -> void:
+	precache_combo_number(digits)
+	_combo_tweens.append(null)
 
 func recreate_popup_tween() -> Tween:
 	var e: Tween = create_tween().bind_node(judgment_sprite)
@@ -33,12 +27,9 @@ func recreate_popup_tween() -> Tween:
 	e.set_parallel(true)
 	return e
 
-
-func pop_up_judge(note: Note, is_tap: bool) -> void:
-	if not note or not is_tap or not note.hit_result.judgment.visible:
-		return
-
-	var hit_result: Note.HitResult = note.hit_result
+func display_judgement(hit_result: Note.HitResult) -> void:
+	if not judgment_sprite:
+		push_judgement()
 
 	judgment_sprite.frame = hit_result.judgment.frame - 1
 	judgment_sprite.position = self.size * 0.5
@@ -66,13 +57,7 @@ func pop_up_judge(note: Note, is_tap: bool) -> void:
 	_judge_tween.tween_property(judgment_sprite, "modulate:a", 0.0, 0.8 * Conductor.crotchet) \
 	.set_ease(Tween.EASE_IN_OUT).set_delay(0.6 * Conductor.crotchet)
 
-
-func pop_up_combo(note: Note, is_tap: bool) -> void:
-	if not note or not is_tap:
-		return
-
-	var hit_result: Note.HitResult = note.hit_result
-
+func display_combo(hit_result: Note.HitResult) -> void:
 	var count: int = hit_result.player.stats.combo
 	var konbo_janai: bool = sign(count) == -1
 	var combo_colour: Color = Color.WHITE
@@ -96,8 +81,7 @@ func pop_up_combo(note: Note, is_tap: bool) -> void:
 
 	for i: int in _str_combo.length():
 		if _template_combos.size() < _str_combo.length():
-			precache_combo_number(_str_combo.length())
-			_combo_tweens.append(null)
+			push_combo(_str_combo.length())
 
 		var num_score: = _template_combos[i]
 		num_score.position = self.size * 0.5
@@ -123,7 +107,6 @@ func pop_up_combo(note: Note, is_tap: bool) -> void:
 			_combo_tweens[i].tween_property(num_score, "modulate:a", 0.0, 1.2 * Conductor.crotchet) \
 			.set_delay(0.6 * Conductor.crotchet)
 
-
 #func show_combo_temporary(hit_result: Note.HitResult, is_tap: bool) -> void:
 #	if not is_tap or hit_result.judgment == null or hit_result.judgment.is_empty():
 #		return
@@ -143,7 +126,6 @@ func pop_up_combo(note: Note, is_tap: bool) -> void:
 #	combo_tween.bind_node(hit_result_label)
 #	combo_tween.tween_property(hit_result_label, "modulate:a", 0.0, 0.5 * Conductor.crotchet) \
 #	.set_delay(0.5 * Conductor.crotchet)
-
 
 func precache_combo_number(i: int) -> Sprite2D:
 	# i was upset fuck naming

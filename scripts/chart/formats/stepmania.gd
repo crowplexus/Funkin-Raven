@@ -4,7 +4,7 @@ signal finished()
 
 var path: String = ""
 var data: String = "" # sm data is a string lol
-var diff: String = SongItem.DEFAULT_DIFFICULTY_SET[1].file
+var diff: String = SongItem.DEFAULT_DIFFICULTY_SET.normal.file
 
 
 func parse_sm() -> Chart:

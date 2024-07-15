@@ -18,6 +18,9 @@ const TIME_CHANGE_TEMPLATE: Dictionary = {
 }
 
 var time: float = 0.0
+func get_time_with_offset(custom_time: float = time) -> float:
+	return custom_time + (Preferences.beat_offset * 0.001)
+
 var length: float = 0.0
 var time_changes: Array[Dictionary] = []
 var current_time_change: int:
@@ -66,8 +69,8 @@ var fstep: float = 0.0
 var fbar: float = 0.0
 
 var _previous_time: float = 0.0
-var _previous_fstep: float  = 0.0
-var _previous_istep: int  = 0
+var _previous_fstep: float = 0.0
+var _previous_istep: int = 0
 
 
 func _to_string() -> String:
@@ -80,23 +83,22 @@ func _to_string() -> String:
 
 func update(delta_time: float) -> void:
 	time = delta_time
-	var song_dt: float = time - _previous_time
-	var beat_dt: float = (bpm / 60.0) * song_dt
+	var beat_dt: float = (bpm / 60.0) * (time - _previous_time)
+	fstep += beat_dt * steps_per_beat
+	fbeat += beat_dt # oh hi hello :D
+	fbar  += beat_dt / beats_per_bar
 	# call step hit and stuff
-	if istep > _previous_istep:
-		istep_reached.emit(istep)
-		if istep % 4 == 0: ibeat_reached.emit(ibeat)
-		if ibeat % 4 == 0: ibar_reached.emit(ibar)
-		_previous_istep = istep
-	# might not use this one depending on the result
-	if fstep > _previous_fstep:
+	if _previous_fstep < fstep: # float
 		fstep_reached.emit(fstep)
 		if fmod(fstep, 4) == 0: fbeat_reached.emit(fbeat)
 		if fmod(fbeat, 4) == 0: fbar_reached.emit(fbar)
 		_previous_fstep = fstep
-	fstep += beat_dt * steps_per_beat
-	fbeat += beat_dt # oh hi hello :D
-	fbar  += beat_dt / beats_per_bar
+
+	if _previous_istep < istep: # int
+		istep_reached.emit(istep)
+		if istep % 4 == 0: ibeat_reached.emit(ibeat)
+		if ibeat % 4 == 0: ibar_reached.emit(ibar)
+		_previous_istep = istep
 	_previous_time = time
 
 
@@ -110,8 +112,9 @@ func reset() -> void:
 	set_time(0.0)
 
 ## Sets the beat, and step values to new ones based on the given time.
-func set_time(new_time: float) -> void:
+func set_time(new_time: float, with_offset: bool = false) -> void:
 	time = new_time
+	if with_offset: time += (Preferences.beat_offset * 0.001)
 	fbeat = Conductor.time_to_beat(new_time)
 	fstep = Conductor.time_to_step(new_time)
 	fbar  = Conductor.time_to_bar(new_time)
@@ -140,8 +143,8 @@ func sort_time_changes(changes_to_sort: Array[Dictionary] = []) -> void:
 ## Utility function to apply a given time change.
 func apply_time_change(tc: Dictionary) -> void:
 	Conductor.current_time_change = time_changes.find(tc)
-	print_debug("time change applied, current time change is ", Conductor.current_time_change)
-	print_debug("bpm applied from time change, current bpm is ", Conductor.bpm)
+	#print_debug("time change applied, current time change is ", Conductor.current_time_change)
+	#print_debug("bpm applied from time change, current bpm is ", Conductor.bpm)
 
 #stolen from TE thank you nebula
 func beat_to_row(beat: float) -> int:

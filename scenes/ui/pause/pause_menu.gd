@@ -28,7 +28,7 @@ var options: Array[Callable] = [
 			var scene: Node = get_tree().current_scene
 			if scene.name == "gameplay":
 				if receptors_changed:
-					for nf: NoteField in scene.fields:
+					for nf: NoteField in scene.note_fields:
 						if old_rscale != Preferences.receptor_size:
 							nf.scale = Vector2(Preferences.receptor_size, Preferences.receptor_size)
 						if old_scroll != Preferences.scroll_direction:
@@ -49,7 +49,7 @@ var options: Array[Callable] = [
 									note.object.scale = note.receptor.scale
 
 					if scene.get("current_hud") != null:
-						scene.current_hud.call_deferred("reset_positions")
+						scene.current_hud.reset_positions()
 
 		add_child(ow),
 	func() -> void:

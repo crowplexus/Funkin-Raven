@@ -23,7 +23,7 @@ func call_mod_method(method_name: String, arguments: Array = []) -> int:
 
 func get_scripts_at(folder: String) -> void:
 	if not folder or folder.is_empty() or not DirAccess.dir_exists_absolute(folder):
-		push_warning("Cannot initialise modcharts in a unspecified or inexistant folder, for folder ", folder)
+		#push_warning("Cannot initialise modcharts in a unspecified or inexistant folder, for folder ", folder)
 		return
 	for file: String in DirAccess.get_files_at(folder):
 		var f: String = file.get_file()

@@ -3,10 +3,12 @@ extends Resource
 ## and song data that is going to be used for providing content to the game.
 class_name Bundle
 
+## Bundle Name, which is used as an indentifier.
 @export var name: StringName
+## Level List, containing level data (name, characters, etc).
 @export var level_list: Array[LevelItem] = []
+## Song List, contains songs that only show up in Freeplay.
 @export var song_list: Array[SongItem] = []
-
 
 func get_all_songs() -> Array[SongItem]:
 	var songs: Array[SongItem] = []

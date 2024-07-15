@@ -1,49 +1,51 @@
-[gd_scene load_steps=8 format=3 uid="uid://bjhgsn2eb2e1h"]
+[gd_scene load_steps=8 format=3 uid="uid://kn5dlvvlj10h"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/gameplay.gd" id="1_gfupu"]
 [ext_resource type="PackedScene" uid="uid://dab600stg4bxl" path="res://scenes/gameplay/notes/notefield.tscn" id="2_6wcp1"]
 [ext_resource type="PackedScene" uid="uid://dxm24padis8xt" path="res://scenes/backgrounds/mainStage.tscn" id="2_k2qad"]
-[ext_resource type="Script" path="res://scenes/gameplay/note_cluster.gd" id="5_sb58y"]
+[ext_resource type="PackedScene" uid="uid://bc1se7ekgu1ux" path="res://scenes/gameplay/hud/combo_group.tscn" id="4_j8sim"]
+[ext_resource type="Script" path="res://scenes/gameplay/note_cluster.gd" id="5_8cnuc"]
+[ext_resource type="PackedScene" uid="uid://bcn0ldilqlnur" path="res://scenes/gameplay/event_machine.tscn" id="7_16sth"]
 [ext_resource type="PackedScene" uid="uid://yruwyaxp0fdl" path="res://scenes/gameplay/hud/raven.tscn" id="12_hchqv"]
-[ext_resource type="PackedScene" uid="uid://bc1se7ekgu1ux" path="res://scenes/gameplay/hud/combo_group.tscn" id="17_3r26l"]
-[ext_resource type="PackedScene" uid="uid://bcn0ldilqlnur" path="res://scenes/gameplay/event_machine.tscn" id="18_7d1c2"]
 
-[node name="gameplay" type="Node2D" node_paths=PackedStringArray("fields", "note_cluster")]
+[node name="gameplay" type="Node2D" node_paths=PackedStringArray("note_fields")]
 script = ExtResource("1_gfupu")
-fields = [NodePath("hud/player1_notefield"), NodePath("hud/player2_notefield")]
-note_cluster = NodePath("hud/note_cluster")
+note_fields = [NodePath("ui_layer/player1_notefield"), NodePath("ui_layer/player2_notefield")]
 
-[node name="stage" parent="." instance=ExtResource("2_k2qad")]
+[node name="main_stage" parent="." instance=ExtResource("2_k2qad")]
 
-[node name="hud" type="CanvasLayer" parent="."]
+[node name="ui_layer" type="CanvasLayer" parent="."]
 
-[node name="default" parent="hud" instance=ExtResource("12_hchqv")]
+[node name="hud" parent="ui_layer" instance=ExtResource("12_hchqv")]
 
-[node name="combo_group" parent="hud" instance=ExtResource("17_3r26l")]
-modulate = Color(1, 1, 1, 0.745098)
-offset_left = 550.0
-offset_top = 200.0
-offset_right = -450.0
-offset_bottom = -270.0
-scale = Vector2(0.8, 0.8)
+[node name="player1_notefield" parent="ui_layer" instance=ExtResource("2_6wcp1")]
+offset_left = 100.0
+offset_top = 100.0
+offset_right = 100.0
+offset_bottom = 100.0
 
-[node name="player1_notefield" parent="hud" instance=ExtResource("2_6wcp1")]
-offset_left = 765.0
-offset_top = 120.0
-offset_right = 765.0
-offset_bottom = 120.0
+[node name="player2_notefield" parent="ui_layer" instance=ExtResource("2_6wcp1")]
+offset_left = 800.0
+offset_top = 100.0
+offset_right = 800.0
+offset_bottom = 100.0
 
-[node name="player2_notefield" parent="hud" instance=ExtResource("2_6wcp1")]
-offset_left = 135.0
-offset_top = 120.0
-offset_right = 135.0
-offset_bottom = 120.0
+[node name="combo_group" parent="ui_layer" instance=ExtResource("4_j8sim")]
+offset_left = 590.0
+offset_top = 280.0
+offset_right = -590.0
+offset_bottom = -390.0
 
-[node name="note_cluster" type="Node2D" parent="hud" node_paths=PackedStringArray("connected_fields")]
+[node name="note_cluster" type="Node2D" parent="ui_layer"]
 process_thread_group = 2
-process_thread_group_order = 1
-process_thread_messages = 1
-script = ExtResource("5_sb58y")
-connected_fields = [NodePath("../player1_notefield"), NodePath("../player2_notefield")]
+process_thread_group_order = 0
+process_thread_messages = 0
+position = Vector2(96, 96)
+script = ExtResource("5_8cnuc")
 
-[node name="event_machine" parent="." instance=ExtResource("18_7d1c2")]
+[node name="music_player" type="AudioStreamPlayer" parent="."]
+bus = &"BGM"
+
+[node name="countdown_timer" type="Timer" parent="."]
+
+[node name="event_machine" parent="." instance=ExtResource("7_16sth")]

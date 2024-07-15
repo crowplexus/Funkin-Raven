@@ -142,12 +142,13 @@ func generate_songs() -> void:
 		song_list.add_child(new_item)
 
 		var icon: Sprite2D = Sprite2D.new()
-		icon.texture = song.icon.texture
+		if song.icon and song.icon.texture:
+			icon.texture = song.icon.texture
+			icon.texture_filter = song.icon.filter
+			icon.hframes = song.icon.hframes
+			icon.vframes = song.icon.vframes
+			icon.scale = song.icon.scale
 		icon.global_position.x = new_item.glyphs_pos.x + 60
-		icon.texture_filter = song.icon.filter
-		icon.hframes = song.icon.hframes
-		icon.vframes = song.icon.vframes
-		icon.scale = song.icon.scale
 		new_item.add_child(icon)
 		ouch += 1
 

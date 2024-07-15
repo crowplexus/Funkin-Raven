@@ -1,4 +1,4 @@
-extends Control
+extends GameHUD
 
 @onready var health_bar: TextureProgressBar = $"health_bar"
 @onready var icon_animation: AnimationPlayer = $"health_bar/animation_player"
@@ -7,11 +7,12 @@ extends Control
 @export var icon_bump_interval: int = 1
 @export var health_bar_icons: Array[CanvasItem] = []
 
-
 func _ready() -> void:
 	reset_positions()
-	Conductor.ibeat_reached.connect(icon_thingy)
-
+	if get_tree().current_scene.name == "gameplay":
+		for field: NoteField in get_tree().current_scene.note_fields:
+			field.position.x -= 25
+	Conductor.ibeat_reached.connect(icon_bump)
 
 func reset_positions() -> void:
 	match Preferences.scroll_direction:
@@ -22,16 +23,15 @@ func reset_positions() -> void:
 			health_bar.position.y = 80
 			status_label.position.y = 110
 
-
 func _process(_delta: float) -> void:
 	if not health_bar_icons.is_empty():
 		move_icons()
 
-
 func _exit_tree() -> void:
-	if Conductor.ibeat_reached.is_connected(icon_thingy):
-		Conductor.ibeat_reached.disconnect(icon_thingy)
+	if Conductor.ibeat_reached.is_connected(icon_bump):
+		Conductor.ibeat_reached.disconnect(icon_bump)
 
+#region Health and Icons
 
 func setup_healthbar() -> void:
 	var stage: StageBG = get_tree().current_scene.get("stage")
@@ -44,7 +44,6 @@ func setup_healthbar() -> void:
 			char_icons[1] = stage.get_node("player1").health_icon
 		set_icons(char_icons)
 
-
 func set_icons(icons: Array[HealthIcon]) -> void:
 	for i: int in health_bar_icons.size():
 		var ico: Sprite2D = health_bar_icons[i]
@@ -55,13 +54,18 @@ func set_icons(icons: Array[HealthIcon]) -> void:
 			ico.vframes = icons[i].vframes
 			ico.scale = icons[i].scale
 
+func icon_bump(ibeat: int) -> void:
+	if ibeat % icon_bump_interval == 0:
+		icon_animation.seek(0.0)
+		icon_animation.play("bump")
 
-func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
-	if hit_result.player.botplay == true:
-		status_label.text = "BotPlay Enabled"
-		return
-	status_label.text = "Score:%s" % hit_result.player.stats.score
+func set_player(player: int) -> void:
+	match player:
+		0: health_bar.fill_mode = ProgressBar.FILL_END_TO_BEGIN
+		1: health_bar.fill_mode = ProgressBar.FILL_BEGIN_TO_END
 
+func get_health(next: float, current: float, delta: float) -> float:
+	return lerpf(current, next, exp(-delta * 128))
 
 func move_icons() -> void:
 	for icon: CanvasItem in health_bar_icons:
@@ -74,14 +78,12 @@ func move_icons() -> void:
 		icon.position.x = -(health_bar.value * health_bar.size.x / 100) + hb_offset
 		icon.position.x *= lr_axis
 
+#endregion
 
-func icon_thingy(ibeat: int) -> void:
-	if ibeat % icon_bump_interval == 0:
-		icon_animation.seek(0.0)
-		icon_animation.play("bump")
-
-
-func set_player(player: int) -> void:
-	match player:
-		0: health_bar.fill_mode = ProgressBar.FILL_END_TO_BEGIN
-		1: health_bar.fill_mode = ProgressBar.FILL_BEGIN_TO_END
+func update_score_text(note: Note, _is_tap: bool) -> void:
+	if not note:
+		return
+	if note.hit_result.player.autoplay == true:
+		status_label.text = "AutoPlay Enabled"
+		return
+	status_label.text = "Score:%s" % note.hit_result.player.stats.score

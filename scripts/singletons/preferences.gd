@@ -48,7 +48,7 @@ var scroll_speed_behaviour: int = 0
 	set(new_speed):
 		scroll_speed = clampf(snappedf(new_speed, 0.001), 0.5, 10.0)
 ## Which playfield belongs to the player?[br]
-## NOTE: None will make the game enter Botplay Mode.
+## NOTE: None will make the game enter Autoplay Mode.
 @export_enum("Right:0", "Left:1", "None:-1") #, "Both:3")
 var playfield_side: int = 0:
 	set(new_side):
@@ -120,7 +120,7 @@ var combo_colour_mode: int = 1
 @export_enum("Column:0", "Quantized:1")
 var note_colouring_mode: int = 0
 ## Language used in the menus and user interface.
-@export var language: String = "en_AU":
+@export var language: String = "en_GB":
 	set(new_locale):
 		language = new_locale
 		TranslationServer.set_locale(new_locale)

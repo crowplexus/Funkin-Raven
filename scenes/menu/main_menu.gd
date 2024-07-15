@@ -43,7 +43,8 @@ func update_selection(new_sel: int = 0, sound: bool = true) -> void:
 		SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
 	if current_item is AnimatedSprite2D:
 		current_item.play("selected")
-	camera.position.y = current_item.position.y * current_item.scale.y
+	if buttons.get_child_count() > 4:
+		camera.position.y = current_item.position.y * current_item.scale.y
 
 
 func confirm_selection() -> void:
@@ -73,9 +74,17 @@ func confirm_selection() -> void:
 			current_item.self_modulate.a = 1.0
 			get_tree().paused = true
 			bye_bye_buttons(true)
-		#"credits":
-		#	Globals.set_node_inputs(self, false)
-		#	Globals.change_scene(load("res://scenes/ui/credits.tscn"))
+		"credits":
+			_done = false
+			Globals.set_node_inputs(self, false)
+			var credits_roll: Node2D = load("res://scenes/menu/credits_roll.tscn").instantiate()
+			credits_roll.connect("finished", func() -> void:
+				Globals.set_node_inputs(self, true)
+				_done = false
+			)
+			#current_item.self_modulate.a = 1.0
+			add_child(credits_roll)
+			bye_bye_buttons(true)
 		"merch":
 			_done = false
 			OS.shell_open("https://needlejuicerecords.com/pages/friday-night-funkin")

@@ -1,4 +1,4 @@
-extends Control
+extends GameHUD
 
 @onready var health_bar: TextureProgressBar = $"health_bar"
 @onready var time_bar: TextureProgressBar = $"timer"
@@ -11,7 +11,6 @@ extends Control
 
 var _song_name: StringName = ""
 
-
 func _ready() -> void:
 	reset_positions()
 	if Chart.global:
@@ -22,23 +21,17 @@ func _ready() -> void:
 	time_bar.value = 0.0
 	Conductor.ibeat_reached.connect(icon_thingy)
 
-
-func reset_positions() -> void:
-	match Preferences.scroll_direction:
-		0:
-			time_bar.position.y = 5
-			health_bar.position.y = 645
-			status_label.position.y = 704
-		1:
-			health_bar.position.y = 90
-			status_label.position.y = 140
-			time_bar.position.y = size.y * 0.96
-
+func _process(_delta: float) -> void:
+	if not health_bar_icons.is_empty():
+		move_icons()
+	if time_bar.visible and Conductor.time >= 0.0:
+		update_time_bar()
 
 func _exit_tree() -> void:
 	if Conductor.ibeat_reached.is_connected(icon_thingy):
 		Conductor.ibeat_reached.disconnect(icon_thingy)
 
+#region Health and Icons
 
 func setup_healthbar() -> void:
 	var stage: StageBG = get_tree().current_scene.get("stage")
@@ -51,7 +44,6 @@ func setup_healthbar() -> void:
 			char_icons[1] = stage.get_node("player1").health_icon
 		set_icons(char_icons)
 
-
 func set_icons(icons: Array[HealthIcon]) -> void:
 	for i: int in health_bar_icons.size():
 		var ico: Sprite2D = health_bar_icons[i]
@@ -61,41 +53,6 @@ func set_icons(icons: Array[HealthIcon]) -> void:
 			ico.hframes = icons[i].hframes
 			ico.vframes = icons[i].vframes
 			ico.scale = icons[i].scale
-
-
-func _process(_delta: float) -> void:
-	if not health_bar_icons.is_empty():
-		move_icons()
-	if time_bar.visible and Conductor.time >= 0.0:
-		update_time_bar()
-
-
-func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
-	if hit_result.player.botplay == true:
-		status_label.text = "BOTPLAY"
-		return
-
-	var grade: String = Scoring.get_clear_flag(hit_result.player.stats.hit_registry)
-	var ke_cbs: int = hit_result.player.stats.misses + hit_result.player.stats.breaks
-	if ke_cbs > 0 and ke_cbs < 10:
-		grade = "SDCB"
-	elif ke_cbs >= 10:
-		grade = "Clear"
-
-	var grade_str: String = "("+grade+") "
-	grade_str += get_ke_grade(snappedf(hit_result.player.stats.accuracy, 0.01))
-
-	var text: String = "Score:%s | Combo Breaks:%s | Accuracy:%s%%" % [
-		hit_result.player.stats.score, ke_cbs,
-		str(snappedf(hit_result.player.stats.accuracy, 0.01)),
-	]
-	text += " | %s" % grade_str
-	status_label.text = text
-
-
-func update_time_bar() -> void:
-	time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
-
 
 func move_icons() -> void:
 	for icon: CanvasItem in health_bar_icons:
@@ -108,18 +65,55 @@ func move_icons() -> void:
 		icon.position.x = -(health_bar.value * health_bar.size.x / 100) + hb_offset
 		icon.position.x *= lr_axis
 
-
 func icon_thingy(ibeat: int) -> void:
 	if ibeat % icon_bump_interval == 0:
 		icon_animation.seek(0.0)
 		icon_animation.play("bump")
-
 
 func set_player(player: int) -> void:
 	match player:
 		0: health_bar.fill_mode = ProgressBar.FILL_END_TO_BEGIN
 		1: health_bar.fill_mode = ProgressBar.FILL_BEGIN_TO_END
 
+#endregion
+
+func reset_positions() -> void:
+	match Preferences.scroll_direction:
+		0:
+			time_bar.position.y = 5
+			health_bar.position.y = 645
+			status_label.position.y = 704
+		1:
+			health_bar.position.y = 90
+			status_label.position.y = 140
+			time_bar.position.y = size.y * 0.96
+
+func update_score_text(note: Note, _is_tap: bool) -> void:
+	if not note:
+		return
+	if note.hit_result.player.autoplay == true:
+		status_label.text = "BOTPLAY"
+		return
+
+	var grade: String = Scoring.get_clear_flag(note.hit_result.player.stats.hit_registry)
+	var ke_cbs: int = note.hit_result.player.stats.misses + note.hit_result.player.stats.breaks
+	if ke_cbs > 0 and ke_cbs < 10:
+		grade = "SDCB"
+	elif ke_cbs >= 10:
+		grade = "Clear"
+
+	var grade_str: String = "("+grade+") "
+	grade_str += get_ke_grade(snappedf(note.hit_result.player.stats.accuracy, 0.01))
+
+	var text: String = "Score:%s | Combo Breaks:%s | Accuracy:%s%%" % [
+		note.hit_result.player.stats.score, ke_cbs,
+		str(snappedf(note.hit_result.player.stats.accuracy, 0.01)),
+	]
+	text += " | %s" % grade_str
+	status_label.text = text
+
+func update_time_bar() -> void:
+	time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
 
 func get_ke_grade(acc: float):
 	match acc: # "use a for loop" this is literally faster and easier readable please st

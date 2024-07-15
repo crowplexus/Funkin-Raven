@@ -1,6 +1,5 @@
 extends Node
-## Event Hook for gameplay,
-## This simply executes nearby events during gameplay.
+## This executes nearby events during gameplay.
 class_name EventMachine
 
 signal event_fired(id: int)
@@ -17,7 +16,8 @@ func _ready() -> void:
 	if not event_list.is_empty():
 		for ev: ChartEvent in event_list:
 			ev.fired = false
-		Conductor.fstep_reached.connect(event_step)
+		if not Conductor.fstep_reached.is_connected(event_step):
+			Conductor.fstep_reached.connect(event_step)
 
 
 func _exit_tree() -> void:

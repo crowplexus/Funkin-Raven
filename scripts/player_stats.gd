@@ -44,14 +44,37 @@ var invalid: bool:
 	get: return hit_registry.has("perfect") and hit_registry.perfect > 0
 
 
+func apply_hit(note: Note) -> void:
+	if not note or not note.hit_result:
+		return
+
+	if not note.hit_result.judgment.name in hit_registry:
+		hit_registry[note.hit_result.judgment.name] = 0
+	hit_registry[note.hit_result.judgment.name] += 1
+
+	score += Scoring.get_doido_score((note.time - Conductor.time) * 1000.0)
+	if combo < 0:
+		combo = 0
+	total_notes_hit += 1
+	accuracy_threshold += note.hit_result.judgment.accuracy
+	combo += 1
+
+func apply_miss(column: int = 0, note: Note = null) -> void:
+	if note: column = note.column
+	if combo > 1:
+		combo = 0
+		breaks += 1
+	combo -= 1
+
+
 func _to_string() -> String:
 	var status: String = "Score: %s - Accuracy: %s%% - Combo Breaks: %s" % [
-		score, snappedf(accuracy, 0.01), breaks]
+			Globals.thousands_sep(score), snappedf(accuracy, 0.01), breaks]
 	# crazy frog.
 	if breaks < 10:
 		var cf: String = Scoring.get_clear_flag(hit_registry)
 		if breaks > 0: cf = "SDCB"
-		if not cf.is_empty(): status += " - (%s)" % cf
+		if not cf.is_empty(): status += " (%s)" % cf
 	return status
 
 

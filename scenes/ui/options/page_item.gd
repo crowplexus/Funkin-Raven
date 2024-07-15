@@ -1,4 +1,4 @@
-extends OptionItem
+@tool extends OptionItem
 
 
 func reset_preference_label() -> void:

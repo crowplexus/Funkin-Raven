@@ -3,6 +3,7 @@ extends Node
 const STARTING_SCENE: PackedScene = preload("res://scenes/menu/title_screen.tscn")
 const MENU_MUSIC: AudioStream = preload("res://assets/audio/bgm/menu/freakyMenu.ogg")
 const RANDOM_MUSIC: AudioStream = preload("res://assets/audio/bgm/menu/freeplayRandom.ogg")
+const CREDITS_MUSIC: AudioStream = preload("res://assets/audio/bgm/menu/freeplayRandom.ogg")
 const MENU_MUSIC_BPM: float = 102.0
 
 const MENU_SCROLL_SFX: AudioStream = preload("res://assets/audio/sfx/menu/scrollMenu.ogg")
@@ -84,7 +85,23 @@ func set_node_inputs(node: Node, enable: bool) -> void:
 	node.set_process_input(enable)
 
 #endregion
-#region Text
+#region Strings
+
+## Formats integer strings going up to thousands.[br]
+## @tutorial:			https://www.reddit.com/r/godot/comments/9iw4ie/comment/e6n7r8k/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+func thousands_sep(number: int, prefix: String = ""):
+	var neg: bool = signi(number) < 0
+	var num_str: String = str(number)
+	var mod: float = num_str.length() % 3
+	var res: String = ""
+	for i in range(0, num_str.length()):
+		if i != 0 and i % 3 == mod:
+			res += ","
+		res += num_str[i]
+	if neg: res = '-' + prefix + res
+	else: res = prefix + res
+	return res
+
 
 ## Converts text to a dictionary[br]
 ## Format (in text string):[br]
@@ -105,7 +122,7 @@ func text_to_dictionary(text: String, separator: String = ",") -> Dictionary:
 	return data
 
 #endregion
-#region Number Related Functions
+#region Numbers
 func format_to_time(value: float) -> String:
 	var minutes: float = Globals.float_to_minute(value)
 	var seconds: float = Globals.float_to_seconds(value)
@@ -130,7 +147,7 @@ func float_to_hours(value: float) -> int: return int(value / 3600.0)
 func float_to_minute(value: float) -> int: return int(value / 60) % 60
 func float_to_seconds(value: float) -> float: return fmod(value, 60)
 #endregion
-#region Canvas Item
+#region Canvas Items
 
 func begin_flicker(node: CanvasItem, duration: float = 1.0, interval: float = 0.04,
 	end_vis: bool = false, force: bool = false, finish_callable: Callable = func() -> void: pass) -> void:

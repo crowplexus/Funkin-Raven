@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://bi000h6yu2ng7"]
 
-[ext_resource type="Script" path="res://scenes/gameplay/hud/classic.gd" id="1_fryib"]
+[ext_resource type="Script" path="res://scenes/gameplay/hud/recreations/classic.gd" id="1_fryib"]
 [ext_resource type="Texture2D" uid="uid://dld56rmrbxk8f" path="res://assets/sprites/ui/normal/healthBar.png" id="2_kekhx"]
 [ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="4_i4s7x"]
 [ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="5_u7t57"]

@@ -4,7 +4,7 @@ signal finished()
 
 var path: String = ""
 var data: Dictionary = {}
-var diff: String = SongItem.DEFAULT_DIFFICULTY_SET[1].file
+var diff: String = SongItem.DEFAULT_DIFFICULTY_SET.normal.file
 
 #region Parsers
 
@@ -202,6 +202,11 @@ func parse_legacy(song: StringName, difficulty: Dictionary = {}) -> Chart:
 		if not ResourceLoader.exists(fol):
 			fol = fol.replace(song, "test")
 		chart.song_info.instrumental = load(fol)
+	if chart.song_info.vocals.is_empty():
+		var fol: String = "res://assets/songs/%s/Voices.ogg" % song
+		if not ResourceLoader.exists(fol):
+			fol = fol.replace(song, "test")
+		chart.song_info.vocals.append(load(fol) as AudioStream)
 
 	finished.emit()
 	return chart

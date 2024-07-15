@@ -6,6 +6,8 @@ extends Node2D
 @onready var enter_sprite: AnimatedSprite2D = $"sprites/enter_sprite"
 @onready var thingy: Alphabet = $"text_thingy"
 
+var spam_counter: int = 0
+
 var _enter_animation_backwards: bool = false
 var _enter_animation: Callable = func() -> void:
 	if enter_sprite.animation.ends_with("IDLE"):
@@ -62,7 +64,7 @@ func _unhandled_key_input(_event: InputEvent) -> void:
 			if Preferences.flashing:
 				enter_sprite.play("ENTER PRESSED")
 			SoundBoard.play_sfx(Globals.MENU_CONFIRM_SFX)
-			await get_tree().create_timer(1.0).timeout
+			await get_tree().create_timer(0.8).timeout
 			Globals.change_scene(load("res://scenes/menu/main_menu.tscn"))
 
 
@@ -88,8 +90,8 @@ func on_ibeat_reached(ibeat: int) -> void:
 			thingy.text += "\nby crowplexus"
 			crow_sprite.visible = true
 		8:
-			crow_sprite.visible = false
 			thingy.text = ""
+			crow_sprite.visible = false
 		9: thingy.text = _cur_rando[0]
 		11:
 			thingy.text += "\n" + _cur_rando[1]

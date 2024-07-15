@@ -1,18 +1,12 @@
 extends RefCounted
 class_name Scoring
 
-const TEMPLATE_HIT_SCORE: Dictionary = {
-	"score": 0,
-	"accuracy": 0.0,
-	"total_notes_hit": 0,
-	"health": 0,
-	"combo": 0,
-}
+const HIT_THRESHOLD: float = 200.0
 
+# DiogoTV scoring system
 const DOIDO_MIN_SCORE: int = 0
 const DOIDO_MAX_SCORE: int = 500
 const DOIDO_SCORE_SLOPE: float = 5.0
-const HIT_THRESHOLD: float = 200.0
 
 const JUDGMENTS: Dictionary = {
 	"perfect": {

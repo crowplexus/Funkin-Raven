@@ -107,3 +107,4 @@ ui_pause={
 
 common/physics_ticks_per_second=1
 common/max_physics_steps_per_frame=1
+common/physics_jitter_fix=0.0

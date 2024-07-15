@@ -1,0 +1,134 @@
+[gd_scene load_steps=9 format=3 uid="uid://nffyytc1virf"]
+
+[ext_resource type="Script" path="res://scenes/menu/credits_roll.gd" id="1_mta6h"]
+[ext_resource type="Texture2D" uid="uid://cvil0ckwyxdd1" path="res://assets/sprites/menu/credits_roll/ralty.png" id="2_dwych"]
+[ext_resource type="FontFile" uid="uid://ca16c2xgvyjsx" path="res://assets/fonts/funkin.ttf" id="3_4invr"]
+[ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="4_dvhi2"]
+
+[sub_resource type="Animation" id="Animation_5myys"]
+resource_name = "raltyro"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ralty:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.7, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -0.0523599, 0.0523599, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("ralty:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(360, 320), Vector2(360, 315), Vector2(360, 320)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("creator_info:text")
+tracks/2/interp = 1
+tracks/2/loop_wrap = false
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["Raltyro - Artist, Coder
+Credits Roll Art
+
+A ton of help with miscellaneous code fixes"]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("creator_info:visible_characters")
+tracks/3/interp = 1
+tracks/3/loop_wrap = false
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0, 80]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_yqkw8"]
+_data = {
+"raltyro": SubResource("Animation_5myys")
+}
+
+[sub_resource type="LabelSettings" id="LabelSettings_yosai"]
+font = ExtResource("3_4invr")
+font_size = 48
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_74hxq"]
+font = ExtResource("4_dvhi2")
+font_size = 24
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+
+[node name="credits_roll" type="Node2D"]
+script = ExtResource("1_mta6h")
+
+[node name="colour_rect" type="ColorRect" parent="."]
+modulate = Color(1, 1, 1, 0.6)
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 1)
+
+[node name="animation_player" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_yqkw8")
+}
+
+[node name="ralty" type="Sprite2D" parent="."]
+position = Vector2(360, 320)
+texture = ExtResource("2_dwych")
+
+[node name="creator_info" type="Label" parent="."]
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.157
+anchor_right = 2.687
+anchor_bottom = 1.0
+offset_left = 540.0
+offset_top = 140.0
+offset_right = 1280.0
+offset_bottom = 490.0
+text = "Raltyro - Artist, Coder
+Credits Roll Art
+
+A ton of help with miscellaneous code fixes"
+label_settings = SubResource("LabelSettings_yosai")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+visible_characters = 0
+visible_ratio = 0.0
+
+[node name="skip_text" type="Label" parent="."]
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.157
+anchor_right = 2.687
+anchor_bottom = 1.0
+offset_left = 885.0
+offset_top = 4.0
+offset_right = 1274.0
+offset_bottom = 32.0
+text = "Press {UI_ACCEPT} to skip"
+label_settings = SubResource("LabelSettings_74hxq")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="timer" type="Timer" parent="."]

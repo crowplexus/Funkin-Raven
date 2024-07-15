@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://dblq8osh4gcru"]
 
-[ext_resource type="Script" path="res://scenes/gameplay/hud/psych.gd" id="1_uin6h"]
+[ext_resource type="Script" path="res://scenes/gameplay/hud/recreations/psych.gd" id="1_uin6h"]
 [ext_resource type="Texture2D" uid="uid://dld56rmrbxk8f" path="res://assets/sprites/ui/normal/healthBar.png" id="2_qdudh"]
 [ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="4_4icqr"]
 [ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="5_khj4r"]
@@ -124,7 +124,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_fonts/font = ExtResource("6_m6r0g")
 theme_override_font_sizes/font_size = 20
-text = "Score: 0 | Misses: 0 | Rating: ?"
+text = "Score: 0 | Combo Breaks: 0 | Rating: ?"
 horizontal_alignment = 1
 vertical_alignment = 1
 

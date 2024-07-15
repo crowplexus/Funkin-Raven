@@ -1,4 +1,4 @@
-extends Control
+extends GameHUD
 
 @onready var health_bar: ProgressBar = $"health_bar"
 @onready var progress_label: Label = $"progress_label"
@@ -11,6 +11,7 @@ extends Control
 var _hb_twn: Tween
 var _song_name: StringName = ""
 
+#region Built-in functions
 
 func _ready() -> void:
 	reset_positions()
@@ -20,25 +21,21 @@ func _ready() -> void:
 	if Chart.global and Chart.global.song_info:
 		_song_name = Chart.global.song_info.name
 	progress_label.visible = Preferences.show_timer
-	Conductor.ibeat_reached.connect(icon_thingy)
+	Conductor.ibeat_reached.connect(icon_bump)
 
-
-func reset_positions() -> void:
-	match Preferences.scroll_direction:
-		0:
-			health_bar.position.y = 645
-			status_label.position.y = 680
-			progress_label.position.y = 0.0
-		1:
-			health_bar.position.y = 80
-			status_label.position.y = 115
-			progress_label.position.y = 690
-
+func _process(_delta: float) -> void:
+	if not health_bar_icons.is_empty():
+		move_icons()
+	if progress_label.visible and Conductor.time >= 0.0:
+		update_time_bar()
 
 func _exit_tree() -> void:
-	if Conductor.ibeat_reached.is_connected(icon_thingy):
-		Conductor.ibeat_reached.disconnect(icon_thingy)
+	if Conductor.ibeat_reached.is_connected(icon_bump):
+		Conductor.ibeat_reached.disconnect(icon_bump)
 
+#endregion
+
+#region Health and Icons
 
 func setup_healthbar() -> void:
 	var stage: StageBG = get_tree().current_scene.get("stage")
@@ -51,6 +48,8 @@ func setup_healthbar() -> void:
 			char_icons[1] = stage.get_node("player1").health_icon
 		set_icons(char_icons)
 
+func get_health(next: float, current: float, delta: float) -> float:
+	return lerpf(current, next, exp(-delta * 128))
 
 func set_icons(icons: Array[HealthIcon]) -> void:
 	for i: int in health_bar_icons.size():
@@ -61,38 +60,6 @@ func set_icons(icons: Array[HealthIcon]) -> void:
 			ico.hframes = icons[i].hframes
 			ico.vframes = icons[i].vframes
 			ico.scale = icons[i].scale
-
-
-func _process(_delta: float) -> void:
-	if not health_bar_icons.is_empty():
-		move_icons()
-	if progress_label.visible and Conductor.time >= 0.0:
-		update_time_bar()
-
-
-func update_score_text(hit_result: Note.HitResult, _is_tap: bool) -> void:
-	if hit_result.player.botplay == true:
-		status_label.text = "BotPlay Enabled"
-		return
-
-	var text: String = str(hit_result.player.stats)
-	var grade: String = get_grade(hit_result.player.stats.accuracy)
-	status_label.text = text
-	if not grade.is_empty():
-		if text.ends_with(")"):
-			status_label.text += " %s" % grade
-		else:
-			status_label.text += " - %s" % grade
-
-
-func update_time_bar() -> void:
-	progress_label.text = "%s%s / %s (%s)" % [
-		"%s | " % _song_name if not _song_name.is_empty() else "",
-		Globals.format_to_time(Conductor.time),
-		Globals.format_to_time(Conductor.length),
-		"%d%%" % [absf(Conductor.time / Conductor.length) * 100.0]
-	]
-
 
 func move_icons() -> void:
 	for icon: CanvasItem in health_bar_icons:
@@ -105,26 +72,42 @@ func move_icons() -> void:
 		icon.position.x = -(health_bar.value * health_bar.size.x / 100) + hb_offset
 		icon.position.x *= lr_axis
 
-
-func icon_thingy(ibeat: int) -> void:
+func icon_bump(ibeat: int) -> void:
 	if ibeat % icon_bump_interval == 0:
 		icon_animation.seek(0.0)
 		icon_animation.play("bump")
-
 
 func set_player(player: int) -> void:
 	match player:
 		0: health_bar.fill_mode = ProgressBar.FILL_END_TO_BEGIN
 		1: health_bar.fill_mode = ProgressBar.FILL_BEGIN_TO_END
 
+#endregion
 
-func get_grade(acc: float) -> String:
-	# based off of Arcaea and the base game
-	match acc:
-		_ when acc >= 100: return "PF" # Perfect
-		_ when acc >= 90: return "EX" # Excellent
-		_ when acc >= 80: return "GT" # Great
-		_ when acc >= 70: return "OK" # Okay
-		_ when acc >= 60: return "BD" # Bad
-		_ when acc >= 30: return "FL" # Fruity Loops, jk its Fail
-		_: return "N/A"
+func reset_positions() -> void:
+	match Preferences.scroll_direction:
+		0:
+			health_bar.position.y = 645
+			status_label.position.y = 680
+			progress_label.position.y = 0.0
+		1:
+			health_bar.position.y = 80
+			status_label.position.y = 115
+			progress_label.position.y = 690
+
+func update_score_text(note: Note, _is_tap: bool) -> void:
+	if not note:
+		return
+	if note.hit_result.player.autoplay == true:
+		status_label.text = "AutoPlay Enabled"
+		return
+	status_label.text = str(note.hit_result.player.stats)
+
+func update_time_bar() -> void:
+	progress_label.text = "%s%s / %s (%s)" % [
+		"%s | " % _song_name if not _song_name.is_empty() else "",
+		Globals.format_to_time(Conductor.time),
+		Globals.format_to_time(Conductor.length),
+		"%d%%" % [absf(Conductor.time / Conductor.length) * 100.0]
+	]
+

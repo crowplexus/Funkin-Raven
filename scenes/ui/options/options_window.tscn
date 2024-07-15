@@ -1,11 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://deo3obwvipfis"]
+[gd_scene load_steps=11 format=3 uid="uid://deo3obwvipfis"]
 
 [ext_resource type="Theme" uid="uid://bh3fs6l4n44y4" path="res://assets/themes/funkin_style.tres" id="1_dxeve"]
 [ext_resource type="Script" path="res://scenes/ui/options/options_window.gd" id="1_gulft"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_mtl8v"]
 [ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/options/option_item.tscn" id="3_wjca4"]
 [ext_resource type="Script" path="res://scenes/ui/options/keybind_option.gd" id="4_awyi8"]
-[ext_resource type="Script" path="res://scenes/ui/options/page_item.gd" id="5_4l7t0"]
 [ext_resource type="AudioStream" uid="uid://toqn7nqo322h" path="res://assets/audio/sfx/volume_appear.ogg" id="6_beq18"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_668iw"]
@@ -54,11 +53,6 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 metadata/_edit_lock_ = true
-
-[node name="gameplay" parent="left_panel/page_selector" instance=ExtResource("3_wjca4")]
-layout_mode = 2
-script = ExtResource("5_4l7t0")
-option_name = &"Gameplay"
 
 [node name="pages" type="Panel" parent="."]
 clip_contents = true
@@ -139,7 +133,7 @@ variable = "use_epics"
 layout_mode = 2
 option_name = &"PlayField Side"
 description = "Which playfield belongs to the player?
-NOTE: None will make the game enter Botplay Mode."
+NOTE: None will make the game enter Autoplay Mode."
 variable = "playfield_side"
 option_type = 2
 display_names = Array[StringName]([&"Right", &"Left", &"None"])
@@ -351,14 +345,16 @@ variable = "show_timer"
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 1.0
+anchor_left = 0.132
+anchor_right = 0.857
 anchor_bottom = 0.1
+offset_left = -0.272003
+offset_right = 0.12793
 grow_horizontal = 2
-theme_override_fonts/font = ExtResource("2_mtl8v")
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_0a26v")
-text = ">                                      <"
-horizontal_alignment = 1
+text = "> <"
+horizontal_alignment = 3
 vertical_alignment = 1
 
 [node name="descriptor" type="Label" parent="."]
@@ -369,13 +365,13 @@ anchor_top = 0.812
 anchor_right = 0.891
 anchor_bottom = 0.956
 offset_left = 0.199997
-offset_top = 0.359985
+offset_top = -1.63995
 offset_right = 0.52002
 offset_bottom = -0.320007
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 28
-text = "This option will do things to your game that have never been done before, honestly you should just get ready for it, it's kinda amazing."
+text = "1 Billion games, but no games."
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2

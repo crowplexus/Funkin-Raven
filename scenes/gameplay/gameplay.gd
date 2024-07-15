@@ -1,361 +1,297 @@
 extends Node2D
 
-#region Scene Nodes
+@export var note_fields: Array[NoteField] = []
+@export var skin: UISkin = preload("res://assets/sprites/ui/normal.tres")
 
-@onready var ui_layer: CanvasLayer = $"hud"
-@onready var combo_group: Control = $"hud/combo_group"
-@onready var event_mach: EventMachine = $"event_machine"
-@export var fields: Array[NoteField] = []
-@export var note_cluster: Node2D
+@onready var countdown_timer: Timer = $"countdown_timer"
+@onready var note_cluster: NoteCluster = $"ui_layer/note_cluster"
+@onready var event_machine: EventMachine = $"event_machine"
+@onready var combo_group: Control = $"ui_layer/combo_group"
 
-#endregion
-
-#region Static Variables
-
-static var seen_cutscene: bool = false
-
-#endregion
-
-
-#region Local Variables
-
-var skin: UISkin
-var stage: StageBG
-var camera: Camera2D
-var current_hud: Control
-var health_bar: Control
-var music: AudioStreamPlayer
+var countdown_beat: int = 0
 var hud_beat_interval: int = 4
+var default_hud_scale: Vector2 = Vector2.ONE
 var modchart_pack: ModchartPack
-var initial_ui_zoom: Vector2 = Vector2.ONE
-var _main_player: Player
-var _need_to_play_music: bool = true
-var _interrupt_time: bool = false
-var _has_dialogue: bool = false
 
-#endregion
-#region Node2D Functions
+var music: AudioStreamPlayer
+var stage: StageBG
+
+#region Built-in Functions
 
 func _ready() -> void:
-	Conductor.set_time(-(Conductor.crotchet * 5))
-	if not is_instance_valid(Chart.global):
-		Chart.global = Chart.request("test", SongItem.DEFAULT_DIFFICULTY_SET[1])
-	# set up user interface skin
-	skin = Chart.global.song_info.ui_skin
-	combo_group.set_deferred("skin", Chart.global.song_info.ui_skin)
-	combo_group.call_deferred("preload_combo")
-	# make a modchart pack
+	if not Chart.global:
+		Chart.global = Chart.request("test", SongItem.DEFAULT_DIFFICULTY_SET.hard)
+
+	#region Setup Music
+	Conductor.set_time(-(Conductor.crotchet) * 5)
+
+	if Chart.global.song_info.instrumental:
+		music = $"music_player"
+		for vocal_stream: AudioStream in Chart.global.song_info.vocals:
+			var vocal_track: AudioStreamPlayer = music.duplicate()
+			vocal_track.stream = vocal_stream
+			music.add_child(vocal_track)
+		music.stream = Chart.global.song_info.instrumental.duplicate()
+		if music and music.stream:
+			Conductor.length = music.stream.get_length()
+		else:
+			Conductor.length = Chart.global.notes.back().time
+	#endregion
+
+	default_hud_scale = ui_layer.scale
 	modchart_pack = ModchartPack.pack_from_folders([
 		"res://assets/scripts",
 		"res://assets/scripts/songs/%s" % Chart.global.song_info.folder,
 	])
 	modchart_pack.name = "modcharts"
 	add_child(modchart_pack)
-
 	modchart_pack.call_mod_method("_on_ready", [self])
 
-	# kill the original hud
-	$"hud/default".free()
-	$"stage".free()
-	# set up the note cluster
+	#region Setup Notes
+	generate_fields()
 	note_cluster.note_queue = Chart.global.notes.duplicate()
+	event_machine.event_list = Chart.global.events.duplicate()
+	event_machine._ready()
 	note_cluster._ready()
-	# set up the actual HUD
+	#endregion
+
+	#region Setup Stage
+	remove_child($"main_stage")
+	ui_layer.remove_child(ui_layer.get_node("hud"))
+	# HUD
+	var hud_script: int = modchart_pack.call_mod_method("_set_hud", [self])
 	match Preferences.hud_style:
-		1: load_hud(Globals.DEFAULT_HUD)
-		2: load_hud(load("res://scenes/gameplay/hud/kade.tscn"))
-		3: load_hud(load("res://scenes/gameplay/hud/psych.tscn"))
-		4: load_hud(load("res://scenes/gameplay/hud/classic.tscn"))
-		_: match Chart.global.song_info.name: # if you wanna load custom huds
-			# -- Examples! --
-			# "Lo-Fight", "Overhead", "Ballistic":
-			#	load_hud(load("res://scenes/gameplay/hud/kade.tscn"))
-			# "Psychic", "Wilter", "Uproar":
-			#	load_hud(load("res://scenes/gameplay/hud/psych.tscn"))
-			# "The Great Punishment" "Curious Cat", "Metamorphosis":
-			#	load_hud(load("res://scenes/gameplay/hud/codename.tscn"))
-			_:
-				var hud_script: int = modchart_pack.call_mod_method("_set_hud", [self])
-				if hud_script != ModchartPack.CallableRequest.STOP:
-					load_hud(Globals.DEFAULT_HUD)
+		1: load_hud(Globals.DEFAULT_HUD.instantiate())
+		2: load_hud(load("res://scenes/gameplay/hud/recreations/kade.tscn").instantiate())
+		3: load_hud(load("res://scenes/gameplay/hud/recreations/psych.tscn").instantiate())
+		4: load_hud(load("res://scenes/gameplay/hud/recreations/classic.tscn").instantiate())
+		_ when hud_script != ModchartPack.CallableRequest.STOP: # Custom, per-song HUDs
+			load_hud(Globals.DEFAULT_HUD.instantiate())
 
-	init_stage("res://scenes/backgrounds/%s.tscn" % [Chart.global.song_info.background])
-	init_music()
-	init_fields()
-	init_players(fields)
-	init_dialogue()
+	if combo_group:
+		combo_group.skin = skin
+		combo_group.push_judgement()
+		combo_group.push_combo(2)
 
-	initial_ui_zoom = ui_layer.scale
+	load_stage()
+	load_characters()
+	#endregion
 
-	if _has_dialogue == true and not seen_cutscene:
-		Globals.set_node_inputs(self, false)
-		_interrupt_time = true
+	restart_countdown()
 
-	# Connect Signals
-	Conductor.istep_reached.connect(on_istep_reached)
-	Conductor.ibeat_reached.connect(on_ibeat_reached)
-	Conductor.ibar_reached.connect(on_ibar_reached)
-	Conductor.ibeat_reached.connect(start_countdown)
-
+func restart_countdown() -> void:
+	countdown_timer.start(Conductor.crotchet)
+	countdown_timer.timeout.connect(display_countdown)
 
 func _process(delta: float) -> void:
 	var process_script: int = modchart_pack.call_mod_method("_on_process", [self, delta])
 	if process_script == ModchartPack.CallableRequest.STOP:
 		return
-	if not _interrupt_time:
-		process_conductor(delta)
-	if ui_layer.scale != initial_ui_zoom:
+	if not music.playing or not music:
+		Conductor.update(Conductor.time + delta)
+	else:
+		Conductor.update(music.get_playback_position() + AudioServer.get_time_since_last_mix())
+	if ui_layer.scale != default_hud_scale:
 		ui_layer.scale = Vector2(
-			lerpf(initial_ui_zoom.x, ui_layer.scale.x, exp(-delta * 5)),
-			lerpf(initial_ui_zoom.y, ui_layer.scale.y, exp(-delta * 5))
+			lerpf(default_hud_scale.x, ui_layer.scale.x, exp(-delta * 5)),
+			lerpf(default_hud_scale.y, ui_layer.scale.y, exp(-delta * 5))
 		)
 		center_ui_layer()
-	if is_instance_valid(_main_player):
-		update_healthbar(delta)
 	modchart_pack.call_mod_method("_post_process", [self, delta])
 
-
-func _unhandled_input(_e: InputEvent) -> void:
-	modchart_pack.call_mod_method("_on_unhandled_input", [self, _e])
-	if Input.is_action_just_pressed("ui_pause") and is_processing_unhandled_input():
-		var pause_script: int = modchart_pack.call_mod_method("_on_pause", [self, _e])
+func _unhandled_input(e: InputEvent) -> void:
+	if Input.is_action_just_pressed("ui_pause"):
+		var pause_script: int = modchart_pack.call_mod_method("_on_pause", [self, e])
 		if pause_script != ModchartPack.CallableRequest.STOP:
 			var pause_menu: Control = load("res://scenes/ui/pause/pause_menu.tscn").instantiate()
 			pause_menu.z_index = 100
 			get_tree().paused = true
 			ui_layer.add_child(pause_menu)
-		resync_vocals()
-
 
 func _exit_tree() -> void:
 	var exit_script: int = modchart_pack.call_mod_method("_on_exit_tree", [self])
 	if exit_script == ModchartPack.CallableRequest.STOP:
 		return
-	Conductor.istep_reached.disconnect(on_istep_reached)
-	Conductor.ibeat_reached.disconnect(on_ibeat_reached)
-	Conductor.ibar_reached.disconnect(on_ibar_reached)
+	if Conductor.istep_reached.is_connected(on_istep_reached):
+		Conductor.istep_reached.disconnect(on_istep_reached)
+	if Conductor.ibeat_reached.is_connected(on_ibeat_reached):
+		Conductor.ibeat_reached.disconnect(on_ibeat_reached)
+	if Conductor.ibar_reached.is_connected(on_ibar_reached):
+		Conductor.ibar_reached.disconnect(on_ibar_reached)
 	Conductor.reset()
-	for i: int in fields.size():
-		var field: NoteField = fields[i]
-		if field.player:
-			field.player.note_hit.disconnect(restore_vocals)
-			field.player.note_hit.disconnect(update_score_text)
-			field.player.note_hit.disconnect(combo_group.pop_up_judge)
-			field.player.note_hit.disconnect(combo_group.pop_up_combo)
-			field.player.note_fly_over.disconnect(miss_fly_over)
-
-#endregions
-#region Gameplay Setup
-
-## Searches for any dialogue files in the song's folder, then plays the dialogue back.
-func init_dialogue() -> void:
-	var folder: String = "res://assets/songs/%s/dialogue.tres" % Chart.global.song_info.folder
-	#if not Preferences.cursing:
-	#	folder = folder.replace(folder.get_file(), "dialogue_censored.tres")
-	_has_dialogue = ResourceLoader.exists(folder) and not seen_cutscene
-	if _has_dialogue:
-		var convo_file: Conversation = load(folder)
-		var convo_box: DialogueBox = convo_file.box.instantiate()
-		if convo_box is DialogueBox:
-			convo_box.lines = convo_file.lines
-			convo_box.conversation_finished.connect(func():
-				if _interrupt_time == true:
-					_interrupt_time = false
-				await get_tree().create_timer(0.01).timeout
-				Globals.set_node_inputs(self, true)
-				seen_cutscene = true
-			)
-			#print_debug(convo_box.lines)
-			ui_layer.add_child(convo_box)
-		else:
-			push_warning("Something is wrong with your dialogue box, does it extend the DialogueBox class?")
-			_has_dialogue = false
-		convo_file.unreference()
-
-## Searches for notefield configurations in the chart file, then configures each notefield accordingly.
-func init_fields() -> void:
-	if not is_instance_valid(Chart.global):
-		return
-
-	var nf_config: = Chart.global.song_info.notefields
-	for i: int in nf_config.size():
-		var new_nf: NoteField
-		var config: Dictionary = nf_config[i]
-		if i < fields.size():
-			new_nf = fields[i]
-		else:
-			new_nf = load("res://scenes/gameplay/notes/notefield.tscn").instantiate()
-			ui_layer.add_child(new_nf)
-			ui_layer.move_child(new_nf, note_cluster.get_index() - 1)
-			fields.append(new_nf)
-
-		# characters #
-		if "characters" in config and is_instance_valid(stage):
-			for character: String in config.characters:
-				if stage.has_node(character) and stage.get_node(character) is Character:
-					new_nf.connected_characters.append(stage.get_node(character))
-		if not "name" in config or config.name.is_empty():
-			new_nf.name = &"player%s_notefield" % str(new_nf.get_index()+1)
-		Chart.global.song_info.configure_notefield(new_nf, config)
-
-	for nf: NoteField in fields:
-		nf.scale = Vector2(Preferences.receptor_size, Preferences.receptor_size)
-		note_cluster.call_deferred("connect_notefield", nf)
-		nf.reset_receptors()
-		nf.reset_scrolls()
-
-## Initialises all the players in the given notefield array.
-func init_players(player_fields: Array[NoteField]) -> void:
-	for i: int in player_fields.size():
-		if not player_fields[i] is NoteField:
-			continue
-		var field: NoteField = player_fields[i]
-		var player: Player = Player.new()
-		player.stats = PlayerStats.new()
-		player.stats.player_id = field.get_index()
-		player.note_queue = note_cluster.note_queue.filter(func(note: Note):
-			return note.player == i)
-		player.notefield = field
-		if i != Preferences.playfield_side:
-			player.botplay = true
-
-		player.note_hit.connect(restore_vocals)
-		player.note_hit.connect(update_score_text)
-		player.note_hit.connect(combo_group.pop_up_judge)
-		player.note_hit.connect(combo_group.pop_up_combo)
-		player.note_fly_over.connect(miss_fly_over)
-
-		field.player = player
-		if not player.botplay:
-			_main_player = player
-		field.check_centered()
-		field.add_child(player)
-
-## Initialises the actual music to be played back[br]
-## NOTE: if no music ever gets loaded, the game will keep running, just with no music!
-func init_music() -> void:
-	# SETUP MUSIC (temporary) #
-
-	if not is_instance_valid(Chart.global):
-		return
-
-	var inst_stream: AudioStream = Chart.global.song_info.instrumental
-	if inst_stream:
-		music = AudioStreamPlayer.new()
-		music.name = inst_stream.resource_path.get_file().get_basename()
-		music.stream = inst_stream
-		music.finished.connect(leave)
-		music.stream.loop = false
-		music.bus = "BGM"
-		add_child(music)
-
-	for vocal_stream: AudioStream in Chart.global.song_info.vocals:
-		if not is_instance_valid(music): continue
-		var vocals: = AudioStreamPlayer.new()
-		vocals.name = vocal_stream.resource_path.get_file().get_basename()
-		vocals.stream = vocal_stream
-		vocals.stream.loop = false
-		vocals.bus = music.bus
-		#print_debug(vocals.name)
-		music.add_child(vocals)
-
-	if music:
-		Conductor.length = music.stream.get_length()
-	elif not note_cluster.note_queue.is_empty():
-		Conductor.length = note_cluster.note_queue.back().time
-
-## Initialises the background/stage, along with any characters in the chart file.
-func init_stage(path: NodePath) -> void:
-	if not ResourceLoader.exists(path):
-		push_warning("Stage path ", path, " is inexistant or inaccessible, loading default stage...")
-		stage = Globals.DEFAULT_STAGE.instantiate()
-	else:
-		stage = load(String(path)).instantiate()
-		if stage.camera:
-			camera = stage.camera
-
-	add_child(stage)
-	move_child(stage, 0)
-
-	if not stage or Chart.global.song_info.characters.is_empty():
-		push_warning("There are no characters in the chart metadata to load.")
-		return
-
-	for i: int in Chart.global.song_info.characters.size():
-		var actor: String = Chart.global.song_info.characters[i]
-		var char_path: = "res://scenes/characters/%s.tscn" % actor
-		if not ResourceLoader.exists(char_path):
-			push_warning("Tried to load character ", actor, " which doesn't exist in res://scenes/characters/")
-			continue
-
-		if stage.find_child("player%s" % str(i + 1)) == null:
-			push_warning("Stage named ", stage.name, " has no Marker2D named player", str(i + 1), " skipping...")
-			continue
-
-		var marker: = stage.get_node("player%s" % str(i + 1))
-		var character: Character = load(char_path).instantiate()
-		character.global_position = marker.global_position
-		character.name = "player%s" % str(i + 1)
-		if i == 0: character._faces_left = true
-
-		var index: int = marker.get_index()
-		stage.remove_child(marker)
-		stage.add_child(character)
-		stage.move_child(character, index)
-
-	if current_hud:
-		current_hud.call_deferred("setup_healthbar")
 
 #endregion
-#region Gameplay Loop
 
-## Begins the countdown sequence, can be started at any moment.
-func start_countdown(beat: int) -> void:
-	var countdown_script: int = modchart_pack.call_mod_method("_on_countdown", [self, beat])
-	if countdown_script != ModchartPack.CallableRequest.STOP:
-		if beat < 0:
-			# display_countdown(sound_id, sprite_id)
-			display_countdown(beat+4)
-	if beat >= 0 and Conductor.ibeat_reached.is_connected(start_countdown):
-		Conductor.ibeat_reached.disconnect(start_countdown)
+#region Loading Functions
 
-## Displays the countdown sprites, and plays the countdown sound
-func display_countdown(snd_progress: int, spr_progress: int = -60000) -> void:
-	if spr_progress == -60000:
-		spr_progress = snd_progress
+func load_stage() -> void:
+	var stage_path: String = "res://scenes/backgrounds/mainStage.tscn"
+	if ResourceLoader.exists(stage_path.replace("mainStage", Chart.global.song_info.background)):
+		stage_path = stage_path.replace("mainStage", Chart.global.song_info.background)
+	stage = load(stage_path).instantiate()
+	add_child(stage)
+	# move to the top
+	move_child(stage, 0)
 
-	if spr_progress > -1 and spr_progress <= skin.countdown_sprites.size():
-		var countdown_sprite: Sprite2D = Sprite2D.new()
-		countdown_sprite.texture = skin.countdown_sprites[spr_progress]
-		countdown_sprite.position = get_viewport_rect().size * 0.5
-		countdown_sprite.scale.y += 0.2
-		ui_layer.add_child(countdown_sprite)
+func load_characters() -> void:
+	for character: String in Chart.global.song_info.characters:
+		var char_path: String = "res://scenes/characters/%s.tscn" % character
+		if not ResourceLoader.exists(char_path):
+			continue
+		var idx: int = Chart.global.song_info.characters.find(character)
+		var mark: = stage.get_node("player%s" % (idx + 1))
+		var mark_idx: int = mark.get_index()
 
-		# animation :o #
-		create_tween().set_ease(Tween.EASE_IN).bind_node(countdown_sprite).set_parallel(true) \
-		.tween_property(countdown_sprite, "scale:y", countdown_sprite.scale.y - 0.2, 0.15 * Conductor.crotchet)
+		var actor: Character = load(char_path).instantiate()
+		actor.global_position = mark.global_position
+		actor.name = "player%s" % str(idx + 1)
+		if idx == 0: actor._faces_left = true
 
-		create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD).bind_node(countdown_sprite) \
-		.tween_property(countdown_sprite, "modulate:a", 0.0, 1.25 * Conductor.crotchet).set_delay(0.2 * Conductor.crotchet) \
-		.finished.connect(countdown_sprite.queue_free)
+		stage.remove_child(mark)
+		stage.add_child(actor)
+		stage.move_child(actor, mark_idx)
+		if idx < note_fields.size():
+			note_fields[idx].connected_characters.append(actor)
 
-	if snd_progress > -1 and snd_progress <= skin.countdown_sounds.size():
-		SoundBoard.play_sfx(skin.countdown_sounds[snd_progress])
+#endregion
 
-## Updates the conductor to the music time.
-func process_conductor(delta: float) -> void:
-	var offset: float = (Preferences.beat_offset * 0.001)
-	if _need_to_play_music:
-		Conductor.update((Conductor.time) + delta)
-		if Conductor.time >= 0.0:
-			if music:
-				music.play(0.0)
-				for track: AudioStreamPlayer in music.get_children():
-					track.play(0.0)
-				_need_to_play_music = false
-	elif music and music.playing:
-		var time: float = music.get_playback_position() + AudioServer.get_time_since_last_mix()
-		Conductor.update(time + offset)
+#region PlayField
+
+func generate_fields(configs: Array[Dictionary] = Chart.global.song_info.notefields) -> void:
+	for idx: int in configs.size():
+		var nf: NoteField
+		var data: Dictionary = configs[idx]
+		if idx < note_fields.size():
+			nf = note_fields[idx]
+		else:
+			nf = load("res://scenes/gameplay/notes/notefield.tscn").instantiate()
+		Chart.global.song_info.configure_notefield(nf, data)
+		note_cluster.connect_notefield(nf)
+		if not note_fields.has(nf):
+			note_fields.append(nf)
+			ui_layer.add_child(nf)
+
+	for idx: int in note_fields.size():
+		var field: NoteField = note_fields[idx]
+		# Setup Player
+		field.player = Player.new()
+		field.player.stats = PlayerStats.new()
+		field.player.notefield = field
+		field.player.autoplay = true
+
+		field.player.note_list = Chart.global.notes.filter(func(n: Note) -> bool: return is_same(idx, n.player))
+		field.player.note_hit = func(note: Note) -> void:
+			field.on_note_hit(note, note.hold_progress <= 0.0)
+			if not field.player.autoplay:
+				update_score_text(note, note.hold_progress <= 0.0)
+				display_judgement(note.hit_result)
+				display_combo(note.hit_result)
+		# set controls
+		if is_same(idx, Preferences.playfield_side):
+			for j: int in field.key_count: field.player.controls.append("note%s" % j)
+			field.player.autoplay = false
+		field.add_child(field.player)
+		# Reset Scroll Direction
+		field.reset_receptors()
+		field.check_centered()
+		field.reset_scrolls()
+
+#endregion
+
+#region User Interface
+
+@onready var ui_layer: CanvasLayer = $"ui_layer"
+## Primary loaded HUD, one that takes priority over all.
+var hud: GameHUD
+
+## Centers the HUD elements to the screen, used when the HUD zooms in.[br]
+## author: swordcube
+func center_ui_layer() -> void:
+	ui_layer.offset = Vector2(
+		(get_viewport_rect().size.x * -0.5) * (ui_layer.scale.x - 1.0),
+		(get_viewport_rect().size.y * -0.5) * (ui_layer.scale.y - 1.0)
+	)
+
+func display_countdown() -> void:
+	var countdown_script: int = modchart_pack.call_mod_method("_on_countdown", [self, countdown_beat])
+	if countdown_script == ModchartPack.CallableRequest.STOP:
+		return
+
+	if countdown_beat > 3: # finish
+		music.play(0.0)
+		countdown_timer.timeout.disconnect(display_countdown)
+		for track: AudioStreamPlayer in music.get_children():
+			track.play(0.0)
+		countdown_beat = 0
+		return
+
+	# Show the countdown sprite.
+	if not skin:
+		countdown_beat += 1
+		return
+
+	if countdown_beat < skin.countdown_sprites.size():
+		var countdown_spr: = Sprite2D.new()
+		countdown_spr.texture = skin.countdown_sprites[countdown_beat]
+		countdown_spr.scale = skin.countdown_sprite_scale * 1.08
+		countdown_spr.texture_filter = skin.countdown_sprite_filter
+		countdown_spr.position = hud.size * 0.5
+		ui_layer.add_child(countdown_spr)
+
+		create_tween().set_ease(Tween.EASE_IN_OUT).bind_node(countdown_spr) \
+		.tween_property(countdown_spr, "scale", skin.countdown_sprite_scale, Conductor.crotchet * 0.2)
+
+		create_tween().set_ease(Tween.EASE_IN_OUT).bind_node(countdown_spr) \
+		.tween_property(countdown_spr, "modulate:a", 0.0, Conductor.crotchet).set_delay(0.05) \
+		.finished.connect(countdown_spr.queue_free)
+	# Play the countdown sound.
+	if countdown_beat < skin.countdown_sounds.size():
+		SoundBoard.play_sfx(skin.countdown_sounds[countdown_beat])
+
+	countdown_beat += 1
+
+## Updates the Score Text in the HUD
+func update_score_text(note: Note, is_tap: bool = false) -> void:
+	if hud: hud.update_score_text(note, is_tap)
+
+## Displays a Judgement on-screen as a sprite.
+func display_judgement(hit_result: Note.HitResult) -> void:
+	if not hit_result or not hit_result.judgment or hit_result.judgment.is_empty() \
+		or hit_result.judgment.visible == false:
+		return
+	if combo_group:
+		var custom_display = hud.call_deferred("display_judgement", hit_result, combo_group)
+		if not custom_display:
+			combo_group.display_judgement(hit_result)
+
+## Display a player's combo as number sprites.
+func display_combo(hit_result: Note.HitResult) -> void:
+	if not hit_result:
+		return
+	if combo_group:
+		var custom_display = hud.call_deferred("display_combo", hit_result, combo_group)
+		if not custom_display:
+			combo_group.display_combo(hit_result)
+
+## Loads a new HUD to the screen.
+func load_hud(hud_to_load: GameHUD, make_primary: bool = true, start_visible: bool = true) -> void:
+	if make_primary: hud = hud_to_load
+	hud.visible = start_visible
+	ui_layer.add_child(hud_to_load)
+
+## Gets rid of the loaded primary hud.
+func unload_current_hud() -> void:
+	unload_hud(hud)
+
+## Gets rid of a specified hud that is active.
+func unload_hud(hud_object: GameHUD) -> void:
+	if ui_layer.has_node(hud_object.get_path()):
+		ui_layer.remove_child(hud_object)
+		hud_object.queue_free()
+
+#endregion
+
+#region Music Sync
 
 ## Func ran once every a song step.
 func on_istep_reached(istep: int) -> void:
@@ -363,7 +299,6 @@ func on_istep_reached(istep: int) -> void:
 	#if step_script == ModchartPack.CallableRequest.STOP:
 	#	return
 
-## Func ran once every song beat.
 func on_ibeat_reached(ibeat: int) -> void:
 	if ibeat < 0:
 		return
@@ -382,108 +317,6 @@ func on_ibar_reached(ibar: int) -> void:
 	var _bar_script: int = modchart_pack.call_mod_method("_on_ibar_reached", [self, ibar])
 	#if bar_script == ModchartPack.CallableRequest.STOP:
 	#	return
-
-## Connected to [code]player.note_fly_over[/code] to handle
-## missing notes by letting them fly above your notefield..
-func miss_fly_over(note: Note) -> void:
-	for field: NoteField in fields:
-		if note.player == field.get_index() and field.player:
-			var vocal: int = note.player % music.get_child_count()
-			if music and music.get_child(vocal):
-				music.get_child(vocal).volume_db = linear_to_db(0.0)
-			#field.player.apply_miss(note.column)
-			combo_group.pop_up_combo(note, true)
-			update_score_text(note, true)
-			note.finished = true
-
-## Restores the vocals of a player whose the [code]note[/code] belongs to.
-func restore_vocals(note: Note, _is_tap: bool) -> void:
-	if not note:
-		return
-	for field: NoteField in fields:
-		if note.player == field.get_index() and field.player and music:
-			var vocal: = music.get_child(note.player % music.get_child_count())
-			if vocal: vocal.volume_db = linear_to_db(1.0)
-
-## Finishes the gameplay session, resets important Conductor values.
-func leave() -> void:
-	#seen_cutscene = false
-	_interrupt_time = true
-	Conductor.reset()
-	Conductor.rate = 1.0
-	if Chart.global and Chart.global.song_info: # the chance of this being null is very unlikely, buuut....
-		Highscore.register(_main_player.stats, Chart.global.song_info.folder, Chart.global.song_info.difficulty)
-	# TODO: for levels, i need a playlist
-	# and then we just switch to the next song
-	# this is fine for now
-	Globals.change_scene(load("res://scenes/menu/freeplay_menu.tscn"))
-
-#endregion
-#region HUD Elements
-
-## Centers the HUD elements to the screen, used when the HUD zooms in.[br]
-## author: swordcube
-func center_ui_layer() -> void:
-	ui_layer.offset = Vector2(
-		(get_viewport_rect().size.x * -0.5) * (ui_layer.scale.x - 1.0),
-		(get_viewport_rect().size.y * -0.5) * (ui_layer.scale.y - 1.0)
-	)
-
-## Updates the HUD's score text whenever needed.
-func update_score_text(note: Note, is_tap: bool) -> void:
-	if not current_hud or not note:
-		return
-	if current_hud.has_method("update_score_text"):
-		current_hud.callv("update_score_text", [note.hit_result, is_tap])
-
-## Updates the HUD's healthbar needed.
-func update_healthbar(delta: float) -> void:
-	if not health_bar:
-		return
-	var health_deluxe: float = _main_player.health
-	var new_value: float = lerpf(health_bar.value, health_deluxe, exp(-delta * 96))
-	# custom lerp
-	if is_instance_valid(current_hud) and current_hud.has_method("get_health"):
-		var custom_health = current_hud.call_deferred("get_health", health_deluxe)
-		if custom_health is float: new_value = custom_health
-	health_bar.value = new_value
-
-#endregion
-#region Utils
-
-## Loads the main Heads-up Display on-screen, which often contains player statistics and health.
-func load_hud(hud_scene: PackedScene, set_as_main: bool = true) -> void:
-	var hud_name: StringName = hud_scene.resource_path.get_file().get_basename()
-	if ui_layer.has_node(NodePath(hud_name)):
-		push_warning("You're trying to load a hud that is already loaded!")
-		return
-
-	var instance: Control = hud_scene.instantiate()
-	instance.name = hud_name
-	ui_layer.add_child(instance)
-	ui_layer.move_child(instance, 2)
-	if set_as_main:
-		current_hud = instance
-		if instance.get("health_bar"):
-			health_bar = instance.health_bar
-			if instance.has_method("set_player"):
-				instance.call_deferred("set_player", Preferences.playfield_side)
-
-	modchart_pack.call_mod_method("_on_hud_loaded", [self, hud_name])
-
-## Unloads the current heads-up display.
-func unload_current_hud() -> void:
-	if current_hud:
-		unload_hud(current_hud.get_path())
-
-## Unloads a specified heads-up display, please give this function a node path.
-func unload_hud(hud_name: NodePath) -> void:
-	if ui_layer.has_node(hud_name):
-		var old_hud: = ui_layer.get_node(hud_name)
-		if old_hud.get("health_bar") and old_hud.health_bar == health_bar:
-			health_bar = null
-		old_hud.queue_free()
-	modchart_pack.call_mod_method("_on_hud_unloaded", [self, hud_name])
 
 # temporary until godot 4.3
 ## Resyncs the vocals to music time.

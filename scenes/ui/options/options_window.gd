@@ -39,15 +39,17 @@ var _just_started: bool = true # bandaid
 func _ready() -> void:
 	var _v: float = 0.0
 	for page: VBoxContainer in all_pages:
-		var a: Control
-		if page.get_index() == 0:
-			a = page_selector.get_child(0)
+		var new_page: Control
+		# remove duplicates if any
+		if page_selector.has_node("%s" % page.name):
+			new_page = page_selector.get_node("%s" % page.name)
 		else:
-			a = page_selector.get_child(0).duplicate()
-			page_selector.add_child(a)
-		a.name = page.name
-		a.option_name = page.name.to_upper()
-		_v += a.size.y
+			new_page = load("res://scenes/ui/options/option_item.tscn").instantiate()
+			new_page.set_script(load("res://scenes/ui/options/page_item.gd"))
+			new_page.option_name = page.name.to_upper()
+			page_selector.add_child(new_page)
+		new_page.name = page.name
+		_v += new_page.size.y
 
 	update_page()
 	Conductor.ibeat_reached.connect(play_metro)

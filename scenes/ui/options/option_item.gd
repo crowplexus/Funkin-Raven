@@ -27,7 +27,6 @@ var option_type: int = 0
 
 ## The preference's current value
 var value: Variant
-var _force_name: StringName = ""
 
 
 func _ready() -> void:
@@ -68,11 +67,6 @@ func reset_preference_label() -> void:
 
 
 func get_value_name() -> StringName:
-	if not _force_name.is_empty():
-		var copy = _force_name
-		_force_name = ""
-		return copy
-
 	var value_name: StringName = str(value)
 	match value_name.to_snake_case():
 		"true": value_name = "ON"
@@ -85,7 +79,6 @@ func get_value_name() -> StringName:
 						value_name = display_names[value]
 					elif value is String or value is StringName:
 						value_name = display_names[display_names.find(value)]
-
 	return name_display.replace("@", value_name)
 
 
