@@ -179,13 +179,27 @@ func generate_fields(configs: Array[Dictionary] = Chart.global.song_info.notefie
 		field.player.notefield = field
 		field.player.autoplay = true
 
-		field.player.note_list = Chart.global.notes.filter(func(n: Note) -> bool: return is_same(idx, n.player))
+		#region Connect Callables
 		field.player.note_hit = func(note: Note) -> void:
 			field.on_note_hit(note, note.hold_progress <= 0.0)
 			if not field.player.autoplay:
 				update_score_text(note, note.hold_progress <= 0.0)
 				display_judgement(note.hit_result)
 				display_combo(note.hit_result)
+
+		field.player.note_miss = func(_column: int, note: Note) -> void:
+			if not field.player.autoplay and note and note.hit_result:
+				update_score_text(note, note.hold_progress <= 0.0)
+				display_combo(note.hit_result)
+
+		field.player.note_list = Chart.global.notes.filter(func(n: Note) -> bool:
+			n.note_flew = func(dn: Note) -> void:
+				if not field.player.autoplay and dn.hit_result:
+					update_score_text(dn, dn.hold_progress <= 0.0)
+					display_combo(dn.hit_result)
+			return is_same(idx, n.player))
+		#endregion
+
 		# set controls
 		if is_same(idx, Preferences.playfield_side):
 			for j: int in field.key_count: field.player.controls.append("note%s" % j)

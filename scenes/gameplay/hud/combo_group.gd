@@ -21,12 +21,6 @@ func push_combo(digits: int = 0) -> void:
 	precache_combo_number(digits)
 	_combo_tweens.append(null)
 
-func recreate_popup_tween() -> Tween:
-	var e: Tween = create_tween().bind_node(judgment_sprite)
-	e.set_ease(Tween.EASE_IN_OUT)
-	e.set_parallel(true)
-	return e
-
 func display_judgement(hit_result: Note.HitResult) -> void:
 	if not judgment_sprite:
 		push_judgement()
@@ -51,7 +45,7 @@ func display_judgement(hit_result: Note.HitResult) -> void:
 	if _judge_tween:
 		_judge_tween.stop()
 
-	_judge_tween = recreate_popup_tween()
+	_judge_tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_parallel(true)
 	_judge_tween.tween_property(judgment_sprite, "scale", skin.judgment_sprite_scale, 0.35 * Conductor.crotchet).set_ease(Tween.EASE_IN)
 	_judge_tween.tween_property(judgment_sprite, "position:y", judgment_sprite.position.y + 10, 0.35 * Conductor.crotchet).set_ease(Tween.EASE_IN)
 	_judge_tween.tween_property(judgment_sprite, "modulate:a", 0.0, 0.8 * Conductor.crotchet) \
@@ -101,7 +95,7 @@ func display_combo(hit_result: Note.HitResult) -> void:
 
 		if _combo_tweens[i]:
 			_combo_tweens[i].kill()
-		_combo_tweens[i] = recreate_popup_tween()
+		_combo_tweens[i] = create_tween().set_ease(Tween.EASE_IN_OUT).set_parallel(true)
 		_combo_tweens[i].tween_property(num_score, "scale", skin.combo_num_sprite_scale, 0.4 * Conductor.crotchet)
 		if not Preferences.always_display_combo:
 			_combo_tweens[i].tween_property(num_score, "modulate:a", 0.0, 1.2 * Conductor.crotchet) \

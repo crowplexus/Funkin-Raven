@@ -60,12 +60,14 @@ func apply_hit(note: Note) -> void:
 	combo += 1
 
 func apply_miss(column: int = 0, note: Note = null) -> void:
+	break_combo()
 	if note: column = note.column
+	combo -= 1
+
+func break_combo() -> void:
 	if combo > 1:
 		combo = 0
 		breaks += 1
-	combo -= 1
-
 
 func _to_string() -> String:
 	var status: String = "Score: %s - Accuracy: %s%% - Combo Breaks: %s" % [

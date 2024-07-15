@@ -37,9 +37,6 @@ offset_right = -590.0
 offset_bottom = -390.0
 
 [node name="note_cluster" type="Node2D" parent="ui_layer"]
-process_thread_group = 2
-process_thread_group_order = 0
-process_thread_messages = 0
 position = Vector2(96, 96)
 script = ExtResource("5_8cnuc")
 

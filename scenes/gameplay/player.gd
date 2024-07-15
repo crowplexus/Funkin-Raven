@@ -138,6 +138,8 @@ func kill_note(note: Note) -> void:
 
 func note_hit_common(note: Note) -> void:
 	# increase score.
+	if "combo_break" in note.hit_result.judgment and note.hit_result.judgment.combo_break == true:
+		stats.break_combo()
 	match note.hit_result.judgment.name:
 		"miss":
 			stats.apply_miss(note.column, note)

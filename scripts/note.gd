@@ -86,6 +86,7 @@ var moving: bool = true
 ## If the note finished operating (was hit or missed, etc)
 var finished: bool = false
 var _late_hold: bool = false
+var note_flew: Callable = func(_note: Note) -> void: pass
 
 #endregion
 #region Other Utility Functions
@@ -104,17 +105,12 @@ func move() -> void:
 	#object.position.x = initial_position.x + (90 * object.scale.x) * column
 	object.position.y += rel_time * (400.0 * absf(real_speed)) / absf(note_scale) * scroll.y
 	#object.position *= scroll
-	if time < (Conductor.time - (1.0 + hold_progress)):
-		finished = true
+	if (time - Conductor.time) < (-.2 - hold_length):
+		if note_flew and not note_flew.is_null():
+			note_flew.call(self)
 		moving = false
-		if object:
-			object.queue_free()
-
-func hit_tap() -> void:
-	moving = false
-	#if object and note.hold_progress <= 0.0:
-	if object: object.queue_free()
-	finished = true
+		finished = true
+		if object: object.queue_free()
 
 func reset(in_debug: bool = false) -> void:
 	moving = true

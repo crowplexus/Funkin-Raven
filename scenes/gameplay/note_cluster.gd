@@ -11,7 +11,6 @@ const NOTE_KIND_OBJECTS: Dictionary = {
 @export var current_note: int = 0
 var alive_queue: Array[Note] = []
 
-
 func _ready() -> void:
 	current_note = 0
 	if not note_queue.is_empty():
@@ -19,30 +18,30 @@ func _ready() -> void:
 	for nd: Note in note_queue:
 		nd.reset()
 
-
 func _exit_tree() -> void:
 	if Conductor.fstep_reached.is_connected(try_spawning):
 		Conductor.fstep_reached.disconnect(try_spawning)
-
 
 func _process(delta: float) -> void:
 	#await RenderingServer.frame_post_draw
 	if not alive_queue.is_empty():
 		move_notes(delta)
 
-
 func move_notes(_delta: float) -> void:
 	for note: Note in alive_queue:
 		note.move()
+		if (note.time - Conductor.time) < (-.2 - note.hold_length) and note.notefield and note.notefield.player:
+			note.hit_result = note.notefield.player.get_hit_result(note)
+			note.notefield.player.stats.apply_miss(note.column, note)
+			if note.notefield.player.note_miss:
+				note.notefield.player.note_miss.call(note.column, note)
 		if not note.moving:
 			alive_queue.erase(note)
-
 
 func try_spawning(_fstep: float) -> void:
 	if not self.is_node_ready(): return
 	await RenderingServer.frame_post_draw
 	self.spawn_notes.call_deferred()
-
 
 func spawn_notes() -> void:
 	while current_note < note_queue.size():
@@ -57,7 +56,6 @@ func spawn_notes() -> void:
 
 		spawn_note(current_note)
 		current_note += 1
-
 
 func spawn_note(id: int) -> void:
 	if note_queue.size() < id:
@@ -93,10 +91,8 @@ func spawn_note(id: int) -> void:
 	add_child(note.object)
 	alive_queue.append(note)
 
-
 func connect_notefield(new_field: NoteField) -> void:
 	connected_fields.append(new_field)
-
 
 func disconnect_notefield(field: NoteField) -> void:
 	if connected_fields.find(field) != -1:
