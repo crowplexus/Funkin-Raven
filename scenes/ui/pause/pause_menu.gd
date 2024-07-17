@@ -48,8 +48,8 @@ var options: Array[Callable] = [
 								if is_instance_valid(note.receptor) and is_instance_valid(note.object):
 									note.object.scale = note.receptor.scale
 
-					if scene.get("current_hud") != null:
-						scene.current_hud.reset_positions()
+					if scene.get("hud") != null:
+						scene.hud.reset_positions()
 
 		add_child(ow),
 	func() -> void:
