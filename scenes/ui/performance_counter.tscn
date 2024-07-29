@@ -46,18 +46,14 @@ mouse_filter = 2
 metadata/_edit_lock_ = true
 
 [node name="perf_label" type="RichTextLabel" parent="ui"]
+clip_contents = false
 layout_mode = 1
-anchors_preset = -1
-anchor_right = 0.246
-anchor_bottom = 0.437
-offset_right = 0.0879822
-offset_bottom = 0.359985
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 300.0
+offset_bottom = 500.0
 mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
-theme_override_font_sizes/normal_font_size = 14
+theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
 text = "N/A FPS
 "
@@ -76,6 +72,7 @@ offset_right = 0.0878906
 offset_bottom = -0.0799999
 grow_horizontal = 0
 grow_vertical = 2
+mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_ip6fy")
 theme_override_styles/fill = SubResource("StyleBoxFlat_dchgc")
 value = 50.0

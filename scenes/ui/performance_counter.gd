@@ -16,27 +16,27 @@ var _volume_bar_tween: Tween
 
 func _ready() -> void:
 	volume_bar.modulate.a = 0.0
-	update_timer.start(_update_delay)
 	update_timer.timeout.connect(func():
 		update_text()
 		update_timer.start(_update_delay)
 	)
 	update_bus(0, true)
+	update_timer.start(_update_delay)
 	update_text()
 
 func update_text() -> void:
 	var final_text: String = ""
 	if _display_state == 1:
-		perf_label.text += "			- Performance -\n"
+		final_text += "			- Performance -\n"
 
-	perf_label.text += "[font_size=18]%s[/font_size] FPS" % Performance.get_monitor(Performance.TIME_FPS)
+	final_text += "[font_size=18]%s[/font_size] FPS" % Performance.get_monitor(Performance.TIME_FPS)
 	if OS.is_debug_build():
-		perf_label.text += "\n[font_size=18]%s[/font_size] RAM\n" % [
+		final_text += "\n[font_size=18]%s[/font_size] RAM\n" % [
 			String.humanize_size(int(Performance.get_monitor(Performance.MEMORY_STATIC)))]
 
 	if _display_state == 1:
-		perf_label.text += "\n			- Conductor -\n"
-		perf_label.text += "\n[font_size=15]%s[/font_size]" % Conductor.to_string()
+		final_text += "\n			- Conductor -\n"
+		final_text += "\n[font_size=15]%s[/font_size]" % Conductor.to_string()
 	perf_label.text = final_text
 
 func _unhandled_key_input(e: InputEvent) -> void:
@@ -111,6 +111,3 @@ func set_bus_volume(idx: int, vol: float) -> void:
 		0: Preferences.master_volume = vol
 		1: Preferences.bgm_volume = vol
 		2: Preferences.sfx_volume = vol
-
-
-
