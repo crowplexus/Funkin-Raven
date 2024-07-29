@@ -7,17 +7,18 @@ extends Node2D
 
 var current_item: CanvasItem
 var current_selection: int = 0
+var selectable_buttons: Array[CanvasItem] = []
 var _done: bool = false
 
 func _ready() -> void:
 	for button: CanvasItem in buttons.get_children():
 		if is_unselectable(button):
 			button.modulate = Color.BLACK
+		else:
+			selectable_buttons.append(button)
 	if not SoundBoard.is_bgm_playing():
 		SoundBoard.play_bgm(Globals.MENU_MUSIC, 0.7)
 	update_selection()
-	if is_unselectable(current_item):
-		update_selection(1, false)
 
 func _unhandled_input(e: InputEvent) -> void:
 	# prevents a bug with moving the mouse which would change selections nonstop
@@ -26,16 +27,14 @@ func _unhandled_input(e: InputEvent) -> void:
 	var ud: int = int(Input.get_axis("ui_up", "ui_down"))
 	if ud:
 		update_selection(ud)
-		if is_unselectable(current_item):
-			update_selection(ud, false)
 	if Input.is_action_just_pressed("ui_accept"):
 		confirm_selection()
 
 func update_selection(new_sel: int = 0, sound: bool = true) -> void:
 	if is_instance_valid(current_item) and current_item is AnimatedSprite2D:
 		current_item.play("idle")
-	current_selection = wrapi(current_selection + new_sel, 0, buttons.get_child_count())
-	current_item = buttons.get_child(current_selection)
+	current_selection = wrapi(current_selection + new_sel, 0, selectable_buttons.size())
+	current_item = selectable_buttons[current_selection]
 	if new_sel != 0 and sound:
 		SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
 	if current_item is AnimatedSprite2D:

@@ -57,12 +57,14 @@ func reset_scroll(scroll: Vector2) -> void:
 func display_splash() -> void:
 	if not note.receptor:
 		return
-	var splash_item: = splash_spr.duplicate() as AnimatedSprite2D
-	splash_item.modulate.a = 0.6
-	splash_item.visible = true
-	note.receptor.add_child(splash_item)
-	splash_item.play("splash%s %s" % [ column, randi_range(1, 2) ])
-	splash_item.animation_finished.connect(splash_item.queue_free)
+	var splash: = splash_spr.duplicate() as AnimatedSprite2D
+	splash.modulate.a = 0.6
+	splash.top_level = true
+	splash.visible = true
+	splash.global_position = note.receptor.global_position
+	note.receptor.add_child(splash)
+	splash.play("splash%s %s" % [ column, randi_range(1, 2) ])
+	splash.animation_finished.connect(splash.queue_free)
 
 func display_cover() -> void:
 	if not note.receptor:

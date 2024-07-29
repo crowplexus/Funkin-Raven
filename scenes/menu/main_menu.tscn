@@ -69,4 +69,4 @@ metadata/unselectable = false
 position = Vector2(360, 614)
 sprite_frames = ExtResource("6_rh7rp")
 animation = &"idle"
-metadata/unselectable = false
+metadata/unselectable = true
