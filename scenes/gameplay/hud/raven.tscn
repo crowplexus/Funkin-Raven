@@ -169,11 +169,11 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_fonts/font = ExtResource("6_yliuk")
 theme_override_font_sizes/font_size = 16
-text = "Epic: N/A.....
-Sick: N/A.....
-Good: N/A.....
-Bad: N/A.....
-Shit: N/A.....
+text = "Epic: 0
+Sick: 0
+Good: 0
+Bad: 0
+Shit: 0
 "
 vertical_alignment = 3
 
