@@ -21,6 +21,8 @@ func _to_string() -> String:
 	chart_string += "\nSong Info: { %s }" % self.song_info
 	return chart_string
 
+static func load_default() -> Chart:
+	return Chart.request("test", SongItem.DEFAULT_DIFFICULTY_SET.hard)
 
 static func request(song: StringName, difficulty: Dictionary = { "file": "normal", "target": "normal", "variation": "" }) -> Chart:
 	var path_chosen: String = ""

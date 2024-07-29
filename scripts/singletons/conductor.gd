@@ -27,7 +27,6 @@ var current_time_change: int:
 	set(nt):
 		if time_changes.is_empty() or nt > time_changes.size():
 			return
-
 		Conductor.bpm = time_changes[nt].bpm
 		Conductor.steps_per_beat = time_changes[nt].signature_num
 		Conductor.beats_per_bar = time_changes[nt].signature_den
@@ -107,18 +106,22 @@ func update(delta_time: float) -> void:
 ## Resets all the important values and data in the conductor.
 func reset() -> void:
 	length = 0.0
+	current_time_change = 0
 	time_changes.clear()
-	#current_time_change = 0
 	set_time(0.0)
 
 ## Sets the beat, and step values to new ones based on the given time.
 func set_time(new_time: float, with_offset: bool = false) -> void:
+	if with_offset: new_time += (Preferences.beat_offset * 0.001)
 	time = new_time
-	if with_offset: time += (Preferences.beat_offset * 0.001)
+	_previous_time = new_time
+	reset_beats(new_time)
+
+## Resets the beat, step and bar values to match a specific timeframe
+func reset_beats(new_time: float) -> void:
 	fbeat = Conductor.time_to_beat(new_time)
 	fstep = Conductor.time_to_step(new_time)
 	fbar  = Conductor.time_to_bar(new_time)
-	_previous_time = new_time
 	_previous_istep = floori(fstep)
 	_previous_fstep = fstep
 
@@ -140,7 +143,7 @@ func sort_time_changes(changes_to_sort: Array[Dictionary] = []) -> void:
 	changes_to_sort.sort_custom(func(a: Dictionary, b: Dictionary):
 		return a.time_stamp < b.time_stamp)
 
-## Utility function to apply a given time change.
+## Utility function to apply a time change dictionary.
 func apply_time_change(tc: Dictionary) -> void:
 	Conductor.current_time_change = time_changes.find(tc)
 	#print_debug("time change applied, current time change is ", Conductor.current_time_change)

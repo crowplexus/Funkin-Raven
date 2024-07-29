@@ -1,80 +1,114 @@
 extends RefCounted
 class_name Scoring
 
-const HIT_THRESHOLD: float = 200.0
-
 # DiogoTV scoring system
 const DOIDO_MIN_SCORE: int = 0
 const DOIDO_MAX_SCORE: int = 500
 const DOIDO_SCORE_SLOPE: float = 5.0
 
+const HIT_THRESHOLD: float = 200.0
 const JUDGMENTS: Dictionary = {
 	"perfect": {
 		## NOTE: this can only be hit by a bot,
 		## If you wanna use this, make sure to disable the
 		## cheating checks on [code]PlayerStats[/code]
 		"splash": true, "combo_break": false,
-		"accuracy": 100.0, "threshold": 5.0,
-		"color": Color("ff89c9"),
+		"accuracy": 100.0, "color": Color("ff89c9"),
 		"clear": { "full": "PFC" },
 		"visible": false, # hides judgment sprite
 	},
 	"epic": {
 		"splash": true, "combo_break": false,
-		"accuracy": 100.0, "threshold": 22.5,
-		"color": Color("ff89c9"),
+		"accuracy": 100.0, "color": Color("ff89c9"),
 		"clear": { "full": "EFC" },
 		"visible": true,
 	},
 	"sick": {
 		"splash": true, "combo_break": false,
-		"accuracy": 90.0, "threshold": 45.0,
-		"color": Color("626592"),
+		"accuracy": 90.0, "color": Color("626592"),
 		"clear": { "single": "SDS", "full": "SFC" },
 		"visible": true,
 	},
 	"good": {
 		"splash": false, "combo_break": false,
-		"accuracy": 85.0, "threshold": 90.0,
-		"color": Color("77d0c1"),
+		"accuracy": 85.0, "color": Color("77d0c1"),
 		"clear": { "single": "SDG", "full": "GFC" },
 		"visible": true,
 	},
 	"bad": {
 		"splash": false, "combo_break": true,
-		"accuracy": 30.0, "threshold": 135.0,
-		"color": Color("f7433f"),
+		"accuracy": 30.0, "color": Color("f7433f"),
 		"clear": { "full": "FC" },
 		"visible": true,
 	},
 	"shit": {
 		"splash": false, "combo_break": true,
-		"accuracy": 0.0, "threshold": 180.0,
-		"color": Color("e5af32"),
+		"accuracy": 0.0, "color": Color("e5af32"),
 		"clear": { "full": "FC" },
 		"visible": true,
 	},
 	"miss": {
 		# this is a fake judgement only used as placeholder
 		"splash": false, "combo_break": false,
-		"accuracy": 0.0, "threshold": HIT_THRESHOLD,
-		"color": Color.CRIMSON,
+		"accuracy": 0.0, "color": Color.CRIMSON,
 		"clear": { "full": "" }, # it isn't lol
 		"visible": false,
 	},
 }
 
-static func get_doido_score(x: float) -> int:
+const JUDGE_TIMINGS: Dictionary = {
+	# Order: Epic, Sick, Good, Bad, Shit
+	# Etterna Difficulties - https://docs.google.com/spreadsheets/d/1syi5aN6sTiDA2Bs_lzZjsLQ1yCEhxl5EnAd6EsD6cF4/edit#gid=0
+	"J1": [33.75, 67.5, 135.0, 202.5, 270.0],
+	"J2": [29.925, 59.85, 119.7, 179.55, 239.4],
+	"J3": [26.1, 52.2, 104.4, 156.6],
+	"J4": [22.5, 45.0, 90.0, 135.0, 180.0],
+	"J5": [18.9, 37.8, 75.6, 133.4, 180.0],
+	"J6": [14.85, 29.7, 59.4, 89.1, 180.0],
+	"J7": [11.25, 22.5, 45.0, 67.5, 180.0],
+	"J8": [7.425, 14.85, 29.7, 44.55, 180.0],
+	"JUSTICE": [4.5, 9.0, 18.0, 27.0, 180.0], # AKA J9
+	# Other Difficulties
+	"EQUITY": [1.0, 5.0, 10.5, 25.0, 180.0], # J10 wannabe
+	"WEEK7": [NAN, 33.33, 125.0, 150.0, 166.67], # Old FNF	, Disables Epic
+	# these are from here: https://itgwiki.dominick.cc/en/software/stepmania-judgements
+	"ITG": [23.0, 44.5, 103.5, 136.5, 181.5], # ITG/FA+ (minus blue fantastic window)
+	"DDR": [16.67, 33.33, 83.33, 123.33, 163.33], # DDR
+	#--------------------------------------------
+	#"CUSTOM": [NAN, NAN, NAN, NAN, NAN], # Custom timings
+}
+
+static func judge_time(millisecond_time: float) -> Dictionary:
+	var thresholds: Array = Scoring.JUDGE_TIMINGS[Preferences.timing_diff]
+	var can_epic: bool = Preferences.use_epics and Preferences.timing_diff != "WEEK7"
+	match millisecond_time:
+		# -- example --
+		# _ when millisecond_time <= JUDGEMENTS.my_custom_judge.threshold:
+		#	return JUDGMENTS.my_custom_judge
+		_ when millisecond_time <= thresholds[0] and thresholds[0] != NAN and can_epic:
+			return JUDGMENTS.epic
+		_ when millisecond_time <= thresholds[1] and thresholds[1] != NAN:
+			return JUDGMENTS.sick
+		_ when millisecond_time <= thresholds[2] and thresholds[2] != NAN:
+			return JUDGMENTS.good
+		_ when millisecond_time <= thresholds[3] and thresholds[3] != NAN:
+			return JUDGMENTS.bad
+		_ when millisecond_time <= thresholds[4] and thresholds[4] != NAN:
+			return JUDGMENTS.shit
+		_: # Default Judgment.
+			return JUDGMENTS.miss
+
+static func get_doido_score(x: float) -> 	int:
 	# https://github.com/DiogoTVV/FNF-Doido-Engine-3
 	# https://github.com/DiogoTVV/FNF-Doido-Engine-3
 	# https://github.com/DiogoTVV/FNF-Doido-Engine-3
 	# THANKS DIOGO!!!!!! PLEASE CHECK OUT HIS PROJECT :3
-	var score: float = remap(x, DOIDO_MIN_SCORE, DOIDO_MAX_SCORE, JUDGMENTS.shit.threshold, DOIDO_SCORE_SLOPE)
+	var boo_threshold: float = Scoring.JUDGE_TIMINGS[Preferences.timing_diff].back()
+	var score: float = remap(x, DOIDO_MIN_SCORE, DOIDO_MAX_SCORE, boo_threshold, DOIDO_SCORE_SLOPE)
 	return clampi(floori(score), DOIDO_MIN_SCORE, DOIDO_MAX_SCORE)
 
-
 static func get_wife_score(max_millis: float, version: int = 3, ts: float = -1.0) -> float:
-	if ts < 0.0: ts = AudioServer.playback_speed_scale
+	if ts < 0.0: ts = AudioServer.	playback_speed_scale
 	var score: float = 0
 	match version:
 		3:
@@ -109,12 +143,10 @@ static func get_wife_score(max_millis: float, version: int = 3, ts: float = -1.0
 			score = wife3_miss_weight
 	return score
 
-
 static func get_judge_by_name(name: StringName) -> Dictionary:
 	if JUDGMENTS.has(name):
 		return JUDGMENTS[name]
 	return JUDGMENTS.shit
-
 
 static func get_clear_flag(hit_reg: Dictionary) -> String:
 	if hit_reg.shit > 0:
@@ -131,7 +163,6 @@ static func get_clear_flag(hit_reg: Dictionary) -> String:
 		return JUDGMENTS.epic.clear.full
 	return ""
 
-
 static func get_clear_flag_color(flag: String) -> Color:
 	match flag:
 		JUDGMENTS.epic.clear.full:
@@ -146,7 +177,6 @@ static func get_clear_flag_color(flag: String) -> Color:
 			return Color.IVORY
 	return Color.WHITE
 
-
 static func judge_note(note: Note, fallback_diff: float = 0.0) -> Dictionary:
 	match note.kind:
 		_:
@@ -156,24 +186,3 @@ static func judge_note(note: Note, fallback_diff: float = 0.0) -> Dictionary:
 			if result == null or not result is Dictionary:
 				result = judge_time(fallback_diff)
 			return result
-
-
-static func judge_time(millisecond_time: float) -> Dictionary:
-	# this is faster than a for loop but less convenient
-	# at this moment i'm aiming for performance.
-	match millisecond_time:
-		# -- example --
-		# _ when millisecond_time <= JUDGEMENTS.my_custom_judge.threshold:
-		#	return JUDGMENTS.my_custom_judge
-		_ when millisecond_time <= JUDGMENTS.epic.threshold and Preferences.use_epics:
-			return JUDGMENTS.epic
-		_ when millisecond_time <= JUDGMENTS.sick.threshold:
-			return JUDGMENTS.sick
-		_ when millisecond_time <= JUDGMENTS.good.threshold:
-			return JUDGMENTS.good
-		_ when millisecond_time <= JUDGMENTS.bad.threshold:
-			return JUDGMENTS.bad
-		_ when millisecond_time <= JUDGMENTS.shit.threshold:
-			return JUDGMENTS.shit
-		_: # Default Judgment.
-			return JUDGMENTS.miss

@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://d0lkm636sq28u"]
+
+[ext_resource type="Script" path="res://scenes/tools/chart_editor.gd" id="1_0ssex"]
+[ext_resource type="Texture2D" uid="uid://mr31twd36rpw" path="res://assets/sprites/menu/menuDesat.png" id="2_eohnn"]
+
+[node name="chart_editor" type="Node2D"]
+script = ExtResource("1_0ssex")
+
+[node name="menu_desat" type="Sprite2D" parent="."]
+self_modulate = Color(0.119, 0.16135, 0.35, 1)
+position = Vector2(640, 360)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("2_eohnn")
+
+[node name="interface" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1280.0
+offset_bottom = 720.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="grid" type="ColorRect" parent="interface"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.305
+anchor_right = 0.695
+anchor_bottom = 1.0
+offset_left = -0.400024
+offset_right = 0.399902
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)

@@ -4,6 +4,7 @@ extends GameHUD
 @onready var progress_label: Label = $"progress_label"
 @onready var status_label: Label = $"status_label"
 @onready var icon_animation: AnimationPlayer = $"health_bar/animation_player"
+@onready var judge_counter: Label = $"judge_counter"
 
 @export var icon_bump_interval: int = 1 # beats
 @export var health_bar_icons: Array[CanvasItem] = []
@@ -20,8 +21,23 @@ func _ready() -> void:
 	_hb_twn.tween_property(health_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
 	if Chart.global and Chart.global.song_info:
 		_song_name = Chart.global.song_info.name
+
 	progress_label.visible = Preferences.show_timer
+	reset_judgement_counter()
 	Conductor.ibeat_reached.connect(icon_bump)
+
+func reset_judgement_counter() -> void:
+	judge_counter.visible = Preferences.judgement_counter != 0
+	if judge_counter.visible:
+		match Preferences.judgement_counter:
+			1:
+				judge_counter.set_anchors_and_offsets_preset(Control.PRESET_CENTER_LEFT, Control.PRESET_MODE_KEEP_SIZE)
+				judge_counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+				judge_counter.position.x += 5
+			2:
+				judge_counter.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT, Control.PRESET_MODE_KEEP_SIZE)
+				judge_counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+				judge_counter.position.x -= 5
 
 func _process(_delta: float) -> void:
 	if not health_bar_icons.is_empty():
@@ -88,11 +104,11 @@ func reset_positions() -> void:
 	match Preferences.scroll_direction:
 		0:
 			health_bar.position.y = 645
-			status_label.position.y = 680
+			status_label.position.y = 685
 			progress_label.position.y = 0.0
 		1:
 			health_bar.position.y = 80
-			status_label.position.y = 115
+			status_label.position.y = 120
 			progress_label.position.y = 690
 
 func update_score_text(note: Note, _is_tap: bool) -> void:
@@ -102,12 +118,12 @@ func update_score_text(note: Note, _is_tap: bool) -> void:
 		status_label.text = "AutoPlay Enabled"
 		return
 	status_label.text = str(note.hit_result.player.stats)
+	if judge_counter and judge_counter.visible:
+		judge_counter.text = note.hit_result.player.stats.hit_registry_string()
 
 func update_time_bar() -> void:
-	progress_label.text = "%s%s / %s (%s)" % [
-		"%s | " % _song_name if not _song_name.is_empty() else "",
+	progress_label.text = "%s / %s (%s)" % [
 		Globals.format_to_time(Conductor.time),
 		Globals.format_to_time(Conductor.length),
 		"%d%%" % [absf(Conductor.time / Conductor.length) * 100.0]
 	]
-

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://kn5dlvvlj10h"]
+[gd_scene load_steps=9 format=3 uid="uid://kn5dlvvlj10h"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/gameplay.gd" id="1_gfupu"]
 [ext_resource type="PackedScene" uid="uid://dab600stg4bxl" path="res://scenes/gameplay/notes/notefield.tscn" id="2_6wcp1"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" path="res://scenes/gameplay/note_cluster.gd" id="5_8cnuc"]
 [ext_resource type="PackedScene" uid="uid://bcn0ldilqlnur" path="res://scenes/gameplay/event_machine.tscn" id="7_16sth"]
 [ext_resource type="PackedScene" uid="uid://yruwyaxp0fdl" path="res://scenes/gameplay/hud/raven.tscn" id="12_hchqv"]
+
+[sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_th0ye"]
 
 [node name="gameplay" type="Node2D" node_paths=PackedStringArray("note_fields")]
 script = ExtResource("1_gfupu")
@@ -40,9 +42,10 @@ offset_bottom = -390.0
 position = Vector2(96, 96)
 script = ExtResource("5_8cnuc")
 
-[node name="music_player" type="AudioStreamPlayer" parent="."]
-bus = &"BGM"
-
 [node name="countdown_timer" type="Timer" parent="."]
 
 [node name="event_machine" parent="." instance=ExtResource("7_16sth")]
+
+[node name="music_player" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamSynchronized_th0ye")
+bus = &"BGM"

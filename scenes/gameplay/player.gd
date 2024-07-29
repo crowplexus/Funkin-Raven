@@ -168,8 +168,9 @@ func get_hit_result(note: Note) -> Note.HitResult:
 	judgment.frame = Scoring.JUDGMENTS.keys().find(judgment.name)
 
 	var result: Note.HitResult = Note.HitResult.make(self, (diff * 1000.0), judgment)
+	var can_epic: bool = Preferences.use_epics and Preferences.timing_diff != "WEEK7"
 	match judge_name:
-		"sick" when Preferences.use_epics == false:
+		"sick" when not can_epic:
 			judgment.accuracy = 100.0
 	return result
 

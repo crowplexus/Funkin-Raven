@@ -47,11 +47,9 @@ var invalid: bool:
 func apply_hit(note: Note) -> void:
 	if not note or not note.hit_result:
 		return
-
 	if not note.hit_result.judgment.name in hit_registry:
 		hit_registry[note.hit_result.judgment.name] = 0
 	hit_registry[note.hit_result.judgment.name] += 1
-
 	score += Scoring.get_doido_score((note.time - Conductor.time) * 1000.0)
 	if combo < 0:
 		combo = 0
@@ -69,6 +67,16 @@ func break_combo() -> void:
 		combo = 0
 		breaks += 1
 
+func hit_registry_string() -> String:
+	var counter: String = ""
+	for i: int in hit_registry.keys().size():
+		var key: String = hit_registry.keys()[i]
+		if key == "perfect":
+			continue
+		if not counter.is_empty(): counter += "\n"
+		counter += "%s: %s" % [key.to_pascal_case(), hit_registry[key]]
+	return counter
+
 func _to_string() -> String:
 	var status: String = "Score: %s - Accuracy: %s%% - Combo Breaks: %s" % [
 			Globals.thousands_sep(score), snappedf(accuracy, 0.01), breaks]
@@ -78,7 +86,6 @@ func _to_string() -> String:
 		if breaks > 0: cf = "SDCB"
 		if not cf.is_empty(): status += " (%s)" % cf
 	return status
-
 
 func _init() -> void:
 	for judge: String in Scoring.JUDGMENTS.keys():
@@ -92,4 +99,3 @@ func register() -> PlayerStats:
 	registry_date = Time.get_datetime_string_from_system(false, true)
 	#ResourceSaver.save(self, "res://"+song_name+".tres", ResourceSaver.FLAG_OMIT_EDITOR_PROPERTIES)
 	return self
-

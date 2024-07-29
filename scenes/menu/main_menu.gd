@@ -9,7 +9,6 @@ var current_item: CanvasItem
 var current_selection: int = 0
 var _done: bool = false
 
-
 func _ready() -> void:
 	for button: CanvasItem in buttons.get_children():
 		if is_unselectable(button):
@@ -19,7 +18,6 @@ func _ready() -> void:
 	update_selection()
 	if is_unselectable(current_item):
 		update_selection(1, false)
-
 
 func _unhandled_input(e: InputEvent) -> void:
 	# prevents a bug with moving the mouse which would change selections nonstop
@@ -33,7 +31,6 @@ func _unhandled_input(e: InputEvent) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
 		confirm_selection()
 
-
 func update_selection(new_sel: int = 0, sound: bool = true) -> void:
 	if is_instance_valid(current_item) and current_item is AnimatedSprite2D:
 		current_item.play("idle")
@@ -45,7 +42,6 @@ func update_selection(new_sel: int = 0, sound: bool = true) -> void:
 		current_item.play("selected")
 	if buttons.get_child_count() > 4:
 		camera.position.y = current_item.position.y * current_item.scale.y
-
 
 func confirm_selection() -> void:
 	var item: CanvasItem = current_item
@@ -71,7 +67,6 @@ func confirm_selection() -> void:
 				if get_tree().paused:
 					get_tree().paused = false
 			Transition.add_child(ow)
-			current_item.self_modulate.a = 1.0
 			get_tree().paused = true
 			bye_bye_buttons(true)
 		"credits":
@@ -80,11 +75,10 @@ func confirm_selection() -> void:
 			var credits_roll: Node2D = load("res://scenes/menu/credits_roll.tscn").instantiate()
 			credits_roll.connect("finished", func() -> void:
 				Globals.set_node_inputs(self, true)
+				bye_bye_buttons(true)
 				_done = false
 			)
-			#current_item.self_modulate.a = 1.0
 			add_child(credits_roll)
-			bye_bye_buttons(true)
 		"merch":
 			_done = false
 			OS.shell_open("https://needlejuicerecords.com/pages/friday-night-funkin")
@@ -96,15 +90,16 @@ func confirm_selection() -> void:
 			current_item.self_modulate.a = 1.0
 			bye_bye_buttons(true)
 
-
 func bye_bye_buttons(coming_back: bool = false) -> void:
 	var val: float = 1.0 if coming_back else 0.0
 	var duration: float = 0.5 if coming_back else 0.8
 	for button: CanvasItem in buttons.get_children():
-		if button != current_item:
+		var do_tween: bool = button != current_item
+		if coming_back and button == current_item:
+			do_tween = true
+		if do_tween:
 			create_tween().set_ease(Tween.EASE_OUT) \
-			.tween_property(button, "modulate:a", val, duration)
-
+			.tween_property(button, "self_modulate:a", val, duration)
 
 func is_unselectable(item: CanvasItem) -> bool:
 	return item and item.has_meta("unselectable") and item.get_meta("unselectable") == true

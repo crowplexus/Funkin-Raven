@@ -94,7 +94,7 @@ func update_hold_size(custom_size: float = 0.0) -> void:
 
 	var hold_calc: float = (600.0 * absf(note.real_speed)) * end_size
 	var tail_size: float = tail.size.y #- tail.texture.get_height()
-	hold.size.y = hold_calc - 0.015
+	hold.size.y = hold_calc - tail.size.y
 	hold_container.size = Vector2(hold.size.x, hold_calc + tail_size)
 	tail.position.y = (hold.position.y + hold.size.y)
 	#hold.size.y /= absf(self.scale.y)

@@ -14,7 +14,6 @@ var _game_muted: bool:
 var _update_delay: float = 1.0
 var _volume_bar_tween: Tween
 
-
 func _ready() -> void:
 	volume_bar.modulate.a = 0.0
 	update_timer.start(_update_delay)
@@ -25,9 +24,8 @@ func _ready() -> void:
 	update_bus(0, true)
 	update_text()
 
-
 func update_text() -> void:
-	perf_label.text = ""
+	var final_text: String = ""
 	if _display_state == 1:
 		perf_label.text += "			- Performance -\n"
 
@@ -39,7 +37,7 @@ func update_text() -> void:
 	if _display_state == 1:
 		perf_label.text += "\n			- Conductor -\n"
 		perf_label.text += "\n[font_size=15]%s[/font_size]" % Conductor.to_string()
-
+	perf_label.text = final_text
 
 func _unhandled_key_input(e: InputEvent) -> void:
 	if e.pressed: match e.keycode:
@@ -65,7 +63,6 @@ func _unhandled_key_input(e: InputEvent) -> void:
 		KEY_TAB when volume_bar.modulate.a > 0.0:
 			update_bus(1, true)
 
-
 func update_volume_bar(quiet: bool = false) -> void:
 	if _volume_bar_tween:
 		_volume_bar_tween.stop()
@@ -86,11 +83,9 @@ func update_volume_bar(quiet: bool = false) -> void:
 	_volume_bar_tween.tween_property(volume_bar, "modulate:a", 0.0, 1.0) \
 	.set_delay(0.5)
 
-
 func update_bus(next: int = 0, quiet: bool = false) -> void:
 	_cur_bus = wrapi(_cur_bus + next, 0, AudioServer.bus_count)
 	update_volume_bar(quiet)
-
 
 func update_bus_label() -> void:
 	bus_label.text = "%s\nBus: %s%s\n[TAB]" % [
@@ -99,20 +94,17 @@ func update_bus_label() -> void:
 		"(MUTE)" if _game_muted else "",
 	]
 
-
 func get_bus_pref(idx: int) -> String:
 	match idx:
 		1: return "bgm_volume"
 		2: return "sfx_volume"
 		_: return "master_volume"
 
-
 func get_bus_volume(idx: int) -> float:
 	match idx:
 		1: return Preferences.bgm_volume
 		2: return Preferences.sfx_volume
 		_: return Preferences.master_volume
-
 
 func set_bus_volume(idx: int, vol: float) -> void:
 	match idx:

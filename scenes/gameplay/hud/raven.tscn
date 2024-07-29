@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://yruwyaxp0fdl"]
+[gd_scene load_steps=11 format=3 uid="uid://yruwyaxp0fdl"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/hud/raven.gd" id="1_b6vun"]
 [ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="4_jkub1"]
@@ -70,6 +70,18 @@ _data = {
 "bump": SubResource("Animation_6fsbg")
 }
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5u5cr"]
+bg_color = Color(0, 0, 0, 0.27451)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 1
+expand_margin_left = 5.0
+expand_margin_top = 5.0
+expand_margin_right = 5.0
+expand_margin_bottom = 5.0
+
 [sub_resource type="LabelSettings" id="LabelSettings_daqce"]
 font = ExtResource("6_yliuk")
 font_size = 20
@@ -125,31 +137,52 @@ libraries = {
 
 [node name="status_label" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.261
-anchor_top = 0.944
-anchor_right = 0.745
-anchor_bottom = 0.967
-offset_left = -0.0800171
-offset_top = 0.319946
-offset_right = 0.399902
-offset_bottom = -0.240051
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -248.0
+offset_top = -35.0
+offset_right = 248.0
+offset_bottom = -19.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
 theme_override_fonts/font = ExtResource("6_yliuk")
 theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_5u5cr")
 text = "Score: N/A - Accuracy: N/A% - Combo Breaks: N/A"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="judge_counter" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -46.0
+offset_right = 132.0
+offset_bottom = 46.0
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("6_yliuk")
+theme_override_font_sizes/font_size = 16
+text = "Epic: N/A.....
+Sick: N/A.....
+Good: N/A.....
+Bad: N/A.....
+Shit: N/A.....
+"
+vertical_alignment = 3
 
 [node name="progress_label" type="Label" parent="."]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 25.0
-text = "??? | ?:?? / ?:?? (?%)"
+text = "?:?? / ?:?? (?%)"
 label_settings = SubResource("LabelSettings_daqce")
 horizontal_alignment = 1
 vertical_alignment = 1

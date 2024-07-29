@@ -5,6 +5,7 @@ extends GameHUD
 @onready var time_label: Label = $"timer/label"
 @onready var status_label: Label = $"status_label"
 @onready var icon_animation: AnimationPlayer = $"health_bar/animation_player"
+@onready var judge_counter: Label = $"judge_counter"
 
 @export var icon_bump_interval: int = 1
 @export var health_bar_icons: Array[CanvasItem] = []
@@ -19,7 +20,19 @@ func _ready() -> void:
 	time_bar.visible = Preferences.show_timer
 	time_label.text = _song_name
 	time_bar.value = 0.0
+	reset_judgement_counter()
 	Conductor.ibeat_reached.connect(icon_thingy)
+
+func reset_judgement_counter() -> void:
+	judge_counter.visible = Preferences.judgement_counter != 0
+	if judge_counter.visible:
+		match Preferences.judgement_counter:
+			1:
+				judge_counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+				judge_counter.set_anchors_and_offsets_preset(Control.PRESET_CENTER_LEFT, Control.PRESET_MODE_KEEP_SIZE)
+			2:
+				judge_counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+				judge_counter.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT, Control.PRESET_MODE_KEEP_SIZE)
 
 func _process(_delta: float) -> void:
 	if not health_bar_icons.is_empty():
@@ -95,25 +108,36 @@ func update_score_text(note: Note, _is_tap: bool) -> void:
 		status_label.text = "BOTPLAY"
 		return
 
-	var grade: String = Scoring.get_clear_flag(note.hit_result.player.stats.hit_registry)
-	var ke_cbs: int = note.hit_result.player.stats.misses + note.hit_result.player.stats.breaks
-	if ke_cbs > 0 and ke_cbs < 10:
-		grade = "SDCB"
-	elif ke_cbs >= 10:
-		grade = "Clear"
+	var clear_flag: String = "Clear"
+	if note.hit_result.player.stats.breaks < 10:
+		clear_flag = Scoring.get_clear_flag(note.hit_result.player.stats.hit_registry)
 
-	var grade_str: String = "("+grade+") "
+	var grade_str: String = "("+clear_flag+") "
 	grade_str += get_ke_grade(snappedf(note.hit_result.player.stats.accuracy, 0.01))
 
 	var text: String = "Score:%s | Combo Breaks:%s | Accuracy:%s%%" % [
-		note.hit_result.player.stats.score, ke_cbs,
+		note.hit_result.player.stats.score, note.hit_result.player.stats.breaks,
 		str(snappedf(note.hit_result.player.stats.accuracy, 0.01)),
 	]
 	text += " | %s" % grade_str
 	status_label.text = text
+	update_judgement_counter(note.hit_result.player.stats.hit_registry)
+
+func update_judgement_counter(hit_reg: Dictionary) -> void:
+	if not judge_counter or judge_counter.visible == false:
+		return
+
+	var counter: String = ""
+	for i: int in hit_reg.keys().size():
+		var key: String = hit_reg.keys()[i]
+		if key == "perfect":
+			continue
+		if not counter.is_empty(): counter += "\n"
+		counter += "%s: %s" % [format_judge(key), hit_reg[key]]
+	judge_counter.text = counter
 
 func update_time_bar() -> void:
-	time_bar.value = absf(Conductor.time / Conductor.length) * time_bar.max_value
+	time_bar.value = absf(Conductor.time/Conductor.length)*time_bar.max_value
 
 func get_ke_grade(acc: float):
 	match acc: # "use a for loop" this is literally faster and easier readable please st
@@ -134,3 +158,14 @@ func get_ke_grade(acc: float):
 		_ when acc >= 61.0: return "C"
 		_ when acc < 60.0: return "D"
 		_: return "N/A"
+
+func format_judge(j: String) -> StringName:
+	match j.to_lower():
+		"epic": return "Epics"
+		"sick": return "Sicks"
+		"good": return "Goods"
+		"bad": return "Bads"
+		"shit": return "Shits"
+		"miss": return "Misses"
+		"break": return "Combo Breaks"
+		_: return "???"

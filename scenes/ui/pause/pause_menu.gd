@@ -20,13 +20,15 @@ var options: Array[Callable] = [
 		var old_scroll: int = Preferences.scroll_direction
 		var old_rscale: float = Preferences.receptor_size
 		var old_center: bool = Preferences.centered_playfield
+		var old_counter: int = Preferences.judgement_counter
 		ow.close_callback = func():
 			Globals.set_node_inputs(self, true)
-			var receptors_changed: bool = (old_scroll != Preferences.scroll_direction
-				or old_rscale != Preferences.receptor_size
-				or old_center != Preferences.centered_playfield)
 			var scene: Node = get_tree().current_scene
 			if scene.name == "gameplay":
+				#region Reset Scroll Direction
+				var receptors_changed: bool = (old_scroll != Preferences.scroll_direction
+					or old_rscale != Preferences.receptor_size
+					or old_center != Preferences.centered_playfield)
 				if receptors_changed:
 					for nf: NoteField in scene.note_fields:
 						if old_rscale != Preferences.receptor_size:
@@ -47,9 +49,15 @@ var options: Array[Callable] = [
 								note.reset_scroll(note.notefield.scroll_mods[note.column % key_c])
 								if is_instance_valid(note.receptor) and is_instance_valid(note.object):
 									note.object.scale = note.receptor.scale
+				#endregion
 
-					if scene.get("hud") != null:
-						scene.hud.reset_positions()
+				#region Reset HUD Positions
+				if scene.get("hud") != null:
+					if receptors_changed: scene.hud.reset_positions()
+					if (old_counter != Preferences.judgement_counter
+					and scene.hud.has_method("reset_judgement_counter")):
+						scene.hud.reset_judgement_counter()
+				#endregion
 
 		add_child(ow),
 	func() -> void:

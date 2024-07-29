@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://deo3obwvipfis"]
+[gd_scene load_steps=12 format=3 uid="uid://deo3obwvipfis"]
 
 [ext_resource type="Theme" uid="uid://bh3fs6l4n44y4" path="res://assets/themes/funkin_style.tres" id="1_dxeve"]
 [ext_resource type="Script" path="res://scenes/ui/options/options_window.gd" id="1_gulft"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="2_mtl8v"]
 [ext_resource type="PackedScene" uid="uid://3e0gva7f3ej5" path="res://scenes/ui/options/option_item.tscn" id="3_wjca4"]
 [ext_resource type="Script" path="res://scenes/ui/options/keybind_option.gd" id="4_awyi8"]
+[ext_resource type="Script" path="res://scenes/ui/options/timing_difficulty_option.gd" id="4_uwdh8"]
 [ext_resource type="AudioStream" uid="uid://toqn7nqo322h" path="res://assets/audio/sfx/volume_appear.ogg" id="6_beq18"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_668iw"]
@@ -35,11 +36,10 @@ clip_contents = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.009
-anchor_top = 0.089
+anchor_top = 0.15
 anchor_right = 0.184
 anchor_bottom = 0.64
 offset_left = -0.52
-offset_top = 43.92
 offset_right = -0.52002
 offset_bottom = -7.80002
 mouse_filter = 1
@@ -58,14 +58,14 @@ metadata/_edit_lock_ = true
 clip_contents = true
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.262
-anchor_top = 0.089
+anchor_left = 0.187
+anchor_top = 0.078
 anchor_right = 0.887
-anchor_bottom = 0.783
-offset_left = -95.36
-offset_top = -8.08
+anchor_bottom = 0.772
+offset_left = 0.639969
+offset_top = -0.16
 offset_right = 0.640015
-offset_bottom = -7.76001
+offset_bottom = 0.159973
 grow_horizontal = 2
 mouse_filter = 1
 
@@ -128,6 +128,14 @@ layout_mode = 2
 option_name = &"Use Epics"
 description = "Enables a new 5th judgement greater than \"Sick!\""
 variable = "use_epics"
+
+[node name="timing_diff" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+script = ExtResource("4_uwdh8")
+option_name = &"Timing Difficulty"
+description = "Modifies timing windows for judgments in order to make them harder/easier to hit."
+variable = "timing_diff"
+option_type = 2
 
 [node name="playfield_side" parent="pages/gameplay" instance=ExtResource("3_wjca4")]
 layout_mode = 2
@@ -310,6 +318,14 @@ layout_mode = 2
 option_name = &"Always Display Combo"
 description = "Instead of making combo numbers fade, they will be kept on-screen"
 variable = "always_display_combo"
+
+[node name="judgement_counter" parent="pages/visuals" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Judgement Counter"
+description = "Displays a Counter counting how many of {some} judgement you've hit, for HUDs that implement it."
+variable = "judgement_counter"
+option_type = 2
+display_names = Array[StringName]([&"Disabled", &"Left", &"Right"])
 
 [node name="note_splashes" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2

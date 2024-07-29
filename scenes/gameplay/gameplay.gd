@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var note_fields: Array[NoteField] = []
-@export var skin: UISkin = preload("res://assets/sprites/ui/normal.tres")
+@export var skin: UISkin
 
 @onready var countdown_timer: Timer = $"countdown_timer"
 @onready var note_cluster: NoteCluster = $"ui_layer/note_cluster"
@@ -13,29 +13,39 @@ var hud_beat_interval: int = 4
 var default_hud_scale: Vector2 = Vector2.ONE
 var modchart_pack: ModchartPack
 
-var music: AudioStreamPlayer
+var active_player: Player
+var music_player: AudioStreamPlayer
 var stage: StageBG
+
+var update_music: bool = true
 
 #region Built-in Functions
 
 func _ready() -> void:
 	if not Chart.global:
-		Chart.global = Chart.request("test", SongItem.DEFAULT_DIFFICULTY_SET.hard)
+		Chart.global = Chart.load_default()
+
+	if not skin:
+		skin = Globals.DEFAULT_SKIN
+	if combo_group and not combo_group.skin:
+		combo_group.skin = skin
 
 	#region Setup Music
 	Conductor.set_time(-(Conductor.crotchet) * 5)
 
 	if Chart.global.song_info.instrumental:
-		music = $"music_player"
-		for vocal_stream: AudioStream in Chart.global.song_info.vocals:
-			var vocal_track: AudioStreamPlayer = music.duplicate()
-			vocal_track.stream = vocal_stream
-			music.add_child(vocal_track)
-		music.stream = Chart.global.song_info.instrumental.duplicate()
-		if music and music.stream:
-			Conductor.length = music.stream.get_length()
+		music_player = $"music_player"
+		music_player.stream.stream_count = Chart.global.song_info.vocals.size() + 1
+		# create instrumental stream and stuff.
+		music_player.stream.set_sync_stream(0, Chart.global.song_info.instrumental)
+		for i: int in Chart.global.song_info.vocals.size():
+			# set vocal tracks to sync with the instrumental.
+			music_player.stream.set_sync_stream(i + 1, Chart.global.song_info.vocals[i])
+		if music_player.stream.get_sync_stream(0):
+			Conductor.length = music_player.stream.get_sync_stream(0).get_length()
 		else:
 			Conductor.length = Chart.global.notes.back().time
+		music_player.finished.connect(end_play)
 	#endregion
 
 	default_hud_scale = ui_layer.scale
@@ -69,7 +79,6 @@ func _ready() -> void:
 			load_hud(Globals.DEFAULT_HUD.instantiate())
 
 	if combo_group:
-		combo_group.skin = skin
 		combo_group.push_judgement()
 		combo_group.push_combo(2)
 
@@ -83,14 +92,20 @@ func restart_countdown() -> void:
 	countdown_timer.start(Conductor.crotchet)
 	countdown_timer.timeout.connect(display_countdown)
 
+func end_play() -> void:
+	update_music = false
+	Conductor.reset()
+	Globals.change_scene(load("res://scenes/menu/freeplay_menu.tscn"))
+
 func _process(delta: float) -> void:
 	var process_script: int = modchart_pack.call_mod_method("_on_process", [self, delta])
 	if process_script == ModchartPack.CallableRequest.STOP:
 		return
-	if not music.playing or not music:
-		Conductor.update(Conductor.time + delta)
-	else:
-		Conductor.update(music.get_playback_position() + AudioServer.get_time_since_last_mix())
+	if update_music:
+		if not music_player or (music_player and not music_player.playing):
+			Conductor.update(Conductor.time + delta)
+		else:
+			Conductor.update(music_player.get_playback_position() + AudioServer.get_time_since_last_mix())
 	if ui_layer.scale != default_hud_scale:
 		ui_layer.scale = Vector2(
 			lerpf(default_hud_scale.x, ui_layer.scale.x, exp(-delta * 5)),
@@ -161,13 +176,15 @@ func generate_fields(configs: Array[Dictionary] = Chart.global.song_info.notefie
 	for idx: int in configs.size():
 		var nf: NoteField
 		var data: Dictionary = configs[idx]
+		var nf_exists: bool = false
 		if idx < note_fields.size():
 			nf = note_fields[idx]
+			nf_exists = true
 		else:
 			nf = load("res://scenes/gameplay/notes/notefield.tscn").instantiate()
 		Chart.global.song_info.configure_notefield(nf, data)
 		note_cluster.connect_notefield(nf)
-		if not note_fields.has(nf):
+		if not nf_exists:
 			note_fields.append(nf)
 			ui_layer.add_child(nf)
 
@@ -204,6 +221,7 @@ func generate_fields(configs: Array[Dictionary] = Chart.global.song_info.notefie
 		if is_same(idx, Preferences.playfield_side):
 			for j: int in field.key_count: field.player.controls.append("note%s" % j)
 			field.player.autoplay = false
+			active_player = field.player
 		field.add_child(field.player)
 		# Reset Scroll Direction
 		field.reset_receptors()
@@ -232,11 +250,11 @@ func display_countdown() -> void:
 		return
 
 	if countdown_beat > 3: # finish
-		music.play(0.0)
 		countdown_timer.timeout.disconnect(display_countdown)
-		for track: AudioStreamPlayer in music.get_children():
-			track.play(0.0)
-		countdown_beat = 0
+		var song_start_script: int = modchart_pack.call_mod_method("_on_song_start", [self])
+		if song_start_script != ModchartPack.CallableRequest.STOP:
+			music_player.play(0.0)
+			countdown_beat = 0
 		return
 
 	# Show the countdown sprite.
@@ -321,23 +339,11 @@ func on_ibeat_reached(ibeat: int) -> void:
 	if beat_script != ModchartPack.CallableRequest.STOP:
 		if ibeat % hud_beat_interval == 0:
 			ui_layer.scale += Vector2(0.03, 0.03)
-		if music and music.get_child_count() != 0:
-			for track: AudioStreamPlayer in music.get_children():
-				if (music.get_playback_position() - track.get_playback_position()) > 0.01:
-					resync_vocals()
 
 ## Func ran once every song bar.
 func on_ibar_reached(ibar: int) -> void:
 	var _bar_script: int = modchart_pack.call_mod_method("_on_ibar_reached", [self, ibar])
 	#if bar_script == ModchartPack.CallableRequest.STOP:
 	#	return
-
-# temporary until godot 4.3
-## Resyncs the vocals to music time.
-func resync_vocals() -> void:
-	if not music:
-		return
-	for track: AudioStreamPlayer in music.get_children():
-		track.seek(music.get_playback_position() + AudioServer.get_time_since_last_mix())
 
 #endregion

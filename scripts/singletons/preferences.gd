@@ -55,6 +55,9 @@ var playfield_side: int = 0:
 		match new_side:
 			2: playfield_side = -1 # temporary, maybe.
 			_: playfield_side = new_side
+## Modifies timing windows for judgments in order to make them harder/easier to hit.
+@export_enum("J1","J2","J3","J4","J5","J6","J7","J8","JUSTICE","EQUITY","WEEK7","ITG","DDR","CUSTOM")
+var timing_diff: String = "J5"
 
 #endregion
 #region Visual Options
@@ -63,7 +66,6 @@ var playfield_side: int = 0:
 @export var receptor_size: float = 1.0:
 	set(new_size):
 		receptor_size = clampf(snappedf(new_size, 0.001), 0.5, 1.1)
-
 ## Define here your frames per second limit.
 @export var framerate_cap: int = 60:
 	set(new_framerate):
@@ -93,8 +95,6 @@ var note_splashes: int = 2
 ## Enables certain flashing effects in menus and gameplay[br]
 ## Please disable this if you are sensitive to those.
 @export var flashing: bool = true
-## Enables a timer at the top of the screen, shows song elapsed time and total time.
-@export var show_timer: bool = true
 ## Makes combo coloured after the judgements you hit.
 @export_enum("None:0", "Only Judgments:1", "Only Combo:2", "Judges and Combo:3")
 var coloured_combo: int = 2
@@ -127,6 +127,11 @@ var note_colouring_mode: int = 0
 ## Choose a HUD Style.
 @export_enum("Song-specific:0", "Raven:1", "Kade:2", "Psych:3", "Classic:4")
 var hud_style: int = 0
+## Displays a Counter counting how many of {some} judgement you've hit, for HUDs that implement it.
+@export_enum("Disabled:0", "Left:1", "Right:2")
+var judgement_counter: int = 1
+## Enables a timer at the top of the screen, shows song elapsed time and total time.
+@export var show_timer: bool = true
 
 #endregion
 

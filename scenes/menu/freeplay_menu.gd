@@ -24,7 +24,6 @@ func _ready() -> void:
 	if bundle: songs = bundle.get_all_songs()
 	generate_songs()
 
-
 func _unhandled_input(e: InputEvent) -> void:
 	# prevents a bug with moving the mouse which would change selections nonstop
 	if e is InputEventMouseMotion:
@@ -61,7 +60,6 @@ func _unhandled_input(e: InputEvent) -> void:
 			Chart.global.song_info.name = songs[current_selection - 1].display_name
 		Globals.change_scene(load("res://scenes/gameplay/gameplay.tscn"))
 
-
 func update_selection(new_sel: int = 0) -> void:
 	if song_list.get_child_count() == 0:
 		return
@@ -76,17 +74,18 @@ func update_selection(new_sel: int = 0) -> void:
 	for thingy: Alphabet in song_list.get_children():
 		thingy.menu_target = thingy.get_index() - current_selection
 
+	reset_menu_song(current_selection)
+	update_alternative()
+
+func reset_menu_song(c: int = 0) -> void:
 	# i have to tell my brain to stop hardcoding @crowplexus
 	var menu_bgm_name: = Globals.MENU_MUSIC.resource_path.get_file().get_basename()
 	var random_bgm_name: = Globals.RANDOM_MUSIC.resource_path.get_file().get_basename()
-
 	match SoundBoard.current_bgm:
-		menu_bgm_name when current_selection == 0:
+		menu_bgm_name when c == 0:
 			play_bgm_check(Globals.RANDOM_MUSIC, true, true)
-		random_bgm_name when current_selection != 0:
+		random_bgm_name when c != 0:
 			play_bgm_check(Globals.MENU_MUSIC, true, true)
-	update_alternative()
-
 
 func update_alternative(new_alt: int = 0) -> void:
 	if song_list.get_child_count() == 0:
@@ -100,7 +99,6 @@ func update_alternative(new_alt: int = 0) -> void:
 		diff_label.text = current_difficulty.display_name
 	update_highscore()
 
-
 func update_highscore() -> void:
 	var song: = songs[current_selection - 1]
 	# this sucks, i know it sucks, it's the best way i found
@@ -112,7 +110,6 @@ func update_highscore() -> void:
 		score_label.text += "\nAccuracy: %s%%" % snappedf(current_top.accuracy, 0.01)
 	else:
 		score_label.text = "TOP SCORE: 000000\nAccuracy: N/A"
-
 
 func generate_songs() -> void:
 	if not bundle or songs.is_empty():
@@ -154,7 +151,6 @@ func generate_songs() -> void:
 
 	update_selection()
 	update_alternative()
-
 
 func play_bgm_check(song: AudioStream, skip_check: bool = false, fade: bool = false) -> void:
 	if not SoundBoard.is_bgm_playing() or skip_check:
