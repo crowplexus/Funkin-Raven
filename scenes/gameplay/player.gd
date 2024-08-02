@@ -3,7 +3,7 @@ extends Node2D
 class_name Player
 
 ## Player's current stats, such as score, note misses, etc
-@export var stats: PlayerStats
+@export var tallies: Tally
 ## List of player controls.
 @export var controls: Array[String] = []
 ## Notefield attached to the player.
@@ -24,6 +24,8 @@ var note_miss: Callable = func(_column: int = 0, _note: Note = null) -> void:
 #region Built-in functions
 
 func _ready() -> void:
+	if not tallies:
+		tallies = Tally.new()
 	buttons_held.resize(notefield.key_count)
 	buttons_held.fill(false)
 
@@ -139,13 +141,13 @@ func kill_note(note: Note) -> void:
 func note_hit_common(note: Note) -> void:
 	# increase score.
 	if "combo_break" in note.hit_result.judgment and note.hit_result.judgment.combo_break == true:
-		stats.break_combo()
+		tallies.break_combo()
 	match note.hit_result.judgment.name:
 		"miss":
-			stats.apply_miss(note.column, note)
+			tallies.apply_miss(note.column, note)
 			if note_miss: note_miss.call(note.column, note)
 		_:
-			stats.apply_hit(note)
+			tallies.apply_hit(note)
 			if note_hit: note_hit.call(note)
 	# free the note object.
 	if is_instance_valid(note.object) and note.object.has_method("on_hit"):

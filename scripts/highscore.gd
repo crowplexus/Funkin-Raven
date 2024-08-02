@@ -25,7 +25,7 @@ static func save(hi: Highscore) -> void:
 	ResourceSaver.save(hi)
 
 
-static func get_hi(hi: Highscore, song: String, difficulty: Dictionary = {}) -> PlayerStats:
+static func get_hi(hi: Highscore, song: String, difficulty: Dictionary = {}) -> Tally:
 	if not check_signature(hi):
 		hi = Highscore.open()
 	var real_difficulty: StringName = difficulty.file
@@ -34,12 +34,11 @@ static func get_hi(hi: Highscore, song: String, difficulty: Dictionary = {}) -> 
 	elif not difficulty.variation.is_empty():
 		real_difficulty = difficulty.variation
 	var save_name: String = song+"_"+real_difficulty
-	if save_name in hi.data and hi.data[save_name] is Array:
+	if hi and hi.data and save_name in hi.data and hi.data[save_name] is Array:
 		return hi.data[save_name][0]
 	return null
 
-
-static func register(score: PlayerStats, song: String, difficulty: Dictionary = {}) -> void:
+static func register(tally: Tally, song: String, difficulty: Dictionary = {}) -> void:
 	if difficulty.is_empty():
 		difficulty = {
 			"display_name": "Unknown",
@@ -57,7 +56,7 @@ static func register(score: PlayerStats, song: String, difficulty: Dictionary = 
 		cached_hi = Highscore.open()
 	var save_name: String = song+"_"+real_difficulty
 	if not save_name in cached_hi.data: cached_hi.data[save_name] = []
-	cached_hi.data[save_name].append(score.register())
+	cached_hi.data[save_name].append(tally.register())
 	cached_hi.last_modified = Time.get_datetime_string_from_system(false, true)
 	Highscore.save(cached_hi)
 	print_debug("Registered song score for, ", song, " [", difficulty.display_name, "]")

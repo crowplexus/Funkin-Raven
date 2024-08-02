@@ -7,9 +7,9 @@ class_name SongItem
 ## used when none were specified by the user, check [code]SongItem[/code]'s script for details.
 const DEFAULT_DIFFICULTY_SET: Dictionary = {
 	"easy": { "display_name": "Easy", "file": "easy",			"variation": "" },
-	"normal": { "display_name": "Normal", "file": "normal",			"variation": "" },
+	"normal": { "display_name": "Normal", "file": "normal",		"variation": "" },
 	"hard": { "display_name": "Hard", "file": "hard",			"variation": "" },
-	"erect": { "display_name": "Erect", "file": "erect",			"variation": "erect" },
+	"erect": { "display_name": "Erect", "file": "erect",		"variation": "erect" },
 	"nightmare": {
 		"display_name": "Nightmare",
 		"target": "nightmare", # optional, difficulty to target from the file
@@ -32,3 +32,13 @@ const DEFAULT_DIFFICULTY_SET: Dictionary = {
 ]
 ## Icon Texture that appears in the freeplay menu.
 @export var icon: HealthIcon
+## Difficulty Selected, used for playlists
+var difficulty: Dictionary = {}
+
+func get_difficulty_name() -> StringName:
+	var dname: String = ""
+	if dname.is_empty() and "display_name" in difficulty:
+		dname = difficulty.display_name
+	if dname.is_empty() and "file" in difficulty:
+		dname = difficulty.file
+	return dname

@@ -109,19 +109,19 @@ func update_score_text(note: Note, _is_tap: bool) -> void:
 		return
 
 	var clear_flag: String = "Clear"
-	if note.hit_result.player.stats.breaks < 10:
-		clear_flag = Scoring.get_clear_flag(note.hit_result.player.stats.hit_registry)
+	if note.hit_result.player.tallies.breaks < 10:
+		clear_flag = Scoring.get_clear_flag(note.hit_result.player.tallies.hit_registry)
 
 	var grade_str: String = "("+clear_flag+") "
-	grade_str += get_ke_grade(snappedf(note.hit_result.player.stats.accuracy, 0.01))
+	grade_str += get_ke_grade(snappedf(note.hit_result.player.tallies.accuracy, 0.01))
 
 	var text: String = "Score:%s | Combo Breaks:%s | Accuracy:%s%%" % [
-		note.hit_result.player.stats.score, note.hit_result.player.stats.breaks,
-		str(snappedf(note.hit_result.player.stats.accuracy, 0.01)),
+		note.hit_result.player.tallies.score, note.hit_result.player.tallies.breaks,
+		str(snappedf(note.hit_result.player.tallies.accuracy, 0.01)),
 	]
 	text += " | %s" % grade_str
 	status_label.text = text
-	update_judgement_counter(note.hit_result.player.stats.hit_registry)
+	update_judgement_counter(note.hit_result.player.tallies.hit_registry)
 
 func update_judgement_counter(hit_reg: Dictionary) -> void:
 	if not judge_counter or judge_counter.visible == false:

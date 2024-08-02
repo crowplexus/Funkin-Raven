@@ -4,21 +4,26 @@ extends Node2D
 @onready var song_list: Control = $"ui/song_container"
 @onready var score_label: Label = $"ui/score_text"
 @onready var diff_label: Label = $"ui/score_text/difficulty_text"
+@onready var playlist_label: Label = $"ui/playlist_text"
 
 @export var item_idle_opacity: float = 0.6
 @export var item_selected_opacity: float = 1.0
 @export var bundle: Bundle
+
 var songs: Array[SongItem] = []
+var personal_playlist: Array[SongItem] = []
 
 var current_item: CanvasItem
 var current_difficulty: Dictionary
-var current_top: PlayerStats
 var current_selection: int = 1
 var current_alternative: int = 1
 var music_fade_twn: Tween
+var playlist_twn: Tween
+var current_top: Tally
 
 
 func _ready() -> void:
+	playlist_label.modulate.a = 0.0
 	play_bgm_check(Globals.MENU_MUSIC)
 	$"ui/song_container/random".modulate.a = item_idle_opacity
 	if bundle: songs = bundle.get_all_songs()
@@ -36,6 +41,29 @@ func _unhandled_input(e: InputEvent) -> void:
 
 	if ud: update_selection(ud)
 	if lr: update_alternative(lr)
+
+	if Input.is_key_label_pressed(KEY_CTRL) and current_selection != 0:
+		var song: = songs[current_selection - 1]
+		song.difficulty = current_difficulty
+		if not personal_playlist.has(song):
+			current_item.modulate = Color.TURQUOISE
+			personal_playlist.append(song)
+		else:
+			current_item.modulate = Color.WHITE
+			personal_playlist.erase(song)
+		playlist_label.text = "[PLAYLIST]\n"
+		for stored_song: SongItem in personal_playlist:
+			playlist_label.text += stored_song.display_name
+			playlist_label.text += " [%s]" % stored_song.get_difficulty_name()
+			if personal_playlist.find(stored_song) != personal_playlist.size():
+				playlist_label.text += "\n"
+
+		var v: float = 1.0 if not personal_playlist.is_empty() else 0.0
+		if playlist_label.modulate.a != v:
+			if playlist_twn:
+				playlist_twn.kill()
+			playlist_twn = create_tween().set_ease(Tween.EASE_IN)
+			playlist_twn.tween_property(playlist_label, "modulate:a", v, 0.5)
 
 	if Input.is_action_just_pressed("ui_cancel"):
 		Globals.set_node_inputs(self, false)
@@ -55,9 +83,17 @@ func _unhandled_input(e: InputEvent) -> void:
 		#await get_tree().create_timer(1.0).timeout
 
 		SoundBoard.stop_bgm()
-		Chart.global = Chart.request(songs[current_selection - 1].folder_name, current_difficulty)
-		if Chart.global.song_info.name == "<REPLACE>":
-			Chart.global.song_info.name = songs[current_selection - 1].display_name
+		if not personal_playlist.is_empty():
+			Gameplay.game_mode = Gameplay.GameMode.PLAYLIST
+			Gameplay.play_list = personal_playlist.duplicate()
+			Gameplay.play_list_pos = 0
+			Chart.global = Chart.request(personal_playlist[0].folder_name, personal_playlist[0].difficulty)
+		else:
+			Chart.global = Chart.request(songs[current_selection - 1].folder_name, current_difficulty)
+			Gameplay.game_mode = Gameplay.GameMode.FREEPLAY
+			if Chart.global.song_info.name == "<REPLACE>":
+				Chart.global.song_info.name = songs[current_selection - 1].display_name
+			songs[current_selection - 1].difficulty = current_difficulty
 		Globals.change_scene(load("res://scenes/gameplay/gameplay.tscn"))
 
 func update_selection(new_sel: int = 0) -> void:

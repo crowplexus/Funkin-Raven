@@ -11,7 +11,8 @@ var camera_tween_zoom: Tween
 
 
 func _ready() -> void:
-	if Chart.global:
+	current_event_id = 0
+	if Chart.global and event_list.is_empty():
 		event_list = Chart.global.events.duplicate()
 	if not event_list.is_empty():
 		for ev: ChartEvent in event_list:

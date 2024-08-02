@@ -62,6 +62,7 @@ var options: Array[Callable] = [
 		add_child(ow),
 	func() -> void:
 		SoundBoard.stop_bgm()
+		Gameplay.prev_tallies.clear()
 		Globals.change_scene(load("res://scenes/menu/freeplay_menu.tscn")),
 ]
 var current_selection: int = 0

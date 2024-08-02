@@ -1,4 +1,11 @@
 extends Node2D
+class_name Gameplay
+
+enum GameMode {
+	CAMPAIGN = 0,
+	FREEPLAY = 1,
+	PLAYLIST = 2,
+}
 
 @export var note_fields: Array[NoteField] = []
 @export var skin: UISkin
@@ -7,6 +14,11 @@ extends Node2D
 @onready var note_cluster: NoteCluster = $"ui_layer/note_cluster"
 @onready var event_machine: EventMachine = $"event_machine"
 @onready var combo_group: Control = $"ui_layer/combo_group"
+
+static var prev_tallies: Array[Tally] = []
+static var game_mode: GameMode = GameMode.FREEPLAY
+static var play_list: Array[SongItem] = []
+static var play_list_pos: int = 0
 
 var countdown_beat: int = 0
 var hud_beat_interval: int = 4
@@ -22,33 +34,11 @@ var update_music: bool = true
 #region Built-in Functions
 
 func _ready() -> void:
-	if not Chart.global:
-		Chart.global = Chart.load_default()
-
-	if not skin:
-		skin = Globals.DEFAULT_SKIN
-	if combo_group and not combo_group.skin:
-		combo_group.skin = skin
-
-	#region Setup Music
-	Conductor.set_time(-(Conductor.crotchet) * 5)
-
-	if Chart.global.song_info.instrumental:
-		music_player = $"music_player"
-		music_player.stream.stream_count = Chart.global.song_info.vocals.size() + 1
-		# create instrumental stream and stuff.
-		music_player.stream.set_sync_stream(0, Chart.global.song_info.instrumental)
-		for i: int in Chart.global.song_info.vocals.size():
-			# set vocal tracks to sync with the instrumental.
-			music_player.stream.set_sync_stream(i + 1, Chart.global.song_info.vocals[i])
-		if music_player.stream.get_sync_stream(0):
-			Conductor.length = music_player.stream.get_sync_stream(0).get_length()
-		else:
-			Conductor.length = Chart.global.notes.back().time
-		music_player.finished.connect(end_play)
-	#endregion
-
+	if not Chart.global: Chart.global = Chart.load_default()
+	if not skin: skin = Globals.DEFAULT_SKIN
+	if combo_group and not combo_group.skin: combo_group.skin = skin
 	default_hud_scale = ui_layer.scale
+	if modchart_pack: modchart_pack.dispose()
 	modchart_pack = ModchartPack.pack_from_folders([
 		"res://assets/scripts",
 		"res://assets/scripts/songs/%s" % Chart.global.song_info.folder,
@@ -57,17 +47,13 @@ func _ready() -> void:
 	add_child(modchart_pack)
 	modchart_pack.call_mod_method("_on_ready", [self])
 
-	#region Setup Notes
-	generate_fields()
-	note_cluster.note_queue = Chart.global.notes.duplicate()
-	event_machine.event_list = Chart.global.events.duplicate()
-	event_machine._ready()
-	note_cluster._ready()
-	#endregion
-
-	#region Setup Stage
-	remove_child($"main_stage")
-	ui_layer.remove_child(ui_layer.get_node("hud"))
+	setup_music()
+	if has_node("main_stage"):
+		remove_child($"main_stage")
+	if ui_layer.has_node("hud"):
+		ui_layer.remove_child(ui_layer.get_node("hud"))
+	unload_current_hud()
+	setup_notes()
 	# HUD
 	var hud_script: int = modchart_pack.call_mod_method("_set_hud", [self])
 	match Preferences.hud_style:
@@ -78,24 +64,59 @@ func _ready() -> void:
 		_ when hud_script != ModchartPack.CallableRequest.STOP: # Custom, per-song HUDs
 			load_hud(Globals.DEFAULT_HUD.instantiate())
 
-	if combo_group:
+	if combo_group and not combo_group.judgment_sprite:
 		combo_group.push_judgement()
 		combo_group.push_combo(2)
 
 	load_stage()
-	load_characters()
-	#endregion
-
+	load_characters(Chart.global.song_info.characters)
 	restart_countdown()
+
+func clear_notes() -> void:
+	for node: Node in note_cluster.get_children():
+		note_cluster.remove_child(node)
+		node.queue_free()
+
+func switch_stage(stage_file: String = "") -> void:
+	remove_child(stage)
+	load_stage(stage_file)
+
+func swap_character(player: int = 1, character: String = "") -> void:
+	load_character(character, player)
 
 func restart_countdown() -> void:
 	countdown_timer.start(Conductor.crotchet)
-	countdown_timer.timeout.connect(display_countdown)
+	if not countdown_timer.timeout.is_connected(display_countdown):
+		countdown_timer.timeout.connect(display_countdown)
 
 func end_play() -> void:
 	update_music = false
-	Conductor.reset()
-	Globals.change_scene(load("res://scenes/menu/freeplay_menu.tscn"))
+	# TODO: save tallies
+	match game_mode:
+		GameMode.CAMPAIGN, GameMode.PLAYLIST:
+			if play_list_pos < play_list.size() - 1:
+				for i: int in note_fields.size():
+					# NOTE: broken? fix??? TODO!?!?
+					var tally: = note_fields[i].player.tallies
+					if prev_tallies.has(tally): prev_tallies[i] = tally
+					else: prev_tallies.append(tally.duplicate())
+				play_list_pos += 1
+				var diff: Dictionary = play_list[play_list_pos].difficulty
+				Chart.global = Chart.request(play_list[play_list_pos].folder_name, diff)
+				countdown_beat = 0
+				_ready()
+				update_music = true
+				return
+			else:
+				var where_to: String = "freeplay_menu"
+				if game_mode == GameMode.CAMPAIGN:
+					where_to = "story_menu"
+				play_list_pos = 0
+				prev_tallies.clear()
+				play_list.clear()
+				Globals.change_scene(load("res://scenes/menu/%s.tscn" % where_to))
+		GameMode.FREEPLAY:
+			Globals.change_scene(load("res://scenes/menu/freeplay_menu.tscn"))
 
 func _process(delta: float) -> void:
 	var process_script: int = modchart_pack.call_mod_method("_on_process", [self, delta])
@@ -139,34 +160,74 @@ func _exit_tree() -> void:
 
 #region Loading Functions
 
-func load_stage() -> void:
+func load_stage(stage_file: String = "") -> void:
+	if stage_file.is_empty():
+		stage_file = Chart.global.song_info.background
+	if stage: stage.queue_free()
+
 	var stage_path: String = "res://scenes/backgrounds/mainStage.tscn"
-	if ResourceLoader.exists(stage_path.replace("mainStage", Chart.global.song_info.background)):
-		stage_path = stage_path.replace("mainStage", Chart.global.song_info.background)
+	if ResourceLoader.exists(stage_path.replace("mainStage", stage_file)):
+		stage_path = stage_path.replace("mainStage", stage_file)
 	stage = load(stage_path).instantiate()
 	add_child(stage)
 	# move to the top
 	move_child(stage, 0)
 
-func load_characters() -> void:
-	for character: String in Chart.global.song_info.characters:
+func load_characters(chars: Array[String]) -> void:
+	for character: String in chars:
 		var char_path: String = "res://scenes/characters/%s.tscn" % character
 		if not ResourceLoader.exists(char_path):
 			continue
 		var idx: int = Chart.global.song_info.characters.find(character)
-		var mark: = stage.get_node("player%s" % (idx + 1))
-		var mark_idx: int = mark.get_index()
-
-		var actor: Character = load(char_path).instantiate()
-		actor.global_position = mark.global_position
-		actor.name = "player%s" % str(idx + 1)
-		if idx == 0: actor._faces_left = true
-
-		stage.remove_child(mark)
-		stage.add_child(actor)
-		stage.move_child(actor, mark_idx)
+		var actor: Character = load_character(character, idx + 1)
 		if idx < note_fields.size():
+			note_fields[idx].connected_characters.clear()
 			note_fields[idx].connected_characters.append(actor)
+
+func load_character(char_name: String = "", char_position: int = 1) -> Character:
+	var char_path: String = "res://scenes/characters/%s.tscn" % char_name
+	if not ResourceLoader.exists(char_path):
+		return
+	#var idx: int = Chart.global.song_info.characters.find(character)
+	var mark: = stage.get_node("player%s" % char_position)
+	var actor: Character = load(char_path).instantiate()
+	actor.name = "player%s" % char_position
+	actor.global_position = mark.global_position
+
+	if char_position == 1: actor._faces_left = true
+	var mark_idx: int = mark.get_index()
+	stage.remove_child(mark)
+	mark.queue_free()
+	stage.add_child(actor)
+	stage.move_child(actor, mark_idx)
+	return actor
+
+func setup_music() -> void:
+	if Chart.global.song_info.instrumental:
+		music_player = $"music_player"
+		music_player.stream.stream_count = Chart.global.song_info.vocals.size() + 1
+		# create instrumental stream and stuff.
+		music_player.stream.set_sync_stream(0, Chart.global.song_info.instrumental)
+		for i: int in Chart.global.song_info.vocals.size():
+			# set vocal tracks to sync with the instrumental.
+			music_player.stream.set_sync_stream(i + 1, Chart.global.song_info.vocals[i])
+		if music_player.stream.get_sync_stream(0):
+			Conductor.length = music_player.stream.get_sync_stream(0).get_length()
+		else:
+			Conductor.length = Chart.global.notes.back().time
+		if not music_player.finished.is_connected(end_play):
+			music_player.finished.connect(end_play)
+	Conductor.set_time(-(Conductor.crotchet) * 5)
+
+func setup_notes() -> void:
+	clear_notes()
+	note_cluster.note_queue.clear()
+	event_machine.event_list.clear()
+	generate_fields()
+	note_cluster.note_queue = Chart.global.notes.duplicate()
+	event_machine.event_list = Chart.global.events.duplicate()
+	event_machine._ready()
+	note_cluster._ready()
 
 #endregion
 
@@ -191,8 +252,18 @@ func generate_fields(configs: Array[Dictionary] = Chart.global.song_info.notefie
 	for idx: int in note_fields.size():
 		var field: NoteField = note_fields[idx]
 		# Setup Player
+		if field.player: field.player.queue_free()
 		field.player = Player.new()
-		field.player.stats = PlayerStats.new()
+		var ptally: Tally
+		# use playlist tallies (if they exist)
+		var reuse_tally: bool = prev_tallies.is_empty() and idx < prev_tallies.size() - 1
+		if game_mode != GameMode.CAMPAIGN or GameMode.PLAYLIST:
+			reuse_tally = false
+		if reuse_tally:
+			ptally = prev_tallies[idx]
+		else:
+			ptally = Tally.new()
+		field.player.tallies = ptally
 		field.player.notefield = field
 		field.player.autoplay = true
 
@@ -317,7 +388,7 @@ func unload_current_hud() -> void:
 
 ## Gets rid of a specified hud that is active.
 func unload_hud(hud_object: GameHUD) -> void:
-	if ui_layer.has_node(hud_object.get_path()):
+	if hud_object and ui_layer.has_node(hud_object.get_path()):
 		ui_layer.remove_child(hud_object)
 		hud_object.queue_free()
 

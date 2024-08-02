@@ -13,7 +13,9 @@ var alive_queue: Array[Note] = []
 
 func _ready() -> void:
 	current_note = 0
-	if not note_queue.is_empty():
+	if Chart.global and note_queue.is_empty():
+		note_queue = Chart.global.notes.duplicate()
+	if not note_queue.is_empty() and not Conductor.fstep_reached.is_connected(try_spawning):
 		Conductor.fstep_reached.connect(try_spawning)
 	for nd: Note in note_queue:
 		nd.reset()
@@ -32,7 +34,7 @@ func move_notes(_delta: float) -> void:
 		note.move()
 		if (note.time - Conductor.time) < (-.2 - note.hold_length) and note.notefield and note.notefield.player:
 			note.hit_result = note.notefield.player.get_hit_result(note)
-			note.notefield.player.stats.apply_miss(note.column, note)
+			note.notefield.player.tallies.apply_miss(note.column, note)
 			if note.notefield.player.note_miss:
 				note.notefield.player.note_miss.call(note.column, note)
 		if not note.moving:
@@ -50,10 +52,8 @@ func spawn_notes() -> void:
 		var spawn_delay: float = 0.9 * note_queue[current_note].real_speed
 		if note_queue[current_note].real_speed < 1.0:
 			spawn_delay = 0.9 / note_queue[current_note].real_speed
-
 		if relative > spawn_delay:
 			break
-
 		spawn_note(current_note)
 		current_note += 1
 

@@ -8,6 +8,12 @@ enum CallableRequest {
 
 var modcharts: Array[GDScript] = []
 
+func dispose() -> void:
+	call_mod_method("_dispose", [get_tree().current_scene])
+	for mod: Script in modcharts:
+		mod.unreference()
+		modcharts.erase(mod)
+	queue_free()
 
 func call_mod_method(method_name: String, arguments: Array = []) -> int:
 	for mod: Script in modcharts:
@@ -19,7 +25,6 @@ func call_mod_method(method_name: String, arguments: Array = []) -> int:
 				return CallableRequest.NONE
 			return l if l is int else CallableRequest.NONE
 	return CallableRequest.NONE
-
 
 func get_scripts_at(folder: String) -> void:
 	if not folder or folder.is_empty() or not DirAccess.dir_exists_absolute(folder):
@@ -36,7 +41,6 @@ func get_scripts_at(folder: String) -> void:
 			modcharts.append(script)
 		else:
 			push_error("Failed to initialise modchart script, filename: ", file, " Error: Script is null.")
-
 
 static func pack_from_folders(folders: PackedStringArray) -> ModchartPack:
 	var pack: ModchartPack = ModchartPack.new()

@@ -86,4 +86,4 @@ func update_score_text(note: Note, _is_tap: bool) -> void:
 	if note.hit_result.player.autoplay == true:
 		status_label.text = "AutoPlay Enabled"
 		return
-	status_label.text = "Score:%s" % note.hit_result.player.stats.score
+	status_label.text = "Score:%s" % note.hit_result.player.tallies.score

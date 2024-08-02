@@ -181,8 +181,8 @@ static func judge_note(note: Note, fallback_diff: float = 0.0) -> Dictionary:
 	match note.kind:
 		_:
 			var result = null
-			if note.object and note.object.has_meta("judge_note"):
-				result = note.object.call_deferred("judge_note", note)
+			#if note and note.object and note.object.has_meta("judge_note"):
+			#	result = note.object.call_deferred("judge_note", note)
 			if result == null or not result is Dictionary:
 				result = judge_time(fallback_diff)
 			return result

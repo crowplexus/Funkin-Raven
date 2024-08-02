@@ -117,9 +117,9 @@ func update_score_text(note: Note, _is_tap: bool) -> void:
 	if note.hit_result.player.autoplay == true:
 		status_label.text = "AutoPlay Enabled"
 		return
-	status_label.text = str(note.hit_result.player.stats)
+	status_label.text = str(note.hit_result.player.tallies)
 	if judge_counter and judge_counter.visible:
-		judge_counter.text = note.hit_result.player.stats.hit_registry_string()
+		judge_counter.text = note.hit_result.player.tallies.hit_registry_string()
 
 func update_time_bar() -> void:
 	progress_label.text = "%s / %s (%s)" % [

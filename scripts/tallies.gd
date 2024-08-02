@@ -1,5 +1,5 @@
 extends Resource
-class_name PlayerStats
+class_name Tally
 
 ## Score, 0 by default.
 @export var score:  int = 0
@@ -75,6 +75,8 @@ func hit_registry_string() -> String:
 			continue
 		if not counter.is_empty(): counter += "\n"
 		counter += "%s: %s" % [key.to_pascal_case(), hit_registry[key]]
+	if not counter.is_empty():
+		counter += "\nMiss: %s" % [misses]
 	return counter
 
 func _to_string() -> String:
@@ -92,10 +94,10 @@ func _init() -> void:
 		if judge == "miss": continue
 		hit_registry[judge] = 0
 
-## Function use to register the date of when these stats were obtained[br]
+## Function use to register the date of when these tallies were obtained[br]
 ## Can be used with [code]ResourceSaver[/code] or [code]Highscore[/code]
 ## for registering purposes.
-func register() -> PlayerStats:
+func register() -> Tally:
 	registry_date = Time.get_datetime_string_from_system(false, true)
 	#ResourceSaver.save(self, "res://"+song_name+".tres", ResourceSaver.FLAG_OMIT_EDITOR_PROPERTIES)
 	return self

@@ -36,8 +36,8 @@ func display_judgement(hit_result: Note.HitResult) -> void:
 					judgment_sprite.modulate = hit_result.judgment.color
 					judgment_sprite.modulate.v = 1.2
 			1:
-				var cf: String = Scoring.get_clear_flag(hit_result.player.stats.hit_registry)
-				if hit_result.player.stats.breaks > 0: cf = "SDCB"
+				var cf: String = Scoring.get_clear_flag(hit_result.player.tallies.hit_registry)
+				if hit_result.player.tallies.breaks > 0: cf = "SDCB"
 				judgment_sprite.modulate = Scoring.get_clear_flag_color(cf)
 	judgment_sprite.position.y -= 80
 	judgment_sprite.scale *= 1.1
@@ -52,7 +52,7 @@ func display_judgement(hit_result: Note.HitResult) -> void:
 	.set_ease(Tween.EASE_IN_OUT).set_delay(0.6 * Conductor.crotchet)
 
 func display_combo(hit_result: Note.HitResult) -> void:
-	var count: int = hit_result.player.stats.combo
+	var count: int = hit_result.player.tallies.combo
 	var konbo_janai: bool = sign(count) == -1
 	var combo_colour: Color = Color.WHITE
 	if not konbo_janai:
@@ -63,9 +63,9 @@ func display_combo(hit_result: Note.HitResult) -> void:
 						combo_colour = hit_result.judgment.color
 						combo_colour.v = 1.2
 				1:
-					if hit_result.player.stats.breaks < 10:
-						var cf: String = Scoring.get_clear_flag(hit_result.player.stats.hit_registry)
-						if hit_result.player.stats.breaks > 0: cf = "SDCB"
+					if hit_result.player.tallies.breaks < 10:
+						var cf: String = Scoring.get_clear_flag(hit_result.player.tallies.hit_registry)
+						if hit_result.player.tallies.breaks > 0: cf = "SDCB"
 						combo_colour = Scoring.get_clear_flag_color(cf)
 	else:
 		combo_colour = Color.CRIMSON
