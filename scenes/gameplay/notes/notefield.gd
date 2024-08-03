@@ -40,6 +40,18 @@ func on_note_hit(note: Note, is_tap: bool) -> void:
 		suffix += "-hold"
 	chars_sing(-1, note.column, is_tap, suffix, note.hold_length)
 
+func on_note_miss(column: int = 0,  note: Note = null) -> void:
+	if note: column = note.column
+	var suffix: String = ""
+	var delay: float = 0.5
+	if note:
+		match note.kind:
+			"altanim", "altAnim", "Alt Animation": suffix = "-alt"
+			_: suffix = ""
+		if note.hold_length > 0.0:
+			suffix += "-hold"
+	chars_sing(-1, column, true, "miss" + suffix, delay)
+
 func reset_receptors() -> void:
 	_og_spot = playfield_spot
 	_og_modu_a = modulate.a

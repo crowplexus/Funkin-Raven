@@ -13,7 +13,7 @@ func set_icons(_icons: Array[HealthIcon]) -> void:
 func get_health(_next: float, _current: float, _delta: float) -> float:
 	# this is optional, but if you want a custom fill effect for your health bar, this is it.
 	return _next
-func update_score_text(_note: Note, _is_tap: bool) -> void:
+func update_score_text(tallies: Tally, _is_tap: bool) -> void:
 	# required, called whenever you hit a note.
 	pass
 func display_judgement(_hit_result: Note.HitResult, _combo_group: Control) -> void:

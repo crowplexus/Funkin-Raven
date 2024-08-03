@@ -91,7 +91,10 @@ var framerate_mode: String = "Capped":
 var hold_layer: int = 1
 ## Enables a firework effect when hitting judgements that allow it.
 @export_enum("Disabled:0", "On Player:1", "All Notefields:2")
-var note_splashes: int = 2
+var note_splashes: int = 1
+## Enables a spark effect when hitting judgements that allow it while holding notes.
+@export_enum("Disabled:0", "No explosion:1", "Full:2")
+var hold_covers: int = 2
 ## Enables certain flashing effects in menus and gameplay[br]
 ## Please disable this if you are sensitive to those.
 @export var flashing: bool = true

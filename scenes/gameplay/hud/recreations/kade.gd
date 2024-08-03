@@ -101,27 +101,25 @@ func reset_positions() -> void:
 			status_label.position.y = 140
 			time_bar.position.y = size.y * 0.96
 
-func update_score_text(note: Note, _is_tap: bool) -> void:
-	if not note:
-		return
-	if note.hit_result.player.autoplay == true:
-		status_label.text = "BOTPLAY"
+func update_score_text(tally: Tally, _is_tap: bool) -> void:
+	if tally.invalid == true:
+		status_label.text = "INVALID"
 		return
 
 	var clear_flag: String = "Clear"
-	if note.hit_result.player.tallies.breaks < 10:
-		clear_flag = Scoring.get_clear_flag(note.hit_result.player.tallies.hit_registry)
+	if tally.breaks < 10:
+		clear_flag = Scoring.get_clear_flag(tally.tallies.hit_registry)
 
 	var grade_str: String = "("+clear_flag+") "
-	grade_str += get_ke_grade(snappedf(note.hit_result.player.tallies.accuracy, 0.01))
+	grade_str += get_ke_grade(snappedf(tally.accuracy, 0.01))
 
 	var text: String = "Score:%s | Combo Breaks:%s | Accuracy:%s%%" % [
-		note.hit_result.player.tallies.score, note.hit_result.player.tallies.breaks,
-		str(snappedf(note.hit_result.player.tallies.accuracy, 0.01)),
+		tally.score, tally.breaks,
+		str(snappedf(tally.accuracy, 0.01)),
 	]
 	text += " | %s" % grade_str
 	status_label.text = text
-	update_judgement_counter(note.hit_result.player.tallies.hit_registry)
+	update_judgement_counter(tally.hit_registry)
 
 func update_judgement_counter(hit_reg: Dictionary) -> void:
 	if not judge_counter or judge_counter.visible == false:

@@ -3,17 +3,14 @@ class_name Tally
 
 ## Score, 0 by default.
 @export var score:  int = 0
-#	get:
-#		# convert accuracy to score
-#		# increase by note hits
-#		# decrease by misses.
-#		return 0
 ## Combo Breaks, 0 by default
 @export var breaks: int = 0
 ## Note Misses, 0 by default.
 @export var misses: int = 0
 ## Note Combo, 0 by default.
 @export var combo : int = 0
+## Ghost Taps, 0 by default.
+@export var ghost_taps: int = 0
 
 	# accuracy values #
 ## Accuracy, used to measure how accurate are your note hits in a percentage form[br]
@@ -61,6 +58,9 @@ func apply_miss(column: int = 0, note: Note = null) -> void:
 	break_combo()
 	if note: column = note.column
 	combo -= 1
+
+func apply_ghost_tap(column: int = 0) -> void:
+	ghost_taps += 1
 
 func break_combo() -> void:
 	if combo > 1:

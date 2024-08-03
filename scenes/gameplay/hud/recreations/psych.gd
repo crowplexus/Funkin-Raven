@@ -77,24 +77,20 @@ func set_player(player: int) -> void:
 
 #endregion
 
-func update_score_text(note: Note, _is_tap: bool) -> void:
-	if not note:
-		return
-	if note.hit_result.player.autoplay == true:
-		status_label.text = "BOTPLAY"
+func update_score_text(tally: Tally, _is_tap: bool) -> void:
+	if tally.autoplay == true:
+		status_label.text = "INVALID"
 		return
 
-	var acc: float = snappedf(note.hit_result.player.tallies.accuracy, 0.01)
+	var acc: float = snappedf(tally.accuracy, 0.01)
 	# psych rating fc
-	var rating_fc: String = Scoring.get_clear_flag(note.hit_result.player.tallies.hit_registry)
-	if note.hit_result.player.tallies.breaks >= 10:
+	var rating_fc: String = Scoring.get_clear_flag(tally.hit_registry)
+	if tally.breaks >= 10:
 		rating_fc = "Clear"
 
 	var acc_str: String = " (%s%%) - %s" % [ acc, rating_fc ]
 	var text: String = "Score: %s | Combo Breaks: %s | Rating: %s" % [
-		note.hit_result.player.tallies.score, note.hit_result.player.tallies.misses,
-		get_rating(acc) + acc_str,
-	]
+		tally.score, tally.misses, get_rating(acc) + acc_str]
 	status_label.text = text
 
 func update_time_bar() -> void:

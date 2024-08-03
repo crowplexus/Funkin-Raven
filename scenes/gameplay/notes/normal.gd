@@ -93,10 +93,9 @@ func update_hold_size(custom_size: float = 0.0) -> void:
 		tap.hide()
 
 	var end_size: float = custom_size if custom_size != 0.0 else note.hold_progress
-
 	var hold_calc: float = (600.0 * absf(note.real_speed)) * end_size
-	var tail_size: float = tail.size.y #- tail.texture.get_height()
-	hold.size.y = hold_calc - tail.size.y
+	var tail_size: float = tail.size.y #tail.texture.get_height()
+	hold.size.y = hold_calc - 0.05
 	hold_container.size = Vector2(hold.size.x, hold_calc + tail_size)
 	tail.position.y = (hold.position.y + hold.size.y)
 	#hold.size.y /= absf(self.scale.y)
@@ -105,7 +104,7 @@ func update_hold_size(custom_size: float = 0.0) -> void:
 			cover.play("progress%s" % column)
 
 func finish() -> void:
-	var valid: bool = note and note.hit_result and not note.hit_result.player.autoplay
+	var valid: bool = note and note.hit_result and Preferences.hold_covers == 2 and not note.hit_result.player.autoplay
 	if note.hold_progress <= 0.0 and not _displayed_covers.is_empty():
 		for cover: CanvasItem in _displayed_covers:
 			if valid:
@@ -113,6 +112,7 @@ func finish() -> void:
 				note.receptor.add_child(dupe)
 				dupe.play("finish%s" % column)
 				dupe.animation_finished.connect(dupe.queue_free)
+				cover.queue_free()
 			else:
 				cover.queue_free()
 
@@ -122,18 +122,20 @@ func on_hit(data: Note) -> void:
 
 	if data.hit_result and data.hit_result.judgment:
 		var result: Note.HitResult = data.hit_result
-		var splash: bool = result.judgment.splash
-		if splash == true: match Preferences.note_splashes:
-			0: splash = false
-			1: splash = result.player and not result.player.autoplay
-			2: splash = is_instance_valid(result.player)
+		var splash: bool = false
+		if result.judgment.splash:
+			match Preferences.note_splashes:
+				0: splash = false
+				1: splash = result.player and not result.player.autoplay
+				2: splash = is_instance_valid(result.player)
 		match result.judgment.name:
 			"perfect" when data.hold_progress > 0.0:
 				if splash: display_splash()
-				display_cover()
-			_ when splash:
-				display_splash()
-				if data.hold_progress > 0.0:
+				if Preferences.hold_covers > 0:
+					display_cover()
+			_:
+				if splash: display_splash()
+				if data.hold_progress > 0.0 and Preferences.hold_covers > 0:
 					display_cover()
 
 func on_miss(_column: int) -> void:

@@ -48,14 +48,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		# i'll keep this as simple as possible cus i'm also gonna use for replays
 		var nearby_taps: Array[Note] = get_nearby_notes(key)
 		if nearby_taps.is_empty():
-			# ghost tap here...
+			if not Preferences.ghost_tapping:
+				tallies.apply_ghost_tap(key)
+				if note_miss: note_miss.call(key, null)
 			notefield.play_ghost(key)
 			return
 		if nearby_taps.size() > 1:
 			# i don't trust myself
 			nearby_taps.sort_custom(Note.sort_by_time)
 		# hit the notes like this for now.
-		var note: Note = nearby_taps[0]
+		var note: Note = nearby_taps[0] as Note
 		note.hit_timing = 2 if note.time < Conductor.time else 1
 		note.moving = false
 		# set note judgement.

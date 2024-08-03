@@ -54,9 +54,9 @@ tracks/2/keys = {
 "values": [Vector2(0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_wrbl2"]
+[sub_resource type="Animation" id="Animation_k8t82"]
 resource_name = "idle"
-length = 0.541671
+length = 0.583338
 step = 0.0416667
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -65,7 +65,7 @@ tracks/0/path = NodePath("sprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = false
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.541667),
+"times": PackedFloat32Array(0, 0.583333),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0, 13]
@@ -426,7 +426,7 @@ tracks/2/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_gasgy"]
 _data = {
 "RESET": SubResource("Animation_7v120"),
-"idle": SubResource("Animation_wrbl2"),
+"idle": SubResource("Animation_k8t82"),
 "singDOWN": SubResource("Animation_w1t62"),
 "singDOWNmiss": SubResource("Animation_cjoq0"),
 "singLEFT": SubResource("Animation_jlchx"),

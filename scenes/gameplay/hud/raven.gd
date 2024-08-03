@@ -111,15 +111,13 @@ func reset_positions() -> void:
 			status_label.position.y = 120
 			progress_label.position.y = 690
 
-func update_score_text(note: Note, _is_tap: bool) -> void:
-	if not note:
+func update_score_text(tally: Tally, _is_tap: bool) -> void:
+	if tally.invalid == true:
+		status_label.text = "[INVALID TALLY]"
 		return
-	if note.hit_result.player.autoplay == true:
-		status_label.text = "AutoPlay Enabled"
-		return
-	status_label.text = str(note.hit_result.player.tallies)
+	status_label.text = str(tally)
 	if judge_counter and judge_counter.visible:
-		judge_counter.text = note.hit_result.player.tallies.hit_registry_string()
+		judge_counter.text = tally.hit_registry_string()
 
 func update_time_bar() -> void:
 	progress_label.text = "%s / %s (%s)" % [

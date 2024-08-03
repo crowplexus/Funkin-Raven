@@ -335,6 +335,14 @@ variable = "note_splashes"
 option_type = 2
 display_names = Array[StringName]([&"Disabled", &"Player-only", &"Every Player"])
 
+[node name="hold_covers" parent="pages/visuals" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+option_name = &"Hold Covers"
+description = "Enables a spark effect when hitting judgements that allow it while holding notes."
+variable = "hold_covers"
+option_type = 2
+display_names = Array[StringName]([&"Disabled", &"No-explosion", &"Full"])
+
 [node name="hold_layer" parent="pages/visuals" instance=ExtResource("3_wjca4")]
 layout_mode = 2
 option_name = &"Hold Note Layer"

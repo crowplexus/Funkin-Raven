@@ -271,19 +271,24 @@ func generate_fields(configs: Array[Dictionary] = Chart.global.song_info.notefie
 		field.player.note_hit = func(note: Note) -> void:
 			field.on_note_hit(note, note.hold_progress <= 0.0)
 			if not field.player.autoplay:
-				update_score_text(note, note.hold_progress <= 0.0)
+				update_score_text(field.player.tallies, note.hold_progress <= 0.0)
 				display_judgement(note.hit_result)
 				display_combo(note.hit_result)
 
-		field.player.note_miss = func(_column: int, note: Note) -> void:
-			if not field.player.autoplay and note and note.hit_result:
-				update_score_text(note, note.hold_progress <= 0.0)
-				display_combo(note.hit_result)
+		field.player.note_miss = func(column: int, note: Note) -> void:
+			field.on_note_miss(column, note)
+			if not field.player.autoplay:
+				var is_tap: bool = note and note.hold_progress <= 0.0
+				update_score_text(field.player.tallies, is_tap)
+				if note and note.hit_result:
+					display_combo(note.hit_result)
 
 		field.player.note_list = Chart.global.notes.filter(func(n: Note) -> bool:
 			n.note_flew = func(dn: Note) -> void:
+				if dn.player == field.get_index():
+					field.on_note_miss(dn.column, dn)
 				if not field.player.autoplay and dn.hit_result:
-					update_score_text(dn, dn.hold_progress <= 0.0)
+					update_score_text(field.player.tallies, dn.hold_progress <= 0.0)
 					display_combo(dn.hit_result)
 			return is_same(idx, n.player))
 		#endregion
@@ -291,6 +296,7 @@ func generate_fields(configs: Array[Dictionary] = Chart.global.song_info.notefie
 		# set controls
 		if is_same(idx, Preferences.playfield_side):
 			for j: int in field.key_count: field.player.controls.append("note%s" % j)
+			update_score_text(field.player.tallies, true)
 			field.player.autoplay = false
 			active_player = field.player
 		field.add_child(field.player)
@@ -354,8 +360,8 @@ func display_countdown() -> void:
 	countdown_beat += 1
 
 ## Updates the Score Text in the HUD
-func update_score_text(note: Note, is_tap: bool = false) -> void:
-	if hud: hud.update_score_text(note, is_tap)
+func update_score_text(tally: Tally, is_tap: bool = false) -> void:
+	if hud: hud.update_score_text(tally, is_tap)
 
 ## Displays a Judgement on-screen as a sprite.
 func display_judgement(hit_result: Note.HitResult) -> void:

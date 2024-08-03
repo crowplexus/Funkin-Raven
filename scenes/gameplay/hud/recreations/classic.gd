@@ -80,10 +80,8 @@ func move_icons() -> void:
 
 #endregion
 
-func update_score_text(note: Note, _is_tap: bool) -> void:
-	if not note:
+func update_score_text(tally: Tally, _is_tap: bool) -> void:
+	if tally.invalid == true:
+		status_label.text = "Invalid Score"
 		return
-	if note.hit_result.player.autoplay == true:
-		status_label.text = "AutoPlay Enabled"
-		return
-	status_label.text = "Score:%s" % note.hit_result.player.tallies.score
+	status_label.text = "Score:%s" % tally.score
