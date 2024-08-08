@@ -34,9 +34,9 @@ offset_bottom = 100.0
 
 [node name="combo_group" parent="ui_layer" instance=ExtResource("4_j8sim")]
 offset_left = 590.0
-offset_top = 280.0
+offset_top = 100.0
 offset_right = -590.0
-offset_bottom = -390.0
+offset_bottom = -570.0
 
 [node name="note_cluster" type="Node2D" parent="ui_layer"]
 position = Vector2(96, 96)

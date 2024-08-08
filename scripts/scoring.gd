@@ -55,6 +55,7 @@ const JUDGMENTS: Dictionary = {
 		"visible": false,
 	},
 }
+const HITTABLE_JUDGES: PackedStringArray = ["epic", "sick", "good", "bad", "shit"]
 
 const JUDGE_TIMINGS: Dictionary = {
 	# Order: Epic, Sick, Good, Bad, Shit
@@ -81,22 +82,13 @@ const JUDGE_TIMINGS: Dictionary = {
 static func judge_time(millisecond_time: float) -> Dictionary:
 	var thresholds: Array = Scoring.JUDGE_TIMINGS[Preferences.timing_diff]
 	var can_epic: bool = Preferences.use_epics and Preferences.timing_diff != "WEEK7"
-	match millisecond_time:
-		# -- example --
-		# _ when millisecond_time <= JUDGEMENTS.my_custom_judge.threshold:
-		#	return JUDGMENTS.my_custom_judge
-		_ when millisecond_time <= thresholds[0] and thresholds[0] != NAN and can_epic:
-			return JUDGMENTS.epic
-		_ when millisecond_time <= thresholds[1] and thresholds[1] != NAN:
-			return JUDGMENTS.sick
-		_ when millisecond_time <= thresholds[2] and thresholds[2] != NAN:
-			return JUDGMENTS.good
-		_ when millisecond_time <= thresholds[3] and thresholds[3] != NAN:
-			return JUDGMENTS.bad
-		_ when millisecond_time <= thresholds[4] and thresholds[4] != NAN:
-			return JUDGMENTS.shit
-		_: # Default Judgment.
-			return JUDGMENTS.miss
+	for i: int in thresholds.size():
+		var judge: StringName = JUDGMENTS.keys()[i]
+		if not HITTABLE_JUDGES.has(judge): continue
+		if judge == "epic" and not can_epic: continue
+		if millisecond_time <= thresholds[i] and thresholds[i] != NAN:
+			return JUDGMENTS[judge]
+	return JUDGMENTS.miss
 
 static func get_doido_score(x: float) -> 	int:
 	# https://github.com/DiogoTVV/FNF-Doido-Engine-3

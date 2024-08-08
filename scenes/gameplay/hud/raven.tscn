@@ -72,10 +72,11 @@ _data = {
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5u5cr"]
 bg_color = Color(0, 0, 0, 0.27451)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+border_width_left = 3
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 corner_detail = 1
 expand_margin_left = 5.0
 expand_margin_top = 5.0
@@ -100,16 +101,16 @@ health_bar_icons = [NodePath("health_bar/player2"), NodePath("health_bar/player1
 
 [node name="health_bar" type="ProgressBar" parent="."]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.285
-anchor_top = 0.896
-anchor_right = 0.715
-anchor_bottom = 0.922
-offset_left = 0.199951
-offset_top = -0.119995
-offset_right = -0.200073
-offset_bottom = 0.159973
-grow_horizontal = 2
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = 285.0
+offset_right = -80.0
+offset_bottom = 305.0
+grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_oy5hj")
 theme_override_styles/fill = SubResource("StyleBoxFlat_rvp2q")
@@ -118,13 +119,13 @@ fill_mode = 1
 show_percentage = false
 
 [node name="player2" type="Sprite2D" parent="health_bar"]
-position = Vector2(271, 0)
+position = Vector2(200, 0)
 texture = ExtResource("4_jkub1")
 offset = Vector2(-50, 0)
 hframes = 2
 
 [node name="player1" type="Sprite2D" parent="health_bar"]
-position = Vector2(271, 0)
+position = Vector2(200, 0)
 texture = ExtResource("5_veo88")
 offset = Vector2(50, 0)
 flip_h = true
@@ -137,23 +138,21 @@ libraries = {
 
 [node name="status_label" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -248.0
-offset_top = -35.0
-offset_right = 248.0
-offset_bottom = -19.0
-grow_horizontal = 2
-grow_vertical = 0
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = 285.0
+offset_right = 213.0
+offset_bottom = 345.0
+grow_vertical = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("6_yliuk")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_5u5cr")
-text = "Score: N/A - Accuracy: N/A% - Combo Breaks: N/A"
-horizontal_alignment = 1
+text = "Score: N/A
+Accuracy: N/A%
+Combo Breaks: N/A"
 vertical_alignment = 1
 
 [node name="judge_counter" type="Label" parent="."]
@@ -179,9 +178,11 @@ vertical_alignment = 3
 
 [node name="progress_label" type="Label" parent="."]
 custom_minimum_size = Vector2(0, 25)
-layout_mode = 0
-offset_right = 1280.0
-offset_bottom = 25.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 18.0
+grow_horizontal = 2
 text = "?:?? / ?:?? (?%)"
 label_settings = SubResource("LabelSettings_daqce")
 horizontal_alignment = 1

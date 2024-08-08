@@ -80,7 +80,7 @@ func hit_registry_string() -> String:
 	return counter
 
 func _to_string() -> String:
-	var status: String = "Score: %s - Accuracy: %s%% - Combo Breaks: %s" % [
+	var status: String = "Score: %s\nAccuracy: %s%%\nCombo Breaks: %s" % [
 			Globals.thousands_sep(score), snappedf(accuracy, 0.01), breaks]
 	# crazy frog.
 	if breaks < 10:

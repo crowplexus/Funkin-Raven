@@ -104,11 +104,11 @@ func reset_positions() -> void:
 	match Preferences.scroll_direction:
 		0:
 			health_bar.position.y = 645
-			status_label.position.y = 685
+			status_label.position.y = 645
 			progress_label.position.y = 0.0
 		1:
 			health_bar.position.y = 80
-			status_label.position.y = 120
+			status_label.position.y = 80
 			progress_label.position.y = 690
 
 func update_score_text(tally: Tally, _is_tap: bool) -> void:

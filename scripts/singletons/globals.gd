@@ -89,19 +89,20 @@ func set_node_inputs(node: Node, enable: bool) -> void:
 
 ## Formats integer strings going up to thousands.[br]
 ## @tutorial:			https://www.reddit.com/r/godot/comments/9iw4ie/comment/e6n7r8k/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
-func thousands_sep(number: int, prefix: String = ""):
+func thousands_sep(number: int, separator: String = ","):
 	var neg: bool = signi(number) < 0
-	var num_str: String = str(number)
-	var mod: float = num_str.length() % 3
+	var num_str: String = str(abs(number))
+	var length: int = num_str.length()
+	var neg_prefix: String = "-" if neg else ""
+	if length <= 3: # no reason to do this if there's less than 3 digits
+		return "%s" % [neg_prefix + num_str]
+	var mod: float = length % 3
 	var res: String = ""
 	for i in range(0, num_str.length()):
 		if i != 0 and i % 3 == mod:
-			res += ","
+			res += separator
 		res += num_str[i]
-	if neg: res = '-' + prefix + res
-	else: res = prefix + res
-	return res
-
+	return neg_prefix + res
 
 ## Converts text to a dictionary[br]
 ## Format (in text string):[br]
