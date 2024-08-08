@@ -7,13 +7,13 @@ enum GameMode {
 	PLAYLIST = 2,
 }
 
+@export var combo_group: Control
 @export var note_fields: Array[NoteField] = []
 @export var skin: UISkin
 
 @onready var countdown_timer: Timer = $"countdown_timer"
 @onready var note_cluster: NoteCluster = $"ui_layer/note_cluster"
 @onready var event_machine: EventMachine = $"event_machine"
-@onready var combo_group: Control = $"ui_layer/combo_group"
 
 static var prev_tallies: Array[Tally] = []
 static var game_mode: GameMode = GameMode.FREEPLAY

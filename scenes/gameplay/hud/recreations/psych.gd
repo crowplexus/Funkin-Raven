@@ -78,19 +78,19 @@ func set_player(player: int) -> void:
 #endregion
 
 func update_score_text(tally: Tally, _is_tap: bool) -> void:
-	if tally.autoplay == true:
+	if tally.invalid == true:
 		status_label.text = "INVALID"
 		return
 
 	var acc: float = snappedf(tally.accuracy, 0.01)
 	# psych rating fc
-	var rating_fc: String = Scoring.get_clear_flag(tally.hit_registry)
-	if tally.breaks >= 10:
-		rating_fc = "Clear"
+	var rating_fc: String = "Clear"
+	if tally.breaks < 10:
+		rating_fc = Scoring.get_clear_flag(tally.hit_registry)
 
 	var acc_str: String = " (%s%%) - %s" % [ acc, rating_fc ]
-	var text: String = "Score: %s | Combo Breaks: %s | Rating: %s" % [
-		tally.score, tally.misses, get_rating(acc) + acc_str]
+	var text: String = "Score: %s | Breaks: %s | Rating: %s" % [
+		tally.score, tally.breaks, get_rating(acc) + acc_str]
 	status_label.text = text
 
 func update_time_bar() -> void:
@@ -101,7 +101,7 @@ func reset_positions() -> void:
 	match Preferences.scroll_direction:
 		0:
 			health_bar.position.y = 645
-			status_label.position.y = 678
+			status_label.position.y = 680
 			time_bar.position.y = 19
 		1:
 			health_bar.position.y = 80

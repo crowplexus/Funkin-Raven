@@ -108,31 +108,28 @@ func update_score_text(tally: Tally, _is_tap: bool) -> void:
 
 	var clear_flag: String = "Clear"
 	if tally.breaks < 10:
-		clear_flag = Scoring.get_clear_flag(tally.tallies.hit_registry)
+		clear_flag = Scoring.get_clear_flag(tally.hit_registry)
 
 	var grade_str: String = "("+clear_flag+") "
 	grade_str += get_ke_grade(snappedf(tally.accuracy, 0.01))
 
 	var text: String = "Score:%s | Combo Breaks:%s | Accuracy:%s%%" % [
-		tally.score, tally.breaks,
-		str(snappedf(tally.accuracy, 0.01)),
-	]
+		tally.score, tally.breaks, str(snappedf(tally.accuracy, 0.01)),]
 	text += " | %s" % grade_str
 	status_label.text = text
-	update_judgement_counter(tally.hit_registry)
+	if judge_counter and judge_counter.visible:
+		judge_counter.text = get_judge_counter_text(tally.hit_registry)
+		judge_counter.text += "\n%s: %s" % [ format_judge("miss"), tally.misses ]
 
-func update_judgement_counter(hit_reg: Dictionary) -> void:
-	if not judge_counter or judge_counter.visible == false:
-		return
-
+func get_judge_counter_text(hit_reg: Dictionary) -> String:
 	var counter: String = ""
 	for i: int in hit_reg.keys().size():
 		var key: String = hit_reg.keys()[i]
 		if key == "perfect":
 			continue
 		if not counter.is_empty(): counter += "\n"
-		counter += "%s: %s" % [format_judge(key), hit_reg[key]]
-	judge_counter.text = counter
+		counter += "%s: %s" % [format_judge(key.to_lower()), hit_reg[key]]
+	return counter
 
 func update_time_bar() -> void:
 	time_bar.value = absf(Conductor.time/Conductor.length)*time_bar.max_value

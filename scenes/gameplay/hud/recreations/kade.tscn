@@ -133,7 +133,8 @@ text = "Epics: 0
 Sicks: 0
 Goods: 0
 Bads: 0
-Shits: 0"
+Shits: 0
+Misses: 0"
 vertical_alignment = 1
 
 [node name="watermark" type="Label" parent="."]
