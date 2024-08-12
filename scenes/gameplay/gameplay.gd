@@ -48,13 +48,15 @@ func _ready() -> void:
 	modchart_pack.call_mod_method("_on_ready", [self])
 
 	setup_music()
+	setup_notes()
 	if has_node("main_stage"):
 		remove_child($"main_stage")
+	load_stage()
+	load_characters(Chart.global.song_info.characters)
+	# HUD
 	if ui_layer.has_node("hud"):
 		ui_layer.remove_child(ui_layer.get_node("hud"))
 	unload_current_hud()
-	setup_notes()
-	# HUD
 	var hud_script: int = modchart_pack.call_mod_method("_set_hud", [self])
 	match Preferences.hud_style:
 		1: load_hud(Globals.DEFAULT_HUD.instantiate())
@@ -68,8 +70,6 @@ func _ready() -> void:
 		combo_group.push_judgement()
 		combo_group.push_combo(2)
 
-	load_stage()
-	load_characters(Chart.global.song_info.characters)
 	restart_countdown()
 
 func clear_notes() -> void:

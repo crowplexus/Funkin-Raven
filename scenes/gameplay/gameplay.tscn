@@ -12,20 +12,25 @@
 
 [node name="gameplay" type="Node2D" node_paths=PackedStringArray("combo_group", "note_fields")]
 script = ExtResource("1_gfupu")
-combo_group = NodePath("combo_group")
+combo_group = NodePath("ui_layer/combo_group")
 note_fields = [NodePath("ui_layer/player1_notefield"), NodePath("ui_layer/player2_notefield")]
 
 [node name="main_stage" parent="." instance=ExtResource("2_k2qad")]
 
-[node name="combo_group" parent="." instance=ExtResource("4_j8sim")]
-offset_left = 664.0
-offset_top = 104.0
-offset_right = 1164.0
-offset_bottom = 604.0
-
 [node name="ui_layer" type="CanvasLayer" parent="."]
 
 [node name="hud" parent="ui_layer" instance=ExtResource("12_hchqv")]
+
+[node name="combo_group" parent="ui_layer" instance=ExtResource("4_j8sim")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 540.0
+offset_top = 200.0
+offset_right = 740.0
+offset_bottom = 400.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="player1_notefield" parent="ui_layer" instance=ExtResource("2_6wcp1")]
 offset_left = 100.0

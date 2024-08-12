@@ -17,6 +17,8 @@ func _ready() -> void:
 	_tb_twn = create_tween().set_ease(Tween.EASE_IN).bind_node(health_bar)
 	_tb_twn.tween_property(time_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
 	time_bar.visible = Preferences.show_timer
+
+	setup_healthbar()
 	Conductor.ibeat_reached.connect(icon_thingy)
 
 func _process(_delta: float) -> void:
@@ -86,7 +88,8 @@ func update_score_text(tally: Tally, _is_tap: bool) -> void:
 	# psych rating fc
 	var rating_fc: String = "Clear"
 	if tally.breaks < 10:
-		rating_fc = Scoring.get_clear_flag(tally.hit_registry)
+		if tally.breaks == 0: rating_fc = Scoring.get_clear_flag(tally.hit_registry, true)
+		else: rating_fc = "SDCB"
 
 	var acc_str: String = " (%s%%) - %s" % [ acc, rating_fc ]
 	var text: String = "Score: %s | Breaks: %s | Rating: %s" % [

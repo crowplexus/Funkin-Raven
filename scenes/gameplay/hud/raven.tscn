@@ -8,14 +8,16 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oy5hj"]
 bg_color = Color(1, 0, 0, 1)
+skew = Vector2(0.5, 0)
 border_width_left = 5
 border_width_top = 5
 border_width_right = 5
 border_width_bottom = 5
 border_color = Color(0, 0, 0, 1)
 corner_detail = 1
-expand_margin_left = 2.0
+expand_margin_left = 10.0
 expand_margin_right = 2.0
+shadow_size = 5
 anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rvp2q"]
@@ -26,8 +28,8 @@ border_width_right = 5
 border_width_bottom = 5
 border_color = Color(0, 0, 0, 1)
 corner_detail = 1
-expand_margin_left = 2.0
-expand_margin_right = 2.0
+expand_margin_left = 5.0
+expand_margin_right = 8.0
 anti_aliasing = false
 
 [sub_resource type="Animation" id="Animation_6fsbg"]
@@ -70,23 +72,19 @@ border_width_top = 5
 border_width_right = 5
 border_width_bottom = 5
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 30
-corner_radius_bottom_left = 10
 corner_detail = 1
-expand_margin_right = 5.0
-shadow_offset = Vector2(3, 1)
+shadow_size = 5
 anti_aliasing = false
+anti_aliasing_size = 1.475
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w725m"]
 bg_color = Color(1, 1, 1, 1)
-skew = Vector2(0.5, 0)
 border_width_left = 5
 border_width_top = 5
 border_width_right = 5
 border_width_bottom = 5
 border_color = Color(0, 0, 0, 1)
 corner_detail = 1
-expand_margin_left = 5.0
 anti_aliasing = false
 
 [sub_resource type="LabelSettings" id="LabelSettings_daqce"]
@@ -150,22 +148,22 @@ libraries = {
 
 [node name="status_label" type="Label" parent="health_bar"]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
+anchors_preset = 7
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -400.0
-offset_top = 23.0
-offset_right = -7.0
-offset_bottom = 44.0
-grow_horizontal = 0
+offset_left = -232.0
+offset_top = 25.0
+offset_right = 208.0
+offset_bottom = 46.0
+grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 theme_override_fonts/font = ExtResource("6_yliuk")
 theme_override_font_sizes/font_size = 20
-text = "< A: N/A - CBs: N/A - S: N/A >"
+text = "0.00% (N/A) - Breaks:N/A - Score:N/A"
 horizontal_alignment = 3
 vertical_alignment = 1
 
@@ -176,9 +174,9 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -461.0
+offset_left = -470.0
 offset_top = 295.0
-offset_right = -51.0
+offset_right = -40.0
 offset_bottom = 315.0
 grow_horizontal = 0
 grow_vertical = 2
@@ -189,15 +187,12 @@ show_percentage = false
 [node name="progress_label" type="Label" parent="progress_bar"]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
+anchors_preset = 14
 anchor_top = 0.5
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -94.0
-offset_top = -12.5
-offset_right = 94.0
-offset_bottom = 12.5
+offset_top = -9.0
+offset_bottom = 9.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "?:?? / ?:?? (?%)"

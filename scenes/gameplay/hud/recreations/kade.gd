@@ -20,6 +20,8 @@ func _ready() -> void:
 	time_bar.visible = Preferences.show_timer
 	time_label.text = _song_name
 	time_bar.value = 0.0
+
+	setup_healthbar()
 	reset_judgement_counter()
 	Conductor.ibeat_reached.connect(icon_thingy)
 
@@ -108,13 +110,15 @@ func update_score_text(tally: Tally, _is_tap: bool) -> void:
 
 	var clear_flag: String = "Clear"
 	if tally.breaks < 10:
-		clear_flag = Scoring.get_clear_flag(tally.hit_registry)
+		if tally.breaks == 0: clear_flag = Scoring.get_clear_flag(tally.hit_registry, true)
+		else: clear_flag = "SDCB"
 
 	var grade_str: String = "("+clear_flag+") "
-	grade_str += get_ke_grade(snappedf(tally.accuracy, 0.01))
+	var acc: float = snappedf(tally.accuracy, 0.01)
+	grade_str += get_ke_grade(acc)
 
 	var text: String = "Score:%s | Combo Breaks:%s | Accuracy:%s%%" % [
-		tally.score, tally.breaks, str(snappedf(tally.accuracy, 0.01)),]
+		tally.score, tally.breaks, str(acc),]
 	text += " | %s" % grade_str
 	status_label.text = text
 	if judge_counter and judge_counter.visible:

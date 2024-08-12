@@ -12,6 +12,8 @@ func _ready() -> void:
 	if get_tree().current_scene.name == "gameplay":
 		for field: NoteField in get_tree().current_scene.note_fields:
 			field.position.x -= 25
+
+	setup_healthbar()
 	Conductor.ibeat_reached.connect(icon_bump)
 
 func reset_positions() -> void:

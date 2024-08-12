@@ -136,24 +136,34 @@ static func get_wife_score(max_millis: float, version: int = 3, ts: float = -1.0
 	return score
 
 static func get_judge_by_name(name: StringName) -> Dictionary:
-	if JUDGMENTS.has(name):
-		return JUDGMENTS[name]
-	return JUDGMENTS.shit
+	if JUDGMENTS.has(name): return JUDGMENTS[name]
+	return JUDGMENTS.miss
 
-static func get_clear_flag(hit_reg: Dictionary) -> String:
+static func get_clear_flag(hit_reg: Dictionary, simple: bool = false) -> String:
+	var cf: String = ""
 	if hit_reg.shit > 0:
-		return JUDGMENTS.shit.clear.full
+		cf = JUDGMENTS.shit.clear.full
 	elif hit_reg.bad > 0:
-		return JUDGMENTS.bad.clear.full
+		cf = JUDGMENTS.bad.clear.full
 	elif hit_reg.good > 0:
-		if hit_reg.good < 10: return JUDGMENTS.good.clear.single
-		else: return JUDGMENTS.good.clear.full
+		if not simple:
+			if hit_reg.good < 10: cf = JUDGMENTS.good.clear.single
+			else: cf = JUDGMENTS.good.clear.full
+			if Preferences.use_epics and hit_reg.good == 1:
+				cf = "BF" # black flag if we can
+		else:
+			cf = JUDGMENTS.good.clear.full
 	elif hit_reg.sick > 0:
-		if hit_reg.sick < 10 and Preferences.use_epics: return JUDGMENTS.sick.clear.single
-		else: return JUDGMENTS.sick.clear.full
+		if not simple:
+			if Preferences.use_epics: # sick is not highest judge
+				if hit_reg.sick == 1: cf = "WF"
+				elif hit_reg.sick < 10: cf = JUDGMENTS.sick.clear.single
+				else: cf = JUDGMENTS.sick.clear.full
+		else:
+			cf = JUDGMENTS.sick.clear.full
 	elif hit_reg.epic > 0:
-		return JUDGMENTS.epic.clear.full
-	return ""
+		cf = JUDGMENTS.epic.clear.full
+	return cf
 
 static func get_clear_flag_color(flag: String) -> Color:
 	match flag:
@@ -165,8 +175,8 @@ static func get_clear_flag_color(flag: String) -> Color:
 			return Color.SPRING_GREEN
 		JUDGMENTS.bad.clear.full, JUDGMENTS.shit.clear.full:
 			return Color.LIGHT_CORAL
-		"SDCB":
-			return Color.IVORY
+		"WF": return Color.BURLYWOOD
+		"BF": return Color.CHOCOLATE
 	return Color.WHITE
 
 static func get_judgement_colour(judge_name: StringName) -> Color:

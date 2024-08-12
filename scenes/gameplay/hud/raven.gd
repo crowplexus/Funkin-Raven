@@ -23,6 +23,8 @@ func _ready() -> void:
 	_ms_pos = ms_label.position
 	progress_bar.visible = Preferences.show_timer
 	Conductor.ibeat_reached.connect(icon_bump)
+
+	setup_healthbar()
 	reset_judgement_counter()
 	reset_positions()
 	display_ms()
@@ -119,8 +121,16 @@ func update_score_text(tally: Tally, _is_tap: bool) -> void:
 		status_label.text = "[INVALID TALLY]"
 		return
 
-	status_label.text = "< A: %s%% - CBs: %s - S: %s >" % [
-		snappedf(tally.accuracy, 0.01),
+	# crazy frog.
+	var cf: String = ""
+	if tally.breaks < 10:
+		if tally.breaks > 0: cf = "MF" if tally.breaks == 1 else "SDCB"
+		else: cf = Scoring.get_clear_flag(tally.hit_registry)
+	if not cf.is_empty():
+		cf = " (%s)" % cf
+
+	status_label.text = "%s - Breaks:%s - Score:%s" % [
+		str(snappedf(tally.accuracy, 0.01)) + "%" + cf,
 		tally.breaks, Globals.thousands_sep(tally.score)]
 
 	if judge_counter and judge_counter.visible:
