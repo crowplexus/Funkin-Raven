@@ -159,6 +159,7 @@ static func get_clear_flag(hit_reg: Dictionary, simple: bool = false) -> String:
 				if hit_reg.sick == 1: cf = "WF"
 				elif hit_reg.sick < 10: cf = JUDGMENTS.sick.clear.single
 				else: cf = JUDGMENTS.sick.clear.full
+			else: cf = JUDGMENTS.sick.clear.full
 		else:
 			cf = JUDGMENTS.sick.clear.full
 	elif hit_reg.epic > 0:
