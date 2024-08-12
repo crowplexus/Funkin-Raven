@@ -7,7 +7,6 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ip6fy"]
 bg_color = Color(0, 0, 0, 1)
-skew = Vector2(-0.3, 0)
 border_color = Color(0, 0, 0, 1)
 corner_detail = 1
 anti_aliasing = false
@@ -16,7 +15,6 @@ anti_aliasing = false
 content_margin_top = 5.0
 content_margin_bottom = 5.0
 bg_color = Color(1, 1, 1, 1)
-skew = Vector2(-0.3, 0)
 border_color = Color(0, 0, 0, 1)
 corner_detail = 1
 anti_aliasing = false
@@ -46,37 +44,41 @@ mouse_filter = 2
 metadata/_edit_lock_ = true
 
 [node name="perf_label" type="RichTextLabel" parent="ui"]
+modulate = Color(1, 1, 1, 0.6)
 clip_contents = false
 layout_mode = 1
-offset_right = 300.0
-offset_bottom = 500.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -308.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 508.0
+grow_horizontal = 0
 mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
-text = "N/A FPS
-"
+text = "[right]N/A FPS[/right]"
 autowrap_mode = 2
 
 [node name="volume_bar" type="ProgressBar" parent="ui"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.858
-anchor_top = 0.01
-anchor_right = 0.996
-anchor_bottom = 0.039
-offset_left = -0.376099
-offset_top = -0.2
-offset_right = 0.0878906
-offset_bottom = -0.0799999
-grow_horizontal = 0
-grow_vertical = 2
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -121.0
+offset_top = 8.0
+offset_right = 129.0
+offset_bottom = 28.0
+grow_horizontal = 2
 mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_ip6fy")
 theme_override_styles/fill = SubResource("StyleBoxFlat_dchgc")
 value = 50.0
 show_percentage = false
+metadata/_edit_lock_ = true
 
 [node name="bus_label" type="Label" parent="ui/volume_bar"]
 layout_mode = 1

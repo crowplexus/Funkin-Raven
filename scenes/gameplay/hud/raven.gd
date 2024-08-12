@@ -1,48 +1,49 @@
 extends GameHUD
 
 @onready var health_bar: ProgressBar = $"health_bar"
-@onready var progress_label: Label = $"progress_label"
-@onready var status_label: Label = $"status_label"
+@onready var progress_bar: ProgressBar = $"progress_bar"
+@onready var progress_label: Label = $"progress_bar/progress_label"
+@onready var status_label: Label = $"health_bar/status_label"
 @onready var icon_animation: AnimationPlayer = $"health_bar/animation_player"
 @onready var judge_counter: Label = $"judge_counter"
+@onready var ms_label: Label = $"millisecond_label"
 
 @export var icon_bump_interval: int = 1 # beats
 @export var health_bar_icons: Array[CanvasItem] = []
 
-var _hb_twn: Tween
 var _song_name: StringName = ""
+var _ms_pos: Vector2 = Vector2.ZERO
+var _ms_twn: Tween
 
 #region Built-in functions
 
 func _ready() -> void:
-	reset_positions()
-	health_bar.modulate.a = 0.0
-	_hb_twn = create_tween().set_ease(Tween.EASE_IN).bind_node(health_bar)
-	_hb_twn.tween_property(health_bar, "modulate:a", 1.0, 1.5 * Conductor.crotchet)
 	if Chart.global and Chart.global.song_info:
 		_song_name = Chart.global.song_info.name
-
-	progress_label.visible = Preferences.show_timer
-	reset_judgement_counter()
+	_ms_pos = ms_label.position
+	progress_bar.visible = Preferences.show_timer
 	Conductor.ibeat_reached.connect(icon_bump)
+	reset_judgement_counter()
+	reset_positions()
+	display_ms()
 
 func reset_judgement_counter() -> void:
 	judge_counter.visible = Preferences.judgement_counter != 0
 	if judge_counter.visible:
 		match Preferences.judgement_counter:
 			1:
-				judge_counter.set_anchors_and_offsets_preset(Control.PRESET_CENTER_LEFT, Control.PRESET_MODE_KEEP_SIZE)
-				judge_counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-				judge_counter.position.x += 5
+				judge_counter.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT, Control.PRESET_MODE_KEEP_SIZE)
+				#judge_counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+				judge_counter.position += Vector2(16, 16)
 			2:
-				judge_counter.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT, Control.PRESET_MODE_KEEP_SIZE)
-				judge_counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-				judge_counter.position.x -= 5
+				judge_counter.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_KEEP_SIZE)
+				#judge_counter.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+				judge_counter.position += Vector2(16, 16)
 
 func _process(_delta: float) -> void:
 	if not health_bar_icons.is_empty():
 		move_icons()
-	if progress_label.visible and Conductor.time >= 0.0:
+	if progress_bar.visible and Conductor.time >= 0.0:
 		update_time_bar()
 
 func _exit_tree() -> void:
@@ -103,25 +104,47 @@ func set_player(player: int) -> void:
 func reset_positions() -> void:
 	match Preferences.scroll_direction:
 		0:
-			health_bar.position.y = 645
-			status_label.position.y = 645
-			progress_label.position.y = 0.0
+			health_bar.position.y = 635
+			progress_bar.position.y = 655
+			ms_label.position.y = 8.0
+			_ms_pos.y = 8.0
 		1:
 			health_bar.position.y = 80
-			status_label.position.y = 80
-			progress_label.position.y = 690
+			progress_bar.position.y = 100
+			ms_label.position.y = 680
+			_ms_pos.y = 680
 
 func update_score_text(tally: Tally, _is_tap: bool) -> void:
 	if tally.invalid == true:
 		status_label.text = "[INVALID TALLY]"
 		return
-	status_label.text = str(tally)
+
+	status_label.text = "< A: %s%% - CBs: %s - S: %s >" % [
+		snappedf(tally.accuracy, 0.01),
+		tally.breaks, Globals.thousands_sep(tally.score)]
+
 	if judge_counter and judge_counter.visible:
-		judge_counter.text = tally.hit_registry_string()
+		judge_counter.text = tally.hit_registry_string() + "\n"
+
+func display_ms(ms: float = 0.0, colour: Color = Color.WHITE) -> void:
+	if _ms_twn: _ms_twn.kill()
+	ms_label.position = _ms_pos
+	match Preferences.scroll_direction:
+		0: ms_label.position.y -= 10
+		1: ms_label.position.y += 10
+	ms_label.modulate = colour
+	ms_label.text = str(snappedf(ms, 0.001)) + "ms"
+	ms_label.show()
+	_ms_twn = create_tween().bind_node(ms_label).set_parallel(true)
+	_ms_twn.tween_property(ms_label, "position:y", _ms_pos.y, 0.1)
+	_ms_twn.tween_property(ms_label, "modulate:a", 0.0, 0.5) \
+	.set_delay(Conductor.semiquaver * 0.8)
+	_ms_twn.finished.connect(ms_label.hide)
+
 
 func update_time_bar() -> void:
+	progress_bar.value = absf(Conductor.time / Conductor.length) * progress_bar.max_value
 	progress_label.text = "%s / %s (%s)" % [
-		Globals.format_to_time(Conductor.time),
-		Globals.format_to_time(Conductor.length),
-		"%d%%" % [absf(Conductor.time / Conductor.length) * 100.0]
+		Globals.format_to_time(Conductor.time), Globals.format_to_time(Conductor.length),
+		"%d%%" % [absf(Conductor.time / Conductor.length) * progress_bar.max_value]
 	]

@@ -31,13 +31,13 @@ func update_text() -> void:
 
 	final_text += "[font_size=18]%s[/font_size] FPS" % Performance.get_monitor(Performance.TIME_FPS)
 	if OS.is_debug_build():
-		final_text += "\n[font_size=18]%s[/font_size] RAM\n" % [
+		final_text += " - [font_size=18]%s[/font_size] RAM\n" % [
 			String.humanize_size(int(Performance.get_monitor(Performance.MEMORY_STATIC)))]
 
 	if _display_state == 1:
 		final_text += "\n			- Conductor -\n"
 		final_text += "\n[font_size=15]%s[/font_size]" % Conductor.to_string()
-	perf_label.text = final_text
+	perf_label.text = "[right]" + final_text + "[/right]"
 
 func _unhandled_key_input(e: InputEvent) -> void:
 	if e.pressed: match e.keycode:

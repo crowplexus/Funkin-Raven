@@ -56,10 +56,12 @@ func apply_hit(note: Note) -> void:
 
 func apply_miss(column: int = 0, note: Note = null) -> void:
 	break_combo()
-	if note: column = note.column
+	if note:
+		column = note.column
+		misses += 1
 	combo -= 1
 
-func apply_ghost_tap(column: int = 0) -> void:
+func apply_ghost_tap(_column: int = 0) -> void:
 	ghost_taps += 1
 
 func break_combo() -> void:
@@ -77,7 +79,7 @@ func hit_registry_string() -> String:
 		counter += "%s: %s" % [key.to_pascal_case(), hit_registry[key]]
 	if not counter.is_empty():
 		counter += "\nMiss: %s" % [misses]
-	return counter
+	return counter + "\n"
 
 func _to_string() -> String:
 	var status: String = "Score: %s\nAccuracy: %s%%\nCombo Breaks: %s" % [

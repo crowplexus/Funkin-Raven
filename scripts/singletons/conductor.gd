@@ -21,7 +21,7 @@ var time: float = 0.0
 func get_time_with_offset(custom_time: float = time) -> float:
 	return custom_time + (Preferences.beat_offset * 0.001)
 
-var length: float = 0.0
+var length: float = 1.0
 var time_changes: Array[Dictionary] = []
 var current_time_change: int:
 	set(nt):
@@ -105,7 +105,7 @@ func update(delta_time: float) -> void:
 
 ## Resets all the important values and data in the conductor.
 func reset() -> void:
-	length = 0.0
+	length = 1.0
 	current_time_change = 0
 	time_changes.clear()
 	set_time(0.0)

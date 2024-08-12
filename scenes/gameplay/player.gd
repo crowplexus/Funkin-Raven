@@ -147,6 +147,7 @@ func note_hit_common(note: Note) -> void:
 	match note.hit_result.judgment.name:
 		"miss":
 			tallies.apply_miss(note.column, note)
+			await RenderingServer.frame_post_draw
 			if note_miss: note_miss.call(note.column, note)
 		_:
 			tallies.apply_hit(note)

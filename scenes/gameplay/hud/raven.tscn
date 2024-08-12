@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://yruwyaxp0fdl"]
+[gd_scene load_steps=14 format=3 uid="uid://yruwyaxp0fdl"]
 
 [ext_resource type="Script" path="res://scenes/gameplay/hud/raven.gd" id="1_b6vun"]
 [ext_resource type="Texture2D" uid="uid://cshoihsf026ps" path="res://assets/sprites/characters/icons/dad.png" id="4_jkub1"]
 [ext_resource type="Texture2D" uid="uid://bqbsv48mg5br4" path="res://assets/sprites/characters/icons/bf.png" id="5_veo88"]
+[ext_resource type="FontFile" uid="uid://ca16c2xgvyjsx" path="res://assets/fonts/funkin.ttf" id="5_xbc7l"]
 [ext_resource type="FontFile" uid="uid://d2n5gv6tiowah" path="res://assets/fonts/vcr.ttf" id="6_yliuk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oy5hj"]
@@ -12,10 +13,6 @@ border_width_top = 5
 border_width_right = 5
 border_width_bottom = 5
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
 corner_detail = 1
 expand_margin_left = 2.0
 expand_margin_right = 2.0
@@ -28,10 +25,6 @@ border_width_top = 5
 border_width_right = 5
 border_width_bottom = 5
 border_color = Color(0, 0, 0, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
 corner_detail = 1
 expand_margin_left = 2.0
 expand_margin_right = 2.0
@@ -50,7 +43,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(1.1, 1.1), Vector2(1, 1)]
+"values": [Vector2(0.9, 0.9), Vector2(0.8, 0.8)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -62,7 +55,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(1.1, 1.1), Vector2(1, 1)]
+"values": [Vector2(0.9, 0.9), Vector2(0.8, 0.8)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_l8q7b"]
@@ -70,23 +63,42 @@ _data = {
 "bump": SubResource("Animation_6fsbg")
 }
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5u5cr"]
-bg_color = Color(0, 0, 0, 0.27451)
-border_width_left = 3
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v54kv"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_bottom_left = 10
+corner_detail = 1
+expand_margin_right = 5.0
+shadow_offset = Vector2(3, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w725m"]
+bg_color = Color(1, 1, 1, 1)
+skew = Vector2(0.5, 0)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
 corner_detail = 1
 expand_margin_left = 5.0
-expand_margin_top = 5.0
-expand_margin_right = 5.0
-expand_margin_bottom = 5.0
+anti_aliasing = false
 
 [sub_resource type="LabelSettings" id="LabelSettings_daqce"]
 font = ExtResource("6_yliuk")
 font_size = 20
 outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_g273j"]
+font = ExtResource("5_xbc7l")
+font_size = 32
+outline_size = 16
 outline_color = Color(0, 0, 0, 1)
 
 [node name="raven" type="Control" node_paths=PackedStringArray("health_bar_icons")]
@@ -106,10 +118,10 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -480.0
-offset_top = 285.0
-offset_right = -80.0
-offset_bottom = 305.0
+offset_left = -448.0
+offset_top = 275.0
+offset_right = -48.0
+offset_bottom = 295.0
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_oy5hj")
@@ -121,13 +133,13 @@ show_percentage = false
 [node name="player2" type="Sprite2D" parent="health_bar"]
 position = Vector2(200, 0)
 texture = ExtResource("4_jkub1")
-offset = Vector2(-50, 0)
+offset = Vector2(-50, -10)
 hframes = 2
 
 [node name="player1" type="Sprite2D" parent="health_bar"]
 position = Vector2(200, 0)
 texture = ExtResource("5_veo88")
-offset = Vector2(50, 0)
+offset = Vector2(50, -10)
 flip_h = true
 hframes = 2
 
@@ -136,54 +148,98 @@ libraries = {
 "": SubResource("AnimationLibrary_l8q7b")
 }
 
-[node name="status_label" type="Label" parent="."]
+[node name="status_label" type="Label" parent="health_bar"]
 layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 10.0
-offset_top = 285.0
-offset_right = 213.0
-offset_bottom = 345.0
-grow_vertical = 2
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = 23.0
+offset_right = -7.0
+offset_bottom = 44.0
+grow_horizontal = 0
+grow_vertical = 0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
 theme_override_fonts/font = ExtResource("6_yliuk")
 theme_override_font_sizes/font_size = 20
-theme_override_styles/normal = SubResource("StyleBoxFlat_5u5cr")
-text = "Score: N/A
-Accuracy: N/A%
-Combo Breaks: N/A"
+text = "< A: N/A - CBs: N/A - S: N/A >"
+horizontal_alignment = 3
+vertical_alignment = 1
+
+[node name="progress_bar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -461.0
+offset_top = 295.0
+offset_right = -51.0
+offset_bottom = 315.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_v54kv")
+theme_override_styles/fill = SubResource("StyleBoxFlat_w725m")
+show_percentage = false
+
+[node name="progress_label" type="Label" parent="progress_bar"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -94.0
+offset_top = -12.5
+offset_right = 94.0
+offset_bottom = 12.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "?:?? / ?:?? (?%)"
+label_settings = SubResource("LabelSettings_daqce")
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="judge_counter" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_top = -46.0
-offset_right = 132.0
-offset_bottom = 46.0
-grow_vertical = 2
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 148.0
+offset_bottom = 146.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_fonts/font = ExtResource("6_yliuk")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 18
 text = "Epic: 0
 Sick: 0
 Good: 0
 Bad: 0
 Shit: 0
+Miss: 0
+
 "
+horizontal_alignment = 3
 vertical_alignment = 3
 
-[node name="progress_label" type="Label" parent="."]
-custom_minimum_size = Vector2(0, 25)
+[node name="millisecond_label" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 18.0
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -77.5
+offset_top = -40.0
+offset_right = 77.5
+offset_bottom = -3.0
 grow_horizontal = 2
-text = "?:?? / ?:?? (?%)"
-label_settings = SubResource("LabelSettings_daqce")
+grow_vertical = 0
+text = "0.0000 ms"
+label_settings = SubResource("LabelSettings_g273j")
 horizontal_alignment = 1
-vertical_alignment = 1
+vertical_alignment = 2

@@ -23,6 +23,8 @@ var _file: ConfigFile = ConfigFile.new()
 	"ui_down": [	"S",	"Down"	],
 	"ui_up"  : [	"W",	"Up"	],
 	"ui_right": [	"D",	"Right"	],
+
+	"ui_fullscreen": [	"F11",	""		],
 }
 ## Defines which direction the notes will scroll to.
 @export_enum("Up:0", "Down:1")

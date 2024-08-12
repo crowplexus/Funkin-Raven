@@ -116,6 +116,8 @@ func end_play() -> void:
 				play_list.clear()
 				Globals.change_scene(load("res://scenes/menu/%s.tscn" % where_to))
 		GameMode.FREEPLAY:
+			var diff: = Chart.global.song_info.difficulty
+			Highscore.register(active_player.tallies, Chart.global.song_info.folder, diff)
 			Globals.change_scene(load("res://scenes/menu/freeplay_menu.tscn"))
 
 func _process(delta: float) -> void:
@@ -272,6 +274,9 @@ func generate_fields(configs: Array[Dictionary] = Chart.global.song_info.notefie
 			field.on_note_hit(note, note.hold_progress <= 0.0)
 			if not field.player.autoplay:
 				update_score_text(field.player.tallies, note.hold_progress <= 0.0)
+				if hud and note.hit_result and "name" in note.hit_result.judgment and hud.has_method("display_ms"):
+					var col: Color = Scoring.get_judgement_colour(note.hit_result.judgment.name)
+					hud.call_deferred("display_ms", note.hit_result.hit_time, col)
 				display_judgement(note.hit_result)
 				display_combo(note.hit_result)
 
@@ -287,6 +292,7 @@ func generate_fields(configs: Array[Dictionary] = Chart.global.song_info.notefie
 			n.note_flew = func(dn: Note) -> void:
 				if dn.player == field.get_index():
 					field.on_note_miss(dn.column, dn)
+					#field.player.tallies.apply_miss(n.column, n)
 				if not field.player.autoplay and dn.hit_result:
 					update_score_text(field.player.tallies, dn.hold_progress <= 0.0)
 					display_combo(dn.hit_result)
@@ -330,7 +336,8 @@ func display_countdown() -> void:
 		countdown_timer.timeout.disconnect(display_countdown)
 		var song_start_script: int = modchart_pack.call_mod_method("_on_song_start", [self])
 		if song_start_script != ModchartPack.CallableRequest.STOP:
-			music_player.play(0.0)
+			if music_player and music_player.stream:
+				music_player.play(0.0)
 			countdown_beat = 0
 		return
 
@@ -379,14 +386,14 @@ func display_combo(hit_result: Note.HitResult) -> void:
 		return
 	if combo_group:
 		var custom_display = hud.call_deferred("display_combo", hit_result, combo_group)
-		if not custom_display:
-			combo_group.display_combo(hit_result)
+		if not custom_display: combo_group.display_combo(hit_result)
 
 ## Loads a new HUD to the screen.
 func load_hud(hud_to_load: GameHUD, make_primary: bool = true, start_visible: bool = true) -> void:
 	if make_primary: hud = hud_to_load
 	hud.visible = start_visible
 	ui_layer.add_child(hud_to_load)
+	ui_layer.move_child(hud_to_load, 0)
 
 ## Gets rid of the loaded primary hud.
 func unload_current_hud() -> void:

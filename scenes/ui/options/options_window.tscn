@@ -239,6 +239,12 @@ script = ExtResource("4_awyi8")
 option_name = &"UI Right Keybind"
 variable = "ui_right"
 
+[node name="ui_fullscreen" parent="pages/keybinds" instance=ExtResource("3_wjca4")]
+layout_mode = 2
+script = ExtResource("4_awyi8")
+option_name = &"Fullscreen"
+variable = "ui_fullscreen"
+
 [node name="visuals" type="VBoxContainer" parent="pages"]
 visible = false
 layout_mode = 1

@@ -4,8 +4,9 @@ extends Control
 
 var _judge_tween: Tween
 var judgment_sprite: Sprite2D
-var _combo_tweens: Array[Tween] = []
+
 var _template_combos: Array[Sprite2D] = []
+var _combo_tweens: Array[Tween] = []
 
 func push_judgement() -> void:
 	judgment_sprite = Sprite2D.new()
@@ -18,7 +19,7 @@ func push_judgement() -> void:
 	add_child(judgment_sprite)
 
 func push_combo(digits: int = 0) -> void:
-	precache_combo_number(digits)
+	precache_number(digits)
 	_combo_tweens.append(null)
 
 func display_judgement(hit_result: Note.HitResult) -> void:
@@ -77,9 +78,9 @@ func display_combo(hit_result: Note.HitResult) -> void:
 		if _template_combos.size() < _str_combo.length():
 			push_combo(_str_combo.length())
 
-		var num_score: = _template_combos[i]
+		var num_score: Sprite2D = _template_combos[i]
 		num_score.position = self.size * 0.5
-		num_score.position.x += 45 * (i - offsetx)
+		num_score.position.x += 40 * (i - offsetx)
 		num_score.modulate = combo_colour
 		if Preferences.always_display_combo and _template_combos.size() > _str_combo.length():
 			for ns: CanvasItem in _template_combos:
@@ -101,27 +102,7 @@ func display_combo(hit_result: Note.HitResult) -> void:
 			_combo_tweens[i].tween_property(num_score, "modulate:a", 0.0, 1.2 * Conductor.crotchet) \
 			.set_delay(0.6 * Conductor.crotchet)
 
-#func show_combo_temporary(hit_result: Note.HitResult, is_tap: bool) -> void:
-#	if not is_tap or hit_result.judgment == null or hit_result.judgment.is_empty():
-#		return
-#
-#	var _hit_colour: Color = Color.DIM_GRAY
-#	if "color" in hit_result.judgment:
-#		_hit_colour = hit_result.judgment.color
-#
-#	hit_result_label.text = (str(hit_result.judgment.name) +
-#		"\nTiming: %sms" % snappedf(hit_result.hit_time, 0.001) +
-#		"\nCombo: %s" % hit_result.player.combo)
-#	hit_result_label.modulate = hit_colour
-#	if combo_tween:
-#		combo_tween.kill()
-#
-#	combo_tween = create_tween().set_ease(Tween.EASE_OUT)
-#	combo_tween.bind_node(hit_result_label)
-#	combo_tween.tween_property(hit_result_label, "modulate:a", 0.0, 0.5 * Conductor.crotchet) \
-#	.set_delay(0.5 * Conductor.crotchet)
-
-func precache_combo_number(i: int) -> Sprite2D:
+func precache_number(i: int) -> Sprite2D:
 	# i was upset fuck naming
 	var _combo_shit: = Sprite2D.new()
 	_combo_shit.texture = skin.combo_row

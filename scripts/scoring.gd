@@ -169,6 +169,14 @@ static func get_clear_flag_color(flag: String) -> Color:
 			return Color.IVORY
 	return Color.WHITE
 
+static func get_judgement_colour(judge_name: StringName) -> Color:
+	if judge_name in JUDGMENTS:
+		if "colour" in JUDGMENTS[judge_name]:
+			return JUDGMENTS[judge_name].colour
+		if "color" in JUDGMENTS[judge_name]:
+			return JUDGMENTS[judge_name].color
+	return Color.WHITE
+
 static func judge_note(note: Note, fallback_diff: float = 0.0) -> Dictionary:
 	match note.kind:
 		_:

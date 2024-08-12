@@ -27,12 +27,6 @@ var special_keybinds: Dictionary = {
 		PerformanceCounter.update_text(),
 	KEY_F5: func():
 		Globals.reset_scene(true),
-	KEY_F11: func():
-		match DisplayServer.window_get_mode():
-			DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
-				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-			_: # anything but fullscreen
-				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
 }
 
 #region Node Funcs
@@ -40,12 +34,17 @@ var special_keybinds: Dictionary = {
 func _ready() -> void:
 	Highscore.cached_hi = Highscore.open()
 
-
 func _unhandled_key_input(e: InputEvent) -> void:
-	if e.is_pressed():
+	if e.is_pressed() and  e.keycode in special_keybinds:
 		for k: Variant in special_keybinds:
-			if e.keycode == k and special_keybinds[k] is Callable:
+			if special_keybinds[k] is Callable:
 				special_keybinds[k].call_deferred()
+	if Input.is_action_just_pressed("ui_fullscreen"):
+		match DisplayServer.window_get_mode():
+			DisplayServer.WINDOW_MODE_FULLSCREEN, DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
+				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+			_: # anything but fullscreen
+				DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
 
 #endregion
 
@@ -60,7 +59,6 @@ func change_scene(scene: PackedScene, skip_transition: bool = false) -> void:
 		await Transition.play_out()
 		get_tree().paused = false
 
-
 func reset_scene(skip_transition: bool = false) -> void:
 	if not skip_transition:
 		get_tree().paused = true
@@ -69,7 +67,6 @@ func reset_scene(skip_transition: bool = false) -> void:
 	if not skip_transition:
 		await Transition.play_out("fade")
 		get_tree().paused = false
-
 
 func get_options_window() -> Control:
 	var ow: Control = OPTIONS_WINDOW.instantiate()

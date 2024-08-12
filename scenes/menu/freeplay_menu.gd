@@ -1,10 +1,10 @@
 extends Node2D
 
 @onready var bg: Sprite2D = $"background"
-@onready var song_list: Control = $"ui/song_container"
 @onready var score_label: Label = $"ui/score_text"
 @onready var diff_label: Label = $"ui/score_text/difficulty_text"
 @onready var playlist_label: Label = $"ui/playlist_text"
+@onready var song_container: Control = $"ui/song_container"
 
 @export var item_idle_opacity: float = 0.6
 @export var item_selected_opacity: float = 1.0
@@ -12,15 +12,20 @@ extends Node2D
 
 var songs: Array[SongItem] = []
 var personal_playlist: Array[SongItem] = []
+var all_difficulties: Array[Dictionary] = []
+var options: Array[CanvasItem] = []
 
 var current_item: CanvasItem
 var current_difficulty: Dictionary
-var current_selection: int = 1
+static var current_selection: int = 1
 var current_alternative: int = 1
 var music_fade_twn: Tween
 var playlist_twn: Tween
 var current_top: Tally
 
+var _random_icon: Sprite2D
+var random_icon_origin: Vector2 = Vector2.ZERO
+var _time_wasted: float = 0.0
 
 func _ready() -> void:
 	playlist_label.modulate.a = 0.0
@@ -28,6 +33,19 @@ func _ready() -> void:
 	$"ui/song_container/random".modulate.a = item_idle_opacity
 	if bundle: songs = bundle.get_all_songs()
 	generate_songs()
+
+func _process(delta: float) -> void:
+	if _random_icon:
+		var move_random_icon: bool = current_item.name == "random"
+		if not move_random_icon and _random_icon.position.y != random_icon_origin.y:
+			_random_icon.position = random_icon_origin
+		if move_random_icon:
+			_time_wasted += delta
+			float_random_icon()
+
+func float_random_icon() -> void:
+	var floaty: float = (sin(_time_wasted * PI) * 5.5) - 5.0
+	_random_icon.position.y = random_icon_origin.y + floaty
 
 func _unhandled_input(e: InputEvent) -> void:
 	# prevents a bug with moving the mouse which would change selections nonstop
@@ -75,12 +93,9 @@ func _unhandled_input(e: InputEvent) -> void:
 
 	if Input.is_action_just_pressed("ui_accept"):
 		Globals.set_node_inputs(self, false)
-		if current_selection == 0:
-			current_selection = randi_range(1, song_list.get_child_count())
+		if current_item.name == "random":
+			current_selection = find_random_song()
 			update_selection()
-
-		#SoundBoard.play_sfx(Globals.MENU_CONFIRM_SFX)
-		#await get_tree().create_timer(1.0).timeout
 
 		SoundBoard.stop_bgm()
 		if not personal_playlist.is_empty():
@@ -94,42 +109,65 @@ func _unhandled_input(e: InputEvent) -> void:
 			if Chart.global.song_info.name == "<REPLACE>":
 				Chart.global.song_info.name = songs[current_selection - 1].display_name
 			songs[current_selection - 1].difficulty = current_difficulty
+
+		# TRANSITION TO GAMEPLAY #
+		transition_out()
+		SoundBoard.play_sfx(Globals.MENU_CONFIRM_SFX)
+		if Preferences.flashing:
+			Globals.begin_flicker(current_item, 1.0, 0.06, false)
+		await get_tree().create_timer(1.0).timeout
 		Globals.change_scene(load("res://scenes/gameplay/gameplay.tscn"))
 
 func update_selection(new_sel: int = 0) -> void:
-	if song_list.get_child_count() == 0:
+	if options.is_empty():
 		return
-	if current_item:
-		current_item.modulate.a = item_idle_opacity
 
-	current_selection = wrapi(current_selection + new_sel, 0, song_list.get_child_count())
-	current_item = song_list.get_child(current_selection)
-	current_item.modulate.a = item_selected_opacity
+	if current_item: current_item.modulate.a = item_idle_opacity
+	current_selection = wrapi(current_selection + new_sel, 0, options.size())
 	if new_sel != 0: SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
+	current_item = options[current_selection]
+	current_item.modulate.a = item_selected_opacity
 
-	for thingy: Alphabet in song_list.get_children():
-		thingy.menu_target = thingy.get_index() - current_selection
+	for thingy: CanvasItem in options:
+		if thingy is Alphabet and thingy.visible:
+			var i: int = options.find(thingy)
+			thingy.menu_target = i - current_selection
 
-	reset_menu_song(current_selection)
+	reset_menu_song()
 	update_alternative()
 
-func reset_menu_song(c: int = 0) -> void:
+func reset_menu_song() -> void:
+	if not Globals.RANDOM_MUSIC:
+		return
 	# i have to tell my brain to stop hardcoding @crowplexus
 	var menu_bgm_name: = Globals.MENU_MUSIC.resource_path.get_file().get_basename()
 	var random_bgm_name: = Globals.RANDOM_MUSIC.resource_path.get_file().get_basename()
 	match SoundBoard.current_bgm:
-		menu_bgm_name when c == 0:
+		menu_bgm_name when current_item.name == "random":
 			play_bgm_check(Globals.RANDOM_MUSIC, true, true)
-		random_bgm_name when c != 0:
+		random_bgm_name when current_item.name != "random":
 			play_bgm_check(Globals.MENU_MUSIC, true, true)
 
+func find_random_song() -> int:
+	var random_song: SongItem = songs.pick_random()
+	var song_id: int = songs.find(random_song)
+	# TODO: make this more random i guess idk?
+	if song_id == 0: random_song = songs.pick_random()
+	if random_song.difficulties.has(current_difficulty):
+		random_song = songs.pick_random()
+	return songs.find(random_song)
+
 func update_alternative(new_alt: int = 0) -> void:
-	if song_list.get_child_count() == 0:
+	if options.is_empty():
 		return
-	current_alternative = wrapi(current_alternative + new_alt, 0, songs[current_selection - 1].difficulties.size())
-	current_difficulty = songs[current_selection - 1].difficulties[current_alternative]
+	var diffs: Array[Dictionary] = all_difficulties
+	if current_selection > 0:
+		diffs = songs[current_selection - 1].difficulties
+	current_alternative = wrapi(current_alternative + new_alt, 0, diffs.size())
+	current_difficulty = diffs[current_alternative]
+
 	if new_alt != 0: SoundBoard.play_sfx(Globals.MENU_SCROLL_SFX)
-	if current_difficulty.size() > 1:
+	if diffs.size() > 1:
 		diff_label.text = "< %s > " % current_difficulty.display_name
 	else:
 		diff_label.text = current_difficulty.display_name
@@ -140,16 +178,24 @@ func update_highscore() -> void:
 	# this sucks, i know it sucks, it's the best way i found
 	if not Highscore.check_signature(Highscore.cached_hi):
 		Highscore.cached_hi = Highscore.open()
-	current_top = Highscore.get_hi(Highscore.cached_hi, song.folder_name, song.difficulties[current_alternative])
+	current_top = Highscore.get_hi(Highscore.cached_hi, song.folder_name, current_difficulty)
 	if is_instance_valid(current_top):
 		score_label.text = "TOP SCORE: " + str(current_top.score).pad_zeros(6)
 		score_label.text += "\nAccuracy: %s%%" % snappedf(current_top.accuracy, 0.01)
 	else:
 		score_label.text = "TOP SCORE: 000000\nAccuracy: N/A"
 
+func transition_out() -> void:
+	for i: Control in song_container.get_children():
+		if i != current_item:
+			i.set_process(false)
+			var vpx: float = get_viewport_rect().size.x
+			create_tween().set_ease(Tween.EASE_OUT).bind_node(i) \
+			.tween_property(i, "position:x", i.position.x - vpx, 0.4)
+
 func generate_songs() -> void:
 	if not bundle or songs.is_empty():
-		song_list.get_child(0).free()
+		song_container.get_child(0).hide()
 		score_label.visible = false
 		var error_notice: Alphabet = Alphabet.new()
 		error_notice.size = get_viewport_rect().size
@@ -159,22 +205,32 @@ func generate_songs() -> void:
 		add_child(error_notice)
 		return
 
-	for item: Control in song_list.get_children():
-		if item.get_index() == 0:
+	options.clear()
+	all_difficulties.clear()
+	for item: Control in song_container.get_children():
+		if item.name == "random":
+			item.visible = songs.size() > 1
+			if item.visible: options.append(item)
 			continue
 		item.free()
 
 	var ouch: int = 0
 	for song: SongItem in songs:
-		var new_item: Alphabet = song_list.get_child(0).duplicate()
+		var new_item: Alphabet = song_container.get_child(0).duplicate()
 		#new_item.name = song.display_name.to_snake_case()
 		new_item.position.y += new_item.y_per_roll * ouch
 		new_item.modulate.a = item_idle_opacity
 		new_item.text = song.display_name
 		new_item.menu_target = ouch + 1
-		song_list.add_child(new_item)
+		new_item.visible = true
+		song_container.add_child(new_item)
+
+		for diff: Dictionary in song.difficulties:
+			if not all_difficulties.has(diff):
+				all_difficulties.append(diff)
 
 		var icon: Sprite2D = Sprite2D.new()
+		icon.name = "icon"
 		if song.icon and song.icon.texture:
 			icon.texture = song.icon.texture
 			icon.texture_filter = song.icon.filter
@@ -183,7 +239,18 @@ func generate_songs() -> void:
 			icon.scale = song.icon.scale
 		icon.global_position.x = new_item.glyphs_pos.x + 60
 		new_item.add_child(icon)
+		options.append(new_item)
 		ouch += 1
+
+	if not song_container.get_child(0).has_node("icon"):
+		var random_alpha: = song_container.get_child(0)
+		_random_icon = $"random_icon"
+		_random_icon.reparent(random_alpha)
+		_random_icon.name = "icon"
+		random_icon_origin = _random_icon.position
+
+	if current_selection > options.size():
+		current_selection = 1
 
 	update_selection()
 	update_alternative()

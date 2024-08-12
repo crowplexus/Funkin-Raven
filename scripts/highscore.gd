@@ -6,11 +6,9 @@ static var cached_hi: Highscore
 @export var data: Dictionary = {}
 @export var last_modified: String = "UNKOWN-DATE UNKNOWN-TIME"
 
-
 static func check_signature(hi: Highscore, hi2: Highscore = null) -> bool:
 	if not is_instance_valid(hi2): hi2 = Highscore.open()
 	return is_same(hi, hi2)
-
 
 static func open() -> Highscore:
 	var path: String = "user://highscores.tres"
@@ -18,12 +16,10 @@ static func open() -> Highscore:
 		ResourceSaver.save(Highscore.new(), path, ResourceSaver.FLAG_OMIT_EDITOR_PROPERTIES)
 	return ResourceLoader.load(path)
 
-
 static func save(hi: Highscore) -> void:
 	if not check_signature(hi):
 		hi = Highscore.open()
 	ResourceSaver.save(hi)
-
 
 static func get_hi(hi: Highscore, song: String, difficulty: Dictionary = {}) -> Tally:
 	if not check_signature(hi):
