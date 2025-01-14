@@ -1,3 +1,14 @@
+<h1 align="center">DEPRECATION NOTICE</h1>
+
+This project has been officially deprecated.
+
+That means it will not receive any further commits and updates, aside from maybe small tweaks and bugfixes.
+
+As an alternative, use [Funkin Godot](https://github.com/what-is-a-git/FunkinGodot) as its a much more complete and mature port of Friday Night Funkin' to the Godot Engine, which is also much less frustrating to work with
+
+ORIGINAL README BELOW...
+
+---
 
 <h1 align="center">Friday Night Funkin' Raven / Plexus Engine</h1>
 
@@ -19,28 +30,3 @@ Work in Progress.
 - [Through the Fire and Flames by DragonForce](https://www.youtube.com/watch?v=0jgrCKhxE1s)
 ---
 
-<h3 align="center">TODO / DONE</h3>
-
-- Gameplay and Progression
-	- [x] Input
-	- [ ] Highscores
-	- [ ] Song Advancing
-		- Example: when playing in a level, when finishing a song
-		- Another song will load (if existing in the playlist)
-
-- User Interface
-	- [x] Gameplay UI
-	- [ ] Menu UI **(partial)**
-
-- Notes
-	- [x] Tap Notes
-	- [x] Holds
-	- [ ] Rolls
-	- [ ] Mines
-
-- Menus
-	- [x] Title
-	- [x] Main
-	- [ ] Story
-	- [ ] Freeplay
-	- [x] Options
